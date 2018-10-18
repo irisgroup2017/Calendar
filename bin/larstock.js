@@ -68,9 +68,6 @@ async function updateLar(userName,dataid) {
     else { setLar(userName,dataid,'update') }
 }
 
-async function extracklar(LAR) {
-}
-
 function gd(a) {
     ans = [a.getDate(),a.getMonth(),a.getFullYear()]
     return ans

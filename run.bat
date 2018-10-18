@@ -1,1 +1,2 @@
-supervisor -w routes -x node ./bin/www
+supervisor -w . node ./bin/www
+//npm install -g supervisor
