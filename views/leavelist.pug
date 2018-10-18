@@ -1,0 +1,113 @@
+extends layout
+
+block content
+ mixin tbl(line)
+  -var i = 0
+  while i < line
+   tr(id=parms.objs[i].id class=parms.objs[i].aclass)
+    td=parms.objs[i].cTime
+    td=parms.objs[i].lartype
+    td=parms.objs[i].title
+    td=parms.objs[i].dateStart
+    td=parms.objs[i].dateEnd
+    td=(parms.objs[i].timeEnd ? parms.objs[i].timeStart+'-'+parms.objs[i].timeEnd : parms.objs[i].timeStart)
+    td=parms.objs[i].daylength
+    td=parms.objs[i].larstatus
+    td=parms.objs[i++].approver
+    td
+     a.delete.fa.fa-trash.hvr-pulse(title="Delete" data-toggle="confirmation" data-placement="left" style="padding-left: 10px")
+ mixin ddl(namel)
+  -var i = 0
+   while i < namel
+    -var cal = namel-(i+1)
+    if parms.objs[i].me
+     a.dropdown-item.thisme(onload="setMyName()" href="#")=parms.objs[i++].userName
+    else
+     a.dropdown-item(href="#")=parms.objs[i++].userName
+    if cal
+     .dropdown-divider
+ 
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+
+ link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
+ link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
+ link(rel='stylesheet' , href='css/setting.css')
+ link(rel='stylesheet' , href='css/hover.css')
+ +ssrc(['popper.min.js','moment.min.js','transition.js','collapse.js','bootstrap-confirmation.min.js'])
+
+ table.table
+  thead.thead-info
+   tr
+    th='วันที่ลา'
+    th='ประเภท'
+    th='เหตุผลการลา'
+    th='วันที่เริ่ม'
+    th='วันสิ้นสุด'
+    th='ช่วงเวลา'
+    th='จำนวน'
+    th='สถานะการลา'
+    th='ผู้ดำเนินการ'
+    th='แจ้งลบ'
+  tbody
+   if parms.lengthPlus
+    +tbl(parms.tbl)
+   else
+    h4.center='ไม่มีข้อมูล'
+ script.
+  jQuery(function($) {
+      var larid = '',status = ''
+   $(document).on("click", ".delete", function(){
+        larid = $(this).parents('tr').attr('id')
+        $('#' + larid + ' .delete').confirmation('show')
+        $(document).on('confirmed.bs.confirmation',".delete",function(){
+            status = ($(this).parents('tr').find('td:nth-child(8)').text().indexOf(':') > 0 ? $(this).parents('tr').find('td:nth-child(8)').text().split(':') : $(this).parents('tr').find('td:nth-child(8)').text())
+            larid = $(this).parents('tr').attr('id')
+            if (status == 'รออนุมัติ') {
+                $.ajax({
+                    url: '/leavelist',
+                    type: "POST",
+                    dataType: 'json',
+                    async: false,
+                    data: { 
+                        'state': 'delete',
+                        'larid': larid
+                    },
+                    success: function(data) {
+                        $('tr[id='+data.larid+']').remove()
+                    }
+                })
+            } else if (status[0] == 'อนุมัติ') {
+                $.ajax({
+                    url: '/leavelist',
+                    type: "POST",
+                    dataType: 'json',
+                    async: false,
+                    data: { 
+                        'state': 'delkeep',
+                        'larid': larid
+                    },
+                    success: function(data) {
+                        $('tr[id='+data.larid+']').attr('class','strikeout')
+                    }
+                })
+            }
+            else {
+                $.ajax({
+                    url: '/leavelist',
+                    type: "POST",
+                    dataType: 'json',
+                    async: false,
+                    data: { 
+                        'state': 'hrprove',
+                        'larid': larid
+                    },
+                    success: function(data) {
+                        $('tr[id='+data.larid+']').attr('class','bg-warning')
+                    }
+                })
+            }
+        })
+     })
+  })

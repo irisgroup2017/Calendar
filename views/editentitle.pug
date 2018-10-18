@@ -1,0 +1,62 @@
+extends layout
+mixin ssrc(scr)
+ for t in scr
+  script(src="js/"+t)
+mixin scss(scss)
+ for t in scss
+  link(rel='stylesheet' , href='css/'+t)
+mixin schk(chk)
+ -var i=0
+ for t in chk
+  tr
+   td
+    input.privacy(type="checkbox" id=i checked=(parms.chk[i++] ? "True" : undefined))
+    span=t
+mixin srd(rd)
+ -var i=0
+ for t in rd
+  input(class=rd[i][0] type="radio" name="access" value=rd[i][0] checked=(parms.operator == i ? "checked" : undefined))
+  span.rb-txt(id=rd[i][0] title=rd[i][1])=i++
+
+mixin tbl(namel)
+ -var i=0
+ -var cal = namel-(i+1)
+ -var ll = ['sick','personal','vacation','training','sterily','maternity','religious','military']
+ while i < namel
+  -var dataid = parms.objs[i].dataid
+  tr(class=dataid)
+   td.col-xs1.center.thisname=parms.objs[i].user
+   td.col-xs1.center=parms.objs[i][ll[0]]
+   td.col-xs1.center=parms.objs[i][ll[1]]
+   td.col-xs1.center=parms.objs[i][ll[2]]
+   td.col-xs1.center=parms.objs[i][ll[3]]
+   td.col-xs1.center=parms.objs[i][ll[4]]
+   td.col-xs1.center=parms.objs[i][ll[5]]
+   td.col-xs1.center=parms.objs[i][ll[6]]
+   td.col-xs1.center=parms.objs[i++][ll[7]]
+   td.col-xs3.center
+    a.saveline.fa.fa-floppy-o.hvr-pulse(title="Save")
+    a.editline.fa.fa-pencil-square-o.hvr-pulse(title="Edit")
+block script
+ +scss(['animate.min.css'])
+
+block content
+ table.table.table-condensed#manage
+  thead.thead-info
+   tr
+    th.col-xs1.center='ชื่อ นามสกุล'
+    th.col-xs1.center='ลาป่วย'
+    th.col-xs1.center='ลากิจ'
+    th.col-xs1.center='ลาพักร้อน'
+    th.col-xs1.center='ลาฝึกอบรม'
+    th.col-xs1.center='ลาทำหมัน'
+    th.col-xs1.center='ลาคลอด'
+    th.col-xs1.center='ลาอุปสมบท'
+    th.col-xs1.center='ลารับราชการทหาร'
+    th.col-xs1.center='แก้ไข'
+  tbody#manage
+   +tbl(parms.tbl)
+ +ssrc(['popper.min.js','moment.min.js','editentitle.js','bootstrap-datepicker.min.js','bootstrap-confirmation.min.js','clockpicker.min.js'])
+ +scss(['checkbox.css','setting.css','hover.css','bootstrap-datepicker.min.css','clockpicker.min.css'])
+block footer
+ 

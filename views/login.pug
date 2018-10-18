@@ -1,0 +1,24 @@
+extends layout
+
+block content
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ form(action="/authorize" method="POST")
+  .center
+   if parms.status
+    h4.text-danger=parms.status
+   span.input-icon
+    input(name="username" type="text" placeholder="UserName" autocomplete="on" autofocus required)
+    i.ace-icon.fa.fa-user.fa-lg.fa-fw
+   br
+   br
+   span.input-icon
+    input(id="password" name="password" type="password" placeholder="Password" autocomplete="on" required)
+    i.ace-icon.fa.fa-key.fa-lg.fa-fw
+    i(toggle="#password" class="input-icon-right ace-icon fa fa-fw fa-eye toggle-password")
+   br
+   br
+   button(type="submit" class="btn btn-sm btn-success")
+    i.ace-icon.fa.fa-unlock=' Login'
+ +ssrc(['jquery.min.js','login.js'])

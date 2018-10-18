@@ -1,0 +1,120 @@
+extends layout
+
+block content
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='css/'+t)
+ mixin schk(chk)
+  -var i=0
+  for t in chk
+   tr
+    td
+     input.privacy(type="checkbox" id=i checked=(parms.chk[i++] ? "True" : undefined))
+     span=t
+ mixin srd(rd)
+  -var i=0
+  for t in rd
+   input(id=rd[i][0] class=rd[i][0] type="radio" name="access" value=rd[i][0] checked=(parms.operator == i ? "checked" : undefined))
+   span.rb-txt(for=rd[i][0] title=rd[i][1])=i++
+ .container
+  .col-sm-4
+   .panel.panel-info
+    .panel-heading
+     h3.panel-title="Edit Privacy"
+    .panel-body
+     .row
+      .col-12
+       table.table.table-user-information
+        tbody
+         tr
+          td="Name"
+          td#id=parms.dataname
+         tr
+          td="Mail Group"
+          td=parms.mailGroup
+         tr
+          td="BOSS"
+          td
+           .o-switch
+            input#boss.tgl.tgl-flip(type="checkbox" checked=(parms.boss === 1 ? true : false))
+            label.tgl-btn(for="boss" data-tg-off="No" data-tg-on="Yes")
+         tr
+          td="Access"
+          td
+           .rating.center.col-4
+            +srd([['super-happy','User'],['happy','Boss'],['neutral','CEO'],['sad','HR'],['super-sad','Admin']])
+           table.h5
+            +schk(['Use Calendar','Use Leave Form','Summary Group List','Summary All List','Manage User','Privacy Setting','Manage Leave Date','test4','test4','test4'])
+ +scss(['checkbox.css'])
+ script.
+  jQuery(function($) {
+    $(function () {
+        $('.tgl-btn').click(function() {
+            state = 'cb'
+            dataname = $('table').find('#id').text()
+            if ("checked" == $('.tgl.tgl-flip').attr('checked')) {
+                $('.tgl.tgl-flip').attr('checked',true)
+                sel = 1
+            } else {
+                $('.tgl.tgl-flip').attr('checked',false)
+                sel = 0
+            }
+            console.log(sel)
+            $.ajax({
+                url: '/privacy',
+                type: "POST",
+                dataType: 'text',
+                data: { 
+                    state: state,
+                    sel: sel,
+                    dataname: dataname
+                }
+            })
+        })
+
+        $('.rb-txt').click(function() { 
+            $(this).addClass('rotate')
+            $(this).one("webkitAnimationEnd oanimationend msAnimationEnd animationend",function(){
+                $(this).removeClass('rotate')
+            })
+
+            var chk,sel,
+            sl = $(this).attr('for'),
+            state = 'rb',
+            dataname = $('table').find('#id').text()
+            if (sl == 'super-happy') { chk = [1,1,0,0,0,0,0,0,0,0]; sel = 0 }
+            else if (sl == 'happy') { chk = [1,1,1,0,0,0,0,0,0,0]; sel = 1 }
+            else if (sl == 'neutral') { chk = [1,1,0,1,0,0,0,0,0,0]; sel = 2 }
+            else if (sl == 'sad') { chk = [1,1,0,1,1,0,1,0,0,0]; sel = 3 }
+            else { chk = [1,1,1,1,1,1,1,1,1,1]; sel = 4 }
+
+            $('input:radio[name=access]').each(function(){
+                if (sl == $(this).attr('class')) {
+                    $(this).attr('checked',true)
+                } else {
+                    $(this).attr('checked',false)
+                }
+            })
+            $('input:checkbox[class=privacy]').each(function(){
+                if (chk[$(this).attr('id')]) { 
+                    $(this).attr('checked',true)
+                } else {
+                    $(this).attr('checked',false)
+                }
+            })
+            $.ajax({
+                url: '/privacy',
+                type: "POST",
+                dataType: 'text',
+                data: { 
+                    state: state,
+                    sel: sel,
+                    dataname: dataname
+                }
+            })
+        })
+    })
+  })

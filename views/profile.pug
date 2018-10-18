@@ -1,0 +1,150 @@
+extends layout
+
+block content
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='css/'+t)
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ .container
+  .row
+   .col
+    .panel.panel-info
+     .panel-heading
+      h3.panel-title=parms.user
+     .panel-body
+      .row
+       .col-md-12
+        table.table.table-user-information
+         tbody
+          tr
+           td="รหัสพนักงาน"
+           td=parms.objs[0].emid
+          tr
+           td="แผนก"
+           td=parms.objs[0].depart
+          tr
+           td="ตำแหน่ง"
+           td=parms.objs[0].jobPos
+          tr
+           td="อีเมลล์"
+           td=parms.objs[0].mail
+          tr
+           td="ID"
+           td=parms.objs[0].userName
+            a.cpass.hvr-icon-spin(title="Change password")
+             i.fa.fa-refresh.hvr-icon
+   .col
+ style.
+  .cpass {
+      padding-left: 8px;
+  }
+ +scss(['hover.css','bootstrap-grid.min.css'])
+ script.
+  jQuery(function($) {
+   $(document).on("click", ".cpass", function(){
+      var modal =
+      '<div class="modal fade">\
+        <div class="modal-dialog modal-sm">\
+         <div class="modal-content">\
+          <div class="modal-body">\
+           <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+            <form class="no-margin">\
+             <h5>รหัสผ่านเก่า :</h5>\
+             <span class="input-icon">\
+             <input id="oldpass" type="password" class="middle"/>\
+             <i toggle="#oldpass" class="input-icon-right ace-icon fa fa-fw fa-eye toggle-password"/></span>\
+             <i class="oldpass ace-icon fa fa-times fa-2x" style="vertical-align: middle; color: #E34724; display: none"/>\
+             <h5>รหัสผ่านใหม่ :</h5>\
+             <span class="input-icon">\
+             <input id="newpass1" type="password" class="middle"/>\
+             <i toggle="#newpass1" class="input-icon-right ace-icon fa fa-fw fa-eye toggle-password"/></span>\
+             <i class="newpass1 ace-icon fa fa-times fa-2x" style="vertical-align: middle; color: #E34724; display: none"/>\
+             <h5>ยืนยันรหัสผ่านใหม่ :</h5>\
+             <span class="input-icon">\
+             <input id="newpass2" type="password" class="middle"/>\
+             <i toggle="#newpass2" class="input-icon-right ace-icon fa fa-fw fa-eye toggle-password"/></span>\
+             <i class="newpass2 ace-icon fa fa-times fa-2x" style="vertical-align: middle; color: #E34724; display: none"/>\
+            </form>\
+           </div>\
+           <div class="modal-footer">\
+            <button type="button" class="btn btn-sm btn-danger" data-action="changepw"><i class="ace-icon fa fa-refresh"></i> Change Password</button>\
+            <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+           </div>\
+         </div>\
+        </div>\
+       </div>'
+
+    var modal = $(modal).appendTo('body')
+    modal.find('.toggle-password').on('mousedown',function(e){
+        $(this).toggleClass("fa-eye fa-eye-slash")
+        var input = $($(this).attr('toggle'))
+        input.attr('type','text')
+    })
+    modal.find('.toggle-password').on('mouseup',function(e){
+        $(this).toggleClass("fa-eye fa-eye-slash")
+        var input = $($(this).attr('toggle'))
+        input.attr('type','password')
+    })
+    modal.find('button[data-action=changepw]').on('click',function() {
+        var empty = false,
+        input = modal.find('input.middle')
+        input.each(function(){
+            if(!$(this).val()){
+                modal.find("."+$(this).attr('id')).css("display","inline-block")
+                $(this).addClass("error")
+                empty = true
+                } else {
+                modal.find("."+$(this).attr('id')).css("display","none")
+                $(this).removeClass("error")
+            }
+        })
+        modal.find(".error").first().focus()
+        if(!empty){
+            var oldpass,newpass1,newpass2
+            input.each(function(){
+                if ($(this).attr('id') == "oldpass") { oldpass = $(this).val() }
+                if ($(this).attr('id') == "newpass1") { newpass1 = $(this).val() }
+                if ($(this).attr('id') == "newpass2") { newpass2 = $(this).val() }
+            })
+            if (newpass1 == newpass2) {
+                $.ajax({
+                    url: '/profile',
+                    type: "POST",
+                    dataType: 'text',
+                    data: { 
+                        'oldpass': oldpass,
+                        'newpass1': newpass1,
+                        'newpass2': newpass2
+                        },
+                    success: function(data) {
+                        if (data == "SP") {
+                            modal.find('input[id=oldpass]').addClass('error')
+                            modal.find('input[id=newpass1]').addClass('error')
+                            modal.find(".oldpass").css("display","inline-block")
+                            modal.find(".newpass1").css("display","inline-block")
+                            modal.find(".error").first().focus()
+                        }
+                        else if (data == "WP") {
+                            modal.find('input[id=oldpass]').addClass('error')
+                            modal.find(".oldpass").css("display","inline-block")
+                            modal.find(".error").first().focus()
+                        } else { modal.remove() }
+                    }
+                })
+            } else {
+                modal.find('input[id=newpass1]').addClass('error')
+                modal.find(".newpass1").css("display","inline-block")
+                modal.find('input[id=newpass2]').addClass('error')
+                modal.find(".newpass2").css("display","inline-block")
+                modal.find(".error").first().focus()
+            }
+        }
+    })
+    modal.modal('show').on('hidden', function(){
+        modal.remove()
+    })
+   })
+  })
+           

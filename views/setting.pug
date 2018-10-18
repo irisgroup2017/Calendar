@@ -1,0 +1,135 @@
+extends layout
+mixin ssrc(scr)
+ for t in scr
+  script(src="js/"+t)
+mixin scss(scss)
+ for t in scss
+  link(rel='stylesheet' , href='css/'+t)
+mixin schk(chk)
+ -var i=0
+ for t in chk
+  tr
+   td
+    input.privacy(type="checkbox" id=i checked=(parms.chk[i++] ? "True" : undefined))
+    span=t
+mixin srd(rd)
+ -var i=0
+ for t in rd
+  input(class=rd[i][0] type="radio" name="access" value=rd[i][0] checked=(parms.operator == i ? "checked" : undefined))
+  span.rb-txt(id=rd[i][0] title=rd[i][1])=i++
+
+mixin tbl(namel)
+ -var i=0
+ -var cal = namel-(i+1)
+ while i < namel
+  -var dataid = parms.objs[i].dataid
+  tr(class=dataid)
+   td=parms.objs[i].emid
+   td=parms.objs[i].name
+   td=parms.objs[i].lastName
+   td=parms.objs[i].jobPos
+   td=parms.objs[i].depart
+   td=parms.objs[i].mail
+   td=parms.objs[i].mailGroup
+   td=parms.objs[i++].userName
+   td.center
+    a.saveline.fa.fa-floppy-o.hvr-pulse(title="Save")
+    a.editline.fa.fa-pencil-square-o.hvr-pulse(title="Edit")
+    a.privacy.fa.fa-address-card-o.hvr-pulse(title="Privacy Setting")
+    a.delete.fa.fa-trash.hvr-pulse(title="Delete" data-toggle="confirmation" data-placement="left")
+    //-if cal .dropdown-divider
+block script
+ +scss(['animate.min.css'])
+
+block content
+ table.table.table-condensed#manage
+  thead.thead-info
+   tr
+    th.center='Employee ID'
+    th.center='Name'
+    th.center='Lastname'
+    th.center='Job Position'
+    th.center='Depart'
+    th.center='E-mail'
+    th.center='Boss Mail'
+    th.center='User Login'
+    th.center='Action'
+  tbody#manage
+   +tbl(parms.tbl)
+   tr
+    td
+     input#emid.add
+    td
+     input#name.add
+    td
+     input#lastName.add
+    td
+     input#jobPos.add
+    td
+     input#depart.add
+    td
+     input#mail.add
+    td
+     input#mailGroup.add
+    td
+     input#userName.add
+    td.center
+     a.addline.fa.fa-plus.hvr-pulse(title="Add" data-toggle="tooltip")
+ +ssrc(['popper.min.js','moment.min.js','setting.js','bootstrap-datepicker.min.js','bootstrap-confirmation.min.js','clockpicker.min.js'])
+ +scss(['checkbox.css','setting.css','hover.css','bootstrap-datepicker.min.css','clockpicker.min.css'])
+block footer
+ #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+  .close-animatedModal
+   i.fa.fa-remove.fa-3x
+  .modal-content
+   .container
+    .col-12
+     .panel
+      .panel-heading
+       .col-sm-4
+       .col-sm-5
+        h3.panel-title="Edit Privacy"
+       .panel-body
+       .row
+        .col-sm-4
+        .col-sm-5
+         table.table.table-user-information
+          tbody
+           tr
+            td(style="padding: 16px 0px 0px 7px;")="Start Date"
+            td
+             .input-group.date
+              input.center.form-control.datepicker(type="text" value=parms.cdate)
+           tr
+            td="Employee ID"
+            td#privacyID=parms.dataid
+           tr
+            td="Name"
+            td#privacyName=parms.user
+           tr
+            td(style="padding: 16px 0px 0px 7px;")="Working TIme"
+            td
+             .form-group
+              .col-sm-3
+               input.center.form-control#timepicker1(type="text" value='')
+              .col-sm-1
+               i.ace-icon.fa.fa-minus(style="padding: 12px 0px 0px 4px;")
+              .col-sm-3
+               input.center.form-control#timepicker2(type="text" value='')
+           tr
+            td="Boss Mail"
+            td#privacyMailGroup=parms.mailGroup
+           tr
+            td="BOSS"
+            td
+             .o-switch
+              input#boss.tgl.tgl-flip(type="checkbox")
+              label.tgl-btn(for="boss" data-tg-off="No" data-tg-on="Yes")
+           tr
+            td="Access"
+            td
+             .rating.center
+              +srd([['super-happy',''],['happy','User'],['neutral','Boss'],['sad','HR'],['super-sad','Admin']])
+             table.h5
+              +schk(['Use Reservation','Use Leave Form','Approve Leave','Summary Leave','Leave List','HR manager','Setting'])
+              +ssrc(['animatemodal.min.js'])

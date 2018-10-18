@@ -1,0 +1,134 @@
+extends layout
+
+block content
+ mixin tbl(tbl)
+  -var i = 0
+   while i < tbl
+    -var cal = tbl-(i+1)
+    -var larid = parms.objs[i].larid
+     tr(class=larid)
+      td=parms.objs[i].userName
+      td=parms.objs[i].cTime
+      td=parms.objs[i].lartype
+      td=parms.objs[i].title
+      td=parms.objs[i].dateStart
+      td=parms.objs[i].dateEnd
+      if parms.objs[i].timeEnd
+       td=parms.objs[i].timeStart + ' - ' + parms.objs[i].timeEnd
+      else
+       td=parms.objs[i].timeStart
+      td=parms.objs[i++].daylength
+      td
+       a
+        i.ace-icon.fa.fa-check.text-success.approve(style="cursor: pointer;")="Approve"
+      td
+       a
+        i.ace-icon.fa.fa-close.text-danger.reject(style="cursor: pointer;")="Reject"
+ 
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+
+ link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
+ link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
+ +ssrc(['moment.min.js','transition.js','collapse.js'])
+
+ table.table
+  thead.thead-info
+   tr
+    th='ผู้ลา'
+    th='วันที่แจ้ง'
+    th='ประเภท'
+    th='เหตุผลการลา'
+    th='วันที่เริ่ม'
+    th='วันสิ้นสุด'
+    th='ช่วงเวลา'
+    th='จำนวนการลา'
+    th='อนุมัติ'
+    th='ไม่อนุมัติ'
+  tbody
+   if parms.tbl
+    +tbl(parms.tbl)
+    tr.approvelastline
+     td
+     td
+     td
+     td
+     td
+     td
+     td
+     td
+     td(colspan="2")
+      a
+        i.ace-icon.fa.fa-check-square-o.text-success.massapprove(style="cursor: pointer;")=' Approve All ' + parms.objs.length + ' Request'
+   else
+    h4.center="ไม่พบข้อมูล"
+ script.
+  jQuery(function($) {
+      $('.approve').click(function() {      
+          var larid = $(this).parents('tr').attr('class')
+          $.ajax({
+            url: '/delreq',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'approve',
+                'larid': larid
+            },
+            success: function(data) {
+                $('tr[class='+data.larid+']').remove()
+                approveval = $('.approvelastline td[colspan=2]').text().split(' ')[3]
+                if (approveval > 1) {
+                    approveval = approveval-1
+                    $('.approvelastline td[colspan=2]').text(' Approve All '+approveval+' Request') 
+                }
+                else { 
+                    $('tr[class=approvelastline]').remove()
+                }
+            }
+          })
+      })
+      $('.massapprove').click(function() {
+          var larid = $(this).parents("tbody").find("tr"),
+          objs = []
+
+          larid.each(function(){
+            if($(this).attr('class')){
+                objs.push($(this).attr('class'))
+            }
+          })
+          $.ajax({
+            url: '/delreq',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'massapprove',
+                'larid': objs
+            },
+            success: function(data) {
+                for (var i=0;i<data.larid.length;i++) {
+                    $('tr[class='+data.larid[i]+']').remove()
+                }
+                $('tr[class=approvelastline').remove()
+            }
+          })
+      })
+      $('.reject').click(function() {      
+          var larid = $(this).parents('tr').attr('class')
+          $.ajax({
+            url: '/delreq',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'reject',
+                'larid': larid
+            },
+            success: function(data) {
+                $('tr[class='+data.larid+']').remove()
+            }
+          })
+      })
+  })

@@ -1,0 +1,31 @@
+extends layout
+
+block content
+ mixin table(objs)
+  -var i=0
+  while i < objs.length
+   tr
+    td.center=objs[i].className
+    td.center=objs[i].title
+    td.center=objs[i].time
+    td.center=objs[i].dayLength
+    td.center=objs[i++].userName
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ if parms.user
+  h3= "Login as " + parms.user
+ else
+  if parms.objs[0]
+   .container
+    table.table
+     thead.thead-info
+      tr
+       th.center='ประเภท'
+       th.center='การใช้งาน'
+       th.center='ช่วงเวลา'
+       th.center='ระยะเวลา'
+       th.center='ผู้จอง'
+     tbody
+      +table(parms.objs)
+   

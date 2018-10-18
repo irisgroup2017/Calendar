@@ -1,0 +1,218 @@
+input[type=checkbox] {
+  display: none;
+}
+input[type=checkbox] + span {
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+  color: rgba(0, 0, 66, .4);
+  transition: color 300ms ease-in;
+}
+input[type=checkbox] + span::after {
+  position: absolute;
+  display: block;
+  content: '';
+  top: 65%;
+  left: -5%;
+  width: 110%;
+  height: 0.1em;
+  border-radius: 0.05em;
+  background-color: rgba(150, 0, 0, .8);
+  transform-origin: 0% 0%;
+  transform: rotateZ(-6deg);
+  opacity: 1;
+  transition: width 300ms ease-in;
+}
+input[type=checkbox]:checked + span {
+  color: rgba(0, 0, 66, .8);
+}
+input[type=checkbox]:checked + span::after {
+  width: 0%;
+  opacity: 0;
+  transition: opacity 150ms ease-out, width 0ms linear 200ms;
+}
+td span {
+  padding: 0 5px 5px 5px
+}
+.tgl {
+	display: none;
+  }
+  .tgl, .tgl:after, .tgl:before, .tgl *, .tgl *:after, .tgl *:before, .tgl + .tgl-btn {
+	box-sizing: border-box;
+  }
+  .tgl::selection, .tgl:after::selection, .tgl:before::selection, .tgl *::selection, .tgl *:after::selection, .tgl *:before::selection, .tgl + .tgl-btn::selection {
+	background: none;
+  }
+  .tgl + .tgl-btn {
+	outline: 0;
+	display: block;
+	width: 4em;
+	height: 2em;
+	position: relative;
+	cursor: pointer;
+	user-select: none;
+  }
+  .tgl + .tgl-btn:after, .tgl + .tgl-btn:before {
+	position: relative;
+	display: block;
+	content: "";
+	width: 50%;
+	height: 100%;
+  }
+  .tgl + .tgl-btn:after {
+	left: 0;
+  }
+  .tgl + .tgl-btn:before {
+	display: none;
+  }
+  .tgl:checked + .tgl-btn:after {
+	left: 50%;
+  }
+  
+.tgl-flip + .tgl-btn {
+	padding: 2px;
+	transition: all 0.2s ease;
+	font-family: sans-serif;
+	perspective: 100px;
+  }
+  .tgl-flip + .tgl-btn:after, .tgl-flip + .tgl-btn:before {
+	display: inline-block;
+	transition: all 0.4s ease;
+	width: 100%;
+	text-align: center;
+	position: absolute;
+	line-height: 2em;
+	font-weight: bold;
+	color: #fff;
+	top: 0;
+	left: 0;
+	backface-visibility: hidden;
+	border-radius: 4px;
+  }
+  .tgl-flip + .tgl-btn:after {
+	content: attr(data-tg-on);
+	background: #02c66f;
+	transform: rotateY(-180deg);
+  }
+  .tgl-flip + .tgl-btn:before {
+	background: #ff3a19;
+	content: attr(data-tg-off);
+  }
+  .tgl-flip + .tgl-btn:active:before {
+	transform: rotateY(-20deg);
+  }
+  .tgl-flip:checked + .tgl-btn:before {
+	transform: rotateY(180deg);
+  }
+  .tgl-flip:checked + .tgl-btn:after {
+	transform: rotateY(0);
+	left: 0;
+	background: #7fc6a6;
+  }
+  .tgl-flip:checked + .tgl-btn:active:after {
+	transform: rotateY(20deg);
+}
+
+.rating {
+	border: 1px solid rgba(203, 209, 201, 0.712);
+	padding: 5px 1px 1px 0px;
+  border-radius: 2.2rem;
+  width: 145px;
+}
+
+input[type="radio"] {
+  display: none;
+	position: absolute;
+	opacity: 0;
+}
+
+input[type="radio"] + span {
+	cursor: pointer;
+}
+
+.super-happy + #super-happy:hover,
+.super-happy[checked=checked] + #super-happy,
+.super-happy:focus + #super-happy {
+	border-color: rgb(0, 109, 217);
+}
+
+.happy + #happy:hover,
+.happy[checked=checked] + #happy,
+.happy:focus + #happy {
+	border-color: rgb(0, 204, 79);
+}
+
+.neutral + #neutral:hover,
+.neutral[checked=checked] + #neutral,
+.neutral:focus + #neutral {
+	border-color: rgb(232, 214, 0);
+}
+
+.sad + #sad:hover,
+.sad[checked=checked] + #sad,
+.sad:focus + #sad {
+	border-color: rgb(229, 132, 0);
+}
+
+.super-sad + #super-sad:hover,
+.super-sad[checked=checked] + #super-sad,
+.super-sad:focus + #super-sad {
+	border-color: rgb(239, 42, 16);
+}
+
+.rb-txt {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  position: static;
+  top: 110%;
+  left: 100%;
+  transform: translate(0%, -10%);
+  padding: 0px 0px 0px 1px;
+  border: 2px dotted rgb(96, 97, 102);
+  background: transparent;
+  border-radius: 50%;
+  font-size: 1em;
+  color: rgb(43, 131, 204);
+}
+
+.rotate {
+  animation-name: Rotate;
+  animation-duration: 0.2s;
+  animation-iteration-count: 2;
+  animation-timing-function: linear;
+  -webkit-animation-name: Rotate;
+  -webkit-animation-duration: 0.2s;
+  -webkit-animation-iteration-count: 2;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: Rotate;
+  -moz-animation-duration: 0.2s;
+  -moz-animation-iteration-count: 2;
+  -moz-animation-timing-function: linear;
+  -ms-animation-name: Rotate;
+  -ms-animation-duration: 0.2s;
+  -ms-animation-iteration-count: 2;
+  -ms-animation-timing-function: linear;
+}
+
+@keyframes Rotate
+{
+ from{transform:rotate(0deg);}
+ to{transform:rotate(360deg);}
+}
+@-webkit-keyframes Rotate
+{
+ from{-webkit-transform:rotate(0deg);}
+ to{-webkit-transform:rotate(360deg);}
+}
+@-moz-keyframes Rotate
+{
+ from{-moz-transform:rotate(0deg);}
+ to{-moz-transform:rotate(360deg);}
+}
+@-ms-keyframes Rotate
+{
+ from{-ms-transform:rotate(0deg);}
+ to{-ms-transform:rotate(360deg);}
+}
