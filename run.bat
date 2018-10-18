@@ -1,0 +1,1 @@
+supervisor -w routes -x node ./bin/www
