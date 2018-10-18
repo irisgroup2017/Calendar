@@ -1,0 +1,324 @@
+jQuery(function ($) {
+    $('.datepicker').datepicker({
+        ignoreReadonly: true,
+        format: 'dd MM yyyy',
+        todayHighlight: true
+    })
+    $(".datepicker").datepicker().on('changeDate',function(e){
+        $.ajax({
+            url: '/setting',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'cdate',
+                'emid': $('#privacyID').text(),
+                'dataid': $('#privacyID').attr('class'),
+                'cdate': e.date.getTime()/1000
+            }
+        })
+    })
+    $('#timepicker1').chungTimePicker({
+        viewType: 1,
+        confirmCallback: function(e) {
+            $.ajax({
+                url: '/setting',
+                type: "POST",
+                dataType: 'json',
+                async: false,
+                data: { 
+                    'state': 'swtime',
+                    'emid': $('#privacyID').text(),
+                    'dataid': $('#privacyID').attr('class'),
+                    'swtime': e.val()
+                }
+            })
+        }
+    })
+    $('#timepicker2').chungTimePicker({
+        viewType: 1,
+        confirmCallback: function(e) {
+            $.ajax({
+                url: '/setting',
+                type: "POST",
+                dataType: 'json',
+                async: false,
+                data: { 
+                    'state': 'ewtime',
+                    'emid': $('#privacyID').text(),
+                    'dataid': $('#privacyID').attr('class'),
+                    'ewtime': e.val()
+                }
+            })
+        }
+    })
+})
+
+$(document).ready(function(){
+    $(document).on("click", ".addline", function(){
+        function Generator() { }
+        Generator.prototype.rand = Math.floor(Math.random() * 26) + Date.now()
+        Generator.prototype.getId = function () {
+            return this.rand++
+        }
+        var idGen = new Generator(),
+        empty = false,
+        input = $(this).parents("tr").find("input.add")
+        input.each(function(){
+            if(!$(this).val()){
+				$(this).addClass("error")
+				empty = true
+			} else{
+                $(this).removeClass("error")
+            }
+        })
+        $(this).parents("tr").find(".error").first().focus()
+        if(!empty){
+            var dataid = idGen.getId(),emid,name,lastName,jobPos,depart,mail,mailGroup,userName
+			input.each(function(){
+                $(this).parent("td").html('<p>'+$(this).val()+'</p')
+                if ($(this).attr('id') === 'emid') { emid = $(this).val() }
+                if ($(this).attr('id') === 'name') { name = $(this).val() }
+                if ($(this).attr('id') === 'lastName') { lastName = $(this).val() }
+                if ($(this).attr('id') === 'jobPos') { jobPos = $(this).val() }
+                if ($(this).attr('id') === 'depart') { depart = $(this).val() }
+                if ($(this).attr('id') === 'mail') { mail = $(this).val() }
+                if ($(this).attr('id') === 'mailGroup') { mailGroup = $(this).val() }
+                if ($(this).attr('id') === 'userName') { userName = $(this).val() }
+            })
+            $.ajax({
+                url: '/setting',
+                type: "POST",
+                dataType: 'json',
+                async: false,
+                data: { 
+                    'state': 'add',
+                    'dataid': dataid,
+                    'cdate': new Date().getTime()/1000,
+                    'emid': emid,
+                    'name': name,
+                    'lastName': lastName,
+                    'mail': mail,
+                    'jobPos': jobPos,
+                    'depart': depart,
+                    'mailGroup': mailGroup,
+                    'userName': userName,
+                    'password': userName+'1234'},
+                success: function(data) {
+                    var signs = '<td class="center">\
+                    <a class="saveline fa fa-floppy-o hvr-pulse" title="Save"></a>\
+                    <a class="editline fa fa-pencil-square-o hvr-pulse" title="Edit"></a>\
+                    <a class="privacy fa fa-address-card-o hvr-pulse" title="Privacy Setting"></a>\
+                    <a class="delete fa fa-trash hvr-pulse title="Delete" data-toggle="confirmation" data-placement="left"></a></td>'
+
+                    $('tbody[id=manage]').find('tr:last-child').addClass(data.dataid)
+                    $('.'+data.dataid).find('td:last-child').remove()
+                    $('.'+data.dataid).append(signs)
+
+                    var posts = '<tr>\
+                    <td class="center"><input class="add" id="emid"></td>\
+                    <td class="center"><input class="add" id="name"></td>\
+                    <td class="center"><input class="add" id="lastName"></td>\
+                    <td class="center"><input class="add" id="jobPos"></td>\
+                    <td class="center"><input class="add" id="depart"></td>\
+                    <td class="center"><input class="add" id="mail"></td>\
+                    <td class="center"><input class="add" id="mailGroup"></td>\
+                    <td class="center"><input class="add" id="userName"></td>\
+                    <td class="center"><a class="addline fa fa-plus hvr-pulse" title="Add" data-toggle="tooltip"></a></td>\
+                    </tr>'
+                    $("table[id=manage]").append(posts)
+                }
+            })
+		}	
+    })
+    $(document).on("click", ".delete", function(){
+        dataid = $(this).parents('tr').attr('class')
+        $('.' + dataid + ' .delete').confirmation('show')
+        $(document).on('confirmed.bs.confirmation',".delete",function(){
+            dataid = $(this).parents('tr').attr('class')
+            $.ajax({
+                url: '/setting',
+                type: "POST",
+                dataType: 'json',
+                async: false,
+                data: { 
+                    'state': 'delete',
+                    'dataid': dataid
+                },
+                success: function(data) {
+                    $('tr[class='+data.dataid+']').remove()
+                }
+            })
+        })
+    })
+
+    $('.rb-txt').click(function() {
+        $(this).addClass('rotate')
+        $(this).one("webkitAnimationEnd oanimationend msAnimationEnd animationend",function(event) {
+            if (event.target.className=='rb-txt rotate') {
+                $(this).removeClass('rotate')
+            }
+        })
+
+        var chk,sel,
+        sl = $(this).attr('id'),
+        state = 'rb',
+        dataname = $('table').find('#privacyName').text()
+        if (sl == 'super-happy') { chk = [1,1,0,0,0,0,0] , sel = 0 }
+        else if (sl == 'happy') { chk = [1,1,0,0,1,0,0] , sel = 1 }
+        else if (sl == 'neutral') { chk = [1,1,1,1,1,0,0] , sel = 2 }
+        else if (sl == 'sad') { chk = [1,1,0,1,1,1,1] , sel = 3 }
+        else { chk = [1,1,1,1,1,1,1] , sel = 4 }
+        $('input:radio[name=access]').each(function(){
+            if (sl == $(this).attr('class')) {
+                $(this).attr('checked',true)
+            } else {
+                $(this).attr('checked',false)
+            }
+        })
+        $('input:checkbox[class=privacy]').each(function(){
+            if (chk[$(this).attr('id')]) { 
+                $(this).attr('checked',true)
+            } else {
+                $(this).attr('checked',false)
+            }
+        })
+        $.ajax({
+            url: '/privacy',
+            type: "POST",
+            dataType: 'text',
+            data: { 
+                state: state,
+                sel: sel,
+                dataname: dataname
+            }
+        })
+    })
+
+    $(document).on("click", ".privacy", function(){
+        var dataid = $(this).parents('tr').attr('class')
+        $.ajax({
+            url: '/setting',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'privacy',
+                'dataid': dataid
+            },
+            success: function(data) {
+                var a = data.operator,
+                b = ['super-happy','happy','neutral','sad','super-sad'],
+                c = b[a]
+                if (a == 0) { chk = [1,1,0,0,0,0,0] }
+                else if (a == 1) { chk = [1,1,0,0,1,0,0] }
+                else if (a == 2) { chk = [1,1,1,1,1,0,0] }
+                else if (a == 3) { chk = [1,1,0,1,1,1,1] }
+                else { chk = [1,1,1,1,1,1,1] }
+                $('.datepicker').datepicker('update',data.cdate)
+                $('#timepicker1').val(data.swtime)
+                $('#timepicker2').val(data.ewtime)
+                $('#privacyID').text(data.emid)
+                $('#privacyID').attr('class',data.dataid)
+                $('#privacyName').text(data.userName)
+                $('#privacyMailGroup').text(data.mailGroup)
+                $('.tgl.tgl-flip').attr('checked',data.boss)
+                $('input:radio[name=access]').each(function(){
+                    if (c == $(this).attr('class')) {
+                        $(this).attr('checked',true)
+                    } else {
+                        $(this).attr('checked',false)
+                    }
+                })
+                $('input:checkbox[class=privacy]').each(function(){
+                    if (chk[$(this).attr('id')]) { 
+                        $(this).attr('checked',true)
+                    } else {
+                        $(this).attr('checked',false)
+                    }
+                })
+                $("#animatedModal").animatedModal({
+                    modalTarget:'animatedModal',
+                    animatedIn:'bounceInUp',
+                    animatedOut:'bounceOutDown',
+                    color:'#FFFFFF',
+                    animationDuration:'.5s',
+                    beforeOpen: function() {
+        
+                        var children = $(".thumb");
+                        var index = 0;
+        
+                        function addClassNextChild() {
+                            if (index == children.length) return;
+                            children.eq(index++).show().velocity("transition.slideUpIn", { opacity:1, stagger: 450,  defaultDuration: 100 });
+                            window.setTimeout(addClassNextChild, 100);
+                        }
+                        addClassNextChild();
+                    },
+                    afterClose: function() {
+                        $(".thumb").hide();
+                    }
+                })
+            }
+        })
+    })
+    $(document).on("click", ".editline", function(){
+        var listc = ['emid','name','lastName','jobPos','depart','mail','mailGroup','userName','password'],
+        myint = 0
+        $(this).parents("tr").find("td:not(:last-child)").each(function(){
+            $(this).html('<input class="save center" id="'+listc[myint++]+'" value="'+$(this).text()+'">')   
+        }) 
+        $(this).parents("tr").find(".saveline").css("display","inline-block")
+        $(this).parents("tr").find(".editline").css("display","none")
+    })
+
+    $(document).on("click", ".saveline", function(){
+        var empty = false,
+        input = $(this).parents("tr").find("input.save"),
+        dataid = $(this).parents("tr").attr("class")
+
+        input.each(function(){
+			if(!$(this).val()){
+				$(this).addClass("error");
+				empty = true;
+			} else {
+                $(this).removeClass("error");
+            }
+        })
+        $(this).parents("tr").find(".error").first().focus()
+        if(!empty){
+            $(this).parents("tr").find(".editline").css("display","inline-block")
+            $(this).parents("tr").find(".saveline").css("display","none")
+            var emid,name,lastName,jobPos,depart,mail,mailGroup,userName
+			input.each(function(){
+                $(this).parent("td").html($(this).val())
+                if ($(this).attr('id') === 'emid') { emid = $(this).val() }
+                if ($(this).attr('id') === 'name') { name = $(this).val() }
+                if ($(this).attr('id') === 'lastName') { lastName = $(this).val() }
+                if ($(this).attr('id') === 'jobPos') { jobPos = $(this).val() }
+                if ($(this).attr('id') === 'depart') { depart = $(this).val() }
+                if ($(this).attr('id') === 'mail') { mail = $(this).val() }
+                if ($(this).attr('id') === 'mailGroup') { mailGroup = $(this).val() }
+                if ($(this).attr('id') === 'userName') { userName = $(this).val() }
+            })
+            $.ajax({
+                url: '/setting',
+                type: "POST",
+                dataType: 'json',
+                async: false,
+                data: { 
+                    'state': 'save',
+                    'dataid': dataid,
+                    'emid': emid,
+                    'name': name,
+                    'lastName': lastName,
+                    'mail': mail,
+                    'jobPos': jobPos,
+                    'depart': depart,
+                    'mailGroup': mailGroup,
+                    'userName': userName
+                }
+            })
+		}
+    })
+})

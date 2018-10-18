@@ -1,0 +1,69 @@
+const nodemailer = require('nodemailer'),
+ll = require('../bin/larlist'),
+con = require('../bin/mysql'),
+transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'iris4notice@gmail.com',
+      pass: '#Iris@2013'
+    }
+  })
+
+async function send(status,user,larid,mail) {
+  var result = await con.q('SELECT * FROM lar_data WHERE id = ?',larid),
+  start = result[0].start,
+  userName = result[0].userName,
+  end = result[0].end,
+  allDay = result[0].allDay,
+  className = result[0].className,
+  title = result[0].title,
+  larType,
+  qlink = 'http://webapp.iris.co.th:3000/login'
+  if (mail == 'hr') { mail = 'kittipong.vis@iris.co.th' }
+  else if (mail == 'user') { mail = await con.q('SELECT mail FROM user_data WHERE dataid = ?',result[0].dataid) , mail = mail[0].mail }
+  else if (mail == 'boss') { mail = result[0].mailGroup }
+  timec = ll.getDayTime(start,end,allDay)
+  if (className == 'label-grey') { larType = 'ลาป่วย' }
+	else if (className == 'label-success') { larType = 'ลากิจ' }
+	else if (className == 'label-warning') {	larType = 'ลาพักร้อน' }
+	else if (className == 'label-yellow') {	larType = 'ลาสลับวันหยุด' }
+  else if (className == 'label-info') { larType = title }
+    let mailOptions = {
+        from: 'iris4notice@gmail.com',
+        to: mail,
+        subject: status+' '+larType,
+        html: '<h3>'+status+''+larType+' โดย '+user+'</h3>\
+        <h5>ผู้ลา: '+userName+'</h5>\
+        <table>\
+        <tr>\
+        <td>ประเภท</td>\
+        <td>'+larType+'</td>\
+        </tr>\
+        <tr>\
+        <td>เหตุผล</td>\
+        <td>'+title+'</td>\
+        </tr>\
+        <tr>\
+        <td>วันที่ลา</td>\
+        <td>'+timec.dateStart+(timec.dateEnd==timec.dateStart ? '' : ' - '+timec.dateEnd)+'</td>\
+        </tr>\
+        <tr>\
+        <tr>\
+        <td>ช่วงเวลา</td>\
+        <td>'+timec.timeStart+(timec.timeEnd ? ' - '+timec.timeEnd : '')+'</td>\
+        </tr>\
+        <tr>\
+        <td>ระยะเวลา</td>\
+        <td>'+timec.daylength+'</td>\
+        </tr>\
+        </table><br>\
+        <a href="'+qlink+'"><button class="blue">ไปยังหน้าหน้าเว็ป</button></a>'
+    }
+    transporter.sendMail(mailOptions, function (err, info) {
+        if(err)
+          console.log(err)
+        else
+          console.log(info)
+    })
+}
+  exports.send = send

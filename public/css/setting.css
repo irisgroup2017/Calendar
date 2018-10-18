@@ -1,0 +1,31 @@
+table.table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 1px;
+    min-width: 24px;
+}    
+table.table td a:hover {
+    text-decoration: none;
+} 
+table.table td a.addline {
+    display: inline-block;
+    color: #27C46B;
+}
+table.table td a.editline {
+    display: inline-block;
+    color: #FFC107;
+}
+table.table td a.privacy {
+    display: inline-block;
+    color: rgba(23, 7, 255, 0.815);
+}
+table.table td a.delete {
+    display: inline-block;
+    color: #E34724;
+}
+table.table td .saveline {
+    display: none;
+}
+table.table .add.error {
+    border-color: #db1616d0;
+}
