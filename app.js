@@ -9,7 +9,6 @@ var mysql = require('mysql')
 require('dotenv').config()
 
 function handleDisconnect() {
-
 	var con = mysql.createConnection({
 		host: 'localhost',
 		user: 'root',
