@@ -6,6 +6,15 @@ var bodyParser = require('body-parser')
 var $ = require('jquery')
 var app = express()
 var mysql = require('mysql')
+var log4js = require('log4js')
+log4js.configure({
+	appenders: {
+	  everything: { type: 'dateFile', filename: 'logs.log', pattern: '.yyyy-MM-dd', compress: true }
+	},
+	categories: {
+	  default: { appenders: [ 'everything' ], level: 'debug'}
+	}
+  })
 require('dotenv').config()
 
 function handleDisconnect() {
