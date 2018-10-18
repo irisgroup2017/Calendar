@@ -1,0 +1,64 @@
+extends layout
+
+block content
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ mixin larlist(list)
+  -var i=0
+   while i < list
+    tr(class=parms.lars[i].a)
+     td=parms.lars[i].a
+     td.center=parms.lars[i].c
+     if parms.lars[i].e 
+      td.bg-danger.dur.center='ใช้เกิน '+parms.lars[i++].d
+     else
+      td.bg-success.dur.center=parms.lars[i++].d
+
+ div.row
+  div.col-xs-12
+   div.row
+    div.col-sm-9
+     div.space
+     div(id="calendar")
+    div.col-sm-3
+     div.widget-box.transparent
+      div.widget-header
+       h4="ข้อมูลในการลา"
+      div.widget-body
+       div.widget-main.no-padding
+        div(id="external-events")
+         div(class="external-event label-grey" , data-class="label-grey")
+          i.ace-icon.fa.fa-arrows
+          ="ลาป่วย"
+         div(class="external-event label-success" , data-class="label-success")
+          i.ace-icon.fa.fa-arrows
+          ="ลากิจ"
+         div(class="external-event label-warning" , data-class="label-warning")
+          i.ace-icon.fa.fa-arrows
+          ="ลาพักร้อน"
+         div(class="external-event label-info" , data-class="label-info")
+          i.ace-icon.fa.fa-arrows
+          ="ลาอื่นๆ"
+    div.col-sm-3
+     div.widget-box.transparent
+      div.widget-header
+       h4="ประวัติการลา"
+        if parms.larl
+         table.table#larlist(style="font-size: 12px;")
+          tr
+           td.center='ประเภท'
+           td.center='ใช้แล้ว'
+           td.center='คงเหลือ'
+           +larlist(parms.larl)
+        else
+         h4='ไม่มีประวัติ'
+ +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','lar.js'])
+ style.
+  .test {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   height: 100%;
+   background-color: lightgrey;
+  }
