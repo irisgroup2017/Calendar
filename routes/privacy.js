@@ -1,6 +1,5 @@
 var express = require('express'),
 router = express.Router(),
-authHelper = require('../bin/auth'),
 con = require('../bin/mysql')
 
 router.post('/',function(req, res) {

@@ -1,5 +1,4 @@
 var express = require('express'),
-authHelper = require('../bin/auth'),
 con = require('../bin/mysql'),
 router = express.Router(),
 dateFormat = require('dateformat'),
@@ -14,7 +13,6 @@ router.get('/', async function(req, res) {
 			'operator': dataop,
 			'mail': mail
 		}
-		authHelper.fortuneCookies(data,res)
 		parms = { title: 'ตั้งค่า', head1: 'Manage', head2: 'User' }
 		parms.user = userName
 		parms.operator = dataop

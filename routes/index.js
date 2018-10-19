@@ -1,7 +1,6 @@
 var express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
-authHelper = require('../bin/auth'),
 larlist = require('../bin/larlist')
 
 /* GET home page. */
@@ -16,7 +15,6 @@ router.get('/',async function(req, res) {
 			'mail': mail
 		}
 		parms = { title: 'หน้าแรก', head1: 'หน้าแรก' }
-		authHelper.fortuneCookies(data,res)
 		parms.user = userName
 		parms.operator = dataop
 		res.render('index', parms)

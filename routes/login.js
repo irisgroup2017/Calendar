@@ -1,5 +1,4 @@
 var express = require('express'),
-authHelper = require('../bin/auth'),
 router = express.Router()
 
 router.get('/', async function(req, res, next) {
@@ -13,7 +12,6 @@ router.get('/', async function(req, res, next) {
 			'operator': dataop,
 			'mail': mail
 		}
-		authHelper.fortuneCookies(data,res)
 		res.redirect('/')
     }
 	else { res.render('login', parms) }

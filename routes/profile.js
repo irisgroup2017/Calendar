@@ -1,6 +1,5 @@
 var express = require('express'),
 router = express.Router(),
-authHelper = require('../bin/auth'),
 con = require('../bin/mysql')
 
 router.get('/',async function(req, res) {
@@ -13,7 +12,6 @@ router.get('/',async function(req, res) {
 			'operator': dataop,
 			'mail': mail
 		}
-		authHelper.fortuneCookies(data,res)
         parms.user = userName
         parms.operator = dataop
     }

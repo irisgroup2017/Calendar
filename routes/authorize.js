@@ -34,7 +34,7 @@ router.post('/', async function(req, res) {
 				}
 				larstock.updateLar(username,result.dataid)
 				authHelper.fortuneCookies(data,res)
-				log.logger('notice','login:'+ data.username)
+				log.logger('info','Page Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }
 				else { res.redirect('/login') }
 			} else { relogin('รหัสผ่านผิด',res) }
@@ -62,6 +62,7 @@ router.get('/', async function(req, res) {
 				}
 				larstock.updateLar(username,result.dataid)
 				authHelper.fortuneCookies(data,res)
+				log.logger('info','Link Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }
 				else { res.redirect('/login') }
 			} else { relogin('รหัสผ่านผิด',res) }

@@ -21,11 +21,11 @@ log4js.configure({
             appenders: [ 'everything' ], 
             level: 'info'
         },
-        warning: { 
+        warn: { 
             appenders: [ 'everything' ], 
             level: 'warn'
         },
-        notice: { 
+        error: { 
             appenders: [ 'everything' ], 
             level: 'error'
         }

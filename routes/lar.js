@@ -1,6 +1,5 @@
 var express = require('express'),
 router = express.Router(),
-authHelper = require('../bin/auth'),
 ll = require('../bin/larlist')
 
 /* GET /lar. */
@@ -16,7 +15,6 @@ router.get('/', async function(req, res) {
 		parms = { title: 'ระบบลา', head1: 'ระบบลา', head2: userName }
 		parms.lars = await ll.viewLar(userName,dataid)
 		parms.larl = parms.lars.length
-		authHelper.fortuneCookies(data,res)
 		parms.user = userName
 		parms.operator = dataop
 	} else {

@@ -1,5 +1,4 @@
 var express = require('express'),
-authHelper = require('../bin/auth'),
 router = express.Router(),
 con = require('../bin/mysql'),
 ll = require('../bin/larlist'),
@@ -16,7 +15,6 @@ router.get('/', async function(req, res) {
 		}
 		parms = { title: 'HR อนุมัติการลา', head1: 'HR Approve Page', head2: userName }
 
-		authHelper.fortuneCookies(data,res)
         parms.user = userName
         parms.operator = dataop
         if (dataop < 3) { res.redirect('/') }

@@ -1,7 +1,6 @@
 const express = require('express'),
 router = express.Router(),
-con = require('../bin/mysql'),
-authHelper = require('../bin/auth')
+con = require('../bin/mysql')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -12,7 +11,6 @@ router.get('/', async function(req, res) {
 			'operator': dataop,
 			'mail': mail
 		}
-		authHelper.fortuneCookies(data,res)
 		parms = { title: 'ตั้งค่าวันหยุด', head1: 'ตั้งค่าวันหยุดประจำปี', head2: 'User' }
 		parms.user = userName
 		parms.operator = dataop

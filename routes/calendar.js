@@ -1,6 +1,5 @@
 var express = require('express'),
-router = express.Router(),
-authHelper = require('../bin/auth')
+router = express.Router()
 
 /* GET /calendar. */
 router.get('/',async function(req, res) {
@@ -13,7 +12,6 @@ router.get('/',async function(req, res) {
 			'mail': mail
 		}
 		parms = { title: 'ระบบจอง', head1: 'ระบบจอง', head2: ' ' + userName }
-		authHelper.fortuneCookies(data,res)
 		parms.user = userName
 		parms.operator = dataop
 	} else {

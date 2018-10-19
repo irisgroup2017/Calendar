@@ -1,7 +1,6 @@
 const express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
-authHelper = require('../bin/auth'),
 ll = require('../bin/larlist')
 
 router.post('/',async function(req,res,next){
@@ -13,7 +12,6 @@ router.post('/',async function(req,res,next){
 			'operator': dataop,
 			'mail': mail
 		}
-		authHelper.fortuneCookies(data,res)
 		parms = { title: 'Summary', head1: 'Login', head2: userName }
 		parms.user = userName
 		parms.operator = dataop
