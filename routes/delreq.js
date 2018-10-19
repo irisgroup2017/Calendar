@@ -3,7 +3,8 @@ router = express.Router(),
 con = require('../bin/mysql'),
 ll = require('../bin/larlist'),
 ls = require('../bin/larStock'),
-mailsend = require('../bin/mailsend')
+mailsend = require('../bin/mailsend'),
+log = require('../bin/logger')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -64,17 +65,20 @@ router.post('/', async function(req, res) {
         approve = 0
         result = await con.q('UPDATE lar_data SET approve = ?,hrapprover = ?,hrapprovedate = ?,delreq = ? WHERE id = ?',[approve,approver,approvedate,0,larid])
         mailsend.send('ฝ่ายทรัพยากรบุคคลอนุมัติคำขอยกเลิกการ',approver,larid,'user')
+        log.logger('info','HR Delete Approved: '+ approver +' Request ID '+larid)
     }
     if (state == 'massapprove') {
         approve = 0
         for (var i=0;i<larid.length;i++) {
             result = await con.q('UPDATE lar_data SET approve = ?,hrapprover = ?,hrapprovedate = ?,delreq = ? WHERE id = ?',[approve,approver,approvedate,0,req.body.larid[i]])
             mailsend.send('ฝ่ายทรัพยากรบุคคลอนุมัติคำขอยกเลิกการ',approver,req.body.larid[i],'user')
+            log.logger('info','HR Delete Approved: '+ approver +' Request ID '+larid)
         }
     }
     if (state == 'reject') {
         result = await con.q('UPDATE lar_data SET delreq = ?,hrapprover = ?,hrapprovedate = ? WHERE id = ?',[0,approver,approvedate,larid])
         mailsend.send('ฝ่ายทรัพยากรบุคคลปฏิเสธคำขอยกเลิกการ',approver,larid,'user')
+        log.logger('info','HR Delete Rejected: '+ approver +' Request ID '+larid)
     }
     ls.updateLar(data.userName,data.dataid)
     res.json(req.body)

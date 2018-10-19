@@ -5,7 +5,8 @@ dateFormat = require('dateformat'),
 ls = require('../bin/larStock'),
 ll = ['sick','personal','vacation','training','sterily','maternity','religious','military'],
 lle = ['sicke','personale','vacatione','traininge','sterilye','maternitye','religiouse','militarye'],
-thisyear = new Date().getFullYear()
+thisyear = new Date().getFullYear(),
+log = require('../bin/logger')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -60,6 +61,7 @@ router.post('/',async function(req,res) {
     }
     await con.q('UPDATE lar_status SET sicke = ?,personale = ?,vacatione = ?,traininge = ?,sterilye = ?,maternitye = ?,religiouse = ?,militarye = ? WHERE dataid = ? AND year = ?',[ans.si,ans.pe,ans.va,ans.tr,ans.st,ans.ma,ans.re,ans.mi,data.dataid,thisyear])
     ls.updateLar(data.userName,data.dataid)
+    log.logger('info','Edit Entitle: '+ req.cookies.user_name +' Data ID '+data.dataid)
     res.end('data')
 })
 

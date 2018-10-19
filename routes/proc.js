@@ -3,7 +3,8 @@ router = express.Router(),
 con = require('../bin/mysql'),
 timestamp = require('unix-timestamp'),
 nodemailer = require('nodemailer'),
-ll = require('../bin/larlist')
+ll = require('../bin/larlist'),
+log = require('../bin/logger')
 
 function remodule(d) {
 	var i,a,d=d.toString()
@@ -184,6 +185,7 @@ router.post('/',async function(req, res) {
 
 		var sql = 'UPDATE reserve_data SET start = ? , end = ? , allDay = ? WHERE ID = ?'
 		con.q(sql, [ start, end, allDay, ID ])
+		log.logger('info','Change Reserve Plan : '+ userName +' ID '+ ID)
 		res.end()
 	}
 
@@ -282,6 +284,7 @@ router.post('/',async function(req, res) {
 			  console.log(info)
 		 })
 		lars = await ll.viewLar(userName,dataid)
+		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
 		res.json(lars)
 	}
 

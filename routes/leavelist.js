@@ -5,7 +5,8 @@ ll = require('../bin/larlist')
 var now = new Date(),
 sTime = new Date(now.getFullYear(),1,1,7).getTime()/1000,
 eTime = new Date(now.getFullYear(),12,31,7).getTime()/1000,
-mailsend = require('../bin/mailsend')
+mailsend = require('../bin/mailsend'),
+log = require('../bin/logger')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -120,15 +121,18 @@ router.get('/', async function(req, res) {
 
 router.post('/',async function(req,res) {
     if (req.body.state == 'delete') {
-        await con.q('DELETE FROM lar_data WHERE id = ?',req.body.larid)
+		await con.q('DELETE FROM lar_data WHERE id = ?',req.body.larid)
+		log.logger('info','Delete Leave Data : '+ req.cookies.user_name +' ID '+ req.body.larid)
 	}
 	if (req.body.state == 'delkeep') {
 		await con.q('UPDATE lar_data SET approve = ?,deldate = ? WHERE id = ?',[0,now/1000,req.body.larid])
 		mailsend.send('ทำการยกเลิกการ',req.cookies.user_name,req.body.larid,'boss')
+		log.logger('info','Send delete request to BOSS: '+ req.cookies.user_name +' Leave ID '+ req.body.larid)
     }
     if (req.body.state == 'hrprove') {
 		await con.q('UPDATE lar_data SET delreq = ?,deldate = ? WHERE id = ?',[1,now/1000,req.body.larid])
 		mailsend.send('แจ้งขอยกเลิกการ',req.cookies.user_name,req.body.larid,'hr')
+		log.logger('info','Send delete request to HR: '+ req.cookies.user_name +' Leave ID '+ req.body.larid)
     }
     res.json(req.body)
 })

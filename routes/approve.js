@@ -2,7 +2,8 @@ var express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
 ll = require('../bin/larlist'),
-mailsend = require('../bin/mailsend')
+mailsend = require('../bin/mailsend'),
+log = require('../bin/logger')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -64,13 +65,15 @@ router.post('/', async function(req, res) {
         approve = 3
         result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?',[approve,approver,approvedate,larid])
         mailsend.send('ผู้บังคับบัญชาอนุมัติการ',approver,larid,'hr')
+        log.logger('info','Boss Approved: '+ approver +' Request ID '+larid)
         res.json(req.body)
     }
     if (state == 'massapprove') {
         approve = 3
         for (var i=0;i<larid.length;i++) {
             result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?',[approve,approver,approvedate,req.body.larid[i]])
-            mailsend.send('ผู้บังคับบัญชาอนุมัติการ',approver,larid,'hr')
+            mailsend.send('ผู้บังคับบัญชาอนุมัติการ',approver,req.body.larid[i],'hr')
+            log.logger('info','Boss Approved: '+ approver +' Request ID '+req.body.larid[i])
         }
         res.json(req.body)
     }
@@ -78,6 +81,7 @@ router.post('/', async function(req, res) {
         approve = 1
         result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?',[approve,approver,approvedate,larid])
         mailsend.send('ผู้บังคับบัญชาไม่อนุมัติการ',approver,larid,'user')
+        log.logger('info','Boss Rejected: '+ approver +' Request ID '+larid)
         res.json(req.body)
     }
 })
