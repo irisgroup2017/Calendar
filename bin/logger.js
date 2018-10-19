@@ -8,7 +8,7 @@ log4js.configure({
             compress: false , 
             layout: { 
               type: 'pattern',
-              pattern: '%d %p %c %m'
+              pattern: '%d %p - %m'
             } 
         }
 	},
