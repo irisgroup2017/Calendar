@@ -185,7 +185,7 @@ router.post('/',async function(req, res) {
 
 		var sql = 'UPDATE reserve_data SET start = ? , end = ? , allDay = ? WHERE ID = ?'
 		con.q(sql, [ start, end, allDay, ID ])
-		log.logger('info','Change Reserve Plan : '+ userName +' ID '+ ID)
+		log.logger('info','Move Reserve Plan : '+ userName +' ID '+ ID)
 		res.end()
 	}
 
@@ -311,6 +311,7 @@ router.post('/',async function(req, res) {
 
 		var sql = 'UPDATE reserve_data SET start = ? , end = ? , allDay = ? WHERE ID = ?'
 		con.q(sql, [ start, end, allDay, ID ])
+		log.logger('info','Resize Reserve Plan : '+ userName +' ID '+ ID)
 		res.end()
 	}
 
@@ -323,6 +324,7 @@ router.post('/',async function(req, res) {
 		}
 		var sql = 'UPDATE reserve_data SET title = ? WHERE ID = ?'
 		con.q(sql, [ title, ID ])
+		log.logger('info','Edit title Reserve Plan : '+ req.cookies.user_name +' ID '+ ID)
 		res.end()
 	}
 
@@ -350,6 +352,7 @@ router.post('/',async function(req, res) {
 
 		var sql = 'DELETE FROM reserve_data WHERE ID = ?'
 		con.q(sql, [ ID ])
+		log.logger('info','Remove Reserve Plan : '+ userName +' ID '+ ID)
 		res.end()
 	}
 	if (req.body.state == 'removel') {
@@ -407,6 +410,7 @@ router.post('/',async function(req, res) {
 
 		var sql = 'INSERT INTO reserve_data (ID,title,start,end,allDay,className,userName) VALUES (?,?,?,?,?,?,?)'
 		con.q(sql, [ ID, title, start, end, allDay, className, userName ])
+		log.logger('info','Create Reserve Plan : '+ userName +' ID '+ ID)
 		.then(result => {
 			res.end()
 		})
