@@ -4,7 +4,8 @@ express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
 authHelper = require('../bin/auth'),
-larstock = require('../bin/larstock')
+larstock = require('../bin/larstock'),
+log = require('../bin/logger')
 
 function relogin(status,res) {
 	parms = querystring.stringify({
@@ -33,6 +34,7 @@ router.post('/', async function(req, res) {
 				}
 				larstock.updateLar(username,result.dataid)
 				authHelper.fortuneCookies(data,res)
+				log.logger('info','test')
 				if (redirect) { res.redirect(redirect) }
 				else { res.redirect('/login') }
 			} else { relogin('รหัสผ่านผิด',res) }

@@ -8,14 +8,14 @@ log4js.configure({
             compress: false , 
             layout: { 
               type: 'pattern',
-              pattern: '%d %p %c %m%n'
+              pattern: '%d %p %c %m'
             } 
         }
 	},
 	categories: {
 	    default: { 
-          appenders: [ 'everything' ], 
-          level: 'debug'
+            appenders: [ 'everything' ], 
+            level: 'debug'
         },
         info: { 
             appenders: [ 'everything' ], 
@@ -23,11 +23,16 @@ log4js.configure({
         },
         warning: { 
             appenders: [ 'everything' ], 
-            level: 'warning'
+            level: 'warn'
         },
         notice: { 
             appenders: [ 'everything' ], 
-            level: 'notice'
+            level: 'error'
         }
 	}
 })
+exports.logger = function logger (level,ltxt) {
+    var log = log4js.getLogger()
+    log.level = level
+    log[level](ltxt)
+}
