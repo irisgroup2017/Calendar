@@ -17,6 +17,7 @@ router.get('/', async function(req, res) {
 		parms = { title: 'อนุมัติการลา', head1: 'Approve Page', head2: userName }
         parms.user = userName
         parms.operator = dataop
+        log.logger('info','View Page [approve]: '+ data.userName)
         if (dataop < 2) { res.redirect('/') }
 	} else {
 		// Redirect to home
