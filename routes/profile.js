@@ -1,6 +1,7 @@
 var express = require('express'),
 router = express.Router(),
-con = require('../bin/mysql')
+con = require('../bin/mysql'),
+log = require('../bin/logger')
 
 router.get('/',async function(req, res) {
     var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -42,6 +43,7 @@ router.post('/',async function(req,res){
         if (r.password == req.body.oldpass) {
             if (req.body.oldpass !== req.body.newpass1) {
                 con.q('UPDATE user_data SET password = ? WHERE dataid = ?',[req.body.newpass1,dataid])
+                log.logger('info','Change Password : '+ req.cookies.user_name)
                 res.end("D")
             }
             else { res.end("SP") }
