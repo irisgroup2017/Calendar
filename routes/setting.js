@@ -2,7 +2,8 @@ var express = require('express'),
 con = require('../bin/mysql'),
 router = express.Router(),
 dateFormat = require('dateformat'),
-ls = require('../bin/larStock')
+ls = require('../bin/larStock'),
+log = require('../bin/logger')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -78,31 +79,37 @@ router.post('/',async function(req, res) {
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])
 		ls.setLar(a.name+' '+a.lastName,a.dataid,'insert')
+		log.logger('info','Edit Date Start Work : '+ req.cookies.user_name+' - '+a.name+' '+a.lastName)
         res.json(a)
 	}
 	if (a.state == "swtime") {
 		a.swtime = a.swtime.substring(0,5)
 		con.q('UPDATE privacy_data SET swtime = ? WHERE emid = ?',[a.swtime,a.emid])
+		log.logger('info','Edit Start Time : '+ req.cookies.user_name+' - '+a.emid)
         res.json(a)
 	}
 	if (a.state == "ewtime") {
 		a.ewtime = a.ewtime.substring(0,5)
 		con.q('UPDATE privacy_data SET ewtime = ? WHERE emid = ?',[a.ewtime,a.emid])
+		log.logger('info','Edit End Time : '+ req.cookies.user_name+' - '+a.emid)
         res.json(a)
     }
 	if (a.state === 'delete') {
 		await con.q(['DELETE FROM user_data WHERE dataid = ?','DELETE FROM privacy_data WHERE dataid = ?','DELETE FROM lar_status WHERE dataid = ?','DELETE FROM lar_data WHERE dataid = ?'],a.dataid)
+		log.logger('info','Remove ID : '+ req.cookies.user_name+' - '+a.emid)
 		res.json(a)
 	}
 	if (a.state === 'add') {
 		await con.q('INSERT INTO user_data (dataid,emid,name,lastName,jobPos,depart,mail,mailGroup,userName,password) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.emid,a.name,a.lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.password])
 		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime) VALUES (?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,a.name+' '+a.lastName,a.mailGroup,0,0,'083000','173000'])
+		log.logger('info','ADD ID : '+ req.cookies.user_name+' - '+a.emid)
 		res.json(a)
 	}
 	if (a.state == 'save') {
 		await con.q('UPDATE user_data SET emid = ?,name = ?,lastName = ?,jobPos = ?,depart = ?,mail = ?,mailGroup = ?,userName = ? WHERE dataid = ?',[a.emid,a.name,a.lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.dataid])
 		await con.q('UPDATE privacy_data SET emid = ?,userName = ?,mailGroup = ? WHERE dataid = ?',[a.emid,a.name+' '+a.lastName,a.mailGroup,a.dataid])
 		await con.q('UPDATE lar_data SET userName = ?,mailGroup = ? WHERE dataid = ?',[a.name+' '+a.lastName,a.mailGroup,a.dataid])
+		log.logger('info','Edit detail ID : '+ req.cookies.user_name+' - '+a.emid)
 		res.json(a)
 	}
 })

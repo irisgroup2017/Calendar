@@ -1,7 +1,8 @@
 const express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
-ll = require('../bin/larlist')
+ll = require('../bin/larlist'),
+log = require('../bin/logger')
 
 router.post('/',async function(req,res,next){
 	var sTime = req.body.datea/1000,eTime = req.body.dateb/1000,userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -21,6 +22,7 @@ router.post('/',async function(req,res,next){
 
 	result = await con.q('SELECT * FROM lar_data WHERE userName = ? AND start BETWEEN ? AND ?',[req.body.searchName,sTime,eTime])
 	result2 = await con.q('SELECT * FROM privacy_data WHERE userName = ?',req.body.searchName)
+	log.logger('info','List Leave Report : '+ req.cookies.user_name)
 	parms.objs = []
 	var end = '',
 	allDay = '',
