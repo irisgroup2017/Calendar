@@ -8,16 +8,19 @@ mixin ssrc(scr)
 mixin menu(menu)
  -var menul = [[['/','หน้าแรก'],['/calendar','ระบบจอง'],['/lar','ระบบลา'],['/leavelist','รายงานการลา']],[['/','หน้าแรก'],['/calendar','ระบบจอง'],['/lar','ระบบลา'],['/leavelist','รายงานการลา']],[['/','Home'],['/calendar','ระบบจอง'],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา']],[['/','หน้าแรก'],['/calendar','ระบบจอง'],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา'],['/hr','HR อนุมัติการลา'],['/delreq','รายการขอยกเลิกการลา'],['/editentitle','แก้ไขสิทธิการลา'],['/setting','ตั้งค่า']],[['/','หน้าแรก'],['/calendar','ระบบจอง'],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา'],['/hr','HR อนุมัติการลา'],['/delreq','รายการขอยกเลิกการลา'],['/editentitle','แก้ไขสิทธิการลา'],['/setting','ตั้งค่า']]]
  -var menun = {'0':0,'1':1,'2':2,'3':3,'4':4}
- for t in menul[menun[menu]]
-  if t[1]==title
-   li.selected
-    a
-     span=t[1]
-    title=title
-  else
-   li
-    a(href=t[0])
-     span=t[1]
+ nav.gn-menu-wrapper
+  .gn-scroller
+   ul.gn-menu
+    for t in menul[menun[menu]]
+     if t[1]==title
+      li.selected
+       a
+        span=t[1]
+         title=title
+     else
+      li
+       a(href=t[0])
+        span=t[1]
 html
   head
   meta(charset='utf-8')
@@ -28,49 +31,35 @@ html
   link(rel="stylesheet" href="css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style")
   //if lte IE 9
   link(rel="stylesheet" href="css/ace-part2.min.css" class="ace-main-stylesheet")
-  +ssrc(['jquery.min.js','bootstrap.min.js','ace-extra.min.js'])
+  +ssrc(['jquery.min.js','bootstrap.min.js','ace-extra.min.js','classie.js','layoutmenu.js'])
    
   block script
   body(class="no-skin")
-    .main-content
-     .main-content-inner
-      div.animatedtabs
-       ul
-        if parms.user
-         +menu(parms.operator)
-         .nav-search
-          a(data-toggle="dropdown" href="#" class="dropdown-toggle" aria-expanded="false" id="username")
-           span=parms.user
-          ul.user-menu.dropdown-menu-right.dropdown-menu.dropdown-yellow.dropdown-caret.dropdown-close#ddlist
-           li#ddlist
-            a#ddlist
-             i.ace-icon.fa.fa-user-circle-o
-             =parms.user
-           li#ddlist
-            a#ddlist(href="/profile")
-             i.ace-icon.fa.fa-address-book-o
-             ="User Profile"
-           .divider
-           li#ddlist
-            a#ddlist(href="/authorize/signout")
-             i.ace-icon.fa.fa-power-off
-             ="Logout"
-        else
-         li.selected
-          a
-           span='Home'
-         .nav-search
-           a(href="/login")
-            span="Click here to Login"         
-        //User menu
-      .page-content     
-       .page-header
-        h1.shine=head1
-       //page.header
-       block content
-       .footer
-        .footer-inner
-         .footer-content
+   .main-content
+    ul.gn-menu-main#gn-menu
+     li.gn-trigger
+      a
+       span='Menu'
+      if parms.user
+       +menu(parms.operator)
+     li.wink
+      a
+       span=head1
+     if parms.user
+      li
+       a
+        span=parms.user
+     else
+      li
+       a(href='/login')
+        span='Click Here for login'
+    .page-content
+     block content
+      .footer
+       .footer-inner
+        .footer-content
     //-a(href="#" , id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse")
      //-i.ace-icon.fa.fa-angle-double-up.icon-only.bigger-110
   block footer
+  script.
+   new gnMenu( document.getElementById( 'gn-menu' ) )
