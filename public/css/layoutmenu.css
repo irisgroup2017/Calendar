@@ -116,7 +116,6 @@
 .gn-menu li,
 .gn-menu li li {
     padding-left: 10px;
-    box-shadow: inset 0 1px #c6d0da
 }
 
 .gn-submenu li {
@@ -128,17 +127,20 @@
 }
 
 .gn-submenu li a {
-		color: #c1c9d1
+    color: #ecf0f3;
 }
 
-.no-touch .gn-menu-main a:hover {
-		background: #5f6f81;
-		color: white;
+.gn-menu li:hover,
+.gn-menu :not(.gn-selected) a:hover {
+    background-color: #5f6f81;
+    color: #f2f4f7;
 }
 
-.gn-icon-menu.gn-selected::before {
-		background: #5993cd;
-		box-shadow: 0 3px white, 0 -6px #5993cd, 0 -9px white, 0 -12px #5993cd;
+.gn-menu > .gn-selected,
+.gn-menu > .gn-selected:hover,
+.gn-menu > .gn-selected a:hover {
+    cursor: default;
+    background-color: #bed7f0;
 }
 
 /* styles for opening menu */

@@ -13,7 +13,7 @@ mixin menu(menu)
    ul.gn-menu
     for t in menul[menun[menu]]
      if t[1]==title
-      li.selected
+      li.gn-selected
        a
         span=t[1]
          title=title
@@ -21,6 +21,9 @@ mixin menu(menu)
       li
        a(href=t[0])
         span=t[1]
+    li.selected
+     a(href='/authorize/signout')
+      span='ออกจากระบบ'
 html
   head
   meta(charset='utf-8')
@@ -52,7 +55,7 @@ html
      else
       li
        a(href='/login')
-        span='Click Here for login'
+        span='ลงชื่อเข้าใช้'
     .page-content
      block content
       .footer

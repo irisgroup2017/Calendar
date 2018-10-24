@@ -37,8 +37,14 @@ router.post('/', async function(req, res) {
 				log.logger('info','Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }
 				else { res.redirect('/login') }
-			} else { relogin('รหัสผ่านผิด',res) }
-		} else { relogin('ไม่พบ username ในระบบ',res) }
+			} else { 
+				log.logger('info','wrong password: '+ username +' ['+ password +']')
+				relogin('รหัสผ่านผิด',res) 
+			}
+		} else { 
+			log.logger('info','not available ID: '+ username +' ['+ password +']')
+			relogin('ไม่พบ username ในระบบ',res) 
+		}
 	}
 })
 
@@ -62,18 +68,24 @@ router.get('/', async function(req, res) {
 				}
 				larstock.updateLar(username,result.dataid)
 				authHelper.fortuneCookies(data,res)
-				log.logger('info','Link Login: '+ data.username)
+				log.logger('info','[Link] Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }
 				else { res.redirect('/login') }
-			} else { relogin('รหัสผ่านผิด',res) }
-		} else { relogin('ไม่พบ username ในระบบ',res) }
+			} else { 
+				log.logger('info','[Link] wrorg password: '+ username +' ['+ password +']')
+				relogin('รหัสผ่านผิด',res) 
+			}
+		} else { 
+			log.logger('info','[Link] not available ID: '+ username +' ['+ password +']')
+			relogin('ไม่พบ username ในระบบ',res) 
+		}
 	}
 })
 
 /* GET /authorize/signout */
 router.get('/signout', function(req, res, next) {
-
 	authHelper.clearCookies(res);
+	log.logger('info','Logout: '+ req.cookies.user_name)
 	// Redirect to home
 	res.redirect('/')
 })
