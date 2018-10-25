@@ -87,8 +87,8 @@ jQuery(function($) {
         eventLimit: true,
         dayRender: function(date, cell) {
             //cell.append('<div class="unavailable">Unavailable</div>')
-            console.log(date)
-            console.log(cell)
+            //console.log(date)
+            //console.log(cell)
         },
         viewRender: function(view,element) {
             if (view.type == "month" || view.type == "agendaWeek" || view.type == "basic") {
@@ -123,10 +123,11 @@ jQuery(function($) {
 			var copiedEventObject = $.extend({}, originalEventObject)
 			
             // assign it the date that was reported
+            console.log(date)
             copiedEventObject.start = date
             copiedEventObject.allDay = true
             if (copiedEventObject.end == null && resourceId.type == 'agendaDay') { 
-                copiedEventObject.end = new Date(date._d.getTime()+7200000-25200000)
+                copiedEventObject.end = new Date(date._d.getTime()-18000000)
                 copiedEventObject.allDay = false
             }
 			if($extraEventClass) copiedEventObject['className'] = [$extraEventClass]
@@ -143,7 +144,7 @@ jQuery(function($) {
                     var oldEventEnd = evt.end._d.getTime()
                     if (newEventStart >= oldEventStart && oldEventEnd > newEventStart) { newEvent = true }
                     else if (copiedEventObject.end) { 
-                        var newEventEnd = copiedEventObject.end.getTime()+25200000
+                        var newEventEnd = copiedEventObject.end.getTime()
                         if (newEventStart < oldEventStart && newEventEnd > oldEventStart) { newEvent = true }
                     }
                 }
@@ -260,6 +261,7 @@ jQuery(function($) {
                     if (moment(evt.start._d).isSame(event.start._d)) { newEvent = true }
                     else { newEvent = false }
                 }
+
                 if (newEvent) {
                     return true
                 } else {
@@ -279,32 +281,33 @@ jQuery(function($) {
             else if (event.end) {
                 if ($.inArray(new Date(event.end._d-25201000).getDay(),bh.dow) < 0) { createEvent = false }
             }
-            if (existingEvents.length > 1) $("#calendar").fullCalendar("removeEvents", function (evt) {
-                if (evt.id == event.id) {
-                    createEvent = false
-                    return true
-                } else { createEvent = true }
-            })
+            if (existingEvents.length > 1) { createEvent = false }
             if (!createEvent) { revertFunc() }
         },
         eventDrop: function (event,delta,revertFunc) { // this function is called when drop events
-            if (event.end == null && event.source.calendar.view.type == 'agendaDay') { 
-                event.end = new Date(event.start._d.getTime()+7200000-25200000)
-                event.allDay = false
-                $('#calendar').fullCalendar('updateEvent', event)
-            }
             createEvent = true
             var newEventStart = event.start._d.getTime()
             var existingEvents = $("#calendar").fullCalendar("clientEvents", function (evt) {
             newEvent = false
             var oldEventStart = evt.start._d.getTime()
             if (event.source.calendar.view.type == 'agendaDay') {
-                if (evt.end && event.end) {
-                    var newEventEnd = event.end._d.getTime() , oldEventEnd = evt.end._d.getTime()
-                    if (newEventStart < oldEventStart && newEventEnd > oldEventStart) { newEvent = true }
-                    if (newEventStart > oldEventStart && newEventStart < oldEventEnd) { newEvent = true }
+                if (evt.end) {
+                    var oldEventEnd = evt.end._d.getTime()
+                    if (newEventStart >= oldEventStart && oldEventEnd > newEventStart) { newEvent = true }
+                    else if (event.end) { 
+                        var newEventEnd = event.end._d.getTime()
+                        if (newEventStart < oldEventStart && newEventEnd > oldEventStart) { newEvent = true }
+                    }
                 }
-            }
+                else if (event.end) { 
+                    var newEventEnd = event.end._d.getTime()
+                    if (newEventEnd > oldEventStart && newEventEnd <= oldEventEnd) { newEvent = true }
+                    else if (evt.allDay) {
+                        if (oldEventStart < newEventStart && newEventEnd < (oldEventStart + 86399999)) { newEvent = true }
+                    }   
+                }
+                else if (newEventStart <= oldEventStart && oldEventEnd > oldEventStart) { newEvent = true }   
+            }       
             else if (event.end) {
                 var newEventEnd = event.end._d.getTime()
                 if (evt.allDay) {
@@ -326,8 +329,7 @@ jQuery(function($) {
                     if (newEventStart <= oldEventStart && oldEventEnd < (newEventStart + 86399999)) { newEvent = true }
                 }
             }
-            else if (moment(evt.start._d).isSame(event.start._d)) { newEvent = false }
-            
+            else if (moment(evt.start._d).isSame(event.start._d)) { newEvent = false }            
 
             if (newEvent) {
                 return true
@@ -352,12 +354,7 @@ jQuery(function($) {
                 if ($.inArray(new Date(event.end._d-25201000).getDay(),bh.dow) < 0) { createEvent = false }
             }
             else if (tddate >= event.start && event.className != 'label-success' && event.className != 'label-grey') { createEvent = false }
-            if (existingEvents.length > 1) $("#calendar").fullCalendar("removeEvents", function (evt) {
-                if (evt.id == event.id) {
-                    createEvent = false
-                    return true
-                } else { createEvent = true }
-            })
+            if (existingEvents.length > 1) { createEvent = false }
             if (!createEvent) { revertFunc() }
         },
         eventMouseover: function (calEvent, jsEvent) { // this function is called when move mouse over event
