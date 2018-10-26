@@ -127,7 +127,6 @@ jQuery(function($) {
             copiedEventObject.allDay = true
             if (copiedEventObject.end == null && resourceId.type == 'agendaDay') { 
                 copiedEventObject.end = $.fullCalendar.moment(moment(date).add(2, "h"))
-                //copiedEventObject.end._i[3]=copiedEventObject.end._i[3]+2
                 copiedEventObject.allDay = false
             }
 			if($extraEventClass) copiedEventObject['className'] = [$extraEventClass]
@@ -165,11 +164,6 @@ jQuery(function($) {
                 }
             }
             else if (moment(evt.start._d).isSame(date._d)) { newEvent = true }
-            //console.log(new Date(newEventStart))
-            //console.log(new Date(newEventEnd))
-            //console.log(new Date(oldEventStart))
-            //console.log(new Date(oldEventEnd))
-            //console.log(evt.title)
             if (newEvent) {
                 return true
                 } else {
@@ -183,15 +177,9 @@ jQuery(function($) {
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
                 edTime = Number(bh.end.split(':')[0]) + Number(bh.end.split(':')[1]/60)
                 seTime = copiedEventObject.start._i[3] + copiedEventObject.start._i[4]/60
-                eeTime = copiedEventObject.end._i[3] + copiedEventObject.end._i[4]/60
+                eeTime = copiedEventObject.end._i[3]+(resourceId.type == 'agendaDay'?2:0) + copiedEventObject.end._i[4]/60
                 if (seTime < sdTime) { createEvent = false }
                 if (eeTime > edTime) { createEvent = false }
-                console.log(copiedEventObject.start)
-                console.log(copiedEventObject.end)
-            console.log(sdTime)
-            console.log(edTime)
-            console.log(seTime)
-            console.log(eeTime)
             }
             else if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
             else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey') { createEvent = false }
@@ -269,11 +257,6 @@ jQuery(function($) {
                     if (moment(evt.start._d).isSame(event.start._d)) { newEvent = true }
                     else { newEvent = false }
                 }
-                console.log(new Date(newEventStart))
-            console.log(new Date(newEventEnd))
-            console.log(new Date(oldEventStart))
-            console.log(new Date(oldEventEnd))
-            console.log(evt.title)
                 if (newEvent) {
                     return true
                 } else {
@@ -342,11 +325,6 @@ jQuery(function($) {
                 }
             }
             else if (moment(evt.start._d).isSame(event.start._d)) { newEvent = false }            
-            //console.log(new Date(newEventStart))
-            //console.log(new Date(newEventEnd))
-            //console.log(new Date(oldEventStart))
-            //console.log(new Date(oldEventEnd))
-            //console.log(evt.title)
             if (newEvent) {
                 return true
             } else {
