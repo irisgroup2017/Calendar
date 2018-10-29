@@ -12,7 +12,7 @@ function handleDisconnect() {
 	var con = mysql.createConnection({
 		host: 'localhost',
 		user: 'root',
-		password: '',
+		password: '#Iris@2013',
 		database: 'calendar',
 	})
   
