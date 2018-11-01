@@ -116,14 +116,14 @@ $(document).ready(function(){
                     $('.'+data.dataid).append(signs)
 
                     var posts = '<tr>\
-                    <td class="center"><input class="add" id="emid"></td>\
-                    <td class="center"><input class="add" id="name"></td>\
-                    <td class="center"><input class="add" id="lastName"></td>\
-                    <td class="center"><input class="add" id="jobPos"></td>\
-                    <td class="center"><input class="add" id="depart"></td>\
-                    <td class="center"><input class="add" id="mail"></td>\
-                    <td class="center"><input class="add" id="mailGroup"></td>\
-                    <td class="center"><input class="add" id="userName"></td>\
+                    <td class="center"><input class="add inputex" id="emid"></td>\
+                    <td class="center"><input class="add inputex" id="name"></td>\
+                    <td class="center"><input class="add inputex" id="lastName"></td>\
+                    <td class="center"><input class="add inputex" id="jobPos"></td>\
+                    <td class="center"><input class="add inputex" id="depart"></td>\
+                    <td class="center"><input class="add inputex" id="mail"></td>\
+                    <td class="center"><input class="add inputex" id="mailGroup"></td>\
+                    <td class="center"><input class="add inputex" id="userName"></td>\
                     <td class="center"><a class="addline fa fa-plus hvr-pulse" title="Add" data-toggle="tooltip"></a></td>\
                     </tr>'
                     $("table[id=manage]").append(posts)
