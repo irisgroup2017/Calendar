@@ -27,7 +27,7 @@ async function setLar(userName,dataid,state) {
     ov = await con.q('SELECT vacationr FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (ov == '') { ov = 0 }
     else { 
-
+        
     }
     if (w >= 2) {
         va = 6

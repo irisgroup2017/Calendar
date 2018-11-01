@@ -66,7 +66,7 @@ router.get('/', async function(req, res) {
 					'mail': result.mail,
 					'operator': operator[0].operator
 				}
-				larstock.updateLar(username,result.dataid)
+				larstock.updateLar(data.username,result.dataid)
 				authHelper.fortuneCookies(data,res)
 				log.logger('info','[Link] Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }
