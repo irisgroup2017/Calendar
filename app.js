@@ -10,10 +10,10 @@ require('dotenv').config()
 
 function handleDisconnect() {
 	var con = mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
-		password: '#Iris@2013',
-		database: 'calendar',
+		host: process.env.DB_HOST,
+		user: process.env.DB_USER,
+		password: process.env.DB_PASSWORD,
+		database: process.env.DB_NAME,
 	})
   
 	con.connect(function(err) { 
