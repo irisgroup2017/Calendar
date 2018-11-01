@@ -30,7 +30,7 @@ table.table .add.error {
     border-color: #db1616d0;
 }
 .inputex {
-    width: 75px;
+    width: 100px;
     -webkit-transition: all .5s ease;
     -moz-transition: all .5s ease;
     transition: all .5s ease;
