@@ -22,8 +22,9 @@ async function getLar(userName,dataid) {
     start = new Date(a.getFullYear(),1,1,7).getTime()/1000,
     end = new Date(a.getFullYear(),12,31,7).getTime()/1000,
     result = await con.q('SELECT * FROM lar_data WHERE userName = ? AND approve > 1 AND start BETWEEN ? AND ?',[userName,start,end]),
-    resultr = await con.q('SELECT * FROM lar_status WHERE dataid = ?',dataid) 
+    resultr = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,a.getFullYear()]) 
     resultr = resultr[0]
+    console.log(resultr)
     for (var i = 0; i < result.length; i++) {
         var duration = []
         if (result[i].end) { 
