@@ -55,10 +55,11 @@ async function setLar(userName,dataid,state) {
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi,ov])
     }
     if (state == 'update') {
+        console.log(userName)
         var daisuki = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]])
         con.q('UPDATE lar_status SET\
-        sick = ?,personal = ?,vacation = ?,training = ?,sterily = ?,maternity = ?,religious = ?,military = ?,vacationp = ?\
-        WHERE dataid = ? AND year = ?',[si-daisuki[0][lle[0]],pe-daisuki[0][lle[1]],va-daisuki[0][lle[2]],tr-daisuki[0][lle[3]],st-daisuki[0][lle[4]],ma-daisuki[0][lle[5]],re-daisuki[0][lle[6]],mi-daisuki[0][lle[7]],dataid,y[2],ov])
+        userName = ?,sick = ?,personal = ?,vacation = ?,training = ?,sterily = ?,maternity = ?,religious = ?,military = ?,vacationp = ?\
+        WHERE dataid = ? AND year = ?',[userName,si-daisuki[0][lle[0]],pe-daisuki[0][lle[1]],va-daisuki[0][lle[2]],tr-daisuki[0][lle[3]],st-daisuki[0][lle[4]],ma-daisuki[0][lle[5]],re-daisuki[0][lle[6]],mi-daisuki[0][lle[7]],ov,dataid,y[2]])
     }
 }
 
