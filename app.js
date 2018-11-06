@@ -23,10 +23,11 @@ function handleDisconnect() {
 	  }                                    
 	});                                
 	con.on('error', function(err) {
-	  console.log('db error', err)
 	  if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+		console.log('database reconnected')
 		handleDisconnect()       
 	  } else {   
+			console.log('db error', err)
 			con.release()                   
 			throw err                 
 	  }
