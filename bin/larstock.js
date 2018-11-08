@@ -26,18 +26,10 @@ async function setLar(userName,dataid,state) {
     w = y[2]-x[2],
     
     ov = await con.q('SELECT vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
-    if (ov == '') { 
+    if (!ov[0]) { 
         ov = 0 
     }
     else {
-
-        if (ov[0].vacationr) {
-            ov = ov[0].vacationr.toString()
-            ov = dhmtonum(ov)
-            if (ov >= 6) { ov = 6 }
-            si=si+va
-        }
-
         if (ov[0].sterilyd) {
             if (ov[0].sterilyd > 0) { st=0 }
         } else if (ov[0].sterily) {
@@ -54,6 +46,13 @@ async function setLar(userName,dataid,state) {
             if (ov[0].militaryd > 0) { mi=0 }
         } else if (ov[0].military) {
             if (ov[0].military == 0) { mi=0 }
+        }
+        
+        if (ov[0].vacationr) {
+            ov = ov[0].vacationr.toString()
+            ov = dhmtonum(ov)
+            if (ov >= 6) { ov = 6 }
+            si=si+va
         }
     }
 
