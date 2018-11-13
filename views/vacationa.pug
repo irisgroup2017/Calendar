@@ -2,23 +2,25 @@ extends layout
 block content
  mixin ddl(year)
   for t in year
-   option(value=t+543)=t+543
+   option(value=t selected=(parms.thisyear == t ? true : false))=t
  mixin tbody(tbl)
   tbody
    -var i=0
-   while i<=2
-    tr(class=i+1)
+   while i<tbl
+    tr#editline(class=i+1)
      td=i+1
-     td="test1"
-     td="test1"
-     td="test1"+i++
+     td=parms.vlist[i].dtitle
+     td=parms.vlist[i].doffice
+     td=parms.vlist[i++].dsite
+     td
+      a.delete.fa.fa-trash
  .container     
   h2(style="margin:0 0 15px 15px")='ตั้งค่าวันหยุดประจำปี'
-   select(style="margin-left: 35px; font-size: 16px")
+   select.tyear(style="margin-left: 35px; font-size: 16px")
     +ddl(parms.yearlist)
   span.col.col-lg-2
    input.ava(type="text" placeholder="Title...")
-   span.addBtn='ADD'
+   span.addBtn='เพิ่ม'
    .input-group.date
     input.form-control.datepickera(type='text' readonly placeholder="วันหยุดออฟฟิส...")
     .input-group-addon.picka
@@ -31,45 +33,84 @@ block content
    table.table
     thead
      tr
-      td.col.col-sm-2="ลำดับ"
-      td.col.col-sm-2="วันสำคัญ"
-      td.col.col-sm-2="ออฟฟิส"
-      td.col.col-sm-2="หน้างาน"
+      td.col.col-sm-1="ลำดับ"
+      td.col.col-sm-3="วันสำคัญ"
+      td.col.col-sm-3="วันหยุดออฟฟิส"
+      td.col.col-sm-3="วันหยุดหน้างาน"
+      td.col.col-sm-1
     +tbody(parms.tbl)
  style.
   .ava {
-      margin: 0 0 5px 0; 
-      width: 181px;
-      position:relative;
+    margin: 0 0 5px 0; 
+    width: 181px;
+    position:relative;
   }
   .addBtn {
-      padding: 8px 8px 8px 8px;
-      margin: 0 0 0 5px;
-      cursor: pointer;
-      height: 32px;
-      background-color: #b5daf9;
-      align:center;
+    padding: 8px 8px 8px 8px;
+    margin: 0 0 0 5px;
+    cursor: pointer;
+    background-color: #b5daf9;
+    align:center;
   }
-  tr.stb:hover {
+  tr#editline:hover {
     cursor: pointer;
     background-color: #dfdce9;
   }
+  table.table td a.delete {
+    display: inline-block;
+    color: #E34724;
+  }
  script.
   $(document).ready(function(){
+    $('.tyear').change(function () {
+      $(this).find('option[selected]').removeAttr('selected')
+      $(this).find('option[value='+$(this).val()+']').attr('selected','')
+      $.ajax({
+          url: '/vacationa',
+          type: "POST",
+          dataType: 'json',
+          async: false,
+          data: {
+            state: 'refresh',
+            dyear: $(this).val()
+          },
+          success: function (data) {
+            $('tbody tr').remove()
+            var i=0,addElement
+            while (i < data.tbl) {
+              addElement += '<tr class=list'+(i+1)+'>\
+              <td>'+(i+1)+'</td>\
+              <td>'+data.vlist[i].dtitle+'</td>\
+              <td>'+data.vlist[i].doffice+'</td>\
+              <td>'+data.vlist[i].dsite+'</td>\
+              </tr>'
+              i++
+            }
+            $('table').append(addElement)
+          }
+        })
+    })
     $('.datepickera').datepicker({
       ignoreReadonly: true,
       format: 'dd/MM/yyyy',
-      todayHighlight: true
+      todayHighlight: true,
+      clearBtn: true
     })
     $('.datepickerb').datepicker({
       ignoreReadonly: true,
       format: 'dd/MM/yyyy',
-      todayHighlight: true
+      todayHighlight: true,
+      clearBtn: true
     })
     $('.datepickera').datepicker().on('changeDate',function(e) {
-      $('.datepickera').datepicker('hide')
-      $('.datepickerb').datepicker('setDate',$('.datepickera').datepicker('getDate'))
-      $('.datepickerb').datepicker('show')
+      if ($('.datepickera').datepicker('getDate')) {
+        $('.datepickera').datepicker('hide')
+        $('.datepickerb').datepicker('setDate',$('.datepickera').datepicker('getDate'))
+        $('.datepickerb').datepicker('show')
+      } else {
+        $('.datepickera').datepicker('hide')
+        $('.datepickerb').datepicker('show')
+      }
     })
     $('.datepickerb').datepicker().on('changeDate',function(e) {
       $('.datepickerb').datepicker('hide')
@@ -80,24 +121,55 @@ block content
     $(document).on("click", ".pickb", function() {
       $('.datepickerb').datepicker('show')
     })
-    $(document).on("click", ".addBtn", function() {
-      moment.updateLocale('th', {
-      months : ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม","สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
-      weekdays : ["วันอาทิตย์", "วันจันทร์", "วันอังคาร", "วันพุธ", "วันพฤหัส", "วันศุกร์", "วันเสาร์"]
+    $('.delete').click(function () {
+      $.ajax({
+          url: '/vacationa',
+          type: "POST",
+          dataType: 'json',
+          async: false,
+          data: {
+            state: 'remove',
+            dtitle: dtitle,
+            doffice: (doffice=="" ? 0 : doffice),
+            dsite: (dsite=="" ? 0 : dsite),
+            dyear: dyear
+          },
+          success: function (data) {
+            $(this).parents('tr').remove()
+          }
+      })
     })
-      var dtitle = $('.ava').val(),
-      doffice = $('.datepickera').datepicker('getDate').getTime(),
-      dsite = $('.datepickerb').datepicker('getDate').getTime(),
+    $(document).on("click", ".addBtn", function() {
+     var dtitle = $('.ava').val(),
+      doffice = ($('.datepickera').datepicker('getDate') ? $('.datepickera').datepicker('getDate').getTime() : 0),
+      dsite = ($('.datepickerb').datepicker('getDate') ? $('.datepickerb').datepicker('getDate').getTime() : 0),
       lastline = parseInt($('tbody').find('tr:last-child').find('td:first-child').text())+1,
+      dyear = $('.tyear').val(),
       addElement
-      if (dtitle && doffice && dsite) {
-        addElement = '<tr class="stb">\
-        <td>'+lastline+'</td>\
-        <td>'+dtitle+'</td>\
-        <td>'+moment(doffice).format('ddddที่ D MMMM')+' '+ (parseInt(moment(doffice).year())+543) +'</td>\
-        <td>'+moment(dsite).format('ddddที่ D MMMM')+' '+ (parseInt(moment(dsite).year())+543) +'</td>\
-        </tr>'
-        $('tbody').append(addElement)
+      if (dtitle && dyear && (doffice || dsite)) {
+        $.ajax({
+          url: '/vacationa',
+          type: "POST",
+          dataType: 'json',
+          async: false,
+          data: {
+            state: 'add',
+            dtitle: dtitle,
+            doffice: doffice,
+            dsite: dsite,
+            lastline: lastline,
+            dyear: dyear
+          },
+          success: function (data) {
+            addElement = '<tr class=list'+data.lastline+'>\
+            <td>'+data.lastline+'</td>\
+            <td>'+data.dtitle+'</td>\
+            <td>'+data.doffice+'</td>\
+            <td>'+data.dsite+'</td>\
+            </tr>'
+            $('tbody').append(addElement)
+          }
+        })
       }
     })
   })
