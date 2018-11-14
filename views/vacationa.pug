@@ -13,7 +13,9 @@ block content
      td=parms.vlist[i].doffice
      td=parms.vlist[i++].dsite
      td
-      a.delete.fa.fa-trash
+      a.saveline.fa.fa-floppy-o.hvr-pulse(title="บันทึก")
+      a.editline.fa.fa-pencil-square-o.hvr-pulse(title="แก้ไข")
+      a.delete.fa.fa-trash.hvr-pulse(title="ลบ")
  .container     
   h2(style="margin:0 0 15px 15px")='ตั้งค่าวันหยุดประจำปี'
    select.tyear(style="margin-left: 35px; font-size: 16px")
@@ -56,11 +58,33 @@ block content
     cursor: pointer;
     background-color: #dfdce9;
   }
+  table.table td a:hover {
+    text-decoration: none;
+  }
+  table.table td a.editline {
+    display: inline-block;
+    color: #FFC107;
+  }
   table.table td a.delete {
     display: inline-block;
     color: #E34724;
   }
+  table.table td .saveline {
+    display: none;
+  }
+  table.table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 1px;
+    min-width: 20px;
+  }    
  script.
+  function decodeDate (inTime) {
+    var months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม","สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+    mSplit = inTime.split(' '),
+    m = months.indexOf(mSplit[2])
+    return new Date(mSplit[3]-543,m,mSplit[1])
+  } 
   $(document).ready(function(){
     $('.tyear').change(function () {
       $(this).find('option[selected]').removeAttr('selected')
@@ -78,11 +102,16 @@ block content
             $('tbody tr').remove()
             var i=0,addElement
             while (i < data.tbl) {
-              addElement += '<tr class=list'+(i+1)+'>\
+              addElement += '<tr class='+(i+1)+' id="editline">\
               <td>'+(i+1)+'</td>\
               <td>'+data.vlist[i].dtitle+'</td>\
               <td>'+data.vlist[i].doffice+'</td>\
               <td>'+data.vlist[i].dsite+'</td>\
+              <td>\
+                <a class="saveline fa fa-floppy-o hvr-pulse" title="บันทึก"></a>\
+                <a class="editline fa fa-pencil-square-o hvr-pulse" title="แก้ไข"></a>\
+                <a class="delete fa fa-trash hvr-pulse" title="ลบ"></a>\
+                </td>\
               </tr>'
               i++
             }
@@ -102,6 +131,7 @@ block content
       todayHighlight: true,
       clearBtn: true
     })
+
     $('.datepickera').datepicker().on('changeDate',function(e) {
       if ($('.datepickera').datepicker('getDate')) {
         $('.datepickera').datepicker('hide')
@@ -121,7 +151,71 @@ block content
     $(document).on("click", ".pickb", function() {
       $('.datepickerb').datepicker('show')
     })
+
+    $(".editline").click(function() {
+      dline = $(this).parents('tr').find('td:nth-child(1)').text()
+      dtitle = $(this).parents('tr').find('td:nth-child(2)').text()
+      doffice = $(this).parents('tr').find('td:nth-child(3)').text()
+      dsite = $(this).parents('tr').find('td:nth-child(4)').text()
+
+      $('.saveline').filter(function() {
+        if ($(this).css('display') == 'inline-block') {
+          $(this).parents('tr').find('.saveline').css('display','none')
+          $(this).parents('tr').find('.editline').css('display','inline-block')
+        }
+      })
+      $('.ava').val(dtitle)
+      if (doffice=="")  { $('.datepickera').datepicker('update','') }
+      else { $('.datepickera').datepicker('setDate',decodeDate(doffice)) }
+      if (dsite=="")  { $('.datepickerb').datepicker('update','') }
+      else { $('.datepickerb').datepicker('setDate',decodeDate(dsite)) }
+      $(this).parents("tr").find(".saveline").css("display","inline-block")
+      $(this).parents("tr").find(".editline").css("display","none")
+    })
+
+    $('.saveline').click(function () {
+      var dtitle = $('.ava').val(),
+      doffice = ($('.datepickera').datepicker('getDate') ? $('.datepickera').datepicker('getDate').getTime() : 0),
+      dsite = ($('.datepickerb').datepicker('getDate') ? $('.datepickerb').datepicker('getDate').getTime() : 0),
+      dline = $(this).parents('tr').find('td:nth-child(1)').text(),
+      dyear = $('.tyear').val(),
+      otitle = $(this).parents('tr').find('td:nth-child(2)').text()
+      ooffice = $(this).parents('tr').find('td:nth-child(3)').text()
+      osite = $(this).parents('tr').find('td:nth-child(4)').text()
+      $(this).parents("tr").find(".editline").css("display","inline-block")
+      $(this).parents("tr").find(".saveline").css("display","none")
+      if (dtitle && dyear && (doffice || dsite)) {
+          $.ajax({
+            url: '/vacationa',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: {
+              state: 'edit',
+              dtitle: dtitle,
+              doffice: doffice,
+              dsite: dsite,
+              dline: dline,
+              dyear: dyear,
+              otitle: otitle,
+              ooffice: ooffice,
+              osite: osite
+            },
+            success: function (data) {
+              $('tbody tr:nth-child('+dline+')').find('td:nth-child(2)').text(data.dtitle)
+              $('tbody tr:nth-child('+dline+')').find('td:nth-child(3)').text(data.doffice)
+              $('tbody tr:nth-child('+dline+')').find('td:nth-child(4)').text(data.dsite)
+            }
+          })
+        }
+     })
+
     $('.delete').click(function () {
+      dline = $(this).parents('tr').find('td:nth-child(1)').text()
+      dtitle = $(this).parents('tr').find('td:nth-child(2)').text()
+      doffice = $(this).parents('tr').find('td:nth-child(3)').text()
+      dsite = $(this).parents('tr').find('td:nth-child(4)').text()
+      dyear = $('.tyear option:selected').val()
       $.ajax({
           url: '/vacationa',
           type: "POST",
@@ -130,49 +224,71 @@ block content
           data: {
             state: 'remove',
             dtitle: dtitle,
-            doffice: (doffice=="" ? 0 : doffice),
-            dsite: (dsite=="" ? 0 : dsite),
-            dyear: dyear
+            doffice: doffice,
+            dsite: dsite,
+            dyear: dyear,
+            dline: dline
           },
           success: function (data) {
-            $(this).parents('tr').remove()
+            $('tbody').find('tr:nth-child('+dline+')').remove()
+            var i=1
+            $('tbody tr').each(function(){
+              $(this).removeClass()
+              $(this).addClass(''+i+'')
+              $(this).find('td:nth-child(1)').text(i++)
+            })
           }
       })
     })
-    $(document).on("click", ".addBtn", function() {
-     var dtitle = $('.ava').val(),
-      doffice = ($('.datepickera').datepicker('getDate') ? $('.datepickera').datepicker('getDate').getTime() : 0),
-      dsite = ($('.datepickerb').datepicker('getDate') ? $('.datepickerb').datepicker('getDate').getTime() : 0),
-      lastline = parseInt($('tbody').find('tr:last-child').find('td:first-child').text())+1,
-      dyear = $('.tyear').val(),
-      addElement
-      if (dtitle && dyear && (doffice || dsite)) {
-        $.ajax({
-          url: '/vacationa',
-          type: "POST",
-          dataType: 'json',
-          async: false,
-          data: {
-            state: 'add',
-            dtitle: dtitle,
-            doffice: doffice,
-            dsite: dsite,
-            lastline: lastline,
-            dyear: dyear
-          },
-          success: function (data) {
-            addElement = '<tr class=list'+data.lastline+'>\
-            <td>'+data.lastline+'</td>\
-            <td>'+data.dtitle+'</td>\
-            <td>'+data.doffice+'</td>\
-            <td>'+data.dsite+'</td>\
-            </tr>'
-            $('tbody').append(addElement)
-          }
-        })
+    $('.addBtn').click(function() {
+      var stopfunction = 0
+      $('.saveline').filter(function() {
+        if ($(this).css('display') == 'inline-block') {
+          alert('กรุณาบันทึกข้อมูลที่ต้องการแก้ไข ก่อนเพิ่มข้อมูลใหม่')
+          stopfunction = 1
+        }
+      })
+      if (!stopfunction) {
+        var dtitle = $('.ava').val(),
+        doffice = ($('.datepickera').datepicker('getDate') ? $('.datepickera').datepicker('getDate').getTime() : 0),
+        dsite = ($('.datepickerb').datepicker('getDate') ? $('.datepickerb').datepicker('getDate').getTime() : 0),
+        lastline = parseInt($('tbody').find('tr:last-child').find('td:first-child').text())+1,
+        dyear = $('.tyear').val(),
+        addElement
+        if (dtitle && dyear && (doffice || dsite)) {
+          $.ajax({
+            url: '/vacationa',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: {
+              state: 'add',
+              dtitle: dtitle,
+              doffice: doffice,
+              dsite: dsite,
+              lastline: lastline,
+              dyear: dyear
+            },
+            success: function (data) {
+              addElement = '<tr class='+data.lastline+' id="editline">\
+              <td>'+data.lastline+'</td>\
+              <td>'+data.dtitle+'</td>\
+              <td>'+data.doffice+'</td>\
+              <td>'+data.dsite+'</td>\
+              <td>\
+                <a class="saveline fa fa-floppy-o hvr-pulse" title="บันทึก"></a>\
+                <a class="editline fa fa-pencil-square-o hvr-pulse" title="แก้ไข"></a>\
+                <a class="delete fa fa-trash hvr-pulse" title="ลบ"></a>\
+                </td>\
+              </tr>'
+              $('tbody').append(addElement)
+            }
+          })
+        }
       }
     })
   })
  script(src="js/bootstrap-datepicker.min.js")
  script(src="js/moment.min.js")
  link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
+ link(rel='stylesheet' , href='css/hover.css')

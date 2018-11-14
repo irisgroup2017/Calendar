@@ -24,7 +24,7 @@ router.get('/', async function(req, res) {
 			parms.yearlist.push(new Date().getFullYear()+544)
 		}
 		else {
-			vlist = await con.q('SELECT * FROM vacation_list WHERE year = ?',[parms.thisyear])
+			vlist = await con.q('SELECT * FROM vacation_list WHERE year = ? ORDER BY doffice,dsite ASC',[parms.thisyear])
 			if (vlist.length > 0) {
 				parms.vlist = []
 				for (i=0;i<vlist.length;i++) {
@@ -62,7 +62,7 @@ router.post('/', async function(req, res) {
 		res.json(req.body)
 	}
 	if (req.body.state == 'refresh') {
-		vlist = await con.q('SELECT * FROM vacation_list WHERE year = ?',[req.body.dyear])
+		vlist = await con.q('SELECT * FROM vacation_list WHERE year = ? ORDER BY doffice,dsite ASC',[req.body.dyear])
 		if (vlist.length > 0) {
 			req.body.vlist = []
 			for (i=0;i<vlist.length;i++) {
@@ -78,10 +78,27 @@ router.post('/', async function(req, res) {
 		res.json(req.body)
 	}
 	if (req.body.state == 'remove') {
-		await con.q('DELETE FROM vacation_list WHERE year = ? AND dtitle = ? AND doffice = ? AND dsite = ?',[req.body.dyear,req.body.dtitle,req.body.doffice,req.body.dsite])
+		var doffice = (req.body.doffice ? decodedate(req.body.doffice) : 0),
+		dsite = (req.body.dsite ? decodedate(req.body.dsite) : 0)
+		await con.q('DELETE FROM vacation_list WHERE year = ? AND dtitle = ? AND doffice = ? AND dsite = ?',[req.body.dyear,req.body.dtitle,doffice,dsite])
+		res.json(req.body)
+	}
+	if (req.body.state == 'edit') {
+		var ooffice = (req.body.ooffice ? decodedate(req.body.ooffice) : 0),
+		osite = (req.body.osite ? decodedate(req.body.osite) : 0)
+		await con.q('UPDATE vacation_list SET dtitle = ? , doffice = ? , dsite = ? WHERE year = ? AND dtitle = ? AND doffice = ? AND dsite = ?',[req.body.dtitle,req.body.doffice,req.body.dsite,req.body.dyear,req.body.otitle,ooffice,osite])
+		req.body.doffice = solvedate(req.body.doffice)
+		req.body.dsite = solvedate(req.body.dsite)
 		res.json(req.body)
 	}
 })
+
+function decodedate(inTime) {
+	var months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม","สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+	timeSplit = inTime.split(' '),
+	m = months.indexOf(timeSplit[2])
+	return new Date(parseInt(timeSplit[3])-543,m,timeSplit[1]).getTime()
+}
 
 function solvedate(inTime) {
 	if (inTime == 0) { return "" }
