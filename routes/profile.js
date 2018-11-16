@@ -5,7 +5,7 @@ log = require('../bin/logger')
 
 router.get('/',async function(req, res) {
     var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
-    parms = { title: userName, head1: 'Profile' }
+    parms = { title: 'ดูข้อมูล/เปลี่ยนรหัสผ่าน', head1: 'Profile' }
 	if (userName) {
 		data = {
 			'username': userName,

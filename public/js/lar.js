@@ -48,8 +48,8 @@ jQuery(function($) {
 	var calendar = $('#calendar').fullCalendar({
         businessHours: {
             dow: [ 1,2,3,4,5 ], // Monday - Friday
-            start: '8:00', // a start time (10am in this example)
-            end: '17:00' // an end time (6pm in this example)
+            start: '8:00', // a start time
+            end: '17:00' // an end time
             //overlap: false
             //rendering: 'background'
         },
@@ -85,12 +85,52 @@ jQuery(function($) {
         timeFormat: 'H:mm',
         selectable: true,
         eventLimit: true,
-        dayRender: function(date, cell) {
-            //cell.append('<div class="unavailable">Unavailable</div>')
-            //console.log(date)
-            //console.log(cell)
-        },
         viewRender: function(view,element) {
+            if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
+            var listday = JSON.parse(localStorage.date)
+            $.ajax({
+                url: '/lar',
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: {
+                    'state': 'getvacation',
+                    'start': view.start._i,
+                    'end': view.end._i
+                },
+                success: function (data) {
+                    for (var i=0;i<data.length;i++) {
+                        thisvacation = data[i]['doffice']
+                        if (listday.indexOf(thisvacation)) {
+                            datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)
+                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data[i].dtitle+'</div>')
+                         }
+                    }
+                }
+            })
+            localStorage.clear()
+            $.ajax({
+                url: '/lar',
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: {
+                    'state': 'viewrender',
+                    'endtime': endtime
+                },
+                success: function (data) {
+                    data.forEach(function(editlar) {
+                        $('tr[class='+editlar.a+']').find('td:nth-child(2)').text(editlar.c)
+                        $('tr[class='+editlar.a+']').find('td:nth-child(3)').text((editlar.e ? "ใช้เกิน " : '')+editlar.d)
+                        if (editlar.e) {
+                            $('tr[class='+editlar.a+']').find('td:nth-child(3)').removeClass('bg-success').addClass('bg-warning')
+                        }
+                        else {
+                            $('tr[class='+editlar.a+']').find('td:nth-child(3)').removeClass('bg-warning').addClass('bg-success')
+                        }
+                    })
+                }
+            })
             if (view.type == "month" || view.type == "agendaWeek" || view.type == "basic") {
                 $('#calendar').fullCalendar( 'removeEvents', function(e){ return !e.isUserCreated})
                 start = view.start._i/1000
@@ -113,6 +153,18 @@ jQuery(function($) {
                     }
                 })
             }
+        },
+        dayRender: function(date, cell) {
+            var thisdate = []
+            if (localStorage.date) {
+                thisdate = JSON.parse(localStorage.date)
+                thisdate.push(date._d.getTime())
+                thisdate = JSON.stringify(thisdate)
+            } else {
+                thisdate.push(date._d.getTime())
+                thisdate = JSON.stringify(thisdate)
+            }
+            localStorage.setItem('date',thisdate)
         },
         drop: function(date, jsEvent,ui,resourceId) { // this function is called when something is dropped
             // retrieve the dropped element's stored Event Object

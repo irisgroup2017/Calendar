@@ -1,6 +1,5 @@
 const con = require('../bin/mysql'),
 larlist = require('../bin/larlist'),
-now = new Date(),
 llt = ['ลาป่วย','ลากิจ','ลาพักร้อน','ลาฝึกอบรบ','ลาทำหมัน','ลาคลอด','ลาอุปสมบท','รารับราชการทหาร'],
 ll = ['sick','personal','vacation','training','sterily','maternity','religious','military'],
 llc = ['sickc','personalc','vacationc','trainingc','sterilyc','maternityc','religiousc','militaryc'],
@@ -8,7 +7,7 @@ lld = ['sickd','personald','vacationd','trainingd','sterilyd','maternityd','reli
 lle = ['sicke','personale','vacatione','traininge','sterilye','maternitye','religiouse','militarye'],
 llr = ['sickr','personalr','vacationr','trainingr','sterilyr','maternityr','religiousr','militaryr']
 
-async function setLar(userName,dataid,state) {
+async function setLar(userName,dataid,state,now) {
     /*
     1.ลาป่วย 30 วันต่อปี
     2.ลากิจ 6 วันต่อปี เพิ่มทุก 2 เดือน
@@ -22,7 +21,7 @@ async function setLar(userName,dataid,state) {
     var si=30,pe=0,va=0,tr=30,st=1,ma=90,re=0,mi=60,
     swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',dataid),
     x = gd(new Date(swdate[0].cdate*1000)),
-    y = gd(now),
+    y = gd(new Date(now)),
     w = y[2]-x[2],
     
     ov = await con.q('SELECT vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
@@ -78,8 +77,8 @@ async function setLar(userName,dataid,state) {
     } else if (w > 3) { re = 30 }
     if (state == 'insert') {
         con.q('INSERT INTO lar_status\
-        (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military,vacationp)\
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va+ov,tr,st,ma,re,mi,ove])
+        (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military)\
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va+ov,tr,st,ma,re,mi])
     }
     if (state == 'update') {
         var daisuki = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]])
@@ -89,10 +88,10 @@ async function setLar(userName,dataid,state) {
     }
 }
 
-async function updateLar(userName,dataid) {
-    var checkdate = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,now.getFullYear()])
-    if (checkdate == '') { setLar(userName,dataid,'insert') }
-    else { setLar(userName,dataid,'update') }
+async function updateLar(userName,dataid,now) {
+    var checkdate = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,new Date(now).getFullYear()])
+    if (checkdate == '') { setLar(userName,dataid,'insert',now) }
+    else { setLar(userName,dataid,'update',now) }
 }
 
 function dhmtonum(ov) {

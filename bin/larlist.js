@@ -16,15 +16,14 @@ function remodule(d) {
 	return a
 }
 
-async function getLar(userName,dataid) {
-    var a = new Date(),
+async function getLar(userName,dataid,thisday) {
+    var a = new Date(thisday),
     LAR = [],
-    start = new Date(a.getFullYear(),1,1,7).getTime()/1000,
-    end = new Date(a.getFullYear(),12,31,7).getTime()/1000,
+    start = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),0,1,7).getTime()/1000,
+    end = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),11,31,7).getTime()/1000,
     result = await con.q('SELECT * FROM lar_data WHERE userName = ? AND approve > 1 AND start BETWEEN ? AND ?',[userName,start,end]),
     resultr = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,a.getFullYear()]) 
     resultr = resultr[0]
-    console.log(resultr)
     for (var i = 0; i < result.length; i++) {
         var duration = []
         if (result[i].end) { 
@@ -77,8 +76,8 @@ async function getLar(userName,dataid) {
     return LAR
 }
 
-async function viewLar(userName,dataid) {
-    var LAR = await getLar(userName,dataid)
+async function viewLar(userName,dataid,thisday) {
+    var LAR = await getLar(userName,dataid,thisday)
     LARS = [] , saveLAR = []
 		for (i=0;i<llt.length;i++) {
             if (i == 4) {

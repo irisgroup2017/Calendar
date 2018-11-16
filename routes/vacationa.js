@@ -13,7 +13,7 @@ router.get('/', async function(req, res) {
 			'operator': dataop,
 			'mail': mail
 		}
-		parms = { title: 'ตั้งค่าวันหยุด', head1: 'ตั้งค่าวันหยุดประจำปี', head2: 'User' }
+		parms = { title: 'ตั้งค่าวันหยุดประจำปี', head1: 'ตั้งค่าวันหยุดประจำปี' }
 		parms.user = userName
 		parms.operator = dataop
 		parms.thisyear = new Date().getFullYear()+543
