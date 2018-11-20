@@ -1,8 +1,6 @@
 var mysql = require('mysql2/promise')
 
 exports.q = async function (sql,values) {
-    console.log(sql)
-    console.log(values)
     const c = await mysql.createConnection({
         host: process.env.DB_HOST,
 		user: process.env.DB_USER,
