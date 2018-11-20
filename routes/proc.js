@@ -233,6 +233,7 @@ router.post('/',async function(req, res) {
 			b = '?,?,?,?,?,?,?,?,?,?,?,?'
 			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2]
 		}
+		console.log(c)
 		var sql = await 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
 		con.q(sql,c)
 		var userdat = await con.q('SELECT userName,password FROM user_data WHERE mail = ?',mailGroup),
@@ -283,7 +284,7 @@ router.post('/',async function(req, res) {
 			else
 			  console.log(info)
 		 })
-		lars = await ll.viewLar(userName,dataid)
+		lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
 		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
 		res.json(lars)
 	}
