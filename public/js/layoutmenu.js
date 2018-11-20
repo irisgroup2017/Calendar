@@ -65,10 +65,10 @@
 			this.menu.addEventListener( this.eventtype, function(ev) { ev.stopPropagation(); } );
 		},
 		_openIconMenu : function() {
-			classie.add( this.menu, 'gn-open-all' );
+			classie.add( this.menu, '' );
 		},
 		_closeIconMenu : function() {
-			classie.remove( this.menu, 'gn-open-all' );
+			classie.remove( this.menu, '' );
 		},
 		_openMenu : function() {
 			if( this.isMenuOpen ) return;

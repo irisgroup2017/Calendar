@@ -96,18 +96,18 @@ block footer
          table.table.table-user-information
           tbody
            tr
-            td(style="padding: 16px 0px 0px 7px;")="Start Date"
+            td(style="padding: 16px 0px 0px 7px;")="วันเริ่มงาน"
             td
              .input-group.date
               input.center.form-control.datepicker(type="text" value=parms.cdate)
            tr
-            td="Employee ID"
+            td="รหัสพนักงาน"
             td#privacyID=parms.dataid
            tr
-            td="Name"
+            td="ชื่อ"
             td#privacyName=parms.user
            tr
-            td(style="padding: 16px 0px 0px 7px;")="Working TIme"
+            td(style="padding: 16px 0px 0px 7px;")="ช่วงเวลาทำงาน"
             td
              .form-group
               .col-sm-3
@@ -117,7 +117,7 @@ block footer
               .col-sm-3
                input.center.form-control#timepicker2(type="text" value='')
            tr
-            td="Boss Mail"
+            td="อีเมลล์หัวหน้า"
             td#privacyMailGroup=parms.mailGroup
            tr
             td="BOSS"
@@ -126,7 +126,7 @@ block footer
               input#boss.tgl.tgl-flip(type="checkbox")
               label.tgl-btn(for="boss" data-tg-off="No" data-tg-on="Yes")
            tr
-            td="Access"
+            td="ระดับการใช้งาน"
             td
              .rating.center
               +srd([['super-happy',''],['happy','User'],['neutral','Boss'],['sad','HR'],['super-sad','Admin']])
