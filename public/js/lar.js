@@ -86,8 +86,9 @@ jQuery(function($) {
         selectable: true,
         eventLimit: true,
         viewRender: function(view,element) {
-            if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
-            var listday = JSON.parse(localStorage.date)
+            //if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
+            var endtime = view.end._i,
+            listday = JSON.parse(localStorage.date)
             $.ajax({
                 url: '/lar',
                 type: "POST",

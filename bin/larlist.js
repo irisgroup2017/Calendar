@@ -20,7 +20,7 @@ async function getLar(userName,dataid,thisday) {
     a = new Date(thisday)
     LAR = [],
     start = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),0,1,7).getTime()/1000,
-    end = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),11,31,7).getTime()/1000,
+    end = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),(a.getMonth()==0 ? 11 : a.getMonth()),(a.getMonth()==0 ? 31 :a.getDate()),7).getTime()/1000,
     result = await con.q('SELECT * FROM lar_data WHERE userName = ? AND approve > 1 AND start BETWEEN ? AND ?',[userName,start,end]),
     resultr = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,a.getFullYear()]) 
     resultr = resultr[0]
@@ -73,6 +73,9 @@ async function getLar(userName,dataid,thisday) {
     LAR.maternityr = minusDuration(resultr[lle[5]],LAR.maternityd)
     LAR.religiousr = minusDuration(resultr[lle[6]],LAR.religiousd)
     LAR.militaryr = minusDuration(resultr[lle[7]],LAR.militaryd)
+    if (!LAR.vacation && (resultr.vacationp != null)) {
+        LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
+    }
     return LAR
 }
 
@@ -124,6 +127,13 @@ async function viewLar(userName,dataid,thisday) {
                 })
             }
         }
+        if (LAR.vacationp) {
+            if (LAR.vacationr) {
+                LARS[2].d = displayDuration(plusDuration(LAR.vacationp,LAR.vacationr)) 
+            } else {
+                LARS[2].d = displayDuration(LAR.vacationp)
+            }
+        }
         saveDuration(saveLAR,dataid,a)
     return LARS
 }
@@ -152,6 +162,30 @@ function getDuration(start,end) {
     return Ans
 }
 
+async function dhmtoarray(ov) {
+    var lov = ov.length,iov = 0,rov
+    if (lov == 1 || lov == 3 || lov == 5) { iov = 1 }
+    if (lov+iov == 6) {
+        rov = {
+            d: parseInt(ov.substring(0,2-iov),10),
+            h: parseInt(ov.substring(2-iov,4-iov),10),
+            m: parseInt(ov.substring(4-iov,6-iov),10)
+        }
+    }
+    if (lov+iov == 4) {
+        rov = {   
+            h: parseInt(ov.substring(0,2-iov),10),
+            m: parseInt(ov.substring(2-iov,4-iov),10)
+        }
+    }
+    if (lov+iov == 2) {  
+        rov = { 
+            m: parseInt(ov.substring(0,2-iov),10)
+        }
+    }
+    return rov
+}
+
 function displayDuration(duration) {
     var Ans = ''
     for (var i=0;i<option.unit.length;i++) {
@@ -161,17 +195,6 @@ function displayDuration(duration) {
         }
     }
     if (Ans == '') { Ans = '0 วัน' }
-    return Ans
-}
-
-function displayDurations(duration) {
-    var Ans = ''
-    for (var i=0;i<option.unit.length;i++) {
-        unitBase = option.unit[i]
-        if (duration[unitBase]>0) {
-            Ans = Ans + duration[unitBase] + ' ' + option.object[i] + ' '
-        }
-    }
     return Ans
 }
 
@@ -227,11 +250,11 @@ function plusDuration(old,new1) {
             Ans[unitBase] = new1[unitBase]
         } 
     }
-    if (Ans.m > 60) { 
+    if (Ans.m >= 60) { 
         Ans.h = Ans.h+ (Ans.m / 60)
         Ans.m = Ans.m % 60
     }
-    if (Ans.h > 8) {
+    if (Ans.h >= 8) {
         Ans.d = Ans.d + (Ans.h / 8)
         Ans.h = Ans.h % 8
     }
