@@ -107,6 +107,12 @@ block footer
             td="ชื่อ"
             td#privacyName=parms.user
            tr
+           td="สถานที่ทำงาน"
+            td
+             .o-switch
+              input#wplace.tgl.tgl-flip(type="checkbox")
+              label.tgl-btn(for="wplace" data-tg-off="ไซต์งาน" data-tg-on="ออฟฟิสใหญ่")
+           tr
             td(style="padding: 16px 0px 0px 7px;")="ช่วงเวลาทำงาน"
             td
              .form-group

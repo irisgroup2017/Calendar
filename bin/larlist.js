@@ -17,7 +17,7 @@ function remodule(d) {
 }
 
 async function getLar(userName,dataid,thisday) {
-    var a = new Date(thisday),
+    a = new Date(thisday)
     LAR = [],
     start = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),0,1,7).getTime()/1000,
     end = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),11,31,7).getTime()/1000,
@@ -77,7 +77,9 @@ async function getLar(userName,dataid,thisday) {
 }
 
 async function viewLar(userName,dataid,thisday) {
-    var LAR = await getLar(userName,dataid,thisday)
+    thisday = new Date(thisday)
+    var a = new Date((thisday.getMonth()==0 ? thisday.getFullYear()-1 : thisday.getFullYear()),(thisday.getMonth()==0 ? 11 : thisday.getMonth()),(thisday.getMonth()==0 ? 31 :thisday.getDate()),7),
+    LAR = await getLar(userName,dataid,a)
     LARS = [] , saveLAR = []
 		for (i=0;i<llt.length;i++) {
             if (i == 4) {
@@ -122,7 +124,7 @@ async function viewLar(userName,dataid,thisday) {
                 })
             }
         }
-        saveDuration(saveLAR,dataid)
+        saveDuration(saveLAR,dataid,a)
     return LARS
 }
 
@@ -173,7 +175,7 @@ function displayDurations(duration) {
     return Ans
 }
 
-function saveDuration(duration,dataid) {
+function saveDuration(duration,dataid,thisday) {
     if (duration.length > 0) {
         var query = '' , Ans = [] 
         for (var d=0;d<duration.length;d++) {

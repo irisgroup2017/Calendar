@@ -1,4 +1,36 @@
 jQuery(function ($) {
+    $('#wplace').click(function() {
+        $('#wplace').attr('checked',this.checked)
+        $.ajax({
+            url: '/setting',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'checkbox',
+                'emid': $('#privacyID').text(),
+                'dataid': $('#privacyID').attr('class'),
+                'cname': 'wplace',
+                'cstatus': this.checked
+            }
+        })
+    })
+    $('#boss').click(function() {
+        $('#boss').attr('checked',this.checked)
+        $.ajax({
+            url: '/setting',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'checkbox',
+                'emid': $('#privacyID').text(),
+                'dataid': $('#privacyID').attr('class'),
+                'cname': 'boss',
+                'cstatus': this.checked
+            }
+        })
+    })
     $('.datepicker').datepicker({
         ignoreReadonly: true,
         format: 'dd MM yyyy',
@@ -222,7 +254,8 @@ $(document).ready(function(){
                 $('#privacyID').attr('class',data.dataid)
                 $('#privacyName').text(data.userName)
                 $('#privacyMailGroup').text(data.mailGroup)
-                $('.tgl.tgl-flip').attr('checked',data.boss)
+                $('#wplace').attr('checked',data.wplace)
+                $('#boss').attr('checked',data.boss)
                 $('input:radio[name=access]').each(function(){
                     if (c == $(this).attr('class')) {
                         $(this).attr('checked',true)

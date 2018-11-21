@@ -69,6 +69,7 @@ router.post('/',async function(req, res) {
 			throw err
 		})
 		.then(result => {
+			result[0].wplace = (result[0].wplace==1?true:false)
 			result[0].boss = (result[0].boss==1?true:false)
 			result[0].cdate = dateFormat(new Date(result[0].cdate)*1000,'dd-mm-yyyy')
 			result[0].swtime = result[0].swtime.substring(0,5)
@@ -92,6 +93,12 @@ router.post('/',async function(req, res) {
 		a.ewtime = a.ewtime.substring(0,5)
 		con.q('UPDATE privacy_data SET ewtime = ? WHERE emid = ?',[a.ewtime,a.emid])
 		log.logger('info','Edit End Time : '+ req.cookies.user_name+' - '+a.emid)
+        res.json(a)
+	}
+	if (a.state == "checkbox") {
+		a.cstatus = (a.cstatus ? 1 : 0)
+		con.q('UPDATE privacy_data SET '+a.cname+' = ? WHERE emid = ?',[a.cstatus,a.emid])
+		log.logger('info','Edit Checkbox : '+ req.cookies.user_name+' - '+a.emid)
         res.json(a)
     }
 	if (a.state === 'delete') {
