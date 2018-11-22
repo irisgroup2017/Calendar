@@ -2,7 +2,8 @@ var express = require('express'),
 router = express.Router(),
 ll = require('../bin/larlist'),
 con = require('../bin/mysql'),
-larstock = require('../bin/larstock')
+larstock = require('../bin/larstock'),
+log = require('../bin/logger')
 
 /* GET /lar. */
 router.get('/', async function(req, res) {
@@ -35,9 +36,16 @@ router.post('/', async function(req, res) {
 		}
 		res.json(updatedur)
 	}
+	//
 	if (req.body.state == 'getvacation') {
-		var mydata = await con.q('SELECT * FROM vacation_list WHERE doffice BETWEEN ? AND ? OR dsite BETWEEN ? AND ?',[req.body.start,req.body.end,req.body.start,req.body.end])
-		res.json(mydata)
+		var result = await con.q('SELECT wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
+		var mydata = await con.q('SELECT * FROM vacation_list WHERE '+(result[0].wplace == 1? 'doffice' : 'dsite')+' BETWEEN ? AND ?',[req.body.start,req.body.end])
+		var myswap = await con.q('SELECT swapDate,start FROM lar_data WHERE className = ? AND dataid = ? AND start BETWEEN ? AND ?',['label-danger',req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
+		console.log(myswap)
+		req.body.wplace = (result[0].wplace == 1 ? 'doffice' : 'dsite')
+		req.body.mydata = mydata
+		req.body.myswap = myswap
+		res.json(req.body)
 	}
 })
 

@@ -45,11 +45,28 @@ jQuery(function($) {
     isClicked = false,
     isDblClicked = false
 
+    var fcwend,fcwstart,fcwdow
+
+    $.ajax({
+        url: '/proc',
+        type: "POST",
+        dataType: "json",
+        async: false,
+        data: {
+            'state': 'loadacc'
+        },
+        success: function (data) {
+            fcwend = data.fcwend
+            fcwstart = data.fcwstart
+            fcwdow = data.fcwdow
+        }
+    })
+
 	var calendar = $('#calendar').fullCalendar({
         businessHours: {
-            dow: [ 1,2,3,4,5 ], // Monday - Friday
-            start: '8:00', // a start time
-            end: '17:00' // an end time
+            dow: fcwdow, // Monday - Friday
+            start: fcwstart, // a start time
+            end: fcwend // an end time
             //overlap: false
             //rendering: 'background'
         },
@@ -100,12 +117,20 @@ jQuery(function($) {
                     'end': view.end._i
                 },
                 success: function (data) {
-                    for (var i=0;i<data.length;i++) {
-                        thisvacation = data[i]['doffice']
+                    console.log(data)
+                    for (var i=0;i<data.mydata.length;i++) {
+                        thisvacation = data.mydata[i][data.wplace]
                         if (listday.indexOf(thisvacation)) {
                             datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)
-                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data[i].dtitle+'</div>')
-                         }
+                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data.mydata[i].dtitle+'</div>')
+                        }
+                        thisswapdate = data.myswap[i].swapDate*1000
+                        swapfrom = data.myswap[i].start*1000
+                        if (listday.indexOf(thisswapdate)) {
+                            datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
+                            dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
+                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่      '+dateread+'</div>')
+                        }
                     }
                 }
             })
@@ -283,6 +308,7 @@ jQuery(function($) {
             }
         },
         eventResize: function (event,delta,revertFunc) { // this function is called when resize events
+            if (event.className == 'label-danger') { revertFunc() }
             createEvent = true
             var newEventStart = event.start._d.getTime()
             var newEventClass = event.className[0]
@@ -472,6 +498,7 @@ jQuery(function($) {
                 if (calEvent.className == "label-grey") { larType = "ลาป่วย" }
                 else if (calEvent.className == "label-success")  { larType = "ลากิจ" }
                 else if (calEvent.className == "label-warning") { larType = "ลาพักร้อน" } 
+                else if (calEvent.className == "label-danger") { larType = "ลาสลับวันหยุด" } 
                 else { larType = "ลาอื่นๆ" }
             if (larType == "ลาอื่นๆ") {
                 var modal = 
@@ -510,7 +537,44 @@ jQuery(function($) {
                 </div>\
                 </div>\
                 </div>'
-            } else {
+            } 
+                else if (larType == "ลาสลับวันหยุด") {
+                    var modal = 
+                '<div class="modal fade">\
+                <div class="modal-dialog">\
+                <div class="modal-content">\
+                    <div class="modal-header">\
+                    <h5 class="modal-title">'+larType+'</h5>\
+                    </div>\
+                    <div class="modal-body">\
+                    <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                    <form class="no-margin">\
+                        <label>เลือกวันที่ต้องการสลับวันหยุด &nbsp;</label>\
+                        <div class="row">\
+                            <div class="col-md-6">\
+                             <div class="input-group date">\
+                              <input class="form-control datepicker" type="text" readonly placeholder="สลับวันหยุดกับวันที่">\
+                              <div class="input-group-addon pickday">\
+                               <span class="fa fa-calendar-check-o"></span>\
+                              </div>\
+                             </div>\
+                            </div>\
+                            <div class="col-md-6">\
+                            <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
+                            </div>\
+                        </span>\
+                    </form>\
+                    </div>\
+                    <div class="modal-footer">\
+                        <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+                        <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+                        <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                    </div>\
+                </div>\
+                </div>\
+                </div>'
+            } 
+                else {
                 var modal =
                 '<div class="modal fade">\
                 <div class="modal-dialog">\
@@ -556,6 +620,18 @@ jQuery(function($) {
                     if (dd == 'undefined' || dd == "") { $('.lartype').text('วันคงเหลือ: '+larlist[$('#larType').val()]) }
                     else { $('.lartype').text('วันคงเหลือ: '+dd) }
                 })
+                $('.datepicker').datepicker({
+                    ignoreReadonly: true,
+                    format: 'dd/MM/yyyy',
+                    todayHighlight: true,
+                    clearBtn: true
+                  })
+                $('.datepicker').datepicker().on('changeDate',function(e) {
+                    $('.datepicker').datepicker('hide')
+                })
+                $(document).on("click", ".pickday", function() {
+                    $('.datepicker').datepicker('show')
+                })
                 $('select[id=larType]').on('change',function(e) {
                     var larload,larlist
                     $.ajax({
@@ -574,10 +650,15 @@ jQuery(function($) {
                     if (dd == 'undefined' || dd == "") { $('.lartype').text('วันคงเหลือ: '+larlist[$(this).val()]) }
                     else { $('.lartype').text('วันคงเหลือ: '+dd) }
                 })
+
                 modal.find('form').on('submit', function(ev){
                     ev.preventDefault()
-                    calEvent.title = $(this).find("#larType").val()
-                    if (calEvent.title == '') { calEvent.title = $(this).find("#larType").attr('placeholder') }
+                    if (calEvent.className == 'label-danger') {
+                        calEvent.title = 'ลาสลับวันหยุด'
+                    } else {
+                        calEvent.title = $(this).find("#larType").val()
+                        if (calEvent.title == '') { calEvent.title = $(this).find("#larType").attr('placeholder') }
+                    }
                     calEvent.editable = false
                     calendar.fullCalendar('updateEvent', calEvent)
                     if (calEvent.title !== null) {
@@ -606,6 +687,9 @@ jQuery(function($) {
                         }
                         if (calEvent.allDay) {
                             data.allDay = true
+                        }
+                        if (calEvent.className == 'label-danger') { 
+                            data.swapDate = $('.datepicker').datepicker('getDate').getTime()/1000
                         }
                         if (calEvent.className !== null) {
                             data.className = calEvent.className
@@ -651,6 +735,5 @@ jQuery(function($) {
                 })
             }
 		}
-		
-	});
+    })
 })

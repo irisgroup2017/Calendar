@@ -17,6 +17,17 @@ function remodule(d) {
 	return a
 }
 router.post('/',async function(req, res) {
+	if (req.body.state == "loadacc") {
+		result = await con.q('SELECT swtime,ewtime,wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
+		req.body.fcwend = result[0].ewtime.substring(0,5)
+		req.body.fcwstart = result[0].swtime.substring(0,5)
+		if (result[0].wplace == 1) {
+			req.body.fcwdow = [1,2,3,4,5]	
+		} else {
+			req.body.fcwdow = [1,2,3,4,5,6]	
+		}
+		res.json(req.body)
+	}
 	if (req.body.state == 'load') {
 		con.q('SELECT * FROM reserve_data WHERE start BETWEEN ? AND ?',[req.body.start,req.body.end])
 		.then(result => {
@@ -220,7 +231,7 @@ router.post('/',async function(req, res) {
 		if (className == 'label-grey') { larType = 'ลาป่วย' }
 		else if (className == 'label-success') { larType = 'ลากิจ' }
 		else if (className == 'label-warning') {	larType = 'ลาพักร้อน' }
-		else if (className == 'label-yellow') {	larType = 'ลาสลับวันหยุด' }
+		else if (className == 'label-danger') {	larType = 'ลาสลับวันหยุด' }
 		else if (className == 'label-info') { larType = title }
 		var mailGroup = req.body.mailGroup,
 		a,b,c

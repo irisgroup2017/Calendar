@@ -28,6 +28,7 @@ function handleDisconnect() {
 		handleDisconnect()       
 	  } else {   
 			console.log('db error', err)
+			log.logger('error','db error')
 			con.release()                   
 			throw err                 
 	  }
@@ -95,6 +96,7 @@ app.use(function(err, req, res, next) {
 	res.locals.error = req.app.get('env') === 'development' ? err : {}
 	res.status(err.status || 500)
 	parms = { title: 'Error', head1: 'Error Status', head2: ' ' + err.status }
+	
 	res.render('error')
 })
 
