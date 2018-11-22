@@ -23,7 +23,7 @@ async function setLar(userName,dataid,state,now) {
     x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),
     w = y[2]-x[2],
-    ov = await con.q('SELECT vacationp,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
+    ov = await con.q('SELECT vacation,vacationp,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (!ov[0]) { 
         ov = 0 
     }
@@ -45,14 +45,19 @@ async function setLar(userName,dataid,state,now) {
         } else if (ov[0].military) {
             if (ov[0].military == 0) { mi=0 }
         }
-        
-        if (ov[0].vacationr) {
-            //thisva = await con.q('SELECT vacationr FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]])
-            ovr = ov[0].vacationr
+        ovr = ov[0].vacationr
+        ovp = ov[0].vacationp
+        if (ovr) {
             ovb = await dhmtonum(ovr.toString())
-            if (ovb >= 6) { ova = 060000 }
-            else { con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]]) }
-        }
+            if (ovb >= 6) { ovr = '060000' }
+            con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
+        } else if (ovp) {
+            ovm = ov[0].vacation + "0000"
+            ovp2 = await plusdhm(ovm,ovp.toString())
+            ovb = await dhmtonum(ovp2.toString())
+            if (ovb >= 6) { ovp = '060000' }
+            con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
+        } 
     }
     
     va = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
@@ -110,6 +115,54 @@ async function dhmtonum(ov) {
         rov = ((mov/60)/10)
     }
     return rov
+}
+
+function plusdhm(a,b) {
+    ov = [a,b],aov=[]
+    for (i=0;i<2;i++) {
+        iov=0
+        lov = ov[i].length
+        if (lov == 1 || lov == 3 || lov == 5) { iov = 1 }
+        if (lov+iov == 6) {
+            aov.push({
+               d: parseInt(ov[i].substring(0,2-iov),10),
+               h: parseInt(ov[i].substring(2-iov,4-iov),10),
+               m: parseInt(ov[i].substring(4-iov,6-iov),10)
+            })
+        }
+        if (lov+iov == 4) {
+            aov.push({
+                d: 0,
+                h: parseInt(ov[i].substring(0,2-iov),10),
+                m: parseInt(ov[i].substring(2-iov,4-iov),10)
+            })
+        }
+        if (lov+iov == 2) {
+            aov.push({
+                d: 0,
+                h: 0,
+                m: parseInt(ov[i].substring(0,2-iov),10)
+            })
+        }
+    }
+    ov = [aov[0].d+aov[1].d,aov[0].h+aov[1].h,aov[0].m+aov[1].m]
+    if (ov[2] >= 60) { 
+        ov[1] = ov[1]+ (ov[2] / 60)
+        ov[2] = ov[2] % 60
+    }
+    if (ov[1] >= 8) {
+        ov[0] = ov[0] + (ov[1] / 8)
+        ov[1] = ov[1] % 8
+    }
+    var ans=''
+    for (var i=0;i<ov.length;i++) {
+        if (ov[i]>9) {
+            ans = ans +''+ ov[i]
+        } else if (ov[i]>1) {
+            ans = ans + '0' + ov[i]
+        } else { ans = ans + '00' }
+    }
+    return ans
 }
 
 function gd(a) {

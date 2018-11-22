@@ -73,8 +73,12 @@ async function getLar(userName,dataid,thisday) {
     LAR.maternityr = minusDuration(resultr[lle[5]],LAR.maternityd)
     LAR.religiousr = minusDuration(resultr[lle[6]],LAR.religiousd)
     LAR.militaryr = minusDuration(resultr[lle[7]],LAR.militaryd)
-    if (!LAR.vacation && (resultr.vacationp != null)) {
-        LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
+    if (!LAR.vacation && (resultr.vacationq != null)) {
+        LAR.vacationq = await dhmtoarray(resultr.vacationq.toString())
+    } else {
+        if (!LAR.vacation && (resultr.vacationp != null)) {
+            LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
+        }
     }
     return LAR
 }
@@ -127,13 +131,20 @@ async function viewLar(userName,dataid,thisday) {
                 })
             }
         }
+        if (LAR.vacationq) {
+            if (LAR.vacationr) {
+                LARS[2].d = displayDuration(plusDuration(LAR.vacationq,LAR.vacationr)) 
+            } else {
+                LARS[2].d = displayDuration(LAR.vacationq)
+            }
+        }
         if (LAR.vacationp) {
             if (LAR.vacationr) {
                 LARS[2].d = displayDuration(plusDuration(LAR.vacationp,LAR.vacationr)) 
             } else {
                 LARS[2].d = displayDuration(LAR.vacationp)
             }
-        }
+        } 
         saveDuration(saveLAR,dataid,a)
     return LARS
 }
@@ -224,7 +235,7 @@ function saveDuration(duration,dataid,thisday) {
             Ans.push(qr)
         }
         Ans.push(dataid)
-        Ans.push(new Date().getFullYear())
+        Ans.push(new Date(thisday).getFullYear())
         con.q('UPDATE lar_status SET '+query+' WHERE dataid = ? AND year = ?',Ans)
     }
 }
@@ -429,6 +440,7 @@ function getDayTime (inTime,outTime,allDay) {
 
 exports.plusDuration = plusDuration
 exports.displayDuration = displayDuration
+exports.dhmtoarray = dhmtoarray
 exports.getDuration = getDuration
 exports.viewLar = viewLar
 exports.getDayTime = getDayTime
