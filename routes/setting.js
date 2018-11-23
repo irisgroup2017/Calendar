@@ -112,6 +112,11 @@ router.post('/',async function(req, res) {
 		log.logger('info','ADD ID : '+ req.cookies.user_name+' - '+a.emid)
 		res.json(a)
 	}
+	if (a.state == 'resetpassword') {
+		await con.q('UPDATE user_data SET password = ? WHERE dataid = ?',[a.username+'1234',a.dataid])
+		log.logger('info','Reset password : '+ req.cookies.user_name+' - '+a.emid)
+		res.json(a)
+	}
 	if (a.state == 'save') {
 		await con.q('UPDATE user_data SET emid = ?,name = ?,lastName = ?,jobPos = ?,depart = ?,mail = ?,mailGroup = ?,userName = ? WHERE dataid = ?',[a.emid,a.name,a.lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.dataid])
 		await con.q('UPDATE privacy_data SET emid = ?,userName = ?,mailGroup = ? WHERE dataid = ?',[a.emid,a.name+' '+a.lastName,a.mailGroup,a.dataid])

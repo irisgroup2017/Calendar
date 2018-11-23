@@ -138,49 +138,98 @@ $(document).ready(function(){
                     'password': userName+'1234'},
                 success: function(data) {
                     var signs = '<td class="center">\
-                    <a class="saveline fa fa-floppy-o hvr-pulse" title="Save"></a>\
-                    <a class="editline fa fa-pencil-square-o hvr-pulse" title="Edit"></a>\
-                    <a class="privacy fa fa-address-card-o hvr-pulse" title="Privacy Setting"></a>\
-                    <a class="delete fa fa-trash hvr-pulse title="Delete" data-toggle="confirmation" data-placement="left"></a></td>'
+                    <a class="saveline hvr-icon-bounce" title="Save"><i class="fa fa-floppy-o hvr-icon"></i></a>\
+                    <a class="editline hvr-icon-bounce" title="Edit"><i class="fa fa-pencil-square-o hvr-icon"></i></a>\
+                    <a class="privacy hvr-icon-bounce" title="Privacy Setting"><i class="fa fa-address-card-o hvr-icon"></i></a>\
+                    <a class="resetline hvr-icon-spin" title="Reset Password"><i class="fa fa-refresh hvr-icon"></i></a>\
+                    <a class="delete hvr-icon-bounce" title="Delete"><i class="fa fa-trash hvr-icon"></i></a></td>'
 
                     $('tbody[id=manage]').find('tr:last-child').addClass(data.dataid)
                     $('.'+data.dataid).find('td:last-child').remove()
                     $('.'+data.dataid).append(signs)
 
                     var posts = '<tr>\
-                    <td class="center"><input class="add inputex" id="emid"></td>\
-                    <td class="center"><input class="add inputex" id="name"></td>\
-                    <td class="center"><input class="add inputex" id="lastName"></td>\
-                    <td class="center"><input class="add inputex" id="jobPos"></td>\
-                    <td class="center"><input class="add inputex" id="depart"></td>\
-                    <td class="center"><input class="add inputex" id="mail"></td>\
-                    <td class="center"><input class="add inputex" id="mailGroup"></td>\
-                    <td class="center"><input class="add inputex" id="userName"></td>\
-                    <td class="center"><a class="addline fa fa-plus hvr-pulse" title="Add" data-toggle="tooltip"></a></td>\
+                    <td><input class="add inputex" id="emid"></td>\
+                    <td><input class="add inputex" id="name"></td>\
+                    <td><input class="add inputex" id="lastName"></td>\
+                    <td><input class="add inputex" id="jobPos"></td>\
+                    <td><input class="add inputex" id="depart"></td>\
+                    <td><input class="add inputex" id="mail"></td>\
+                    <td><input class="add inputex" id="mailGroup"></td>\
+                    <td><input class="add inputex" id="userName"></td>\
+                    <td class="center"><a class="addline hvr-icon-pulse-shrink" title="Add" data-toggle="tooltip"><i class="fa fa-plus hvr-icon"></i></a></td>\
                     </tr>'
                     $("table[id=manage]").append(posts)
                 }
             })
 		}	
     })
-    $(document).on("click", ".delete", function(){
+
+
+    $('.resetline').click(function(){
         dataid = $(this).parents('tr').attr('class')
-        $('.' + dataid + ' .delete').confirmation('show')
-        $(document).on('confirmed.bs.confirmation',".delete",function(){
-            dataid = $(this).parents('tr').attr('class')
-            $.ajax({
-                url: '/setting',
-                type: "POST",
-                dataType: 'json',
-                async: false,
-                data: { 
-                    'state': 'delete',
-                    'dataid': dataid
+        datausername = $(this).parents('tr').find('td:nth-child(8)').text()
+        $.confirm({
+            title: 'กู้คืนรหัสผ่าน',
+            content: 'ยืนยันการกู้คืนรหัสผ่านบัญชี '+ datausername,
+            theme: 'bootstrap',
+            closeIcon: true,
+            animation: 'scale',
+            type: 'blue',
+            buttons: {
+                confirm: function() {
+                    $.ajax({
+                        url: '/setting',
+                        type: "POST",
+                        dataType: 'json',
+                        async: false,
+                        data: { 
+                            'state': 'resetpassword',
+                            'dataid': dataid,
+                            'username': datausername
+                        },
+                        success: function(data) {
+                            $.alert('ดำเนินการกู้คืนรหัสผ่านของบัญชี '+data.username+' เรียบร้อยแล้ว')
+                        }
+                    })
                 },
-                success: function(data) {
-                    $('tr[class='+data.dataid+']').remove()
+                cancel: function() {
+                    $.alert('ยกเลิกการกู้คืนรหัสผ่าน')
                 }
-            })
+            }
+        })
+    })
+
+    $(".delete").click(function(){
+        dataid = $(this).parents('tr').attr('class')
+        datausername = $(this).parents('tr').find('td:nth-child(8)').text()
+        $.confirm({
+            title: 'ลบบัญชีผู้ใช้',
+            content: 'ยืนยันการลบบัญชี '+ datausername,
+            theme: 'bootstrap',
+            closeIcon: true,
+            animation: 'scale',
+            type: 'red',
+            buttons: {
+                confirm: function() {
+                    $.ajax({
+                        url: '/setting',
+                        type: "POST",
+                        dataType: 'json',
+                        async: false,
+                        data: { 
+                            'state': 'delete',
+                            'dataid': dataid
+                        },
+                        success: function(data) {
+                            $('tr[class='+data.dataid+']').remove()
+                        }
+                    })
+                },
+                cancel: function() {
+                    $.alert('ยกเลิกการลบบัญชีผู้ใช้')
+                }
+            }
         })
     })
 

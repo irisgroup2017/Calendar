@@ -33,10 +33,16 @@ mixin tbl(namel)
    td=parms.objs[i].mailGroup
    td=parms.objs[i++].userName
    td.center
-    a.saveline.fa.fa-floppy-o.hvr-pulse(title="Save")
-    a.editline.fa.fa-pencil-square-o.hvr-pulse(title="Edit")
-    a.privacy.fa.fa-address-card-o.hvr-pulse(title="Privacy Setting")
-    a.delete.fa.fa-trash.hvr-pulse(title="Delete" data-toggle="confirmation" data-placement="left")
+    a.saveline.hvr-icon-bounce(title="Save")
+     i.fa.fa-floppy-o.hvr-icon
+    a.editline.hvr-icon-bounce(title="Edit")
+     i.fa.fa-pencil-square-o.hvr-icon
+    a.privacy.hvr-icon-bounce(title="Privacy Setting")
+     i.fa.fa-address-card-o.hvr-icon
+    a.resetline.hvr-icon-spin(title="Reset Password" data-toggle="confirmation")
+     i.fa.fa-refresh.hvr-icon
+    a.delete.hvr-icon-bounce(title="Delete" data-toggle="confirmation")
+     i.fa.fa-trash.hvr-icon
     //-if cal .dropdown-divider
 block script
  +scss(['animate.min.css'])
@@ -74,9 +80,10 @@ block content
     td
      input#userName.add.inputex
     td.center
-     a.addline.fa.fa-plus.hvr-pulse(title="Add" data-toggle="tooltip")
- +ssrc(['popper.min.js','moment.min.js','setting.js','bootstrap-datepicker.min.js','bootstrap-confirmation.min.js','clockpicker.min.js'])
- +scss(['checkbox.css','setting.css','hover.css','bootstrap-datepicker.min.css','clockpicker.min.css'])
+     a.addline.hvr-icon-pulse-shrink(title="Add" data-toggle="tooltip")
+      i.fa.fa-plus.hvr-icon
+ +ssrc(['popper.min.js','moment.min.js','setting.js','bootstrap-datepicker.min.js','jquery-confirm.min.js','clockpicker.min.js'])
+ +scss(['checkbox.css','setting.css','hover.css','bootstrap-datepicker.min.css','clockpicker.min.css','jquery-confirm.min.css'])
 block footer
  #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
   .close-animatedModal

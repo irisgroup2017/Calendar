@@ -8,19 +8,19 @@ table.table td a:hover {
     text-decoration: none;
 } 
 table.table td a.addline {
-    display: inline-block;
     color: #27C46B;
 }
 table.table td a.editline {
-    display: inline-block;
     color: #FFC107;
 }
 table.table td a.privacy {
-    display: inline-block;
     color: rgba(23, 7, 255, 0.815);
 }
-table.table td a.delete {
+table.table td a.resetline {
     display: inline-block;
+    color: rgba(250, 18, 200, 0.89);
+}
+table.table td a.delete {
     color: #E34724;
 }
 table.table td .saveline {
