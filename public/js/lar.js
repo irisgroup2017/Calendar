@@ -139,7 +139,6 @@ jQuery(function($) {
                     }
                 }
             })
-            console.log('2')
             localStorage.clear()
             $.ajax({
                 url: '/lar',
