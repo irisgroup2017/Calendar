@@ -124,17 +124,21 @@ jQuery(function($) {
                     len2=data.myswap.length,
                     mylen=(len1 < len2?len2:len1)
                     for (var i=0;i<mylen;i++) {
-                        if (data.mydata[i]) { thisvacation = data.mydata[i][data.wplace] }
-                        if (data.myswap[i]) { thisswapdate = data.myswap[i].swapDate*1000 }
-                        swapfrom = data.myswap[i].start*1000
-                        if (listday.indexOf(thisswapdate)) {
-                            datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
-                            dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
-                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
+                        if (data.myswap[i]) { 
+                            thisswapdate = await data.myswap[i].swapDate*1000 
+                            swapfrom = await data.myswap[i].start*1000
+                            if (listday.indexOf(thisswapdate)) {
+                                datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
+                                dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
+                                $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
+                            }
                         }
-                        else if (listday.indexOf(thisvacation)) {
-                            datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)
-                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data.mydata[i].dtitle+'</div>')
+                        else if (data.mydata[i]) { 
+                            thisvacation = await data.mydata[i][data.wplace]
+                            if (listday.indexOf(thisvacation)) {
+                                datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)
+                                $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data.mydata[i].dtitle+'</div>')
+                            }
                         }
                     }
                 }
@@ -265,7 +269,7 @@ jQuery(function($) {
                 if (eeTime > edTime) { createEvent = false }
             }
             else if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
-            else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey') { createEvent = false }
+            else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey' && copiedEventObject.className != 'label-danger') { createEvent = false }
             if (existingEvents.length > 0) { createEvent = false }
             // Add Event  
             if (copiedEventObject.title !== null && createEvent) {
