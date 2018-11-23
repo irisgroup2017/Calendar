@@ -103,7 +103,10 @@ jQuery(function($) {
         selectable: true,
         eventLimit: true,
         viewRender: function(view,element) {
-            //if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
+            /*
+            //if this month is a current month send information last day with current time
+            if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
+            */
             var endtime = view.end._i,
             listday = JSON.parse(localStorage.date)
             $.ajax({
@@ -129,7 +132,7 @@ jQuery(function($) {
                         if (listday.indexOf(thisswapdate)) {
                             datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
                             dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
-                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่      '+dateread+'</div>')
+                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
                         }
                     }
                 }
