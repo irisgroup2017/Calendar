@@ -35,7 +35,8 @@ block content
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
  link(rel='stylesheet' , href='css/setting.css')
  link(rel='stylesheet' , href='css/hover.css')
- +ssrc(['popper.min.js','moment.min.js','transition.js','collapse.js','bootstrap-confirmation.min.js'])
+ link(rel='stylesheet' , href='css/jquery-confirm.min.css')
+ +ssrc(['popper.min.js','moment.min.js','transition.js','collapse.js','jquery-confirm.min.js'])
 
  table.table
   thead.thead-info
@@ -57,56 +58,69 @@ block content
     h4.center='ไม่มีข้อมูล'
  script.
   jQuery(function($) {
-      var larid = '',status = ''
-   $(document).on("click", ".delete", function(){
+    var larid = '',status = ''
+    $(document).on("click", ".delete", function(){
         larid = $(this).parents('tr').attr('id')
-        $('#' + larid + ' .delete').confirmation('show')
-        $(document).on('confirmed.bs.confirmation',".delete",function(){
-            status = ($(this).parents('tr').find('td:nth-child(8)').text().indexOf(':') > 0 ? $(this).parents('tr').find('td:nth-child(8)').text().split(':') : $(this).parents('tr').find('td:nth-child(8)').text())
-            larid = $(this).parents('tr').attr('id')
-            if (status == 'รออนุมัติ') {
-                $.ajax({
-                    url: '/leavelist',
-                    type: "POST",
-                    dataType: 'json',
-                    async: false,
-                    data: { 
-                        'state': 'delete',
-                        'larid': larid
-                    },
-                    success: function(data) {
-                        $('tr[id='+data.larid+']').remove()
+        status = ($(this).parents('tr').find('td:nth-child(8)').text().indexOf(':') > 0 ? $(this).parents('tr').find('td:nth-child(8)').text().split(':') : $(this).parents('tr').find('td:nth-child(8)').text())
+        $.confirm({
+            title: 'ลบข้อมูลการลา',
+            content: 'ยืนยันการลบบข้อมูลการลาวันที่ '+ $(this).parents('tr').find('td:first-child').text(),
+            theme: 'bootstrap',
+            closeIcon: true,
+            animation: 'scale',
+            type: 'red',
+            buttons: {
+                confirm: function() {
+                    console.log(status)
+                    console.log(larid)
+                    if (status == 'รออนุมัติ') {
+                        $.ajax({
+                            url: '/leavelist',
+                            type: "POST",
+                            dataType: 'json',
+                            async: false,
+                            data: { 
+                                'state': 'delete',
+                                'larid': larid
+                            },
+                            success: function(data) {
+                                $('tr[id='+data.larid+']').remove()
+                            }
+                        })
+                    } else if (status[0] == 'อนุมัติ') {
+                        $.ajax({
+                            url: '/leavelist',
+                            type: "POST",
+                            dataType: 'json',
+                            async: false,
+                            data: { 
+                                'state': 'delkeep',
+                                'larid': larid
+                            },
+                            success: function(data) {
+                                $('tr[id='+data.larid+']').attr('class','strikeout')
+                            }
+                        })
                     }
-                })
-            } else if (status[0] == 'อนุมัติ') {
-                $.ajax({
-                    url: '/leavelist',
-                    type: "POST",
-                    dataType: 'json',
-                    async: false,
-                    data: { 
-                        'state': 'delkeep',
-                        'larid': larid
-                    },
-                    success: function(data) {
-                        $('tr[id='+data.larid+']').attr('class','strikeout')
+                    else {
+                        $.ajax({
+                            url: '/leavelist',
+                            type: "POST",
+                            dataType: 'json',
+                            async: false,
+                            data: { 
+                                'state': 'hrprove',
+                                'larid': larid
+                            },
+                            success: function(data) {
+                                $('tr[id='+data.larid+']').attr('class','bg-warning')
+                            }
+                        })
                     }
-                })
-            }
-            else {
-                $.ajax({
-                    url: '/leavelist',
-                    type: "POST",
-                    dataType: 'json',
-                    async: false,
-                    data: { 
-                        'state': 'hrprove',
-                        'larid': larid
-                    },
-                    success: function(data) {
-                        $('tr[id='+data.larid+']').attr('class','bg-warning')
-                    }
-                })
+                },
+                cancel: function() {
+                    $.alert('ยกเลิกการลบข้อมูลการลา')
+                }
             }
         })
      })
