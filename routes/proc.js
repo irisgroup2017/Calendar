@@ -236,9 +236,10 @@ router.post('/',async function(req, res) {
 		var mailGroup = req.body.mailGroup,
 		a,b,c
 		if (req.body.swapDate) {
+			swapDate = req.body.swapDate
 			a = 'dataid,ID,title,start,end,allDay,className,userName,mailGroup,boss,cTime,approve,swapDate'
 			b = '?,?,?,?,?,?,?,?,?,?,?,?,?'
-			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,req.body.swapDate]
+			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,swapDate]
 		} else {
 			a = 'dataid,ID,title,start,end,allDay,className,userName,mailGroup,boss,cTime,approve'
 			b = '?,?,?,?,?,?,?,?,?,?,?,?'
@@ -294,9 +295,12 @@ router.post('/',async function(req, res) {
 			else
 			  console.log(info)
 		 })
-		lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
+		req.body = {}
+		req.body.lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
+		req.body.start = start
+		req.body.swapDate = swapDate
 		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
-		res.json(lars)
+		res.json(req.body)
 	}
 
 	if (req.body.state == 'resize') {

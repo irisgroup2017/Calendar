@@ -718,6 +718,13 @@ jQuery(function($) {
                                             $('tr[class='+ data[i].a +']').find('td:nth-child(3)').removeClass("bg-danger").addClass("bg-success")
                                         }
                                     }
+                                    if (data.swapDate) {
+                                        thisswapdate = data.swapDate*1000
+                                        swapfrom = data.start*1000
+                                        datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
+                                        dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
+                                        $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
+                                    }
                                 }
                             })
                         }
