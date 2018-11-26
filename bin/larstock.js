@@ -25,7 +25,7 @@ async function setLar(userName,dataid,state,now) {
     w = y[2]-x[2],
     ov = await con.q('SELECT vacation,vacationp,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (!ov[0]) { 
-        ov = 0 
+        ovr = 0 
     }
     else {
         if (ov[0].sterilyd) {
