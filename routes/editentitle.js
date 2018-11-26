@@ -60,7 +60,7 @@ router.post('/',async function(req,res) {
         }
     }
     await con.q('UPDATE lar_status SET sicke = ?,personale = ?,vacatione = ?,traininge = ?,sterilye = ?,maternitye = ?,religiouse = ?,militarye = ? WHERE dataid = ? AND year = ?',[ans.si,ans.pe,ans.va,ans.tr,ans.st,ans.ma,ans.re,ans.mi,data.dataid,thisyear])
-    ls.updateLar(data.userName,data.dataid)
+    ls.updateLar(data.userName,data.dataid,new Date().getTime())
     log.logger('info','Edit Entitle: '+ req.cookies.user_name +' Data ID '+data.dataid)
     res.end('data')
 })

@@ -59,7 +59,6 @@ async function setLar(userName,dataid,state,now) {
             con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
         } 
     }
-    
     va = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
     pe = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
     if (w == 2) {
