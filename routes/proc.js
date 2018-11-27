@@ -234,7 +234,7 @@ router.post('/',async function(req, res) {
 		else if (className == 'label-danger') {	larType = 'ลาสลับวันหยุด' }
 		else if (className == 'label-info') { larType = title }
 		var mailGroup = req.body.mailGroup,
-		a,b,c
+		a,b,c,swapDate
 		if (req.body.swapDate) {
 			swapDate = req.body.swapDate
 			a = 'dataid,ID,title,start,end,allDay,className,userName,mailGroup,boss,cTime,approve,swapDate'
@@ -297,7 +297,7 @@ router.post('/',async function(req, res) {
 		 })
 		req.body = {}
 		req.body.lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
-		if (swapDate) { 
+		if (swapDate) {
 			req.body.start = start
 			req.body.swapDate = swapDate 
 		}
