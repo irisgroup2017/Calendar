@@ -80,7 +80,7 @@ router.post('/',async function(req, res) {
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])
 		ls.setLar(a.userName,a.dataid,'insert',new Date().getTime())
-		log.logger('info','Edit Date Start Work : '+ req.cookies.user_name+' - '+a.name+' '+a.lastName)
+		log.logger('info','Edit Date Start Work : '+ req.cookies.user_name+' - '+a.userName)
         res.json(a)
 	}
 	if (a.state == "swtime") {
@@ -103,7 +103,7 @@ router.post('/',async function(req, res) {
     }
 	if (a.state === 'delete') {
 		await con.q(['DELETE FROM user_data WHERE dataid = ?','DELETE FROM privacy_data WHERE dataid = ?','DELETE FROM lar_status WHERE dataid = ?','DELETE FROM lar_data WHERE dataid = ?'],a.dataid)
-		log.logger('info','Remove ID : '+ req.cookies.user_name+' - '+a.emid)
+		log.logger('info','Remove ID : '+ req.cookies.user_name+' - '+a.userName)
 		res.json(a)
 	}
 	if (a.state === 'add') {

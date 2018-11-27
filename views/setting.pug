@@ -116,9 +116,11 @@ block footer
            tr
            td="สถานที่ทำงาน"
             td
-             .o-switch
-              input#wplace.tgl.tgl-flip(type="checkbox")
-              label.tgl-btn(for="wplace" data-tg-off="ไซต์งาน" data-tg-on="ออฟฟิสใหญ่")
+             .box
+              input#wplace.Switcher__checkbox.sr-only(type="checkbox")
+              label.Switcher(for="wplace")
+               .Switcher__trigger(data-value="ไซต์งาน")
+               .Switcher__trigger(data-value="ออฟฟิสใหญ่")
            tr
             td(style="padding: 16px 0px 0px 7px;")="ช่วงเวลาทำงาน"
             td
@@ -135,9 +137,11 @@ block footer
            tr
             td="BOSS"
             td
-             .o-switch
-              input#boss.tgl.tgl-flip(type="checkbox")
-              label.tgl-btn(for="boss" data-tg-off="No" data-tg-on="Yes")
+             .box
+              input#boss.Switcher__checkbox.sr-only(type="checkbox")
+              label.Switcher(for="boss")
+               .Switcher__trigger(data-value="พนักงาน")
+               .Switcher__trigger(data-value="ออฟฟิสใหญ่")
            tr
             td="ระดับการใช้งาน"
             td

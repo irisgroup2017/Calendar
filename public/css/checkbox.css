@@ -34,88 +34,117 @@ input[type=checkbox]:checked + span::after {
 td span {
   padding: 0 5px 5px 5px
 }
-.tgl {
-	display: none;
+
+.Switcher {
+  position: relative;
+  display: flex;
+  border-radius: 5em;
+  box-shadow: inset 0 0 0 1px;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-animation: r-n .5s;
+          animation: r-n .5s;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  will-change: transform;
+}
+.Switcher__checkbox:checked + .Switcher {
+  -webkit-animation-name: r-p;
+          animation-name: r-p;
+}
+@-webkit-keyframes r-p {
+  50% {
+    -webkit-transform: rotateY(45deg);
+            transform: rotateY(45deg);
   }
-  .tgl, .tgl:after, .tgl:before, .tgl *, .tgl *:after, .tgl *:before, .tgl + .tgl-btn {
-	box-sizing: border-box;
+}
+@keyframes r-p {
+  50% {
+    -webkit-transform: rotateY(45deg);
+            transform: rotateY(45deg);
   }
-  .tgl::selection, .tgl:after::selection, .tgl:before::selection, .tgl *::selection, .tgl *:after::selection, .tgl *:before::selection, .tgl + .tgl-btn::selection {
-	background: none;
+}
+@-webkit-keyframes r-n {
+  50% {
+    -webkit-transform: rotateY(-45deg);
+            transform: rotateY(-45deg);
   }
-  .tgl + .tgl-btn {
-	outline: 0;
-	display: block;
-	width: 4em;
-	height: 2em;
-	position: relative;
-	cursor: pointer;
-	user-select: none;
+}
+@keyframes r-n {
+  50% {
+    -webkit-transform: rotateY(-45deg);
+            transform: rotateY(-45deg);
   }
-  .tgl + .tgl-btn:after, .tgl + .tgl-btn:before {
-	position: relative;
-	display: block;
-	content: "";
-	width: 50%;
-	height: 100%;
-  }
-  .tgl + .tgl-btn:after {
-	left: 0;
-  }
-  .tgl + .tgl-btn:before {
-	display: none;
-  }
-  .tgl-flip:checked + .tgl-btn {
-    content: attr(data-tg-on);
-	  background: #02c66f;
-  }
-  .tgl-flip:not(:checked) + .tgl-btn {
-    background: #ff3a19;
-	  content: attr(data-tg-off);
-  }
-  
-.tgl-flip + .tgl-btn {
-	padding: 2px;
-	transition: all 0.2s ease;
-	font-family: sans-serif;
-	perspective: 100px;
-  }
-  .tgl-flip + .tgl-btn:after, .tgl-flip + .tgl-btn:before {
-	display: inline-block;
-	transition: all 0.4s ease;
-	width: 100%;
-	text-align: center;
-	position: absolute;
-	line-height: 2em;
-	font-weight: bold;
-	color: #fff;
-	top: 0;
-	left: 0;
-	backface-visibility: hidden;
-	border-radius: 4px;
-  }
-  .tgl-flip + .tgl-btn:after {
-	content: attr(data-tg-on);
-	background: #02c66f;
-	transform: rotateY(-180deg);
-  }
-  .tgl-flip + .tgl-btn:before {
-	background: #ff3a19;
-	content: attr(data-tg-off);
-  }
-  .tgl-flip + .tgl-btn:active:before {
-	transform: rotateY(-20deg);
-  }
-  .tgl-flip:checked + .tgl-btn:before {
-	transform: rotateY(180deg);
-  }
-  .tgl-flip:checked + .tgl-btn:after {
-	transform: rotateY(0);
-	left: 0;
-	background: #7fc6a6;
-  }
-  .tgl-flip:checked + .tgl-btn:active:after {
-	transform: rotateY(20deg);
+}
+.Switcher::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 200%;
+  border-radius: inherit;
+  background-color: #000000;
+  -webkit-transform: translateX(-75%);
+          transform: translateX(-75%);
+  transition: -webkit-transform .5s ease-in-out;
+  transition: transform .5s ease-in-out;
+  transition: transform .5s ease-in-out, -webkit-transform .5s ease-in-out;
+}
+.Switcher__checkbox:checked + .Switcher::before {
+  -webkit-transform: translateX(25%);
+          transform: translateX(25%);
+}
+
+.Switcher__trigger {
+  position: relative;
+  z-index: 1;
+  padding: 1em 5em;
+}
+.Switcher__trigger::after {
+  content: attr(data-value);
+}
+.Switcher__trigger::before {
+  --i: var(--x);
+  content: attr(data-value);
+  position: absolute;
+  color: #eff5f8;
+  transition: opacity .3s;
+  opacity: calc((var(--i) + 1) / 2);
+  transition-delay: calc(.3s * (var(--i) - 1) / -2);
+}
+.Switcher__checkbox:checked + .Switcher .Switcher__trigger::before {
+  --i: calc(var(--x) * -1);
+}
+.Switcher__trigger:nth-of-type(1)::before {
+  --x: 1;
+}
+.Switcher__trigger:nth-of-type(2)::before {
+  --x: -1;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.box {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  -webkit-perspective: 750px;
+          perspective: 750px;
 }
 
 .rating {

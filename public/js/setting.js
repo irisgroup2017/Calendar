@@ -12,6 +12,14 @@ jQuery(function ($) {
                 'dataid': $('#privacyID').attr('class'),
                 'cname': 'wplace',
                 'cstatus': this.checked
+            },
+            success: function() {
+                $("link").each(function() {
+                    console.log($(this))
+                    if ($(this).attr("type").indexOf("css") > -1) {
+                        $(this).attr("href", $(this).attr("href") + "?id=" + new Date().getMilliseconds());
+                    }
+                })
             }
         })
     })
@@ -28,6 +36,13 @@ jQuery(function ($) {
                 'dataid': $('#privacyID').attr('class'),
                 'cname': 'boss',
                 'cstatus': this.checked
+            },
+            success: function() {
+                $("link").each(function() {
+                    if ($(this).attr("type").indexOf("css") > -1) {
+                        $(this).attr("href", $(this).attr("href") + "?id=" + new Date().getMilliseconds());
+                    }
+                })
             }
         })
     })
@@ -220,7 +235,8 @@ $(document).ready(function(){
                         async: false,
                         data: { 
                             'state': 'delete',
-                            'dataid': dataid
+                            'dataid': dataid,
+                            'userName': $('#privacyName').text()
                         },
                         success: function(data) {
                             $('tr[class='+data.dataid+']').remove()

@@ -297,8 +297,10 @@ router.post('/',async function(req, res) {
 		 })
 		req.body = {}
 		req.body.lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
-		req.body.start = start
-		req.body.swapDate = swapDate
+		if (swapDate) { 
+			req.body.start = start
+			req.body.swapDate = swapDate 
+		}
 		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
 		res.json(req.body)
 	}
