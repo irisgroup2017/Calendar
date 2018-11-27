@@ -65,8 +65,13 @@ td span {
   .tgl + .tgl-btn:before {
 	display: none;
   }
-  .tgl:checked + .tgl-btn:after {
-	left: 50%;
+  .tgl-flip:checked + .tgl-btn {
+    content: attr(data-tg-on);
+	  background: #02c66f;
+  }
+  .tgl-flip:not(:checked) + .tgl-btn {
+    background: #ff3a19;
+	  content: attr(data-tg-off);
   }
   
 .tgl-flip + .tgl-btn {

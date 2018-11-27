@@ -79,7 +79,7 @@ router.post('/',async function(req, res) {
 	}
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])
-		ls.setLar(a.name+' '+a.lastName,a.dataid,'insert')
+		ls.setLar(a.userName,a.dataid,'insert',new Date().getTime())
 		log.logger('info','Edit Date Start Work : '+ req.cookies.user_name+' - '+a.name+' '+a.lastName)
         res.json(a)
 	}
@@ -96,7 +96,7 @@ router.post('/',async function(req, res) {
         res.json(a)
 	}
 	if (a.state == "checkbox") {
-		a.cstatus = (a.cstatus ? 1 : 0)
+		a.cstatus = (a.cstatus=="true" ? 1 : 0)
 		con.q('UPDATE privacy_data SET '+a.cname+' = ? WHERE emid = ?',[a.cstatus,a.emid])
 		log.logger('info','Edit Checkbox : '+ req.cookies.user_name+' - '+a.emid)
         res.json(a)

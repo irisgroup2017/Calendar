@@ -46,7 +46,8 @@ jQuery(function ($) {
                 'state': 'cdate',
                 'emid': $('#privacyID').text(),
                 'dataid': $('#privacyID').attr('class'),
-                'cdate': e.date.getTime()/1000
+                'cdate': e.date.getTime()/1000,
+                'userName': $('#privacyName').text()
             }
         })
     })
@@ -303,8 +304,12 @@ $(document).ready(function(){
                 $('#privacyID').attr('class',data.dataid)
                 $('#privacyName').text(data.userName)
                 $('#privacyMailGroup').text(data.mailGroup)
-                $('#wplace').attr('checked',data.wplace)
-                $('#boss').attr('checked',data.boss)
+                //$('#wplace').attr('checked',data.wplace)
+                //$('#boss').attr('checked',data.boss)
+                if (data.wplace) { $('#wplace').attr('checked',true) }
+                else { $('#wplace').attr('checked',false) }
+                if (data.boss) { $('#boss').attr('checked',true) }
+                else { $('#boss').attr('checked',false) }
                 $('input:radio[name=access]').each(function(){
                     if (c == $(this).attr('class')) {
                         $(this).attr('checked',true)
