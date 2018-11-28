@@ -42,22 +42,8 @@ td span {
   box-shadow: inset 0 0 0 1px;
   overflow: hidden;
   cursor: pointer;
-  -webkit-animation: r-n .5s;
-          animation: r-n .5s;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  will-change: transform;
 }
-.Switcher__checkbox:checked + .Switcher {
-  -webkit-animation-name: r-p;
-          animation-name: r-p;
-}
-.Switcher__checkbox:not(:checked) + .Switcher {
-  -webkit-animation-name: r-n;
-          animation-name: r-n;
-}
+
 @-webkit-keyframes r-p {
   50% {
     -webkit-transform: rotateY(45deg);

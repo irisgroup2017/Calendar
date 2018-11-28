@@ -14,11 +14,12 @@ jQuery(function ($) {
                 'cstatus': this.checked
             },
             success: function() {
-                $("link").each(function() {
+                /*$("link").each(function() {
                     if ($(this).attr("href").indexOf("checkbox") > -1) {
-                        $(this).attr("href", $(this).attr("href") + "?id=" + new Date().getMilliseconds())
+                        $(this).attr("href", $(this).attr("href") + "?v=" + new Date().getMilliseconds())
                     }
                 })
+                window.location.reload(true)*/
             }
         })
     })
@@ -37,11 +38,6 @@ jQuery(function ($) {
                 'cstatus': this.checked
             },
             success: function() {
-                $("link").each(function() {
-                    if ($(this).attr("type").indexOf("css") > -1) {
-                        $(this).attr("href", $(this).attr("href") + "?id=" + new Date().getMilliseconds());
-                    }
-                })
             }
         })
     })
@@ -347,18 +343,19 @@ $(document).ready(function(){
                     animationDuration:'.5s',
                     beforeOpen: function() {
         
-                        var children = $(".thumb");
-                        var index = 0;
+                        var children = $(".thumb")
+                        var index = 0
         
                         function addClassNextChild() {
                             if (index == children.length) return;
-                            children.eq(index++).show().velocity("transition.slideUpIn", { opacity:1, stagger: 450,  defaultDuration: 100 });
-                            window.setTimeout(addClassNextChild, 100);
+                            children.eq(index++).show().velocity("transition.slideUpIn", { opacity:1, stagger: 450,  defaultDuration: 100 })
+                            window.setTimeout(addClassNextChild, 100)
                         }
-                        addClassNextChild();
+                        addClassNextChild()
                     },
                     afterClose: function() {
-                        $(".thumb").hide();
+                        $(".thumb").hide()
+                        window.location.reload(true)
                     }
                 })
             }
