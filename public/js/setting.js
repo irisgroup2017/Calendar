@@ -15,9 +15,8 @@ jQuery(function ($) {
             },
             success: function() {
                 $("link").each(function() {
-                    console.log($(this))
-                    if ($(this).attr("type").indexOf("css") > -1) {
-                        $(this).attr("href", $(this).attr("href") + "?id=" + new Date().getMilliseconds());
+                    if ($(this).attr("href").indexOf("checkbox") > -1) {
+                        $(this).attr("href", $(this).attr("href") + "?id=" + new Date().getMilliseconds())
                     }
                 })
             }

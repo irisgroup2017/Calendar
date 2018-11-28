@@ -54,6 +54,10 @@ td span {
   -webkit-animation-name: r-p;
           animation-name: r-p;
 }
+.Switcher__checkbox:not(:checked) + .Switcher {
+  -webkit-animation-name: r-n;
+          animation-name: r-n;
+}
 @-webkit-keyframes r-p {
   50% {
     -webkit-transform: rotateY(45deg);

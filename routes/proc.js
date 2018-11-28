@@ -98,7 +98,7 @@ router.post('/',async function(req, res) {
 			for (var i = 0; i < result.length; i++) {
 				if (result[i].boss || result[i].userName == req.cookies.user_name) {
 					if (result[i].end) {
-						end = timestamp.toDate(result[i].end+25200)
+						end = timestamp.toDate(result[i].end)
 					} else {
 						end = null
 					}
@@ -115,7 +115,7 @@ router.post('/',async function(req, res) {
 							title: result[i].title,
 							boss: result[i].boss,
 							mailGroup: result[i].mailGroup,
-							start: timestamp.toDate(result[i].start+25200),
+							start: timestamp.toDate(result[i].start),
 							end: end,
 							allDay: allDay,
 							className: classn,

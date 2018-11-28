@@ -166,7 +166,7 @@ jQuery(function($) {
                     })
                 }
             })
-            if (view.type == "month" || view.type == "agendaWeek" || view.type == "basic") {
+            if (view.type == "month" || view.type == "agendaDay" || view.type == "basic") {
                 $('#calendar').fullCalendar( 'removeEvents', function(e){ return !e.isUserCreated})
                 start = view.start._i/1000
                 end = view.end._i/1000

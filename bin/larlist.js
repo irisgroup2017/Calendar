@@ -33,6 +33,7 @@ async function getLar(userName,dataid,thisday) {
         if (j == 'label-grey') { 
             LAR.sick = (LAR.sick ? LAR.sick+1 : 1)
             LAR.sickd = plusDuration(LAR.sickd,duration)
+            console.log(i+ ' ' +LAR.sickd)
         }
         else if (j == 'label-success') { 
             LAR.personal = (LAR.personal ? LAR.personal+1 : 1)
@@ -144,7 +145,7 @@ async function viewLar(userName,dataid,thisday) {
             } else {
                 LARS[2].d = displayDuration(LAR.vacationp)
             }
-        } 
+        }
         saveDuration(saveLAR,dataid,a)
     return LARS
 }
@@ -262,13 +263,14 @@ function plusDuration(old,new1) {
         } 
     }
     if (Ans.m >= 60) { 
-        Ans.h = Ans.h+ (Ans.m / 60)
+        Ans.h = Ans.h+ Math.floor(Ans.m / 60)
         Ans.m = Ans.m % 60
     }
     if (Ans.h >= 8) {
-        Ans.d = Ans.d + (Ans.h / 8)
+        Ans.d = Ans.d + Math.floor(Ans.h / 8)
         Ans.h = Ans.h % 8
     }
+    console.log(Ans)
     return Ans
 }
 
