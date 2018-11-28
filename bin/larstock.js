@@ -77,7 +77,7 @@ async function setLar(userName,dataid,state,now) {
     if (state == 'insert') {
         await con.q('INSERT INTO lar_status\
         (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military)\
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va+ovr,tr,st,ma,re,mi])
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi])
     }
     if (state == 'update') {
         var daisuki = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]])

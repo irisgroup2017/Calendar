@@ -354,7 +354,7 @@ $(document).ready(function(){
                         addClassNextChild()
                     },
                     afterClose: function() {
-                        $(".thumb").hide()
+                        //$(".thumb").hide()
                         window.location.reload(true)
                     }
                 })
