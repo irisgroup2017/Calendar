@@ -315,8 +315,6 @@ $(document).ready(function(){
                 $('#privacyID').attr('class',data.dataid)
                 $('#privacyName').text(data.userName)
                 $('#privacyMailGroup').text(data.mailGroup)
-                //$('#wplace').attr('checked',data.wplace)
-                //$('#boss').attr('checked',data.boss)
                 if (data.wplace) { $('#wplace').attr('checked',true) }
                 else { $('#wplace').attr('checked',false) }
                 if (data.boss) { $('#boss').attr('checked',true) }

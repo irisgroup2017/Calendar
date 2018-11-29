@@ -44,30 +44,6 @@ td span {
   cursor: pointer;
 }
 
-@-webkit-keyframes r-p {
-  50% {
-    -webkit-transform: rotateY(45deg);
-            transform: rotateY(45deg);
-  }
-}
-@keyframes r-p {
-  50% {
-    -webkit-transform: rotateY(45deg);
-            transform: rotateY(45deg);
-  }
-}
-@-webkit-keyframes r-n {
-  50% {
-    -webkit-transform: rotateY(-45deg);
-            transform: rotateY(-45deg);
-  }
-}
-@keyframes r-n {
-  50% {
-    -webkit-transform: rotateY(-45deg);
-            transform: rotateY(-45deg);
-  }
-}
 .Switcher::before {
   content: '';
   position: absolute;
