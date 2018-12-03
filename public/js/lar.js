@@ -82,7 +82,7 @@ jQuery(function($) {
                     cvy = cv.getFullYear()
                     calendar.fullCalendar('changeView','basic',{
                         start: new Date(cvy,0,1,7),
-                        end: new Date(cvy,11,31,7)
+                        end: new Date(cvy,11,32,7)
                     })
                 }
             }
