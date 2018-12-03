@@ -76,7 +76,7 @@ jQuery(function($) {
 		},
         customButtons: {
             year: {
-                text: 'year',
+                text: 'ปี',
                 click: function(view) {
                     var cv = new Date(view.view.start*1000),
                     cvy = cv.getFullYear()
@@ -104,7 +104,7 @@ jQuery(function($) {
         eventLimit: true,
         viewRender: function(view,element) {
             /*
-            //if this month is a current month send information last day with current time
+            //if this month is current month send information last day with current time
             if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
             */
             var endtime = view.end._i,
@@ -129,7 +129,7 @@ jQuery(function($) {
                             swapfrom = await data.myswap[i].start*1000
                             if (listday.indexOf(thisswapdate)) {
                                 datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
-                                dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
+                                dateread = ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
                                 $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
                             }
                         }
