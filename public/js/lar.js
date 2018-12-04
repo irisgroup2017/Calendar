@@ -77,13 +77,14 @@ jQuery(function($) {
         customButtons: {
             year: {
                 text: 'ปี',
-                click: function(view) {
-                    var cv = new Date(view.view.start*1000),
-                    cvy = cv.getFullYear()
+                click: function() {
+                    var cvy = parseInt($('.fc-center h2').text().split(' ')[1])
                     calendar.fullCalendar('changeView','basic',{
                         start: new Date(cvy,0,1,7),
                         end: new Date(cvy,11,32,7)
                     })
+                    $('.fc-prev-button').attr('disabled','disabled')
+                    $('.fc-next-button').attr('disabled','disabled')
                 }
             }
         },
@@ -109,6 +110,15 @@ jQuery(function($) {
             */
             var endtime = view.end._i,
             listday = JSON.parse(localStorage.date)
+            if (view.type == 'basic') {
+                for (var i=0;i<listday.length;i++) {
+                    thisday = new Date(listday[i])
+                    if (thisday.getFullYear() != view.title) {
+                        datewrite = thisday.getFullYear()+ '-' +("0"+(thisday.getMonth()+1)).slice(-2) +'-'+ ("0"+thisday.getDate()).slice(-2)
+                        $('.fc-day-top[data-date="'+datewrite+'"]').addClass('fc-other-month')
+                    }
+                }   
+            }
             $.ajax({
                 url: '/lar',
                 type: "POST",
