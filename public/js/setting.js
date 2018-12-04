@@ -44,7 +44,8 @@ jQuery(function ($) {
     $('.datepicker').datepicker({
         ignoreReadonly: true,
         format: 'dd MM yyyy',
-        todayHighlight: true
+        todayHighlight: true,
+        isBuddhist: true
     })
     $(".datepicker").datepicker().on('changeDate',function(e){
         $.ajax({
