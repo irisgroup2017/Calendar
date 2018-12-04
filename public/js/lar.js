@@ -543,7 +543,7 @@ jQuery(function($) {
                             </div>\
                             <div class="col-md-6">\<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
                             </div>\
-                            <p class="lartype" style="padding-top: 10px">วันคงเหลือ: ' +$('td:contains('+larType+')').parents('tr').find('.dur').text()+ '</p>\
+                            <p class="lartype" style="padding-top: 10px">วันคงเหลือ: ' +$('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text()+ '</p>\
                             <p>ต้องการลา: '+duration(calEvent)+'</p>\
                         </span>\
                     </form>\
