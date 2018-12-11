@@ -4,8 +4,12 @@ var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var $ = require('jquery')
-var app = express()
 var mysql = require('mysql')
+var app = express()
+var router = express.Router()
+var upload = require('./app/config/multer.config.js')
+require('./app/routers/application.router.js')(app, router, upload)
+global.__basedir = __dirname
 require('dotenv').config()
 
 function handleDisconnect() {

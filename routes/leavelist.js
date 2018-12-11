@@ -1,7 +1,8 @@
 const express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
-ll = require('../bin/larlist')
+ll = require('../bin/larlist'),
+fs = require('fs')
 var now = new Date(),
 sTime = new Date(now.getFullYear(),1,1,7).getTime()/1000,
 eTime = new Date(now.getFullYear(),12,31,7).getTime()/1000,
@@ -121,6 +122,11 @@ router.get('/', async function(req, res) {
 
 router.post('/',async function(req,res) {
     if (req.body.state == 'delete') {
+		var filename = await con.q('SELECT fname FROM lar_data WHERE id = ?',req.body.larid)
+		if (filename[0].fname != '') { 
+			var path = __basedir + '/bin/doc/' + req.cookies.user_name + '/' +filename[0].fname 
+			fs.unlinkSync(path)
+		}
 		await con.q('DELETE FROM lar_data WHERE id = ?',req.body.larid)
 		log.logger('info','Delete Leave Data : '+ req.cookies.user_name +' ID '+ req.body.larid)
 	}

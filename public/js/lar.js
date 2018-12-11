@@ -1,3 +1,39 @@
+function checkfile(sender) {
+    var validExts = new Array(".pdf",".jpg")
+    var fileExt = sender.value;
+    fileExt = fileExt.substring(fileExt.lastIndexOf('.')).toLowerCase()
+    if (validExts.indexOf(fileExt) < 0) {
+      alert("นามสกุลไฟล์ไม่ถูกต้อง สามารถแนบได้เฉพาะไฟล์: " + validExts.toString() + " เท่านั้น")
+      return false
+    }
+    else {
+        var file = $('#upsiwa')[0],
+        data = new FormData(file)
+        data.append('ext',fileExt)
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "/api/upload/application",
+            data: data,
+            processData: false, //prevent jQuery from automatically transforming the data into a query string
+            contentType: false,
+            cache: false,
+            success: (data) => {
+                var file = data.start+''+data.ext
+                $('.delfile').attr('id',file)
+                if ($('.delfile').hasClass('hidethis')) {
+                    $('.delfile').removeClass('hidethis')
+                }
+                localStorage.setItem('attach',file)
+            },
+            error: (e) => {
+                console.log(e.responseText)
+            }
+        })
+        return true 
+    }
+}
+
 jQuery(function($) {
 
 /* initialize the external events
@@ -153,7 +189,8 @@ jQuery(function($) {
                     }
                 }
             })
-            localStorage.clear()
+            localStorage.removeItem('date')
+            if (localStorage.attach) { localStorage.removeItem('attach') }
             $.ajax({
                 url: '/lar',
                 type: "POST",
@@ -212,6 +249,7 @@ jQuery(function($) {
             localStorage.setItem('date',thisdate)
         },
         drop: function(date, jsEvent,ui,resourceId) { // this function is called when something is dropped
+            if (localStorage.attach) { alert("กรุณาทำการลาครั้งละ 1 รายการ"); return }
             // retrieve the dropped element's stored Event Object
 			var originalEventObject = $(this).data('eventObject')
             var $extraEventClass = $(this).attr('data-class')
@@ -519,7 +557,17 @@ jQuery(function($) {
                 else if (calEvent.className == "label-warning") { larType = "ลาพักร้อน" } 
                 else if (calEvent.className == "label-danger") { larType = "ลาสลับวันหยุด" } 
                 else { larType = "ลาอื่นๆ" }
+                var data = [],datah = 0
+                data.dataid = calEvent.dataid
+                data.username = calEvent.userName
+                data.start = new Date(calEvent.start._i).toString().replace( /[\s|:]/g,'-').split('-').slice(0,7).toString()
+                if (localStorage.attach) {
+                    var file = localStorage.attach
+                    file = file.split('.')[0]
+                    if (file == data.start ) { datah = 1 }
+                }
             if (larType == "ลาอื่นๆ") {
+
                 var modal = 
                 '<div class="modal fade">\
                 <div class="modal-dialog">\
@@ -529,11 +577,14 @@ jQuery(function($) {
                     </div>\
                     <div class="modal-body">\
                     <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                    <form class="no-margin">\
+                    <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+                        <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
+                        <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
+                        <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
                         <label>แก้หัวข้อ &nbsp;</label>\
                         <div class="row">\
                             <div class="col-md-6">\
-                            <select class="form-control" id="larType" data-action="change">\
+                            <select class="form-control" id="larType" name="larType" data-action="change">\
                                 <option>ลาฝึกอบรม</option>\
                                 <option>ลาทำหมัน</option>\
                                 <option>ลาคลอด</option>\
@@ -543,7 +594,18 @@ jQuery(function($) {
                             </div>\
                             <div class="col-md-6">\<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
                             </div>\
-                            <p class="lartype" style="padding-top: 10px">วันคงเหลือ: ' +$('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text()+ '</p>\
+                            <div class="wrapper">\
+                            <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+                            <div class="file-upload">\
+                                <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                                <i class="fa fa-arrow-up"></i>\
+                            </div>\
+                            <div '+(datah==1 ?'class="delfile"':'class="delfile hidethis"')+''+(datah==1 ?' id="'+localStorage.attach+'"':'')+'>\
+                                <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                                <i class="fa fa-close delthis"></i></p>\
+                            </div>\
+                            </div>\
+                            <p class="lartype">วันคงเหลือ: ' +$('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text()+ '</p>\
                             <p>ต้องการลา: '+duration(calEvent)+'</p>\
                         </span>\
                     </form>\
@@ -567,7 +629,10 @@ jQuery(function($) {
                     </div>\
                     <div class="modal-body">\
                     <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                    <form class="no-margin">\
+                    <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+                        <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
+                        <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
+                        <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
                         <label>เลือกวันที่ต้องการสลับวันหยุด &nbsp;</label>\
                         <div class="row">\
                             <div class="col-md-6">\
@@ -580,6 +645,17 @@ jQuery(function($) {
                             </div>\
                             <div class="col-md-6">\
                             <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
+                            </div>\
+                            <div class="wrapper">\
+                            <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+                            <div class="file-upload">\
+                                <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                                <i class="fa fa-arrow-up"></i>\
+                            </div>\
+                            <div class="delfile hidethis">\
+                                <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                                <i class="fa fa-close delthis"></i></p>\
+                            </div>\
                             </div>\
                         </span>\
                     </form>\
@@ -603,10 +679,24 @@ jQuery(function($) {
                     </div>\
                     <div class="modal-body">\
                     <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                    <form class="no-margin">\
+                    <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+                        <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
+                        <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
+                        <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
                         <label>แก้หัวข้อ &nbsp;</label>\
                         <input class="middle" autocomplete="off" type="text" id="larType" placeholder="' + calEvent.title + '"/>\
                         <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
+                        <div class="wrapper">\
+                            <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+                            <div class="file-upload">\
+                                <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                                <i class="fa fa-arrow-up"></i>\
+                            </div>\
+                            <div class="delfile hidethis">\
+                                <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                                <i class="fa fa-close delthis"></i></p>\
+                            </div>\
+                        </div>\
                         <p style="padding-top: 10px">วันคงเหลือ: ' +$('td:contains('+larType+')').parents('tr').find('.dur').text()+ '</p>\
                         <p>ต้องการใช้: '+duration(calEvent)+'</p>\
                     </form>\
@@ -648,6 +738,26 @@ jQuery(function($) {
                 $('.datepicker').datepicker().on('changeDate',function(e) {
                     $('.datepicker').datepicker('hide')
                 })
+                $('.delfile').on("click",function() {
+                    $.ajax({
+                        url: '/proc',
+                        type: "POST",
+                        dataType: "json",
+                        async: false,
+                        data: {
+                            'state':'delfile',
+                            'file': $(this).attr('id'),
+                            'username': $('#username').text()
+                        },
+                        success: function(objs) {
+                            $('.delfile').addClass('hidethis')
+                            localStorage.removeItem('attach')
+                        },
+                        error: (e) => {
+                            console.log(e.responseText)
+                        }
+                    })
+                })
                 $(document).on("click", ".pickday", function() {
                     $('.datepicker').datepicker('show')
                 })
@@ -663,6 +773,9 @@ jQuery(function($) {
                         },
                         success: function(objs) {
                             larlist = objs
+                        },
+                        error: (e) => {
+                            console.log(e.responseText)
                         }
                     })
                     var dd = $('td:contains('+$(this).val()+')').parents('tr').find('.dur').text()
@@ -672,6 +785,9 @@ jQuery(function($) {
 
                 modal.find('form').on('submit', function(ev){
                     ev.preventDefault()
+                    $('#upsiwa').ajaxForm(function() {
+                        alert("file upload!")
+                    })
                     if (calEvent.className == 'label-danger') {
                         calEvent.title = 'ลาสลับวันหยุด'
                     } else {
@@ -713,6 +829,9 @@ jQuery(function($) {
                         if (calEvent.className !== null) {
                             data.className = calEvent.className
                         }
+                        if ($('.delfile').attr('id') != undefined) { 
+                            data.attach = $('.delfile').attr('id') 
+                        }
                         data.boss = calEvent.boss
                         data.mailGroup = calEvent.mailGroup
                         if (data !== null) {
@@ -749,14 +868,33 @@ jQuery(function($) {
                     }
                     modal.modal("hide")
                 })
-                modal.find('button[data-action=delete]').on('click', function() {
+                modal.find('button[data-action=delete]').on('click', async function() {
+                    if (localStorage.attach) {
+                        $.ajax({
+                            url: '/proc',
+                            type: "POST",
+                            dataType: "json",
+                            async: false,
+                            data: {
+                                'state': 'delfile',
+                                'file': localStorage.attach,
+                                'username': $('#username').text()
+                            },
+                            success: function(objs) {
+                                localStorage.removeItem('attach')
+                            },
+                            error: (e) => {
+                                console.log(e.responseText)
+                            }
+                        })
+                    }
                     calendar.fullCalendar('removeEvents' , function(ev){
                         if ($('#username').text() ) return (ev.id == calEvent.id)
                     })
                     modal.modal("hide")
                 })
             
-                modal.modal('show').on('hidden', function(){
+                modal.modal('show').on('hidden.bs.modal', function(){
                     modal.remove()
                 })
             }

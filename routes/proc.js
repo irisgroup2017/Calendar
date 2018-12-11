@@ -4,7 +4,8 @@ con = require('../bin/mysql'),
 timestamp = require('unix-timestamp'),
 nodemailer = require('nodemailer'),
 ll = require('../bin/larlist'),
-log = require('../bin/logger')
+log = require('../bin/logger'),
+fs = require('fs')
 
 function remodule(d) {
 	var i,a,d=d.toString()
@@ -17,6 +18,16 @@ function remodule(d) {
 	return a
 }
 router.post('/',async function(req, res) {
+	if (!req.cookies.user_dataid) { res.redirect('/') }
+	if (req.body.state == "delfile") {
+		var file =  __basedir + '/bin/doc/' +req.body.username+ '/' +req.body.file
+		if (fs.existsSync(file)) {
+			fs.unlinkSync(file)
+			res.send(true)
+		} else {
+			res.send(false)
+		}
+	}
 	if (req.body.state == "loadacc") {
 		result = await con.q('SELECT swtime,ewtime,wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
 		req.body.fcwend = result[0].ewtime.substring(0,5)
@@ -201,49 +212,55 @@ router.post('/',async function(req, res) {
 	}
 
 	if (req.body.state == 'savelar') {
-	    var title = req.body.title,
-		ID = req.body.id,
-		start = timestamp.fromDate(req.body.start),
-		className = req.body.className,
-		userName = req.body.userName,
-		cTime = req.body.cTime,
+		var title,ID,start,className,cTime,dataid,end,editable,allDay,boss,larType,mailGroup,a,b,c,swapDate,attach,path,fileExt
+		title = req.body.title
+		ID = req.body.id
+		start = timestamp.fromDate(req.body.start)
+		className = req.body.className
+		userName = req.body.userName
+		cTime = req.body.cTime
 		dataid = req.body.dataid
 		if (req.body.end) {
-			var end = timestamp.fromDate(req.body.end)
+			end = timestamp.fromDate(req.body.end)
 		} else {
-			var end = null
+			end = null
 		}
 		if (req.body.editable) {
-			var editable = 1
+			editable = 1
 		} else {
-			var editable = 0
+			editable = 0
 		}
 		if (req.body.allDay) {
-			var allDay = 1
+			allDay = 1
 		} else {
-			var allDay = 0
+			allDay = 0
 		}
 		if (req.body.boss) {
-			var boss = 1
+			boss = 1
 		} else {
-			var boss = 0
+			boss = 0
 		}
+		if (req.body.attach != null) { 
+			attach = req.body.attach 
+			path = __basedir + '/bin/doc/' + userName+ '/' + attach
+			fileExt = attach.substring(attach.lastIndexOf('.')).toLowerCase()
+		}
+		else { attach = '' }
 		if (className == 'label-grey') { larType = 'ลาป่วย' }
 		else if (className == 'label-success') { larType = 'ลากิจ' }
 		else if (className == 'label-warning') {	larType = 'ลาพักร้อน' }
 		else if (className == 'label-danger') {	larType = 'ลาสลับวันหยุด' }
 		else if (className == 'label-info') { larType = title }
-		var mailGroup = req.body.mailGroup,
-		a,b,c,swapDate
+		mailGroup = req.body.mailGroup
 		if (req.body.swapDate) {
 			swapDate = req.body.swapDate
-			a = 'dataid,ID,title,start,end,allDay,className,userName,mailGroup,boss,cTime,approve,swapDate'
-			b = '?,?,?,?,?,?,?,?,?,?,?,?,?'
-			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,swapDate]
+			a = 'dataid,ID,title,start,end,allDay,className,userName,mailGroup,boss,cTime,approve,swapDate,fname'
+			b = '?,?,?,?,?,?,?,?,?,?,?,?,?,?'
+			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,swapDate,attach]
 		} else {
-			a = 'dataid,ID,title,start,end,allDay,className,userName,mailGroup,boss,cTime,approve'
-			b = '?,?,?,?,?,?,?,?,?,?,?,?'
-			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2]
+			a = 'dataid,ID,title,start,end,allDay,className,userName,mailGroup,boss,cTime,approve,fname'
+			b = '?,?,?,?,?,?,?,?,?,?,?,?,?'
+			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,attach]
 		}
 		var sql = await 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
 		con.q(sql,c)
@@ -257,44 +274,90 @@ router.post('/',async function(req, res) {
 			  pass: '#Iris@2013' // your email password
 			}
 		  })
-		  let mailOptions = {
-			from: 'iris4notice@gmail.com',                // sender
-			to: mailGroup,                // list of receivers
-			subject: "ขออนุญาติ"+larType,              // Mail subject
-			html: '<h3>ขออนุญาติ'+larType+'</h3>\
-			<h5>'+userName+'</h5>\
-			<table>\
-			<tr>\
-			<td>ประเภท</td>\
-			<td>'+larType+'</td>\
-			</tr>\
-			<tr>\
-			<td>เหตุผล</td>\
-			<td>'+title+'</td>\
-			</tr>\
-			<tr>\
-			<td>วันที่ลา</td>\
-			<td>'+timec.dateStart+(timec.dateEnd==timec.dateStart ? '' : ' - '+timec.dateEnd)+'</td>\
-			</tr>\
-			<tr>\
-			<tr>\
-			<td>ช่วงเวลา</td>\
-			<td>'+timec.timeStart+(timec.timeEnd ? ' - '+timec.timeEnd : '')+'</td>\
-			</tr>\
-			<tr>\
-			<td>ระยะเวลา</td>\
-			<td>'+timec.daylength+'</td>\
-			</tr>\
-			</table><br>\
-			<a href="'+qlink+'"><button class="blue">ไปยังหน้าอนุมัติ</button></a>'
-		  }
+		if (path) {
+			let mailOptions = {
+				from: 'iris4notice@gmail.com',                // sender
+				to: mailGroup,                // list of receivers
+				subject: "ขออนุญาติ"+larType,              // Mail subject
+				attachments: {
+					// file on disk as an attachment
+					filename: (path?'เอกสารแนบประกอบการลา'+fileExt:null),
+					path: (path?path:null) // stream this file
+				},
+				html: '<h3>ขออนุญาติ'+larType+'</h3>\
+				<h5>'+userName+'</h5>\
+				<table>\
+				<tr>\
+				<td>ประเภท</td>\
+				<td>'+larType+'</td>\
+				</tr>\
+				<tr>\
+				<td>เหตุผล</td>\
+				<td>'+title+'</td>\
+				</tr>\
+				<tr>\
+				<td>วันที่ลา</td>\
+				<td>'+timec.dateStart+(timec.dateEnd==timec.dateStart ? '' : ' - '+timec.dateEnd)+'</td>\
+				</tr>\
+				<tr>\
+				<tr>\
+				<td>ช่วงเวลา</td>\
+				<td>'+timec.timeStart+(timec.timeEnd ? ' - '+timec.timeEnd : '')+'</td>\
+				</tr>\
+				<tr>\
+				<td>ระยะเวลา</td>\
+				<td>'+timec.daylength+'</td>\
+				</tr>\
+				</table><br>\
+				<a href="'+qlink+'"><button class="blue">ไปยังหน้าอนุมัติ</button></a>'
+			}
+			transporter.sendMail(mailOptions, function (err, info) {
+				if(err)
+				  console.log(err)
+				else
+				  console.log(info)
+			 })
+		}
+		else {
+			let mailOptions = {
+				from: 'iris4notice@gmail.com',                // sender
+				to: mailGroup,                // list of receivers
+				subject: "ขออนุญาติ"+larType,              // Mail subject
+				html: '<h3>ขออนุญาติ'+larType+'</h3>\
+				<h5>'+userName+'</h5>\
+				<table>\
+				<tr>\
+				<td>ประเภท</td>\
+				<td>'+larType+'</td>\
+				</tr>\
+				<tr>\
+				<td>เหตุผล</td>\
+				<td>'+title+'</td>\
+				</tr>\
+				<tr>\
+				<td>วันที่ลา</td>\
+				<td>'+timec.dateStart+(timec.dateEnd==timec.dateStart ? '' : ' - '+timec.dateEnd)+'</td>\
+				</tr>\
+				<tr>\
+				<tr>\
+				<td>ช่วงเวลา</td>\
+				<td>'+timec.timeStart+(timec.timeEnd ? ' - '+timec.timeEnd : '')+'</td>\
+				</tr>\
+				<tr>\
+				<td>ระยะเวลา</td>\
+				<td>'+timec.daylength+'</td>\
+				</tr>\
+				</table><br>\
+				<a href="'+qlink+'"><button class="blue">ไปยังหน้าอนุมัติ</button></a>'
+			}
+			transporter.sendMail(mailOptions, function (err, info) {
+				if(err)
+				  console.log(err)
+				else
+				  console.log(info)
+			 })
+		}
 		  //<style>.wrapper {	width: 600px;margin: 0 auto; } header { width: 600px; } footer { width: 600px; } nav, section , footer {float: left; } nav {width: 150px;margin-right: 10px; } section {width: 440px; } *, *:before, *:after {-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box; } body {background: #2980b9;color: #FFF;font-family: Helvetica;text-align: center;margin: 0; } header, nav, section,footer {border: 1px solid rgba(255,255,255,0.8);margin-bottom: 10px;border-radius: 3px; } header {padding: 10px 0; } footer {padding: 10px 0; } nav, section {padding: 10px 0; } button.blue {color: white;background: #4C8FFB;border: 1px #3079ED solid;box-shadow: inset 0 1px 0 #80B0FB;}button.blue:hover {border: 1px #2F5BB7 solid;box-shadow: 0 1px 1px #EAEAEA, inset 0 1px 0 #5A94F1;background: #3F83F1;}button.blue:active {box-shadow: inset 0 2px 5px #2370FE;} </style>
-		  transporter.sendMail(mailOptions, function (err, info) {
-			if(err)
-			  console.log(err)
-			else
-			  console.log(info)
-		 })
 		req.body = {}
 		req.body.lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
 		if (swapDate) {
