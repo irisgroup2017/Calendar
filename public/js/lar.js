@@ -756,6 +756,12 @@ jQuery(function($) {
                 $('.datepicker').datepicker().on('changeDate',function(e) {
                     $('.datepicker').datepicker('hide')
                 })
+                $(document).on("click", ".input-group.date", function() {
+                    $('.datepicker').datepicker('show')
+                    if (!$('.datepicker.datepicker-inline').attr('style')) {
+                        $('.datepicker.datepicker-inline').remove()
+                    }
+                })
                 $('.delfile').on("click",function() {
                     $.ajax({
                         url: '/proc',
@@ -775,9 +781,6 @@ jQuery(function($) {
                             console.log(e.responseText)
                         }
                     })
-                })
-                $(document).on("click", ".pickday", function() {
-                    $('.datepicker').datepicker('show')
                 })
                 $('select[id=larType]').on('change',function(e) {
                     var larload,larlist
