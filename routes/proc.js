@@ -23,6 +23,7 @@ router.post('/',async function(req, res) {
 		var file =  __basedir + '/bin/doc/' +req.body.username+ '/' +req.body.file
 		if (fs.existsSync(file)) {
 			fs.unlinkSync(file)
+			log.logger('info',data.username+' Delete attachment: '+file)
 			res.send(true)
 		} else {
 			res.send(false)
