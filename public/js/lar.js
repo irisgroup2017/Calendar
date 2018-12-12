@@ -190,7 +190,25 @@ jQuery(function($) {
                 }
             })
             localStorage.removeItem('date')
-            if (localStorage.attach) { localStorage.removeItem('attach') }
+            if (localStorage.attach) { 
+                $.ajax({
+                    url: '/proc',
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                    data: {
+                        'state': 'delfile',
+                        'file': localStorage.attach,
+                        'username': $('#username').text()
+                    },
+                    success: function(objs) {
+                        localStorage.removeItem('attach')
+                    },
+                    error: (e) => {
+                        console.log(e.responseText)
+                    }
+                })
+            }
             $.ajax({
                 url: '/lar',
                 type: "POST",
