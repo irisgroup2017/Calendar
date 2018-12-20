@@ -11,19 +11,19 @@ async function setLar(userName,dataid,state,now) {
     /*
     1.ลาป่วย 30 วันต่อปี
     2.ลากิจ 6 วันต่อปี เพิ่มทุก 2 เดือน
-    3.ลาพักร้อน 6 วันต่อปี เพิ่มทุก 2 เดือน สะสมไว้ใช้ในปีถัดไปได้ 6 วัน
+    3.ลาพักร้อน 6 วันต่อปี เพิ่มทุก 2 เดือน จนครบ 1 รอบปี ในปีถัดไป ได้ 6 วัน สะสมไว้ใช้ในปีถัดไปได้ 6 วัน 
     4.ลาฝึกอบรม 30 วัน
     5.ลาทำหมัน ตามใบรับรองแพทย์
     6.ลาคลอด 90 วัน ต่อ 1 ครรภ์
     7.ลาอุปสมบท อายุงาน 2 ปี 15 วัน และ อายุงาน 3 ปี ขึ้นไป 30 วัน 1 ครั้ง
     8.ลารับราชการทหาร 60 วัน 1 ครั้ง
     */
-    si=30,pe=0,va=0,tr=30,st=1,ma=90,re=0,mi=60,dvinsert=0
-    swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',dataid),
-    x = gd(new Date(swdate[0].cdate*1000)),
+    var si=30,pe=0,va=0,tr=30,st=1,ma=90,re=0,mi=60,vap=null,vaq=null
+    var swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',dataid)
+    var x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),
-    w = y[2]-x[2],
-    ov = await con.q('SELECT vacation,vacationp,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
+    w = y[2]-x[2]
+    var ov = await con.q('SELECT vacation,vacationp,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (!ov[0]) { 
         ovr = 0 
     }
@@ -45,22 +45,34 @@ async function setLar(userName,dataid,state,now) {
         } else if (ov[0].military) {
             if (ov[0].military == 0) { mi=0 }
         }
+
         ovr = ov[0].vacationr
         ovp = ov[0].vacationp
         if (ovr) {
             ovb = await dhmtonum(ovr.toString())
             if (ovb >= 6) { ovr = '060000' }
-            con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
+            if (state == 'insert') { vap = ovr } else {
+                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
+            }
         } else if (ovp) {
             ovm = ov[0].vacation + "0000"
             ovp2 = await plusdhm(ovm,ovp.toString())
             ovb = await dhmtonum(ovp2.toString())
-            if (ovb >= 6) { ovp = '060000' }
-            con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
-        } 
+            if (ovb >= 6) { ovp = '060000' } else { ovp = ovb }
+            if (state == 'insert') { vaq = ovp } else {
+                con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
+            }
+        }
     }
-    va = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
-    pe = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
+
+    if (w >= 2) {
+        va = 6
+        pe = 6 
+    } else {
+        va = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
+        pe = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
+    }
+
     if (w == 2) {
         if (x[1] > y[1]) { re = 15 }
         if (x[1] == y[1]) {
@@ -76,8 +88,8 @@ async function setLar(userName,dataid,state,now) {
     } else if (w > 3) { re = 30 }
     if (state == 'insert') {
         await con.q('INSERT INTO lar_status\
-        (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military)\
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi])
+        (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military,vacationp,vacationq)\
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi,vap,vaq])
     }
     if (state == 'update') {
         var daisuki = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]])
