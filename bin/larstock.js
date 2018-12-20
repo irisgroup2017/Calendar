@@ -23,7 +23,7 @@ async function setLar(userName,dataid,state,now) {
     var x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),
     w = y[2]-x[2]
-    var ov = await con.q('SELECT vacation,vacationp,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
+    var ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (!ov[0]) { 
         ovr = 0 
     }
@@ -61,6 +61,11 @@ async function setLar(userName,dataid,state,now) {
             if (ovb >= 6) { ovp = '060000' } else { ovp = ovb }
             if (state == 'insert') { vaq = ovp } else {
                 con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
+            }
+        } else {
+            ovq = ov[0].vacationq
+            if (state == 'insert') { vaq = ovq } else {
+                con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovq,dataid,y[2]])
             }
         }
     }
