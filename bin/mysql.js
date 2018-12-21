@@ -11,8 +11,6 @@ exports.q = async function (sql,values) {
         result = []
         for (i=0; i<sql.length; i++) {
             var [rows,fields] = await c.query(sql[i], values)
-            console.log(rows)
-            console.log(fields)
             result.push(rows)
         }
         c.end()
