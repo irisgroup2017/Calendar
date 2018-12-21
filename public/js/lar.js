@@ -168,9 +168,10 @@ jQuery(function($) {
                 success: async function (data) {
                     var len1=data.mydata.length,
                     len2=data.myswap.length,
-                    mylen=(len1 < len2?len2:len1)
+                    len3=data.myattach.length,
+                    mylen=Math.max(len1,len2,len3)
                     for (var i=0;i<mylen;i++) {
-                        if (data.myswap[i]) { 
+                        if (data.myswap[i]) {
                             thisswapdate = await data.myswap[i].swapDate*1000 
                             swapfrom = await data.myswap[i].start*1000
                             if (listday.indexOf(thisswapdate)) {
@@ -184,6 +185,13 @@ jQuery(function($) {
                             if (listday.indexOf(thisvacation)) {
                                 datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)
                                 $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data.mydata[i].dtitle+'</div>')
+                            }
+                        } 
+                        if (data.myattach[i]) {
+                            thisattach = data.myattach[i].start*1000
+                            if (listday.indexOf(thisattach) && data.myattach[i].fname != null) {
+                                datewrite = new Date(thisattach).getFullYear()+ '-' +("0"+(new Date(thisattach).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisattach).getDate()).slice(-2)
+                                $('.fc-content-skeleton td[data-date="'+datewrite+'"').prepend('<a class="'+data.myattach[i].fname+'" style="float:left; padding: 2px;" id="'+data.thisname+'">เอกสารแนบ</a>')
                             }
                         }
                     }
@@ -879,6 +887,7 @@ jQuery(function($) {
                                         dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
                                         $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
                                     }
+                                    localStorage.removeItem('attach')
                                 }
                             })
                         }
