@@ -34,6 +34,48 @@ function checkfile(sender) {
     }
 }
 
+$(document).on("click",".viewattach",function() {
+    var thisfile = $(this).attr('id'),
+    thisname = $(this).attr('name')
+    $.ajax({
+        url: '/lar',
+        type: "POST",
+        async: false,
+        data: { 
+            'state': 'viewfile',
+            'thisfile': thisfile,
+            'thisname': thisname
+        },
+        success: function(data) {
+            $("#animatedModal").animatedModal({
+                modalTarget:'animatedModal',
+                animatedIn:'bounceInUp',
+                animatedOut:'bounceOutDown',
+                color:'#FFFFFF',
+                animationDuration:'.5s',
+                beforeOpen: function() {
+    
+                    var children = $(".thumb")
+                    var index = 0
+    
+                    function addClassNextChild() {
+                        if (index == children.length) return;
+                        children.eq(index++).show().velocity("transition.slideUpIn", { opacity:1, stagger: 450,  defaultDuration: 100 })
+                        window.setTimeout(addClassNextChild, 100)
+                    }
+                    addClassNextChild()
+                },
+                afterClose: function() {
+                    $(".thumb").hide()
+                    $('.showfile').empty()
+                }
+            })
+            fileExt = data.substring(data.lastIndexOf('.')).toLowerCase()
+            $('.showfile').append('<'+(fileExt == '.jpg'?'img':'iframe')+' src="'+data+'" style="height: 100vh; width:100vh;"></iframe>')
+        }
+    })
+})
+
 jQuery(function($) {
 
 /* initialize the external events
@@ -191,7 +233,7 @@ jQuery(function($) {
                             thisattach = data.myattach[i].start*1000
                             if (listday.indexOf(thisattach) && data.myattach[i].fname != null) {
                                 datewrite = new Date(thisattach).getFullYear()+ '-' +("0"+(new Date(thisattach).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisattach).getDate()).slice(-2)
-                                $('.fc-content-skeleton td[data-date="'+datewrite+'"').prepend('<a class="'+data.myattach[i].fname+'" style="float:left; padding: 2px;" id="'+data.thisname+'">เอกสารแนบ</a>')
+                                $('.fc-content-skeleton td[data-date="'+datewrite+'"').prepend('<a class="viewattach" style="float:left; padding: 2px;" id="'+data.myattach[i].fname+'" name="'+data.thisname+'" >เอกสารแนบ</a>')
                             }
                         }
                     }
@@ -769,6 +811,9 @@ jQuery(function($) {
                     if (!$('.datepicker.datepicker-inline').attr('style')) {
                         $('.datepicker.datepicker-inline').remove()
                     }
+                })
+                $('.viewattach').on("click",function() {
+
                 })
                 $('.delfile').on("click",function() {
                     $.ajax({

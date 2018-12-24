@@ -56,7 +56,17 @@ block content
            +larlist(parms.larl)
         else
          h4='ไม่มีประวัติ'
- +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','lar.js','bootstrap-datepicker.min.js','th.js','jquery.form.min.js'])
+ block footer
+  #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 60px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+   .close-animatedModal
+    i.fa.fa-remove.fa-3x
+   .modal-content
+    .container
+     .col-12
+      .showfile
+    
+ +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','lar.js','bootstrap-datepicker.min.js','th.js','jquery.form.min.js','animatemodal.min.js'])
+ link(rel='stylesheet' , href='css/animate.min.css')
  link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
  link(rel='stylesheet' , href='css/fileupload.css')
  style.

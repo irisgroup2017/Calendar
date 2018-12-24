@@ -45,7 +45,6 @@ mixin tbl(namel)
      i.fa.fa-trash.hvr-icon
     //-if cal .dropdown-divider
 block script
- +scss(['animate.min.css'])
 
 block content
  table.table.table-condensed#manage
@@ -82,8 +81,8 @@ block content
     td.center
      a.addline.hvr-icon-pulse-shrink(title="Add" data-toggle="tooltip")
       i.fa.fa-plus.hvr-icon
- +ssrc(['popper.min.js','moment.min.js','setting.js','bootstrap-datepicker.min.js','jquery-confirm.min.js','clockpicker.min.js'])
- +scss(['checkbox.css','setting.css','hover.css','bootstrap-datepicker.min.css','clockpicker.min.css','jquery-confirm.min.css'])
+ +ssrc(['popper.min.js','moment.min.js','setting.js','bootstrap-datepicker.min.js','jquery-confirm.min.js','clockpicker.min.js','animatemodal.min.js'])
+ +scss(['checkbox.css','setting.css','hover.css','bootstrap-datepicker.min.css','clockpicker.min.css','jquery-confirm.min.css','animate.min.css'])
 block footer
  #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
   .close-animatedModal
@@ -149,4 +148,3 @@ block footer
               +srd([['super-happy',''],['happy','User'],['neutral','Boss'],['sad','HR'],['super-sad','Admin']])
              table.h5
               +schk(['Use Reservation','Use Leave Form','Approve Leave','Summary Leave','Leave List','HR manager','Setting'])
-              +ssrc(['animatemodal.min.js'])

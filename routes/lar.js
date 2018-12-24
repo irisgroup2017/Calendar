@@ -27,6 +27,12 @@ router.get('/', async function(req, res) {
 })
 
 router.post('/', async function(req, res) {
+	if (req.body.state == 'viewfile') {
+		fileExt = req.body.thisfile.substring(req.body.thisfile.lastIndexOf('.')).toLowerCase()
+		filename = '/doc/' +req.body.thisname+ '/' +req.body.thisfile
+		console.log(filename)
+		res.send(filename)
+	}
 	if (req.body.state == 'viewrender') {
 		if (req.cookies.user_name) {
 			await larstock.updateLar(req.cookies.user_name,req.cookies.user_dataid,parseInt(req.body.endtime))

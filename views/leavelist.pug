@@ -64,7 +64,7 @@ block content
         status = ($(this).parents('tr').find('td:nth-child(8)').text().indexOf(':') > 0 ? $(this).parents('tr').find('td:nth-child(8)').text().split(':') : $(this).parents('tr').find('td:nth-child(8)').text())
         $.confirm({
             title: 'ลบข้อมูลการลา',
-            content: 'ยืนยันการลบบข้อมูลการลาวันที่ '+ $(this).parents('tr').find('td:first-child').text(),
+            content: 'ยืนยันการลบข้อมูลการลาวันที่ '+ $(this).parents('tr').find('td:nth-child(4)').text(),
             theme: 'bootstrap',
             closeIcon: true,
             animation: 'scale',
