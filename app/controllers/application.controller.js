@@ -8,7 +8,6 @@ exports.uploadForm = (req, res) => {
         start: req.body.start,
         ext: req.body.ext
     }
-    console.log(data)
     // log applicationForm
 	log.logger('info',data.username+' Upload attachment: '+data.file.filename+' file')
 	res.send(data)

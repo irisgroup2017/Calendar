@@ -30,7 +30,6 @@ router.post('/', async function(req, res) {
 	if (req.body.state == 'viewfile') {
 		fileExt = req.body.thisfile.substring(req.body.thisfile.lastIndexOf('.')).toLowerCase()
 		filename = '/doc/' +req.body.thisname+ '/' +req.body.thisfile
-		console.log(filename)
 		res.send(filename)
 	}
 	if (req.body.state == 'viewrender') {

@@ -385,7 +385,7 @@ jQuery(function($) {
                 if (eeTime > edTime) { createEvent = false }
             }
             else if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
-            else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey' && copiedEventObject.className != 'label-danger') { createEvent = false }
+            //else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey' && copiedEventObject.className != 'label-danger') { createEvent = false }
             if (existingEvents.length > 0) { createEvent = false }
             // Add Event  
             if (copiedEventObject.title !== null && createEvent) {
