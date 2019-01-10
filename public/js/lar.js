@@ -231,7 +231,7 @@ jQuery(function($) {
                         } 
                         if (data.myattach[i]) {
                             thisattach = data.myattach[i].start*1000
-                            if (listday.indexOf(thisattach) && data.myattach[i].fname != null) {
+                            if (listday.indexOf(thisattach) && data.myattach[i].fname != '') {
                                 datewrite = new Date(thisattach).getFullYear()+ '-' +("0"+(new Date(thisattach).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisattach).getDate()).slice(-2)
                                 $('.fc-content-skeleton td[data-date="'+datewrite+'"').prepend('<a class="viewattach" style="float:left; padding: 2px;" id="'+data.myattach[i].fname+'" name="'+data.thisname+'" >เอกสารแนบ</a>')
                             }
