@@ -50,7 +50,8 @@ async function xlCreate(tstart,tend,res) {
             duration = moment.duration(duration,'second').format("d,[d],h,[h],m,[m]")
             duration = duration.split(',')
             duration = durt(duration)
-            ws.cell(k,5).string(duration).style({alignment:{horizontal:'center'}}) 
+            if (duration.replace(' ','') == '9ชั่วโมง') { ws.cell(k,5).string('1 วัน').style({alignment:{horizontal:'center'}}) }
+            else { ws.cell(k,5).string(duration).style({alignment:{horizontal:'center'}}) }
         }
         k++
     }
