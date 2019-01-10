@@ -1,0 +1,61 @@
+extends layout
+
+block content 
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+
+ link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
+ link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
+ .col-sm-2
+  h4.text-info(align="center")=""
+ .col-md-3
+  .form-group
+   .input-group.input-daterange.datepicker(data-provide="datepicker")
+     input.form-control.datepickera(type='text')
+     .input-group-addon='to'
+     input.form-control.datepickerb(type='text')
+
+ button(type="button" id="export" class="btn btn-sm btn-success")
+  i.ace-icon.fa.fa-file=' Export'
+ +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js'])
+ link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
+ script.
+  $(document).ready(function(){
+    $('.datepicker').datepicker({
+        ignoreReadonly: true,
+        format: 'dd/MM/yyyy',
+        todayHighlight: true
+    })
+    $('.datepickera').datepicker().on('changeDate',function(e){
+        $('.datepickera').datepicker('hide')
+        $('.datepickerb').datepicker('show')
+    })
+    $('.datepickerb').datepicker().on('changeDate',function(e){
+        $('.datepickerb').datepicker('hide')
+    })
+    $("#export").click(function() {
+        console.log('test')
+        var datepicka = $('.datepickera').datepicker('getDate').getTime()/1000,
+        datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
+        $.ajax({
+            url: '/excelexport',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'datea': datepicka,
+                'dateb': datepickb
+            },
+            success: function (rlink) {
+                console.log(rlink)
+                window.location.href = rlink
+            }
+        })
+    })
+    $(window).on("load",function() {
+        var d = new Date()
+        $('.datepickera').datepicker('setDate',new Date(d.getFullYear(),d.getMonth()-1,21))
+        $('.datepickerb').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),20))
+    })
+  })
