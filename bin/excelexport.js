@@ -37,8 +37,8 @@ async function xlCreate(tstart,tend,res) {
         else if (result[i].className == 'label-warning') { larType = 'ลาพักร้อน'} 
         else { larType = result[i].title }
         title = result[i].title
-        start = new Date(result[i].start*1000)
-        end = (result[i].end ? new Date((result[i].end)*1000) : '-' )
+        start = new Date(result[i].start*1000-25200000)
+        end = (result[i].end ? new Date((result[i].end)*1000-25200000) : '-' )
         ws.cell(k,2).date(start).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
         ws.cell(k,3).string(larType)
         ws.cell(k,4).string(title)
@@ -49,9 +49,15 @@ async function xlCreate(tstart,tend,res) {
             duration = (result[i].end > tend ? tend : result[i].end) - (result[i].start < tstart ? tstart : result[i].start)
             duration = moment.duration(duration,'second').format("d,[d],h,[h],m,[m]")
             duration = duration.split(',')
+            if (duration.indexOf('h') > 0 && duration.indexOf('d') == -1) {
+                if (start.getHours() < 12 && end.getHours() > 13) { 
+                    fnum = duration.findIndex(num => num == 'h')
+                    duration[fnum-1] = duration[fnum-1]-1
+                }
+            }
             duration = durt(duration)
-            if (duration == '9 ชั่วโมง') { ws.cell(k,5).string('1 วัน').style({alignment:{horizontal:'center'}}) }
-            else { ws.cell(k,5).string(duration).style({alignment:{horizontal:'center'}}) }
+            if (duration == '8 ชั่วโมง ') { duration = '1 วัน'}
+            ws.cell(k,5).string(duration).style({alignment:{horizontal:'center'}}) 
         }
         k++
     }
@@ -63,7 +69,6 @@ async function xlCreate(tstart,tend,res) {
             bottom: { style: 'thin' }
         } 
     })
-    //if (fs.existsSync('excelexport.xlsx')) { fs.unlinkSync('excelexport.xlsx') }
     workbook.write('excelexport'+starttime+'to'+endtime+'.xlsx',res)
 }
 function durt(obj) {
