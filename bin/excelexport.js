@@ -16,7 +16,11 @@ String.prototype.allReplace = function(obj) {
 
 async function xlCreate(tstart,tend,res) {
     var result = await con.q('SELECT * FROM lar_data WHERE start >= ? AND start <= ? OR end >= ? AND end <= ? ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
-    ws = workbook.addWorksheet('report') , userName , k=1
+    ws = workbook.addWorksheet('report') , userName , k=1,
+    starttime = moment(tstart*1000).add(543,'year').format("DD/MM/YYYY"),
+    endtime = moment(tend*1000).add(543,'year').format("DD/MM/YYYY")
+    ws.cell(k,1,k,5,true).string('สรุปข้อมูลการลาระหว่างวันที่ '+starttime+' ถึง '+endtime+' ').style({ alignment:{horizontal:'center'} , font: {underline: true} })
+    k=k+2
     ws.cell(k,1).string('ชื่อ').style({alignment:{horizontal:'center'}})
     ws.cell(k,2).string('วันที่ลา').style({alignment:{horizontal:'center'}})
     ws.cell(k,3).string('ประเภทลา').style({alignment:{horizontal:'center'}})
@@ -50,9 +54,16 @@ async function xlCreate(tstart,tend,res) {
         }
         k++
     }
+    ws.cell(3,1,k-1,5).style({ 
+        border: {
+            left: { style: 'thin' },
+            right: { style: 'thin' },
+            top: { style: 'thin' },
+            bottom: { style: 'thin' }
+        } 
+    })
     //if (fs.existsSync('excelexport.xlsx')) { fs.unlinkSync('excelexport.xlsx') }
-    console.log('test')
-    workbook.write('excelexport.xlsx',res)
+    workbook.write('excelexport'+starttime+'to'+endtime+'.xlsx',res)
 }
 function durt(obj) {
     var k = 0, ans=''

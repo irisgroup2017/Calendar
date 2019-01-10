@@ -35,7 +35,6 @@ block content
         $('.datepickerb').datepicker('hide')
     })
     $("#export").click(function() {
-        console.log('test')
         var datepicka = $('.datepickera').datepicker('getDate').getTime()/1000,
         datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
         $.ajax({
@@ -48,7 +47,6 @@ block content
                 'dateb': datepickb
             },
             success: function (rlink) {
-                console.log(rlink)
                 window.location.href = rlink
             }
         })
