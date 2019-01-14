@@ -425,7 +425,7 @@ function getDayTime (inTime,outTime,allDay) {
 				eTime = de.h+'.'+de.mi
 				if (((de.h-ds.h) % 4) >= 1) { minush = 1 }
 				else { minush = 0 }
-				dlength = de.da-ds.da+' วัน '+eTime-sTIme-minush +' ชั่วโมง'
+				dlength = de.da-ds.da+' วัน '+eTime-sTime-minush +' ชั่วโมง'
 			}
 		}
 	}
