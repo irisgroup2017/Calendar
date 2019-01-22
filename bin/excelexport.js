@@ -37,7 +37,7 @@ async function xlCreate(tstart,tend,res) {
         else if (result[i].className == 'label-warning') { larType = 'ลาพักร้อน'} 
         else { larType = result[i].title }
         title = result[i].title
-        start = new Date(result[i].start*1000-25200000)
+        start = new Date(result[i].start*1000-25199999)
         end = (result[i].end ? new Date((result[i].end)*1000-25200000) : '-' )
         ws.cell(k,2).date(start).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
         ws.cell(k,3).string(larType)
