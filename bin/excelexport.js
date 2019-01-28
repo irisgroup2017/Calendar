@@ -70,7 +70,7 @@ async function xlCreate(tstart,tend,res) {
             bottom: { style: 'thin' }
         } 
     })
-    workbook.write('excelexport'+starttime+'to'+endtime+'.xlsx',res)
+    workbook.write('excelexport'+starttime+'to'+endtime+' '+new Date().getTime()+'.xlsx',res)
 }
 function durt(obj) {
     var k = 0, ans=''

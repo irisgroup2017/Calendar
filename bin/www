@@ -1,8 +1,5 @@
-#!/usr/bin/env node
-
 var app = require('../app'), 
 debug = require('debug')('datatest:server'), 
-fs = require('fs'), 
 http = require('http'), 
 port = normalizePort(process.env.PORT || '3000')
 server = http.createServer(app)
