@@ -58,6 +58,7 @@ sumlar = require('./routes/sumlar'),
 login = require('./routes/login'),
 setting = require('./routes/setting'),
 search = require('./routes/search'),
+searchb = require('./routes/searchb'),
 profile = require('./routes/profile'),
 privacy = require('./routes/privacy'),
 approve = require('./routes/approve'),
@@ -66,7 +67,8 @@ delreq = require('./routes/delreq'),
 editentitle = require('./routes/editentitle'),
 leavelist = require('./routes/leavelist'),
 vacationa = require('./routes/vacationa'),
-excelexport = require('./routes/excelexport')
+excelexport = require('./routes/excelexport'),
+getlar = require('./routes/getlar')
 
 app.use('/', index)
 app.use('/authorize', authorize)
@@ -77,6 +79,7 @@ app.use('/sumlar', sumlar)
 app.use('/login', login)
 app.use('/setting', setting)
 app.use('/search', search)
+app.use('/searchb', searchb)
 app.use('/profile', profile)
 app.use('/privacy', privacy)
 app.use('/approve', approve)
@@ -86,6 +89,7 @@ app.use('/editentitle', editentitle)
 app.use('/leavelist', leavelist)
 app.use('/vacationa', vacationa)
 app.use('/excelexport', excelexport)
+app.use('/getlar', getlar)
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found')

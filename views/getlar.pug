@@ -1,0 +1,60 @@
+extends layout
+
+block content
+ mixin ddl(namel)
+  -var i = 0
+   while i < namel
+    -var cal = namel-(i+1)
+    if parms.objs[i].me
+     a.dropdown-item.thisme(onload="setMyName()" href="#")=parms.objs[i++].userName
+    else
+     a.dropdown-item(href="#")=parms.objs[i++].userName
+    if cal
+     .dropdown-divider
+ 
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+
+ link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
+ link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
+ .col-sm-2
+  h4.text-danger(align="center")=""
+ .col-md-3
+  .form-group
+   .input-group.input-daterange.datepicker(data-provide="datepicker")
+     input.form-control.datepickera(type='text')
+     .input-group-addon='to'
+     input.form-control.datepickerb(type='text')
+
+ .btn-group.dropright
+  button(type="button" id="searchdata" class="btn btn-sm btn-success")
+   i.ace-icon.fa.fa-search=' Search'
+ br
+ +ssrc(['moment.min.js','transition.js','collapse.js','getlar.js','bootstrap-datepicker.min.js'])
+ link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
+
+ table.table
+  thead.thead-info
+   tr
+    th='วันที่ลา'
+    th='ประเภท'
+    th='เหตุผลการลา'
+    th='วันที่เริ่ม'
+    th='วันสิ้นสุด'
+    th='ช่วงเวลา'
+    th='จำนวนการใช้วันลา'
+    th='สถานะการลา'
+    th='ผู้ดำเนินการ'
+  tbody
+   if parms.lenghtPlus
+    tr
+     td='รวม'
+     td
+     td
+     td
+     td
+     td
+     td=parms.lenghtPlus
+     td
+     td
