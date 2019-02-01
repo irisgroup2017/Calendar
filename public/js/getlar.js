@@ -59,7 +59,7 @@ $(document).ready(function(){
            <td>'+(data.objs[i].timeEnd ? data.objs[i].timeStart+'-'+data.objs[i].timeEnd : data.objs[i].timeStart)+'</td>\
            <td>'+data.objs[i].daylength+'</td>\
            <td>'+data.objs[i].larstatus+'</td>\
-           <td>'+data.objs[i].approver+'</td>\
+           <td>'+data.objs[i].userName+'</td>\
            <tr>'
            i++
        }
