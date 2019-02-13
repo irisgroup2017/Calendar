@@ -3,7 +3,8 @@ con = require('../bin/mysql'),
 router = express.Router(),
 dateFormat = require('dateformat'),
 ls = require('../bin/larStock'),
-log = require('../bin/logger')
+log = require('../bin/logger'),
+larstock = require('../bin/larstock')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -109,6 +110,7 @@ router.post('/',async function(req, res) {
 	if (a.state === 'add') {
 		await con.q('INSERT INTO user_data (dataid,emid,name,lastName,jobPos,depart,mail,mailGroup,userName,password) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.emid,a.name,a.lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.password])
 		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime,wplace) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,a.name+' '+a.lastName,a.mailGroup,0,0,'083000','173000',0])
+		await larstock.updateLar(a.name+' '+a.lastName,a.dataid,new Date().getTime())
 		log.logger('info','ADD ID : '+ req.cookies.user_name+' - '+a.emid)
 		res.json(a)
 	}

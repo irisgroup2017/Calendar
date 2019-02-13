@@ -51,6 +51,7 @@ app.use(express.static(path.join(__dirname, '/public')))
 
 var index = require('./routes/index'),
 authorize = require('./routes/authorize'),
+refreshdata = require('./routes/refreshdata'),
 calendar = require('./routes/calendar'),
 lar = require('./routes/lar'),
 proc = require('./routes/proc'),
@@ -90,6 +91,7 @@ app.use('/leavelist', leavelist)
 app.use('/vacationa', vacationa)
 app.use('/excelexport', excelexport)
 app.use('/getlar', getlar)
+app.use('/refreshdata', refreshdata)
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found')

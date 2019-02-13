@@ -25,10 +25,11 @@ mixin tbl(namel)
  while i < namel
   -var dataid = parms.objs[i].dataid
   tr(class=dataid)
-   td.col-xs1.center.thisname=parms.objs[i].user
+   td.col-xs1.thisname=parms.objs[i].user
    td.col-xs1.center=parms.objs[i][ll[0]]
    td.col-xs1.center=parms.objs[i][ll[1]]
    td.col-xs1.center=parms.objs[i][ll[2]]
+   //- +' ('+parms.objs[i].vacationa+')'
    td.col-xs1.center=parms.objs[i][ll[3]]
    td.col-xs1.center=parms.objs[i][ll[4]]
    td.col-xs1.center=parms.objs[i][ll[5]]

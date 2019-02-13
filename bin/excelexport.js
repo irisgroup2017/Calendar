@@ -32,11 +32,14 @@ async function xlCreate(tstart,tend,res) {
             ws.cell(k,1).string(result[i].userName)
         }
         userName = result[i].userName
+        title = result[i].title
         if (result[i].className == 'label-grey') { larType = 'ลาป่วย' }
         else if (result[i].className == 'label-success') { larType = 'ลากิจ' }
         else if (result[i].className == 'label-warning') { larType = 'ลาพักร้อน'} 
+        else if (result[i].className == 'label-dark') { larType = 'ลากิจไม่รับค่าจ้าง'} 
+        else if (result[i].className == 'label-danger') { larType = 'ลาสลับวันหยุด' , title = "สลับวันหยุดกับวันที่ "+moment(result[i].swapDate*1000-25200000).add(543,'year').format("DD/MM/YYYY") } 
         else { larType = result[i].title }
-        title = result[i].title
+
         start = new Date(result[i].start*1000-25200000)
         startShow = new Date(result[i].start*1000)
         end = (result[i].end ? new Date((result[i].end)*1000-25200000) : '-' )

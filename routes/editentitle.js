@@ -2,6 +2,7 @@ const express = require('express'),
 con = require('../bin/mysql'),
 router = express.Router(),
 dateFormat = require('dateformat'),
+larlist = require('../bin/larlist'),
 ls = require('../bin/larStock'),
 ll = ['sick','personal','vacation','training','sterily','maternity','religious','military'],
 lle = ['sicke','personale','vacatione','traininge','sterilye','maternitye','religiouse','militarye'],
@@ -24,9 +25,11 @@ router.get('/', async function(req, res) {
 	} else {
 		res.redirect('/')
     }
-    var result = await con.q('SELECT dataid,userName,sick,personal,vacation,training,sterily,maternity,religious,military FROM lar_status WHERE year = ?',thisyear)
+    var result = await con.q('SELECT dataid,userName,sick,personal,vacation,training,sterily,maternity,religious,military FROM lar_status WHERE year = ? ORDER BY userName ASC',thisyear)
+    var result2
     parms.objs = []
     for (var i = 0; i < result.length; i++) {
+        //result2 = await larlist.viewLar(result[i].userName,result[i].dataid,new Date().getTime())
         parms.objs.push({
             'dataid': result[i].dataid,
             'user': result[i].userName,
@@ -37,7 +40,8 @@ router.get('/', async function(req, res) {
             'sterily': result[i][ll[4]],
             'maternity': result[i][ll[5]],
             'religious': result[i][ll[6]],
-            'military': result[i][ll[7]]
+            'military': result[i][ll[7]]/*,
+            'vacationa': result2[2].d*/
         })
     }
     parms.tbl = parms.objs.length
