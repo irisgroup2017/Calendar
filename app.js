@@ -10,6 +10,7 @@ var upload = require('./app/config/multer.config.js')
 require('./app/routers/application.router.js')(app, router, upload)
 global.__basedir = __dirname
 require('dotenv').config()
+//require('./bin/createview')
 
 function handleDisconnect() {
 	var con = mysql.createConnection({

@@ -27,7 +27,6 @@ router.post('/',async function(req,res,next){
     for (var i = 0;i < result2.length; i++) {
         setime[result2[i].userName] = [result2[i].swtime.substring(0,5),result2[i].ewtime.substring(0,5)]
     }
-    console.log(setime)
 	parms.objs = []
 	var end = '',
 	allDay = '',
