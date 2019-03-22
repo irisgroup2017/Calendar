@@ -384,7 +384,8 @@ jQuery(function($) {
                 if (seTime < sdTime) { createEvent = false }
                 if (eeTime > edTime) { createEvent = false }
             }
-            else*/ if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
+            else if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
+            */
             //else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey' && copiedEventObject.className != 'label-danger') { createEvent = false }
             if (existingEvents.length > 0) { createEvent = false }
             // Add Event  
@@ -476,10 +477,11 @@ jQuery(function($) {
                 if (seTime < sdTime) { createEvent = false }
                 if (eeTime > edTime) { createEvent = false }
             }
-            else*/ if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
+            else if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
             else if (event.end) {
                 if ($.inArray(new Date(event.end._d-25201000).getDay(),bh.dow) < 0) { createEvent = false }
             }
+            */
             if (existingEvents.length > 1) { createEvent = false }
             if (!createEvent) { revertFunc() }
         },
@@ -547,11 +549,12 @@ jQuery(function($) {
                 if (seTime < sdTime) { createEvent = false }
                 if (eeTime > edTime) { createEvent = false }
             }
-            else*/ if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
+            else if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
             else if (event.end) { 
                 if ($.inArray(new Date(event.end._d-25201000).getDay(),bh.dow) < 0) { createEvent = false }
             }
             else if (tddate >= event.start && event.className != 'label-success' && event.className != 'label-grey') { createEvent = false }
+            */
             if (existingEvents.length > 1) { createEvent = false }
             if (!createEvent) { revertFunc() }
         },
