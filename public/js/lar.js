@@ -374,7 +374,7 @@ jQuery(function($) {
                 return false
                 }
             })
-            var bh = $('#calendar').fullCalendar('option', 'businessHours'),
+            /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             tddate = new Date(y,m,d,0).getTime()
             if (resourceId.type == 'agendaDay') { 
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
@@ -384,7 +384,7 @@ jQuery(function($) {
                 if (seTime < sdTime) { createEvent = false }
                 if (eeTime > edTime) { createEvent = false }
             }
-            else if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
+            else*/ if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
             //else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey' && copiedEventObject.className != 'label-danger') { createEvent = false }
             if (existingEvents.length > 0) { createEvent = false }
             // Add Event  
@@ -467,7 +467,7 @@ jQuery(function($) {
                     return false
                 }
             })
-            var bh = $('#calendar').fullCalendar('option', 'businessHours')
+            /*var bh = $('#calendar').fullCalendar('option', 'businessHours')
             if (event.source.calendar.view.type == 'agendaDay') { 
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
                 edTime = Number(bh.end.split(':')[0]) + Number(bh.end.split(':')[1]/60)
@@ -476,7 +476,7 @@ jQuery(function($) {
                 if (seTime < sdTime) { createEvent = false }
                 if (eeTime > edTime) { createEvent = false }
             }
-            else if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
+            else*/ if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
             else if (event.end) {
                 if ($.inArray(new Date(event.end._d-25201000).getDay(),bh.dow) < 0) { createEvent = false }
             }
@@ -535,7 +535,7 @@ jQuery(function($) {
                 return false
             }
             })
-            var bh = $('#calendar').fullCalendar('option', 'businessHours'),
+            /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             tddate = new Date(y,m,d,0).getTime()
             if (event.source.calendar.view.type == 'agendaDay') { 
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
@@ -547,7 +547,7 @@ jQuery(function($) {
                 if (seTime < sdTime) { createEvent = false }
                 if (eeTime > edTime) { createEvent = false }
             }
-            else if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
+            else*/ if ($.inArray(new Date(event.start._d).getDay(),bh.dow) < 0) { createEvent = false }
             else if (event.end) { 
                 if ($.inArray(new Date(event.end._d-25201000).getDay(),bh.dow) < 0) { createEvent = false }
             }

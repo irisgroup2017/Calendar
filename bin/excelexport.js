@@ -15,7 +15,7 @@ String.prototype.allReplace = function(obj) {
 }
 
 async function xlCreate(tstart,tend,res) {
-    var result = await con.q('SELECT * FROM lar_data WHERE start >= ? AND start <= ? OR end >= ? AND end <= ? ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
+    var result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 0) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
     ws = workbook.addWorksheet('report') , userName , k=1,
     starttime = moment(tstart*1000).add(543,'year').format("DD/MM/YYYY"),
     endtime = moment(tend*1000).add(543,'year').format("DD/MM/YYYY")
