@@ -270,7 +270,6 @@ jQuery(function($) {
                 },
                 success: function (data) {
                     data.forEach(function(editlar) {
-                        console.log(editlar)
                         $('tr[class='+editlar.a+']').find('td:nth-child(2)').text(editlar.c)
                         $('tr[class='+editlar.a+']').find('td:nth-child(3)').text((editlar.e ? "ใช้เกิน " : '')+editlar.d)
                         if (editlar.e) {
@@ -628,6 +627,7 @@ jQuery(function($) {
                 else if (calEvent.className == "label-success")  { larType = "ลากิจ" }
                 else if (calEvent.className == "label-warning") { larType = "ลาพักร้อน" } 
                 else if (calEvent.className == "label-danger") { larType = "ลาสลับวันหยุด" } 
+                else if (calEvent.className == "label-dark") { larType = "ลากิจไม่รับค่าจ้าง" } 
                 else { larType = "ลาอื่นๆ" }
                 var data = [],datah = 0
                 data.dataid = calEvent.dataid
