@@ -17,7 +17,7 @@ function remodule(d) {
 }
 
 async function getLar(userName,dataid,thisday) {
-    a = new Date(thisday)
+    a = new Date(thisday),
     LAR = [],
     start = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),0,1,7).getTime()/1000,
     end = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),(a.getMonth()==0 ? 11 : a.getMonth()),(a.getMonth()==0 ? 31 :a.getDate()),7).getTime()/1000,
@@ -75,14 +75,20 @@ async function getLar(userName,dataid,thisday) {
     LAR.militaryr = minusDuration(resultr[lle[7]],LAR.militaryd)
     if (!LAR.vacation && (resultr.vacationq != null)) {
         LAR.vacationq = await dhmtoarray(resultr.vacationq.toString())
+        LAR.vacationr = plusDuration(LAR.vacationq,{d:resultr[lle[2]],h:0,m:0})
     } else {
         if (!LAR.vacation && (resultr.vacationp != null)) {
             LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
+            LAR.vacationr = plusDuration(LAR.vacationp,{d:resultr[lle[2]],h:0,m:0})
+        }
+        else if (LAR.vacation && (resultr.vacationp != null)) { 
+            LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
+            var x = plusDuration(LAR.vacationp,{d:resultr[lle[2]],h:0,m:0})
+            LAR.vacationr = minusDuration(x,LAR.vacationd)
         }
     }
     return LAR
 }
-
 async function viewLar(userName,dataid,thisday) {
     thisday = new Date(thisday)
     var a = new Date((thisday.getMonth()==0 ? thisday.getFullYear()-1 : thisday.getFullYear()),(thisday.getMonth()==0 ? 11 : thisday.getMonth()),(thisday.getMonth()==0 ? 31 :thisday.getDate()),7),
@@ -129,20 +135,6 @@ async function viewLar(userName,dataid,thisday) {
                     d: (llt[i] == 'ลาทำหมัน' ? s2 : LAR[llr[i]]['d']+' วัน'),
                     e: LAR[llr[i]]['o']
                 })
-            }
-        }
-        if (LAR.vacationq) {
-            if (LAR.vacationr) {
-                LARS[2].d = displayDuration(plusDuration(LAR.vacationq,LAR.vacationr)) 
-            } else {
-                LARS[2].d = displayDuration(LAR.vacationq)
-            }
-        }
-        if (LAR.vacationp) {
-            if (LAR.vacationr) {
-                LARS[2].d = displayDuration(plusDuration(LAR.vacationp,LAR.vacationr)) 
-            } else {
-                LARS[2].d = displayDuration(LAR.vacationp)
             }
         }
         saveDuration(saveLAR,dataid,a)
@@ -242,6 +234,9 @@ function saveDuration(duration,dataid,thisday) {
 
 function plusDuration(old,new1) {
     Ans = []
+    if ((new1.h%9) == 0) {
+        new1.h = new1.h - (new1.h/9)
+    }
     for (var i=0;i<option.unit.length;i++) {
         unitBase = option.unit[i]
         if (old) {
@@ -266,6 +261,7 @@ function plusDuration(old,new1) {
         Ans.m = Ans.m % 60
     }
     if (Ans.h >= 8) {
+        if (Ans.d == undefined) { Ans.d = 0 }
         Ans.d = Ans.d + Math.floor(Ans.h / 8)
         Ans.h = Ans.h % 8
     }
@@ -274,10 +270,12 @@ function plusDuration(old,new1) {
 
 function minusDuration(remain,duration) {
     var Ans = [],chk=['d','h','m']
-    remain = {
-        'd':Number(remain),
-        'h':0,
-        'm':0
+    if (!Array.isArray(remain)) {
+        remain = {
+            'd':Number(remain),
+            'h':0,
+            'm':0
+        }
     }
     for (var i=0;i<3;i++) {
         if (duration === undefined || isNaN(duration)) { duration = {'d':0,'h':0,'m':0} }

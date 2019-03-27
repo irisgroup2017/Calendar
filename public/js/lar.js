@@ -270,13 +270,14 @@ jQuery(function($) {
                 },
                 success: function (data) {
                     data.forEach(function(editlar) {
+                        console.log(editlar)
                         $('tr[class='+editlar.a+']').find('td:nth-child(2)').text(editlar.c)
                         $('tr[class='+editlar.a+']').find('td:nth-child(3)').text((editlar.e ? "ใช้เกิน " : '')+editlar.d)
                         if (editlar.e) {
-                            $('tr[class='+editlar.a+']').find('td:nth-child(3)').removeClass('bg-success').addClass('bg-warning')
+                            $('tr[class='+editlar.a+']').find('td:nth-child(3)').removeClass('bg-success').addClass('bg-danger')
                         }
                         else {
-                            $('tr[class='+editlar.a+']').find('td:nth-child(3)').removeClass('bg-warning').addClass('bg-success')
+                            $('tr[class='+editlar.a+']').find('td:nth-child(3)').addClass('bg-success').removeClass('bg-danger')
                         }
                     })
                 }

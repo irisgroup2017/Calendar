@@ -75,9 +75,12 @@ async function setLar(userName,dataid,state,now) {
     if (w >= 2) {
         va = 6
         pe = 6 
+    } else if (w == 0) {
+        va = Math.floor(((y[1]-x[1]))/2)
+        pe = Math.floor(((y[1]-x[1]))/2)
     } else {
-        va = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
-        pe = Math.floor((y[1]+(y[0]==31 && y[1]==11?1:0))/2)
+        va = Math.floor((y[1])/2)
+        pe = Math.floor((y[1])/2)
     }
 
     if (w == 2) {
