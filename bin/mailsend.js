@@ -4,8 +4,8 @@ con = require('../bin/mysql'),
 transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'iris4notice@gmail.com',
-      pass: '#Iris@2013'
+      user: process.env.USERMAIL,
+      pass: process.env.USERPASS
     }
   })
 
@@ -19,7 +19,7 @@ async function send(status,user,larid,mail) {
   title = result[0].title,
   larType,
   qlink = 'http://webapp.iris.co.th:3000/login'
-  if (mail == 'hr') { mail = 'kittipong.vis@iris.co.th' }
+  if (mail == 'hr') { mail = process.env.DB_MAILHR }
   else if (mail == 'user') { mail = await con.q('SELECT mail FROM user_data WHERE dataid = ?',result[0].dataid) , mail = mail[0].mail }
   else if (mail == 'boss') { mail = result[0].mailGroup }
   timec = ll.getDayTime(start,end,allDay)
