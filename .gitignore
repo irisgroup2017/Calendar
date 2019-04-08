@@ -1,5 +1,5 @@
 /logs/*
 /logs
 /node_modules/*
-/bin/doc/*
+/public/doc/*
 .env
