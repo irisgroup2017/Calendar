@@ -4,8 +4,8 @@ con = require('../bin/mysql'),
 transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'iris4notice@gmail.com',
-      pass: '#Iris@2013'
+      user: process.env.USERMAIL,
+      pass: process.env.PASSMAIL
     }
   })
 
