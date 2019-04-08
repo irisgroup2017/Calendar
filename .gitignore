@@ -1,5 +1,9 @@
 /logs/*
 /logs
 /node_modules/*
+<<<<<<< HEAD
 /public/doc/*
 .env
+=======
+/bin/doc/*
+>>>>>>> parent of f2719af... fix password
