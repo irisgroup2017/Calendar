@@ -14,7 +14,7 @@ $(document).ready(function(){
     $(window).on("load",function() {
        var d = new Date()
        $('.datepickera').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),d.getDate()-1))
-       $('.datepickerb').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),d.getDate()))
+       $('.datepickerb').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),d.getDate()+1))
     })
     $("#searchdata").click(function() {
         searchData() 
@@ -30,7 +30,7 @@ $(document).ready(function(){
                async: false,
                data: { 
                    'datea': datepicka.getTime(),
-                   'dateb': datepickb.getTime()
+                   'dateb': datepickb.getTime()+36000000
                },
                success: function(data) {
                if (data.objs == "") {  

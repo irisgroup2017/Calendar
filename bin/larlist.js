@@ -415,7 +415,8 @@ function getDayTime (inTime,outTime,allDay) {
 				eTime = parseInt(de.h+'.'+de.mi)
 				if (((de.h-ds.h) % 4) >= 1) { minush = 1 }
 				else { minush = 0 }
-				if (de.mi-ds.mi != 0) { miTime = 30 }
+                if (de.mi-ds.mi != 0) { miTime = 30 }
+                if (miTime) { minush = 1 }
 				dlength = eTime-sTime-minush +' ชั่วโมง '+ (miTime == 0 ? "" : miTime +' นาที')
 			}
 			else {

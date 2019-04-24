@@ -374,8 +374,9 @@ jQuery(function($) {
                 return false
                 }
             })
-            /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             tddate = new Date(y,m,d,0).getTime()
+            if (copiedEventObject.start < tddate+604800000 && copiedEventObject.className == 'label-warning') { createEvent = false }
+            /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             if (resourceId.type == 'agendaDay') { 
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
                 edTime = Number(bh.end.split(':')[0]) + Number(bh.end.split(':')[1]/60)
@@ -386,7 +387,7 @@ jQuery(function($) {
             }
             else if ($.inArray(date._d.getDay(),bh.dow) < 0) { createEvent = false }
             */
-            //else if (tddate >= copiedEventObject.start && copiedEventObject.className != 'label-success' && copiedEventObject.className != 'label-grey' && copiedEventObject.className != 'label-danger') { createEvent = false }
+
             if (existingEvents.length > 0) { createEvent = false }
             // Add Event  
             if (copiedEventObject.title !== null && createEvent) {

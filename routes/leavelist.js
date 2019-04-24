@@ -4,8 +4,8 @@ con = require('../bin/mysql'),
 ll = require('../bin/larlist'),
 fs = require('fs')
 var now = new Date(),
-sTime = new Date(now.getFullYear(),1,1,7).getTime()/1000,
-eTime = new Date(now.getFullYear(),12,31,7).getTime()/1000,
+sTime = new Date(now.getFullYear(),0,1,7).getTime()/1000,
+eTime = new Date(now.getFullYear(),11,31,7).getTime()/1000,
 mailsend = require('../bin/mailsend'),
 log = require('../bin/logger')
 
