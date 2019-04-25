@@ -469,6 +469,8 @@ jQuery(function($) {
                     return false
                 }
             })
+            tddate = new Date(y,m,d,0).getTime()
+            if (event.start < tddate+604800000 && event.className == 'label-warning') { createEvent = false }
             /*var bh = $('#calendar').fullCalendar('option', 'businessHours')
             if (event.source.calendar.view.type == 'agendaDay') { 
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
@@ -538,8 +540,9 @@ jQuery(function($) {
                 return false
             }
             })
-            /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             tddate = new Date(y,m,d,0).getTime()
+            if (event.start < tddate+604800000 && event.className == 'label-warning') { createEvent = false }
+            /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             if (event.source.calendar.view.type == 'agendaDay') { 
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
                 edTime = Number(bh.end.split(':')[0]) + Number(bh.end.split(':')[1]/60)
