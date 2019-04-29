@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer'),
 ll = require('../bin/larlist'),
 con = require('../bin/mysql'),
+log = require('../bin/logger')
 transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -61,9 +62,13 @@ async function send(status,user,larid,mail) {
     }
     transporter.sendMail(mailOptions, function (err, info) {
         if(err)
-          console.log(err)
+          log.logger('error',err)
         else
-          console.log(info)
+        if (info.accepted) {
+          log.logger('info','Send mail success: '+status+' '+larType+' to '+info.accepted)
+        } else if (info.rejected) {
+          log.logger('info','Send mail reject: '+status+' '+larType+' to '+info.rejected)
+        }
     })
 }
   exports.send = send
