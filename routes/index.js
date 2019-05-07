@@ -19,6 +19,7 @@ router.get('/',async function(req, res) {
 		parms.operator = dataop
 		res.render('index', parms)
 	} else {
+		/**
 		parms = { title: 'หน้าแรก', head1: 'หน้าแรก' }
 		var now = new Date(),
 		tStart = new Date(now.getFullYear(),now.getMonth(),now.getDate(),7).getTime()/1000, 
@@ -57,7 +58,7 @@ router.get('/',async function(req, res) {
 				}
 				parms.objs.push({
 					className: r[z[i].className],
-					title: z[i].title,
+					title: z[i].title,    
 					time: mytime,
 					userName: z[i].userName,
 					dayLength: dlength
@@ -65,6 +66,8 @@ router.get('/',async function(req, res) {
 			}
 		}
 		res.render('index', parms)
+		**/
+		res.redirect('login')
 	}
 })
 module.exports = router
