@@ -174,7 +174,7 @@ $('.more-bt').on('click',function() {
                 </form>\
               </div>\
               <div class="modal-footer">\
-                <button type="button" class="btn btn-sm btn-danger" data-action="changepw"><i class="ace-icon fa fa-paper-plane-o"></i> Send Password</button>\
+                <button type="button" class="btn btn-sm btn-danger" data-action="create_data"><i class="ace-icon fa fa-paper-plane-o"></i> Save</button>\
                 <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
               </div>\
             </div>\
@@ -198,9 +198,11 @@ $('.more-bt').on('click',function() {
                 $('.Input .name').val(data.name)
                 $('.Input .job').val(data.job)
                 $('.Input .mail').val(data.mail)
+                box.append('<optgroup label="เลือกแผนก">')
                 for (let i=0;i < data.depart.length;i++) {
                     box.append('<option value="'+data.depart[i].ID+'">'+data.depart[i].depart+'</option>')
                 }
+                box.append('</optgroup>')
             }
         })
     } else {
@@ -215,35 +217,42 @@ $('.more-bt').on('click',function() {
             success: function(data) {
                 let box = $('.box select')
                 data = JSON.parse(data)
+                box.append('<optgroup label="เลือกแผนก">')
                 for (let i=0;i < data.depart.length;i++) {
                     box.append('<option value="'+data.depart[i].ID+'">'+data.depart[i].depart+'</option>')
                 }
+                box.append('</optgroup>')
             }
         })
     }
-      modal.find('button[data-action=changepw]').on('click',function() {
-        var email = $('input#email').val()
-        $.ajax({
-          url: '/contact',
-          type: "POST",
-          dataType: 'text',
-          async: false,
-          data: {
-              'state': 'fpw',
-              'email': email
-              },
-          success: function(data) {
-              if (data == "NE") {
-                  modal.find('input[id=email]').addClass('error')
-                  modal.find(".oldpass").css("display","inline-block")
-                  modal.find(".error").first().focus()
-                  alert('ไม่พบที่อยู่อีเมล์ในระบบ')
-              } else { 
-                alert('ตรวจสอบอีเมล์เพื่อรับรหัสผ่าน')
-                modal.remove() 
-              }
-          }
-      })
+      modal.find('button[data-action=create_data]').on('click',function() {
+        let input = $('input#input'),empty = false
+        input.each(function(){
+			if(!$(this).val()){
+				$(this).addClass("error");
+				empty = true;
+			} else {
+                $(this).removeClass("error");
+            }
+        })
+
+        if (!empty) {
+            var email = $('input#email').val()
+
+            $.ajax({
+            url: '/contact',
+            type: "POST",
+            dataType: 'text',
+            async: false,
+            data: {
+                'state': 'cdata',
+                'email': email
+                },
+            success: function(data) {
+                    modal.remove() 
+                }
+            })
+        }
     })
 
     modal.modal('show').on('hidden.bs.modal', function(){

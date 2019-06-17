@@ -60,6 +60,9 @@ router.post('/',async function(req,res){
         req.body.job = result.jobPos
         res.json(req.body)
     }
+    if (req.body.state == "cdata") {
+        
+    }
     if (req.body.state == "save") {
 
     }

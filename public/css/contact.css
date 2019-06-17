@@ -672,3 +672,7 @@ tr:hover {
 .box select {
     width: 100%;
 }
+
+.Input .error {
+    border-color: red !important;
+}
