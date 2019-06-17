@@ -182,6 +182,7 @@ $('.more-bt').on('click',function() {
         </div>'
     var modal = $(modal).appendTo('body')
     if ($(this).attr('id') != undefined) {
+        $('.box select').attr('ID',$(this).attr('id'))
         $.ajax({
             url: '/contact',
             type: "POST",
@@ -226,19 +227,18 @@ $('.more-bt').on('click',function() {
         })
     }
       modal.find('button[data-action=create_data]').on('click',function() {
-        let input = $('input#input'),empty = false
+        let input = $('input#input'),empty = false,data = {}
         input.each(function(){
 			if(!$(this).val()){
-				$(this).addClass("error");
-				empty = true;
+				$(this).addClass("error")
+				empty = true
 			} else {
-                $(this).removeClass("error");
+                data[$(this).attr('class').split(' ').pop()] = $(this).val()
+                $(this).removeClass("error")
             }
         })
-
         if (!empty) {
-            var email = $('input#email').val()
-
+            let depart = $('.box select option:selected').val()
             $.ajax({
             url: '/contact',
             type: "POST",
@@ -246,7 +246,9 @@ $('.more-bt').on('click',function() {
             async: false,
             data: {
                 'state': 'cdata',
-                'email': email
+                'data': data,
+                'depart': depart,
+                'ID': $('.box select').attr('id')
                 },
             success: function(data) {
                     modal.remove() 

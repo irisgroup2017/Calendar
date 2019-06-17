@@ -61,7 +61,10 @@ router.post('/',async function(req,res){
         res.json(req.body)
     }
     if (req.body.state == "cdata") {
-        
+        if (req.body.ID == undefined) { 
+            
+         }
+        //con.q('INSERT INTO contact_data ()')
     }
     if (req.body.state == "save") {
 
