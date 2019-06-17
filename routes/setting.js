@@ -72,7 +72,7 @@ router.post('/',async function(req, res) {
 		.then(result => {
 			result[0].wplace = (result[0].wplace==1?true:false)
 			result[0].boss = (result[0].boss==1?true:false)
-			result[0].cdate = dateFormat(new Date(result[0].cdate)*1000,'dd-mm-yyyy')
+			result[0].cdate = dateFormat(new Date(result[0].cdate*1000),'dd-mm-yyyy')
 			result[0].swtime = result[0].swtime.substring(0,5)
 			result[0].ewtime = result[0].ewtime.substring(0,5)
 			res.json(result[0])
@@ -80,7 +80,7 @@ router.post('/',async function(req, res) {
 	}
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])
-		ls.setLar(a.userName,a.dataid,'insert',new Date().getTime())
+		ls.setLar(a.userName,a.dataid,'update',new Date().getTime())
 		log.logger('info','Edit Date Start Work : '+ req.cookies.user_name+' - '+a.userName)
         res.json(a)
 	}
@@ -109,8 +109,8 @@ router.post('/',async function(req, res) {
 	}
 	if (a.state === 'add') {
 		await con.q('INSERT INTO user_data (dataid,emid,name,lastName,jobPos,depart,mail,mailGroup,userName,password) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.emid,a.name,a.lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.password])
-		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime,wplace) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,a.name+' '+a.lastName,a.mailGroup,0,0,'083000','173000',0])
-		await larstock.updateLar(a.name+' '+a.lastName,a.dataid,new Date().getTime())
+		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime,wplace) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,a.name+' '+a.lastName,a.mailGroup,0,0,'08:30:00','17:30:00',0])
+		await ls.setLar(a.name+' '+a.lastName,a.dataid,'insert',new Date().getTime())
 		log.logger('info','ADD ID : '+ req.cookies.user_name+' - '+a.emid)
 		res.json(a)
 	}

@@ -1,3 +1,4 @@
+global.__basedir = __dirname
 var express = require('express')
 var path = require('path')
 var logger = require('morgan')
@@ -6,11 +7,9 @@ var bodyParser = require('body-parser')
 var mysql = require('mysql')
 var app = express()
 var router = express.Router()
-var upload = require('./app/config/multer.config.js')
-require('./app/routers/application.router.js')(app, router, upload)
-global.__basedir = __dirname
+var upload = require(__basedir+'/app/config/multer.config.js')
+require(__basedir+'/app/routers/application.router.js')(app, router, upload)
 require('dotenv').config()
-//require('./bin/createview')
 
 function handleDisconnect() {
 	var con = mysql.createConnection({
@@ -71,6 +70,7 @@ leavelist = require('./routes/leavelist'),
 vacationa = require('./routes/vacationa'),
 excelexport = require('./routes/excelexport'),
 getlar = require('./routes/getlar')
+contact = require('./routes/contact')
 
 app.use('/', index)
 app.use('/authorize', authorize)
@@ -93,6 +93,7 @@ app.use('/vacationa', vacationa)
 app.use('/excelexport', excelexport)
 app.use('/getlar', getlar)
 app.use('/refreshdata', refreshdata)
+app.use('/contact', contact)
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found')

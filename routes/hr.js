@@ -74,7 +74,7 @@ router.post('/', async function(req, res) {
         for (var i=0;i<larid.length;i++) {
             result = await con.q('UPDATE lar_data SET approve = ?,hrapprover = ?,hrapprovedate = ? WHERE id = ?',[approve,approver,approvedate,req.body.larid[i]])
             mailsend.send('ฝ่ายทรัพยากรบุคคลอนุมัติการ',approver,req.body.larid[i],'user')
-            log.logger('info','HR approved : '+ approver +' Request ID '+ req.body.larid[i])
+            log.logger('info','HR Mass approved : '+ approver +' Request ID '+ req.body.larid[i])
         }
         res.json(req.body)
     }

@@ -1,0 +1,94 @@
+extends layout
+
+block content
+ mixin ladd(item)
+  for i in item
+   li(id=i.dataid class="bt more-bt")=i.name +" "+ i.lastName
+    span.fl
+    span.sfl
+    span.cross
+    i
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='css/'+t)
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ mixin deadd(item)
+  for t in item
+   tr(class=t.ID+1)
+    td=t.depart
+    td=t.row+1
+    td
+     a.button.edit.de-edit="แก้ไขชื่อ"
+ table.contact_td#contact_td
+  thead#sprintlist_header.headt
+   tr
+    th(rowspan="2")="รหัสพนักงาน"
+    th(rowspan="2")="ชื่อ - นามสกุล"
+    th(rowspan="2")="ตำแหน่งงาน"
+    th(rowspan="2")="ชื่อเล่น"
+    th(colspan="3")="เบอร์ติดต่อ"
+    th(rowspan="2")="อีเมล์"
+    if parms.operator > 3
+     th(rowspan="2")="เครื่องมือ"
+   tr
+    th="เบอร์ภายใน"
+    th="บริษัทฯ"
+    th="ส่วนตัว"
+  tbody.bodyt
+   thead
+    tr#head-0001(class="group_heading nodrag")
+     th(colspan="9")="Present Sprints"
+   tr#item-145664
+    td="5911116"
+    td="ธนกร จริยเพียรพันธุ์"
+    td="ธุรการฝ่ายเทคโนโลยีสารสนเทศ"
+    td="อ๊อฟ"
+    td="332"
+    td="-"
+    td="0855959636"
+    td="thanakorn@iris.co.th"
+    td.small_buttons
+     div
+      a.button.edit="แก้ไข"
+      a.button.delete="ลบ"
+   tr#head-0002(class="group_heading nodrag")
+    th(colspan="9")="Present Sprints"
+   tr#item-145665
+    td="5911116"
+    td="ธนกร จริยเพียรพันธุ์"
+    td="ธุรการฝ่ายเทคโนโลยีสารสนเทศ eggwegwegwegwegw"
+    td="อ๊อฟ"
+    td="332"
+    td="-"
+    td="0855959636"
+    td="thanakorn@iris.co.th"
+    td.small_buttons
+     div
+      a.button.edit="แก้ไข"
+      a.button.delete="ลบ"
+ if parms.operator > 3
+  fieldset(style="margin-top: 10px;")
+   legend="รายชื่อที่ไม่มีข้อมูล"
+   ul.ladd
+    li(class="bt more-bt")="เพิ่มข้อมูลใหม่"
+     span.fl
+     span.sfl
+     span.cross
+     i
+    if parms.list.length > 0
+     +ladd(parms.list)
+  fieldset(style="margin-top: 10px;")
+   legend="จัดการข้อมูลหน่วยงาน"
+   table.depart_td#depart_td
+    thead.headt
+     tr
+      th="หน่วยงาน"
+      th="ลำดับ"
+      th
+       a.button.add.de-add="เพิ่ม"
+    tbody
+     +deadd(parms.depart)
+  +ssrc(['jquery.tablednd.js','contact.js'])
+ +scss(['contact.css'])

@@ -64,25 +64,25 @@ router.post('/', async function(req, res) {
     approvedate = new Date().getTime()/1000
     if (state == 'approve') {
         approve = 3
+        log.logger('info','Boss Approved: '+ approver +' Request ID '+larid)
         result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?',[approve,approver,approvedate,larid])
         mailsend.send('ผู้บังคับบัญชาอนุมัติการ',approver,larid,'hr')
-        log.logger('info','Boss Approved: '+ approver +' Request ID '+larid)
         res.json(req.body)
     }
     if (state == 'massapprove') {
         approve = 3
         for (var i=0;i<larid.length;i++) {
+            log.logger('info','Mass Boss Approved: '+ approver +' Request ID '+req.body.larid[i])
             result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?',[approve,approver,approvedate,req.body.larid[i]])
             mailsend.send('ผู้บังคับบัญชาอนุมัติการ',approver,req.body.larid[i],'hr')
-            log.logger('info','Boss Approved: '+ approver +' Request ID '+req.body.larid[i])
         }
         res.json(req.body)
     }
     if (state == 'reject') {
         approve = 1
+        log.logger('info','Boss Rejected: '+ approver +' Request ID '+larid)
         result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?',[approve,approver,approvedate,larid])
         mailsend.send('ผู้บังคับบัญชาไม่อนุมัติการ',approver,larid,'user')
-        log.logger('info','Boss Rejected: '+ approver +' Request ID '+larid)
         res.json(req.body)
     }
 })

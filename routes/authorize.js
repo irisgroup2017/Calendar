@@ -56,6 +56,7 @@ router.get('/', async function(req, res) {
 		if (req.query.redirect) { var redirect = req.query.redirect }
 		result = await con.q(sql,username)
 		result = result[0]
+		
 		if (result !== undefined) {
 			operator = await con.q('SELECT operator FROM privacy_data WHERE dataid = ?',result.dataid)
 			if (password == result.password) {
@@ -66,7 +67,7 @@ router.get('/', async function(req, res) {
 					'mail': result.mail,
 					'operator': operator[0].operator
 				}
-				larstock.updateLar(data.username,data.dataid)
+				larstock.updateLar(data.username,data.dataid,new Date().getTime())
 				authHelper.fortuneCookies(data,res)
 				log.logger('info','[Link] Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }

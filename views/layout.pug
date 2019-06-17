@@ -64,5 +64,6 @@ html
     //-a(href="#" , id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse")
      //-i.ace-icon.fa.fa-angle-double-up.icon-only.bigger-110
   block footer
-  script.
-   new gnMenu( document.getElementById( 'gn-menu' ) )
+  if parms.user
+   script.
+    new gnMenu( document.getElementById( 'gn-menu' ) )

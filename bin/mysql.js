@@ -8,6 +8,10 @@ exports.q = async function (sql,values) {
 		password: process.env.DB_PASSWORD,
 		database: process.env.DB_NAME,
     })
+    /*if (values.indexOf(NaN)) {
+        return
+    }
+    */
     try {
         if (Array.isArray(sql)) {
             result = []

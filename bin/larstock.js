@@ -1,4 +1,5 @@
 const con = require('../bin/mysql'),
+log = require('../bin/logger'),
 larlist = require('../bin/larlist'),
 llt = ['ลาป่วย','ลากิจ','ลาพักร้อน','ลาฝึกอบรบ','ลาทำหมัน','ลาคลอด','ลาอุปสมบท','รารับราชการทหาร'],
 ll = ['sick','personal','vacation','training','sterily','maternity','religious','military'],
@@ -52,9 +53,7 @@ async function setLar(userName,dataid,state,now) {
             ovb = await dhmtonum(ovr.toString())
             if (ovb >= 6) { ovr = '060000' }
             if (state == 'insert') { vap = ovr } else {
-                if (y[2] != 2018) {
-                    con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
-                }
+                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
             }
         } else if (ovp) {
             ovm = ov[0].vacation + "0000"

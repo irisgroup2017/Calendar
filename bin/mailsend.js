@@ -71,4 +71,24 @@ async function send(status,user,larid,mail) {
         }
     })
 }
-  exports.send = send
+
+async function send(mail,pass) {
+  let mailOptions = {
+    from: 'iris4notice@gmail.com',
+    to: mail,
+    subject: 'Password for login',
+    html: '<h3>รหัสเข้าใช้งานสำหรับ '+mail+' : '+pass+'</h3>'
+  }
+  transporter.sendMail(mailOptions, function (err, info) {
+      if(err)
+        log.logger('error',err)
+      else
+      if (info.accepted) {
+        log.logger('info','Send password success: '+info.accepted)
+      } else if (info.rejected) {
+        log.logger('info','Send password reject: '+info.rejected)
+      }
+  })
+}
+  
+exports.send = send
