@@ -222,7 +222,7 @@ jQuery(function($) {
                                 $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
                             }
                         }
-                        else if (data.mydata[i]) { 
+                        if (data.mydata[i]) { 
                             thisvacation = await data.mydata[i][data.wplace]
                             if (listday.indexOf(thisvacation)) {
                                 datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)

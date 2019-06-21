@@ -61,10 +61,25 @@ router.post('/',async function(req,res){
         res.json(req.body)
     }
     if (req.body.state == "cdata") {
-        if (req.body.ID == undefined) { 
-            
-         }
-        //con.q('INSERT INTO contact_data ()')
+        let ID = req.body.ID,
+        emid = req.body.data.emid,
+        level = req.body.depart,
+        name = req.body.data.name,
+        job = req.body.data.job,
+        nname = req.body.data.nname,
+        ext = req.body.data.ext,
+        com = req.body.data.com,
+        pri = req.body.data.pri,
+        mail = req.body.data.mail,
+        line = await con.q('SELECT Max(line) line from contact_data WHERE level = ?',[level])
+
+        if (line[0].line == null) {
+            line = 0
+        } else {
+            line = line[0].line+1
+        }
+         console.log(req.body)
+        con.q('INSERT INTO contact_data (dataid,emid,level,line,name,job,nickname,ext,private,work,email) VALUES (?,?,?,?,?,?,?,?,?,?,?)',[ID,emid,level,line,name,job,nname,ext,pri,com,mail])
     }
     if (req.body.state == "save") {
 

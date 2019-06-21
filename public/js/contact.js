@@ -28,7 +28,6 @@ $(document).ready(function() {
     })
 })
 
-
 $('.de-add').on('click',function() {
     var modal = 
     '<div class="modal fade">\
@@ -238,7 +237,16 @@ $('.more-bt').on('click',function() {
             }
         })
         if (!empty) {
-            let depart = $('.box select option:selected').val()
+            let depart = $('.box select option:selected').val(),
+            ID = $('.box select').attr('id')
+            if (ID == undefined) {
+            function Generator() {}
+                Generator.prototype.rand =  Math.floor(Math.random() * 26) + Date.now();
+                Generator.prototype.getId = function() {
+                return this.rand++;
+                }
+                ID = new Generator()
+            }
             $.ajax({
             url: '/contact',
             type: "POST",
@@ -248,7 +256,7 @@ $('.more-bt').on('click',function() {
                 'state': 'cdata',
                 'data': data,
                 'depart': depart,
-                'ID': $('.box select').attr('id')
+                'ID': ID
                 },
             success: function(data) {
                     modal.remove() 
