@@ -60,10 +60,11 @@ async function send(status,user,larid,mail) {
         </table><br>\
         <a href="'+qlink+'"><button class="blue">ไปยังหน้าหน้าเว็ป</button></a>'
     }
+    log.logger('info',req.body)
+    log.logger('info',mailOptions)
     transporter.sendMail(mailOptions, function (err, info) {
         if(err) {
           log.logger('error',err)
-          log.logger('error',mailOptions)
         }
         else {
           if (info.accepted) {

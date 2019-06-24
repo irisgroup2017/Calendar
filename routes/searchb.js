@@ -67,6 +67,8 @@ router.post('/',async function(req,res,next){
 				t = ll.getDateValue(result[i].hrapprovedate*1000 + (7 * 60 * 60))
                 approvedate = t.da+' '+t.mo+' '+t.y+' ('+t.h+':'+t.mi+')'
                 approver = result[i].hrapprover
+			} else {
+				approver = ""
 			}
 			if (result[i].delreq == 1) { larstatus = 'แจ้งยกเลิก: ' + approvedate , classn = 'class="bg-warning"' }
 			else if (result[i].approve == 0) { larstatus = 'ยกเลิก: ' + approvedate , classn = 'class="strikeout"' } 
