@@ -1,6 +1,33 @@
 extends layout
 
 block content
+ mixin linfo(list,depart)
+  each dep,index in list
+   case index
+    when 0
+     thead
+      tr(id=depart[index].ID class="group_heading nodrag")
+       th(colspan="9")=depart[index].depart
+    default
+     tr(id=depart[index].ID class="group_heading nodrag")
+      th(colspan="9")=depart[index].depart
+   each item in dep
+    if item != undefined
+     tr(id=item.ID)
+      td=item.emid
+      td=item.name
+      td=item.job
+      td=item.nickname
+      td=item.ext
+      td=item.work
+      td=item.private
+      td=item.email
+      if parms.operator > 3
+       td.small_buttons
+        div
+         a.button.edit="แก้ไข"
+         a.button.delete="ลบ"
+    
  mixin ladd(item)
   for i in item
    li(id=i.dataid class="bt more-bt")=i.name +" "+ i.lastName
@@ -37,37 +64,7 @@ block content
     th="บริษัทฯ"
     th="ส่วนตัว"
   tbody.bodyt
-   thead
-    tr#head-0001(class="group_heading nodrag")
-     th(colspan="9")="Present Sprints"
-   tr#item-145664
-    td="5911116"
-    td="ธนกร จริยเพียรพันธุ์"
-    td="ธุรการฝ่ายเทคโนโลยีสารสนเทศ"
-    td="อ๊อฟ"
-    td="332"
-    td="-"
-    td="0855959636"
-    td="thanakorn@iris.co.th"
-    td.small_buttons
-     div
-      a.button.edit="แก้ไข"
-      a.button.delete="ลบ"
-   tr#head-0002(class="group_heading nodrag")
-    th(colspan="9")="Present Sprints"
-   tr#item-145665
-    td="5911116"
-    td="ธนกร จริยเพียรพันธุ์"
-    td="ธุรการฝ่ายเทคโนโลยีสารสนเทศ eggwegwegwegwegw"
-    td="อ๊อฟ"
-    td="332"
-    td="-"
-    td="0855959636"
-    td="thanakorn@iris.co.th"
-    td.small_buttons
-     div
-      a.button.edit="แก้ไข"
-      a.button.delete="ลบ"
+   +linfo(parms.data,parms.depart)
  if parms.operator > 3
   fieldset(style="margin-top: 10px;")
    legend="รายชื่อที่ไม่มีข้อมูล"
@@ -91,4 +88,4 @@ block content
     tbody
      +deadd(parms.depart)
   +ssrc(['jquery.tablednd.js','contact.js'])
- +scss(['contact.css','moment.min.js'])
+ +scss(['contact.css'])

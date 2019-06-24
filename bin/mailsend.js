@@ -61,13 +61,16 @@ async function send(status,user,larid,mail) {
         <a href="'+qlink+'"><button class="blue">ไปยังหน้าหน้าเว็ป</button></a>'
     }
     transporter.sendMail(mailOptions, function (err, info) {
-        if(err)
+        if(err) {
           log.logger('error',err)
-        else
-        if (info.accepted) {
-          log.logger('info','Send mail success: '+status+' '+larType+' to '+info.accepted)
-        } else if (info.rejected) {
-          log.logger('info','Send mail reject: '+status+' '+larType+' to '+info.rejected)
+          log.logger('error',mailOptions)
+        }
+        else {
+          if (info.accepted) {
+            log.logger('info','Send mail success: '+status+' '+larType+' to '+info.accepted)
+          } else if (info.rejected) {
+            log.logger('info','Send mail reject: '+status+' '+larType+' to '+info.rejected)
+          }
         }
     })
 }

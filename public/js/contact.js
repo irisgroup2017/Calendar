@@ -28,6 +28,7 @@ $(document).ready(function() {
     })
 })
 
+console.log($('tr[id=0]'))
 $('.de-add').on('click',function() {
     var modal = 
     '<div class="modal fade">\
@@ -259,6 +260,25 @@ $('.more-bt').on('click',function() {
                 'ID': ID
                 },
             success: function(data) {
+                    let info=data.data,
+                    code = '\
+                    <tr id="'+info.ID+'" style="cursor: move;>\
+                        <td>'+info.emid+'</td>\
+                        <td>'+info.name+'</td>\
+                        <td>'+job+'</td>\
+                        <td>'+nname+'</td>\
+                        <td>'+ext+'</td>\
+                        <td>'+com+'</td>\
+                        <td>'+pri+'</td>\
+                        <td>'+mail+'</td>\
+                        <td class="small_buttons">\
+                            <div>\
+                                <a class="button edit">แก้ไข</a>\
+                                <a class="button delete">ลบ</a>\
+                            </div>\
+                        </td>\
+                    </tr>'
+                    $('tr[class=group_heading][id='+info.depart+']').find('tr:nth-child('+info.line+')')
                     modal.remove() 
                 }
             })

@@ -8,33 +8,43 @@ router.get('/',async function(req, res) {
     if (userName) {
         var result = await con.q('SELECT * FROM contact_data ORDER BY level ASC'),
         nameLst = await con.q('SELECT dataid,name,lastName FROM user_data ORDER BY name ASC'),
-        index,
+        level = 0
         depart = await con.q('SELECT * FROM depart_row ORDER BY ID ASC,row ASC')
+        mlevel = depart.reduce((max,line) => (line.row > max ? line.row : max),depart[0].row)
         parms = { title: 'ข้อมูลติดต่อ', head1: 'ข้อมูลติดต่อ' }
-        result = result[0]
         if (result != undefined) {
-            parms.data = []
+            parms.data = {},parms.data[level] = [],parms.list = []
             for (var i=0;i<result.length;i++) {
-                index = nameLst.indexOf(result[i])
-                nameLst = nameLst.splice(index,1)
-                parms.data.push({
-                    emid: result.emid,
-                    level: result.level,
-                    name: result.name,
-                    line: result.line,
-                    job: result.job,
-                    nickname: result.nickname,
-                    ext: result.ext,
-                    private: result.private,
-                    work: result.work,
-                    email: result.email
+                if (level < result[i].level) { 
+                    level++
+                    parms.data[level]
+                }
+                nameLst = nameLst.filter(object => object.dataid != result[i].dataid)
+                parms.data[level].push({
+                    ID: result[i].dataid,
+                    emid: result[i].emid,
+                    level: result[i].level,
+                    name: result[i].name,
+                    line: result[i].line,
+                    job: result[i].job,
+                    nickname: result[i].nickname,
+                    ext: result[i].ext,
+                    private: result[i].private,
+                    work: result[i].work,
+                    email: result[i].email
                 })
+            }
+            if (level < mlevel) {
+                while (level < mlevel) {
+                    level++
+                    parms.data[level] = []
+                }
             }
         }
         parms.depart=depart
         parms.user = userName
-		parms.operator = dataop
         parms.list = nameLst
+        parms.operator = dataop
         res.render('contact', parms)
     } else {
 		res.redirect('login')
@@ -42,17 +52,16 @@ router.get('/',async function(req, res) {
 })
 
 router.post('/',async function(req,res){
-    var depart,ID,line
     if (req.body.state == "load") {
-        depart = await con.q('SELECT ID,depart FROM depart_row ORDER BY row ASC')
+        let depart = await con.q('SELECT ID,depart FROM depart_row ORDER BY row ASC')
         req.body.depart = depart
         res.json(req.body)
     }
     if (req.body.state == "loado") {
-        let result
-        depart = await con.q('SELECT ID,depart FROM depart_row ORDER BY row ASC')
-        req.body.depart = depart
+        let 
+        depart = await con.q('SELECT ID,depart FROM depart_row ORDER BY row ASC'),
         result = await con.q('SELECT emid,name,lastName,mail,jobPos FROM user_data WHERE dataid = ?',req.body.ID)
+        req.body.depart = depart
         result = result[0]
         req.body.emid = result.emid
         req.body.name = result.name +' '+result.lastName
@@ -78,15 +87,17 @@ router.post('/',async function(req,res){
         } else {
             line = line[0].line+1
         }
-         console.log(req.body)
         con.q('INSERT INTO contact_data (dataid,emid,level,line,name,job,nickname,ext,private,work,email) VALUES (?,?,?,?,?,?,?,?,?,?,?)',[ID,emid,level,line,name,job,nname,ext,pri,com,mail])
+        req.body.data.line = line
+        res.json(req.body)
     }
     if (req.body.state == "save") {
 
     }
     if (req.body.state == "add") {
-        ID = await con.q('SELECT MAX(ID) ID FROM depart_row')
-        line = await con.q('SELECT MAX(row) row FROM depart_row')
+        let
+        ID = await con.q('SELECT MAX(ID) ID FROM depart_row'),
+        line = await con.q('SELECT MAX(row) row FROM depart_row'),
         depart = req.body.depart
         ID = ID[0].ID+1
         line = line[0].row+1
@@ -99,7 +110,7 @@ router.post('/',async function(req,res){
 
     }
     if (req.body.state == "edit") {
-        ID = req.body.ID
+        let ID = req.body.ID,
         depart = req.body.depart
         con.q('UPDATE depart_row SET depart = ? WHERE ID = ?',[depart,ID])
         res.json(req.body)
