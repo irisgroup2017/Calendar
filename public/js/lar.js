@@ -374,11 +374,11 @@ jQuery(function($) {
                 return false
                 }
             })
-            tddate = new Date(y,m,d,0).getTime()/*
+            tddate = new Date(y,m,d,0).getTime()
             if (copiedEventObject.start < tddate+604800000 && copiedEventObject.className == 'label-warning') { 
                 createEvent = false 
                 alert("การลาพักร้อน กรุณาลาล่วงหน้า 1 สัปดาห์");
-            }*/
+            }
             /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             if (resourceId.type == 'agendaDay') { 
                 sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)

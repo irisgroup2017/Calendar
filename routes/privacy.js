@@ -21,7 +21,7 @@ router.post('/',async function(req, res) {
         if (pw.length == 0) {
             res.send('NE')
         } else {
-            mail.send(req.body.email,pw[0].password)
+            mail.sendb(req.body.email,pw[0].password)
             res.send('OK')
         }
         res.end()

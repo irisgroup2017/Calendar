@@ -19,6 +19,9 @@ th {
 td {
     text-align: center;
 }
+tbody tr td {
+    border: #333 solid 0.5px
+}
 
 tr:hover { 
     background-color: rgb(247, 235, 230);    
@@ -31,7 +34,7 @@ tr:hover {
 /* department list style */
 
 .depart_td {
-    width: 25%;
+    width: 50%;
     border: 2px outset;
     border-collapse: separate;
     border-spacing: 2px;

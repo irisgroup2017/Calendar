@@ -91,11 +91,12 @@ block content
       })
       $('.massapprove').click(function() {
           var larid = $(this).parents("tbody").find("tr"),
-          objs = []
+          objs = [],cls
 
           larid.each(function(){
-            if($(this).attr('class')){
-                objs.push($(this).attr('class'))
+              cls = $(this).attr('class')
+            if(cls && cls != "approvelastline"){
+                objs.push(cls)
             }
           })
           $.ajax({

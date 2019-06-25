@@ -76,7 +76,7 @@ async function send(status,user,larid,mail) {
     })
 }
 
-async function send(mail,pass) {
+async function sendb(mail,pass) {
   let mailOptions = {
     from: 'iris4notice@gmail.com',
     to: mail,
@@ -96,3 +96,4 @@ async function send(mail,pass) {
 }
   
 exports.send = send
+exports.sendb = sendb

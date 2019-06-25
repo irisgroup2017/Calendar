@@ -72,7 +72,7 @@ router.post('/', async function(req, res) {
     if (state == 'massapprove') {
         approve = 3
         for (var i=0;i<larid.length;i++) {
-            log.logger('info','Mass Boss Approved: '+ approver +' Request ID '+req.body.larid[i])
+            log.logger('info','Boss Mass Approved: '+ approver +' Request ID '+req.body.larid[i])
             result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?',[approve,approver,approvedate,req.body.larid[i]])
             mailsend.send('ผู้บังคับบัญชาอนุมัติการ',approver,req.body.larid[i],'hr')
         }

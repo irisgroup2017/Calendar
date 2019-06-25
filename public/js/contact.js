@@ -1,11 +1,9 @@
 $(document).ready(function() {
     // Initialise the table
-    $("#contact_td").tableDnD()
-    $("#depart_td").tableDnD()
 
     $("#contact_td").tableDnD({
         onDrop: function(table, row) {
-            var rows = table.tBodies[1].rows
+            var rows = table.tBodies[0].rows
             var debugStr = ""
             for (var i=0; i<rows.length; i++) {
                 debugStr += rows[i].id+" "
@@ -17,7 +15,8 @@ $(document).ready(function() {
 
     $("#depart_td").tableDnD({
         onDrop: function(table, row) {
-            var rows = table.tBodies[1].rows
+            console.log(table)
+            var rows = table.tBodies[0].rows
             var debugStr = ""
             for (var i=0; i<rows.length; i++) {
                 debugStr += rows[i].id+" "
@@ -26,9 +25,9 @@ $(document).ready(function() {
             console.log($.tableDnD.serialize())
         }
     })
+
 })
 
-console.log($('tr[id=0]'))
 $('.de-add').on('click',function() {
     var modal = 
     '<div class="modal fade">\
@@ -251,7 +250,7 @@ $('.more-bt').on('click',function() {
             $.ajax({
             url: '/contact',
             type: "POST",
-            dataType: 'text',
+            dataType: 'JSON',
             async: false,
             data: {
                 'state': 'cdata',
@@ -260,17 +259,18 @@ $('.more-bt').on('click',function() {
                 'ID': ID
                 },
             success: function(data) {
-                    let info=data.data,
+                console.log(data)
+                    let info=data.data,line,
                     code = '\
                     <tr id="'+info.ID+'" style="cursor: move;>\
                         <td>'+info.emid+'</td>\
                         <td>'+info.name+'</td>\
-                        <td>'+job+'</td>\
-                        <td>'+nname+'</td>\
-                        <td>'+ext+'</td>\
-                        <td>'+com+'</td>\
-                        <td>'+pri+'</td>\
-                        <td>'+mail+'</td>\
+                        <td>'+info.job+'</td>\
+                        <td>'+info.nname+'</td>\
+                        <td>'+info.ext+'</td>\
+                        <td>'+info.com+'</td>\
+                        <td>'+info.pri+'</td>\
+                        <td>'+info.mail+'</td>\
                         <td class="small_buttons">\
                             <div>\
                                 <a class="button edit">แก้ไข</a>\
@@ -278,7 +278,9 @@ $('.more-bt').on('click',function() {
                             </div>\
                         </td>\
                     </tr>'
-                    $('tr[class=group_heading][id='+info.depart+']').find('tr:nth-child('+info.line+')')
+                    line = $('tr[class=group_heading][id='+info.depart+']').index()+info.line
+                    console.log($('tbody tr:eq('+line+')'))
+                    $('tbody tr:eq('+line+')').after(code)
                     modal.remove() 
                 }
             })

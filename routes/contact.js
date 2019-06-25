@@ -17,7 +17,7 @@ router.get('/',async function(req, res) {
             for (var i=0;i<result.length;i++) {
                 if (level < result[i].level) { 
                     level++
-                    parms.data[level]
+                    parms.data[level] = []
                 }
                 nameLst = nameLst.filter(object => object.dataid != result[i].dataid)
                 parms.data[level].push({
