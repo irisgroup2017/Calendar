@@ -3,17 +3,11 @@ extends layout
 block content
  mixin linfo(list,depart)
   each dep,index in list
-   case index
-    when 0
-     thead
-      tr(id=depart[index].ID class="group_heading nodrag")
-       th(colspan="9")=depart[index].depart
-    default
-     tr(id=depart[index].ID class="group_heading nodrag")
-      th(colspan="9")=depart[index].depart
+   tr(id='head-'+depart[index].ID class="group_heading nodrag")
+    th(colspan="9")=depart[index].depart
    each item in dep
     if item != undefined
-     tr(id=item.ID)
+     tr(id='body-'+item.ID class="boding")
       td=item.emid
       td=item.name
       td=item.job

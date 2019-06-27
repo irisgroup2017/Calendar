@@ -2,42 +2,55 @@ var express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql')
 
+
+function telFormat(number) {
+    if (number) {
+        let len = number.length
+        if (len == 9) {
+            number = number.substring(0,2) +"-"+ number.substring(2,6) +"-"+ number.substring(6)
+        }
+        else if (len == 10) {
+            number = number.substring(0,3) +"-"+ number.substring(3,7) +"-"+ number.substring(7)
+        }
+        return number
+    } 
+}
+
 /* GET home page. */
 router.get('/',async function(req, res) {
     var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
     if (userName) {
-        var result = await con.q('SELECT * FROM contact_data ORDER BY level ASC'),
+        var result,
         nameLst = await con.q('SELECT dataid,name,lastName FROM user_data ORDER BY name ASC'),
-        level = 0
-        depart = await con.q('SELECT * FROM depart_row ORDER BY ID ASC,row ASC')
-        mlevel = depart.reduce((max,line) => (line.row > max ? line.row : max),depart[0].row)
+        level = 0,
+        depart = await con.q('SELECT * FROM depart_row ORDER BY row ASC,ID ASC')
         parms = { title: 'ข้อมูลติดต่อ', head1: 'ข้อมูลติดต่อ' }
-        if (result != undefined) {
-            parms.data = {},parms.data[level] = [],parms.list = []
-            for (var i=0;i<result.length;i++) {
-                if (level < result[i].level) { 
-                    level++
-                    parms.data[level] = []
+        parms.data = {},parms.list = []
+        for (const dep of depart) {
+            level = dep.ID
+            row = dep.row
+            result = await con.q('SELECT * FROM contact_data WHERE level = ? ORDER BY line ASC',[level])
+            if (result != undefined) {
+                parms.data[row] = []
+                for (const data of result) {
+                    nameLst = nameLst.filter(object => object.dataid != data.dataid)
+                    parms.data[row].push({
+                        ID: data.dataid,
+                        emid: data.emid,
+                        level: level,
+                        name: data.name,
+                        line: data.line,
+                        job: data.job,
+                        nickname: data.nickname,
+                        ext: data.ext,
+                        private: telFormat(data.private),
+                        work: telFormat(data.work),
+                        email: data.email
+                    })
                 }
-                nameLst = nameLst.filter(object => object.dataid != result[i].dataid)
-                parms.data[level].push({
-                    ID: result[i].dataid,
-                    emid: result[i].emid,
-                    level: result[i].level,
-                    name: result[i].name,
-                    line: result[i].line,
-                    job: result[i].job,
-                    nickname: result[i].nickname,
-                    ext: result[i].ext,
-                    private: result[i].private,
-                    work: result[i].work,
-                    email: result[i].email
-                })
-            }
-            if (level < mlevel) {
-                while (level < mlevel) {
-                    level++
-                    parms.data[level] = []
+            } else {
+                if (dataop > 3) {
+                    parms.data[row] = []
                 }
             }
         }
@@ -109,17 +122,31 @@ router.post('/',async function(req,res){
     if (req.body.state == "del") {
 
     }
-    if (req.body.state == "edit") {
+    if (req.body.state == "edit-de") {
         let ID = req.body.ID,
         depart = req.body.depart
         con.q('UPDATE depart_row SET depart = ? WHERE ID = ?',[depart,ID])
         res.json(req.body)
     }
     if (req.body.state == "move-li") {
-
+        let order = req.body.order,dep,key,index
+        order.forEach(row => {
+            if (row.substring(0,4) == 'head') {
+                index = 0
+                dep = row.substring(5)
+            } else {
+                key = row.substring(5)
+                con.q('UPDATE contact_data SET level = ?,line = ? WHERE dataid = ?',[dep,index++,key])
+            }
+        })
+        res.end()
     }
     if (req.body.state == "move-de") {
-
+        let order = req.body.order
+        order.forEach(function (row,i) {
+            con.q('UPDATE depart_row SET row = ? WHERE ID = ?',[i,row])
+        })
+        res.end()
     }
     res.end()
 })

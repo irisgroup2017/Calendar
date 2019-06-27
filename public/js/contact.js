@@ -1,33 +1,80 @@
 $(document).ready(function() {
     // Initialise the table
-
+    refreshContact()
+    refreshDepart()
+})
+function refreshContact() {
     $("#contact_td").tableDnD({
         onDrop: function(table, row) {
             var rows = table.tBodies[0].rows
-            var debugStr = ""
+            var order = []
             for (var i=0; i<rows.length; i++) {
-                debugStr += rows[i].id+" "
+                order.push(rows[i].id)
             }
-            console.log(debugStr)
-            console.log($.tableDnD.serialize())
+            console.log(rows)
+            $.ajax({
+                url: '/contact',
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    'state': 'move-li',
+                    'order': order
+                }
+            })
         }
     })
+}
 
+function refreshDepart() {
     $("#depart_td").tableDnD({
         onDrop: function(table, row) {
-            console.log(table)
             var rows = table.tBodies[0].rows
-            var debugStr = ""
+            var order = []
             for (var i=0; i<rows.length; i++) {
-                debugStr += rows[i].id+" "
+                order.push(parseInt(rows[i].id))
             }
-            console.log(debugStr)
-            console.log($.tableDnD.serialize())
+            $.ajax({
+                url: '/contact',
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    'state': 'move-de',
+                    'order': order
+                }
+            })
         }
     })
+}
+function telFormat(number) {
+    if (number) {
+        let len = number.length
+        if (len == 9) {
+            number = number.substring(0,2) +"-"+ number.substring(3,6) +"-"+ number.substring(7)
+        }
+        else if (len == 10) {
+            number = number.substring(0,3) +"-"+ number.substring(4,7) +"-"+ number.substring(8)
+        }
+        return number
+    }
+}
 
-})
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && ((charCode < 48 && charCode != 45) || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
 
+function isMail(evt) {
+	let val = evt.target.value.replace(/@(\w*)i(\w*)r(\w*)i(\w*)s(\w*)\.(\w*)c(\w*)o(\w*)\.(\w*)t(\w*)h(\w*)/g,""),index,target = evt.target
+    index = evt.target.selectionStart
+    if (evt.keyCode != 45) {
+        target.value = val+ "@iris.co.th"
+    }
+    target.setSelectionRange(index,index)
+}
 $('.de-add').on('click',function() {
     var modal = 
     '<div class="modal fade">\
@@ -55,18 +102,19 @@ $('.de-add').on('click',function() {
         $.ajax({
             url: '/contact',
             type: "POST",
-            dataType: 'text',
+            dataType: 'JSON',
             data: {
                 'state': 'add',
                 'depart': depart
                 },
             success: function(data) {
-                data = JSON.parse(data)
                 ID = parseInt(data.ID)+1
                 depart = data.depart
                 line = parseInt(data.line)+1
                 code = '<tr class="'+ID+'"><td>'+depart+'</td><td>'+line+'</td><td><a class="button edit de-edit">แก้ไขชื่อ</a></td></tr>'
                 $('.depart_td tbody').append(code)
+                $('body').removeClass('modal-open')
+                refreshDepart()
                 modal.remove()
             }     
         })
@@ -86,7 +134,7 @@ $('.de-edit').on('click',function() {
             <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
             <form class="no-margin">\
             <div class="Input">\
-                <input type="text" id="'+$(this).parents("tr").attr('class')+'" class="Input-text" placeholder="ชื่อหน่วยงาน" value="'+$(this).parents("tr").find('td:first-child').text()+'">\
+                <input type="text" id="'+$(this).parents("tr").attr('id')+'" class="Input-text" placeholder="ชื่อหน่วยงาน" value="'+$(this).parents("tr").find('td:first-child').text()+'">\
                 <label for="input" class="Input-label">ชื่อหน่วยงาน</label>\
             </div>\
             </form>\
@@ -105,16 +153,17 @@ $('.de-edit').on('click',function() {
         $.ajax({
             url: '/contact',
             type: "POST",
-            dataType: 'text',
+            dataType: 'json',
             data: {
-                'state': 'edit',
+                'state': 'edit-de',
                 'depart': depart,
-                'ID': ID-1
+                'ID': ID
                 },
             success: function(data) {
-                data = JSON.parse(data)
-                ID = parseInt(data.ID)+1
-                $('.depart_td tbody').find('tr[class='+ID+']').find('td:first-child').text(data.depart)
+                ID = parseInt(data.ID)
+                $('.depart_td tbody').find('tr[id='+ID+']').find('td:first-child').text(data.depart)
+                $('body').removeClass('modal-open')
+                refreshDepart()
                 modal.remove()
             }     
         })
@@ -154,19 +203,19 @@ $('.more-bt').on('click',function() {
                         <label for="input" class="Input-label">ชื่อเล่น</label>\
                     </div>\
                     <div class="Input">\
-                        <input type="text" id="input" class="Input-text ext" placeholder="เบอร์ภายใน">\
+                        <input type="text" id="input" class="Input-text ext" placeholder="เบอร์ภายใน" onkeypress="return isNumber(event)">\
                         <label for="input" class="Input-label">เบอร์ภายใน</label>\
                     </div>\
                     <div class="Input">\
-                        <input type="text" id="input" class="Input-text com" placeholder="เบอร์บริษัท">\
+                        <input type="text" id="input" class="Input-text com" placeholder="เบอร์บริษัท" onkeypress="return isNumber(event)">\
                         <label for="input" class="Input-label">เบอร์บริษัท</label>\
                     </div>\
                     <div class="Input">\
-                        <input type="text" id="input" class="Input-text pri" placeholder="เบอร์ส่วนตัว">\
+                        <input type="text" id="input" class="Input-text pri" placeholder="เบอร์ส่วนตัว" onkeypress="return isNumber(event)">\
                         <label for="input" class="Input-label">เบอร์ส่วนตัว</label>\
                     </div>\
                     <div class="Input">\
-                        <input type="text" id="input" class="Input-text mail" placeholder="อีเมล์">\
+                        <input type="text" id="input" class="Input-text mail" placeholder="อีเมล์" onkeypress="return isMail(event)" pattern=".+@iris.co.th">\
                         <label for="input" class="Input-label">อีเมล์</label>\
                     </div>\
                 </div>\
@@ -185,7 +234,7 @@ $('.more-bt').on('click',function() {
         $.ajax({
             url: '/contact',
             type: "POST",
-            dataType: 'text',
+            dataType: 'json',
             async: false,
             data: {
                 'state': 'loado',
@@ -193,7 +242,6 @@ $('.more-bt').on('click',function() {
                 },
             success: function(data) {
                 let box = $('.box select')
-                data = JSON.parse(data)
                 $('.Input .emid').val(data.emid)
                 $('.Input .name').val(data.name)
                 $('.Input .job').val(data.job)
@@ -209,14 +257,13 @@ $('.more-bt').on('click',function() {
         $.ajax({
             url: '/contact',
             type: "POST",
-            dataType: 'text',
+            dataType: 'json',
             async: false,
             data: {
                 'state': 'load'
                 },
             success: function(data) {
                 let box = $('.box select')
-                data = JSON.parse(data)
                 box.append('<optgroup label="เลือกแผนก">')
                 for (let i=0;i < data.depart.length;i++) {
                     box.append('<option value="'+data.depart[i].ID+'">'+data.depart[i].depart+'</option>')
@@ -259,10 +306,9 @@ $('.more-bt').on('click',function() {
                 'ID': ID
                 },
             success: function(data) {
-                console.log(data)
-                    let info=data.data,line,
+                    let line,info=data.data,
                     code = '\
-                    <tr id="'+info.ID+'" style="cursor: move;>\
+                    <tr class="boding" id="body-'+data.ID+'" style="cursor: move;">\
                         <td>'+info.emid+'</td>\
                         <td>'+info.name+'</td>\
                         <td>'+info.job+'</td>\
@@ -278,9 +324,11 @@ $('.more-bt').on('click',function() {
                             </div>\
                         </td>\
                     </tr>'
-                    line = $('tr[class=group_heading][id='+info.depart+']').index()+info.line
-                    console.log($('tbody tr:eq('+line+')'))
+                    line = $('tr[id=head-'+data.depart+']').index()
+                    line += info.line
                     $('tbody tr:eq('+line+')').after(code)
+                    refreshContact()
+                    $('body').removeClass('modal-open')
                     modal.remove() 
                 }
             })
