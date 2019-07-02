@@ -412,17 +412,17 @@ function getDayTime (inTime,outTime,allDay) {
 			dEnd = returnDate(de.y,de.mo,de.dy,de.da,de.h+':'+de.mi)
 			if (de.da-ds.da == 0) {
 				sTime = parseInt(ds.h+'.'+ds.mi)
-				eTime = parseInt(de.h+'.'+de.mi)
-				if (((de.h-ds.h) % 4) >= 1) { minush = 1 }
+                eTime = parseInt(de.h+'.'+de.mi)
+                if (( ((de.h-ds.h) > 6) && (de.h-ds.h) % 4) >= 1) { minush = 1 }
 				else { minush = 0 }
                 if (de.mi-ds.mi != 0) { miTime = 30 }
-                if (miTime) { minush = 1 }
+                if (miTime && (de.mi-ds.mi) < 30) { minush = 1 }
 				dlength = eTime-sTime-minush +' ชั่วโมง '+ (miTime == 0 ? "" : miTime +' นาที')
 			}
 			else {
 				sTime = ds.h+'.'+ds.mi
 				eTime = de.h+'.'+de.mi
-				if (((de.h-ds.h) % 4) >= 1) { minush = 1 }
+				if (( ((de.h-ds.h) > 6) && (de.h-ds.h) % 4) >= 1) { minush = 1 }
 				else { minush = 0 }
 				dlength = de.da-ds.da+' วัน '+eTime-sTime-minush +' ชั่วโมง'
 			}

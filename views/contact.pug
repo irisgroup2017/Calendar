@@ -8,19 +8,20 @@ block content
    each item in dep
     if item != undefined
      tr(id='body-'+item.ID class="boding")
-      td=item.emid
-      td=item.name
-      td=item.job
-      td=item.nickname
-      td=item.ext
-      td=item.work
-      td=item.private
-      td=item.email
+      td.emid=item.emid
+      td.name=item.name
+      td.job=item.job
+      td.nickname=item.nickname
+      td.ext=item.ext
+      td.work=item.work
+      td.private=item.private
+      td.email=item.email
       if parms.operator > 3
        td.small_buttons
         div
-         a.button.edit="แก้ไข"
-         a.button.delete="ลบ"
+         a.button.edit.li-edit="แก้ไข"
+         a.button.save.li-save(style="display: none;")="บันทึก"
+         a.button.delete.li-delete="ลบ"
     
  mixin ladd(item)
   for i in item

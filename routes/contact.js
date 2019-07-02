@@ -1,6 +1,7 @@
 var express = require('express'),
 router = express.Router(),
-con = require('../bin/mysql')
+con = require('../bin/mysql'),
+log = require('../bin/logger')
 
 
 function telFormat(number) {
@@ -105,7 +106,13 @@ router.post('/',async function(req,res){
         res.json(req.body)
     }
     if (req.body.state == "save") {
-
+        req.body.data.item[1] = parseInt(req.body.data.item[1])
+        let query = ""
+        for (var i=0;i<15;i+=2) {
+            query = query + req.body.data.item[i] +" = "+ (i==0 ? req.body.data.item[i+1] : "'"+req.body.data.item[i+1]+"'") +","
+        } query = query.slice(0,-1)
+        log.logger('info',query)
+        con.q('UPDATE contact_data SET '+query+ ' WHERE dataid = ?',[parseInt(req.body.data.ID)])
     }
     if (req.body.state == "add") {
         let
@@ -120,7 +127,9 @@ router.post('/',async function(req,res){
         res.json(req.body)
     }
     if (req.body.state == "del") {
-
+        let ID = req.body.ID.substring(5)
+        //if (ID.length != 13) { ID = ID.substring(0,13) }
+        con.q('DELETE FROM contact_data WHERE dataid = ?',ID)
     }
     if (req.body.state == "edit-de") {
         let ID = req.body.ID,
@@ -148,7 +157,7 @@ router.post('/',async function(req,res){
         })
         res.end()
     }
-    res.end()
+res.end()
 })
 
 module.exports = router

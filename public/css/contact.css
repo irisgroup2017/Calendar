@@ -494,9 +494,9 @@ tr:hover {
     content: "\2714";        
 }
 
-.email:before {
+/*.email:before {
     content: "\2709";        
-}
+}*/
 
 .like:before {
     content: "\2764";        
@@ -677,5 +677,15 @@ tr:hover {
 }
 
 .Input .error {
+    border-color: red !important;
+}
+
+.nostyle {
+    color: #96a324;
+    outline: 0px;
+    cursor: text;
+    width: 100%;
+}
+.error {
     border-color: red !important;
 }
