@@ -4,7 +4,6 @@ $(document).ready(function() {
         refreshContact()
         refreshDepart()
     }
-
     // jquery
     $('.contact_td').on('click','.li-edit',function() {
         $(this).parents('tr').find('td:not(:last-child)').each(function(index,row) {
@@ -72,7 +71,7 @@ $(document).ready(function() {
             type: "POST",
             dataType: 'json',
             data: {
-                'state': 'move-de',
+                'state': 'move-li',
                 'order': order
             }
         })
@@ -92,7 +91,7 @@ $(document).ready(function() {
                     </div>\
                     <div class="Wrapper">\
                         <div class="Input">\
-                            <input type="text" id="input" class="Input-text emid" placeholder="รหัสพนักงาน, ต.ย. 0000000">\
+                            <input type="text" id="input" class="Input-text emid" placeholder="รหัสพนักงาน, ต.ย. 0000000" onchange="checkEmp(this.value)">\
                             <label for="input" class="Input-label">รหัสพนักงาน</label>\
                         </div>\
                         <div class="Input">\
@@ -192,12 +191,7 @@ $(document).ready(function() {
                 let depart = $('.box select option:selected').val(),
                 ID = $('.box select').attr('id')
                 if (ID == undefined) {
-                function Generator() {}
-                    Generator.prototype.rand =  Math.floor(Math.random() * 26) + Date.now();
-                    Generator.prototype.getId = function() {
-                    return this.rand++;
-                    }
-                    ID = new Generator()
+                    ID = new Generator().rand
                 }
                 $.ajax({
                 url: '/contact',
@@ -392,6 +386,36 @@ function refreshDepart() {
     })
 }
 
+
+function checkEmp(emid) {
+    let len = emid.length
+    if (len == 7) {
+        $.ajax({
+            url: '/contact',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: {
+                'state': 'search-li',
+                'emid': emid 
+            },
+            success: function(data) {
+                if (data != 'empty') {
+                    for (const item of data) {
+                        $('.box select').attr('id',item.ID)
+                        $('.Input .name').val(item.name)
+                        $('.Input .job').val(item.job)
+                        $('.Input .nname').val(item.nickname)
+                        $('.Input .ext').val(item.ext)
+                        $('.Input .com').val(item.work)
+                        $('.Input .pri').val(item.private)
+                        $('.Input .mail').val(item.email)
+                    }
+                }
+            }
+        })
+    } else { return emid }
+}
 function telFormat(number) {
     if (number) {
         let len = number.length
@@ -428,6 +452,13 @@ function isMail(evt) {
     }
     target.setSelectionRange(index,index)
 }
+
+function Generator() {}
+Generator.prototype.rand =  Math.floor(Math.random() * 26) + Date.now()
+Generator.prototype.getId = function() {
+return this.rand++
+}
+
 
 $('#contact_td').on('mouseenter','td:not(:last-child)',function() {
     var t = parseInt($(this).index()) + 1

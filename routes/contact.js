@@ -21,6 +21,7 @@ function telFormat(number) {
 router.get('/',async function(req, res) {
     var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
     if (userName) {
+        log.logger('info',userName+' view contact')
         var result,
         nameLst = await con.q('SELECT dataid,name,lastName FROM user_data ORDER BY name ASC'),
         level = 0,
@@ -83,6 +84,30 @@ router.post('/',async function(req,res){
         req.body.job = result.jobPos
         res.json(req.body)
     }
+    if (req.body.state == 'search-li') {
+        let result = await con.q('SELECT * FROM contact_data WHERE emid = ?',[req.body.emid]),
+        list = []
+        if (result != "") {
+            for (const data of result) {
+                list.push({
+                    ID: data.dataid +''+result.length,
+                    emid: data.emid,
+                    level: data.level,
+                    name: data.name,
+                    line: data.line,
+                    job: data.job,
+                    nickname: data.nickname,
+                    ext: data.ext,
+                    private: telFormat(data.private),
+                    work: telFormat(data.work),
+                    email: data.email
+                })
+            }
+            res.json(list)
+        } else {
+            res.json('empty')
+        }
+    }
     if (req.body.state == "cdata") {
         let ID = req.body.ID,
         emid = req.body.data.emid,
@@ -127,9 +152,35 @@ router.post('/',async function(req,res){
         res.json(req.body)
     }
     if (req.body.state == "del") {
-        let ID = req.body.ID.substring(5)
-        //if (ID.length != 13) { ID = ID.substring(0,13) }
+        let ID = req.body.ID.substring(5),
+        result
         con.q('DELETE FROM contact_data WHERE dataid = ?',ID)
+        ID = (ID.length == 13 ? ID : ID.substring(0,13))+'%'
+        result = await con.q('SELECT * FROM contact_data WHERE dataid LIKE ?',[ID])
+        if (result) {
+            if (result.length > 0) {
+                let i = 1,found = 1,loop = result.length
+                for (const data of result) {
+                    var id = data.dataid.toString()
+                    if (--loop <= 0 && found) {
+                        if (id.length != 13) {
+                            await con.q('UPDATE contact_data SET dataid = ? WHERE dataid = ?',[id.substring(0,13),id])
+                        }
+                    } else {
+                        if (id.length != 13) {
+                            ID = id.substring(0,13) +''+ i++
+                            await con.q('UPDATE contact_data SET dataid = ? WHERE dataid = ?',[ID,id])
+                        } else {
+                            found = 0
+                        }
+                    }
+                }
+            } else if (result.length == 1) {
+                if (result[0].dataid.length > 13) {
+                    con.q('UPDATE contact_data SET dataid = ? WHERE dataid = ?',[result[0].dataid.substring(0,13),result[0].dataid])
+                }
+            }
+        }
     }
     if (req.body.state == "edit-de") {
         let ID = req.body.ID,
