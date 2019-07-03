@@ -91,7 +91,7 @@ $(document).ready(function() {
                     </div>\
                     <div class="Wrapper">\
                         <div class="Input">\
-                            <input type="text" id="input" class="Input-text emid" placeholder="รหัสพนักงาน, ต.ย. 0000000" onchange="checkEmp(this.value)">\
+                            <input type="text" id="input" class="Input-text emid" placeholder="รหัสพนักงาน, ต.ย. 0000000" onkeypress="return isNumber(event)" onchange="checkEmp(this.value)">\
                             <label for="input" class="Input-label">รหัสพนักงาน</label>\
                         </div>\
                         <div class="Input">\
@@ -107,15 +107,15 @@ $(document).ready(function() {
                             <label for="input" class="Input-label">ชื่อเล่น</label>\
                         </div>\
                         <div class="Input">\
-                            <input type="text" id="input" class="Input-text ext" placeholder="เบอร์ภายใน" onkeypress="return isNumber(event)">\
+                            <input type="text" id="input" class="Input-text ext" placeholder="เบอร์ภายใน" onkeypress="return isPhone(event)">\
                             <label for="input" class="Input-label">เบอร์ภายใน</label>\
                         </div>\
                         <div class="Input">\
-                            <input type="text" id="input" class="Input-text com" placeholder="เบอร์บริษัท" onkeypress="return isNumber(event)">\
+                            <input type="text" id="input" class="Input-text com" placeholder="เบอร์บริษัท" onkeypress="return isPhone(event)">\
                             <label for="input" class="Input-label">เบอร์บริษัท</label>\
                         </div>\
                         <div class="Input">\
-                            <input type="text" id="input" class="Input-text pri" placeholder="เบอร์ส่วนตัว" onkeypress="return isNumber(event)">\
+                            <input type="text" id="input" class="Input-text pri" placeholder="เบอร์ส่วนตัว" onkeypress="return isPhone(event)">\
                             <label for="input" class="Input-label">เบอร์ส่วนตัว</label>\
                         </div>\
                         <div class="Input">\
@@ -437,12 +437,21 @@ function telRem(num) {
 
 function isNumber(evt) {
     evt = (evt) ? evt : window.event
+    var charCode = (evt.which) ? evt.which : evt.keyCode
+    if (charCode > 31 != 45 && ((charCode < 48) || charCode > 57)) {
+        return false
+    } 
+    return true
+}
+
+function isPhone(evt) {
+    evt = (evt) ? evt : window.event
     var charCode = (evt.which) ? evt.which : evt.keyCode,
     value = evt.target.value
     if (charCode > 31 && charCode != 45 && ((charCode < 48) || charCode > 57)) {
-        return false;
+        return false
     } else if (charCode == 45 && value.length > 0) { return false }
-    return true;
+    return true
 }
 
 function isMail(evt) {
