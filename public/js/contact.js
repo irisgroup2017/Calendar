@@ -432,15 +432,16 @@ function telFormat(number) {
 function telRem(num) {
     if (num.length > 1) {
         return num.replace(/\-/g,"")
-    }
+    } else return num
 }
 
 function isNumber(evt) {
-    evt = (evt) ? evt : window.event;
-    var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if (charCode > 31 && ((charCode < 48 && charCode != 45) || charCode > 57)) {
+    evt = (evt) ? evt : window.event
+    var charCode = (evt.which) ? evt.which : evt.keyCode,
+    value = evt.target.value
+    if (charCode > 31 && charCode != 45 && ((charCode < 48) || charCode > 57)) {
         return false;
-    }
+    } else if (charCode == 45 && value.length > 0) { return false }
     return true;
 }
 
