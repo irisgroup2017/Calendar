@@ -24,7 +24,7 @@
                 if ($('.delfile').hasClass('hidethis')) {
                     $('.delfile').removeClass('hidethis')
                 }
-                localStorage.setItem('attach',file)
+                sessionStorage.setItem('attach',file)
             },
             error: (e) => {
                 console.log(e.responseText)
@@ -77,7 +77,6 @@ $(document).on("click",".viewattach",function() {
 })
 
 jQuery(function($) {
-
 /* initialize the external events
 	-----------------------------------------------------------------*/
 	$('#external-events div.external-event').each(function() {
@@ -187,7 +186,7 @@ jQuery(function($) {
             if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
             */
             var endtime = view.end._i,
-            listday = JSON.parse(localStorage.date)
+            listday = JSON.parse(sessionStorage.date)
             if (view.type == 'basic') {
                 for (var i=0;i<listday.length;i++) {
                     thisday = new Date(listday[i])
@@ -239,8 +238,8 @@ jQuery(function($) {
                     }
                 }
             })
-            localStorage.removeItem('date')
-            if (localStorage.attach) { 
+            sessionStorage.removeItem('date')
+            if (sessionStorage.attach) { 
                 $.ajax({
                     url: '/proc',
                     type: "POST",
@@ -248,11 +247,11 @@ jQuery(function($) {
                     async: false,
                     data: {
                         'state': 'delfile',
-                        'file': localStorage.attach,
+                        'file': sessionStorage.attach,
                         'username': $('#username').text()
                     },
                     success: function(objs) {
-                        localStorage.removeItem('attach')
+                        sessionStorage.removeItem('attach')
                     },
                     error: (e) => {
                         console.log(e.responseText)
@@ -306,18 +305,18 @@ jQuery(function($) {
         },
         dayRender: function(date, cell) {
             var thisdate = []
-            if (localStorage.date) {
-                thisdate = JSON.parse(localStorage.date)
+            if (sessionStorage.date) {
+                thisdate = JSON.parse(sessionStorage.date)
                 thisdate.push(date._d.getTime())
                 thisdate = JSON.stringify(thisdate)
             } else {
                 thisdate.push(date._d.getTime())
                 thisdate = JSON.stringify(thisdate)
             }
-            localStorage.setItem('date',thisdate)
+            sessionStorage.setItem('date',thisdate)
         },
         drop: function(date, jsEvent,ui,resourceId) { // this function is called when something is dropped
-            if (localStorage.attach) { alert("กรุณาทำการลาครั้งละ 1 รายการ"); return }
+            if (sessionStorage.attach) { alert("กรุณาทำการลาครั้งละ 1 รายการ"); return }
             // retrieve the dropped element's stored Event Object
 			var originalEventObject = $(this).data('eventObject')
             var $extraEventClass = $(this).attr('data-class')
@@ -646,8 +645,8 @@ jQuery(function($) {
                 data.dataid = calEvent.dataid
                 data.username = calEvent.userName
                 data.start = new Date(calEvent.start._i).toString().replace( /[\s|:]/g,'-').split('-').slice(0,7).toString()
-                if (localStorage.attach) {
-                    var file = localStorage.attach
+                if (sessionStorage.attach) {
+                    var file = sessionStorage.attach
                     file = file.split('.')[0]
                     if (file == data.start ) { datah = 1 }
                 }
@@ -685,7 +684,7 @@ jQuery(function($) {
                                 <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
                                 <i class="fa fa-arrow-up"></i>\
                             </div>\
-                            <div '+(datah==1 ?'class="delfile"':'class="delfile hidethis"')+''+(datah==1 ?' id="'+localStorage.attach+'"':'')+'>\
+                            <div '+(datah==1 ?'class="delfile"':'class="delfile hidethis"')+''+(datah==1 ?' id="'+sessionStorage.attach+'"':'')+'>\
                                 <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
                                 <i class="fa fa-close delthis"></i></p>\
                             </div>\
@@ -845,7 +844,7 @@ jQuery(function($) {
                         },
                         success: function(objs) {
                             $('.delfile').addClass('hidethis')
-                            localStorage.removeItem('attach')
+                            sessionStorage.removeItem('attach')
                         },
                         error: (e) => {
                             console.log(e.responseText)
@@ -949,7 +948,7 @@ jQuery(function($) {
                                         dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
                                         $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
                                     }
-                                    localStorage.removeItem('attach')
+                                    sessionStorage.removeItem('attach')
                                 }
                             })
                         }
@@ -961,7 +960,7 @@ jQuery(function($) {
                     modal.modal("hide")
                 })
                 modal.find('button[data-action=delete]').on('click', async function() {
-                    if (localStorage.attach) {
+                    if (sessionStorage.attach) {
                         $.ajax({
                             url: '/proc',
                             type: "POST",
@@ -969,11 +968,11 @@ jQuery(function($) {
                             async: false,
                             data: {
                                 'state': 'delfile',
-                                'file': localStorage.attach,
+                                'file': sessionStorage.attach,
                                 'username': $('#username').text()
                             },
                             success: function(objs) {
-                                localStorage.removeItem('attach')
+                                sessionStorage.removeItem('attach')
                             },
                             error: (e) => {
                                 console.log(e.responseText)
