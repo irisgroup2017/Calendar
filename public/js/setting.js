@@ -232,6 +232,7 @@ $(document).ready(function(){
                         data: { 
                             'state': 'delete',
                             'dataid': dataid,
+                            'userName': datausername,
                             'userName': $('#privacyName').text()
                         },
                         success: function(data) {

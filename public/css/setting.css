@@ -1,3 +1,6 @@
+table #manage tr:hover {
+    background-color: rgba(243, 241, 240, 0.678);
+}
 table.table td a {
     cursor: pointer;
     display: inline-block;

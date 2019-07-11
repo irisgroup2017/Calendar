@@ -4,7 +4,8 @@ router = express.Router(),
 dateFormat = require('dateformat'),
 ls = require('../bin/larStock'),
 log = require('../bin/logger'),
-larstock = require('../bin/larstock')
+larstock = require('../bin/larstock'),
+fs = require("fs")
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -104,7 +105,21 @@ router.post('/',async function(req, res) {
     }
 	if (a.state === 'delete') {
 		await con.q(['DELETE FROM user_data WHERE dataid = ?','DELETE FROM privacy_data WHERE dataid = ?','DELETE FROM lar_status WHERE dataid = ?','DELETE FROM lar_data WHERE dataid = ?'],a.dataid)
-		log.logger('info','Remove ID : '+ req.cookies.user_name+' - '+a.userName)
+		path = __basedir + '/public/doc/' +req.body.userName+ '/'
+		var rmDir = function(path) {
+			try { files = fs.readdirSync(path) } catch (e) { return }
+			if (files.length > 0) {
+				files.forEach(function(x, i) {
+					if (fs.statSync(path + x).isDirectory()) {
+						rmDir(path + x)
+					} else {
+						fs.unlinkSync(path + x)
+					}
+				})
+				fs.rmdirSync(path)
+			}
+		}
+		log.logger('info','Remove User : '+ req.body.userName+' by '+a.userName)
 		res.json(a)
 	}
 	if (a.state === 'add') {

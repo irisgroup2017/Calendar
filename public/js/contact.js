@@ -416,6 +416,7 @@ function checkEmp(emid) {
         })
     } else { return emid }
 }
+
 function telFormat(number) {
     if (number) {
         let len = number.length
@@ -470,11 +471,11 @@ return this.rand++
 }
 
 
-$('#contact_td').on('mouseenter','td:not(:last-child)',function() {
+$('#contact_td').on('mouseenter','td',function() {
     var t = parseInt($(this).index()) + 1
     $('table:first-child td:nth-child(' + t + ')').addClass('highlighted')
 })
-$('#contact_td').on('mouseleave','td:not(:last-child)',function() {
+$('#contact_td').on('mouseleave','td',function() {
     var t = parseInt($(this).index()) + 1
     $('table:first-child td:nth-child(' + t + ')').removeClass('highlighted')
 })
