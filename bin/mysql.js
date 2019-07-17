@@ -29,6 +29,19 @@ exports.q = async function (sql,values) {
         }
     }
     catch(err) {
-        log.logger('error',err)
+        switch (err.errno) {
+            case 1064:
+                log.logger('error','syntax error')
+                log.logger('error','query: '+ sql)
+                log.logger('error','value: '+ values)
+                break
+            case 1062:
+                log.logger('error','duplicate entry')
+                break
+            default:
+                log.logger('error',err)
+                break
+        }
+        c.end()
     }
 }

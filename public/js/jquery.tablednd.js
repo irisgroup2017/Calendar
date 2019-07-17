@@ -24,6 +24,7 @@
             return objMap;
         }
         $('table').each(function () {
+            console.log($(this))
             if ($(this).data('table') === 'dnd') {
     
                 $(this).tableDnD({

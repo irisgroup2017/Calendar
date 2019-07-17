@@ -872,9 +872,9 @@ jQuery(function($) {
                     if (dd == 'undefined' || dd == "") { $('.lartype').text('วันคงเหลือ: '+larlist[$(this).val()]) }
                     else { $('.lartype').text('วันคงเหลือ: '+dd) }
                 })
-
                 modal.find('form').on('submit', function(ev){
                     ev.preventDefault()
+                    $(this).prop('disabled',true)
                     $('#upsiwa').ajaxForm(function() {
                         alert("file upload!")
                     })
