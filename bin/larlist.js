@@ -340,14 +340,20 @@ function minusDuration(remain,duration) {
         return Ans
     }
 }
-
-function getDateValue(timeParse) {
-	gDay = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+/*
+gDay = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 	gMonth = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
+gDay = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์']
+	gMonth = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
+*/
+function getDateValue(timeParse) {
+	gDay = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์']
+	gMonth = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
 	if (timeParse > 99999999999) { timeParse = new Date(timeParse) } 
 	else { timeParse = new Date((timeParse-25200)*1000) }
 	datevalues = {
-		y: timeParse.getFullYear(),
+		y: timeParse.getFullYear()+543,
 		mo: gMonth[timeParse.getMonth()],
 		dy: gDay[timeParse.getDay()],
 		da: timeParse.getDate(),
@@ -379,7 +385,7 @@ function getDayTime (inTime,outTime,allDay) {
 	if (allDay) {
 		if (outTime) { // more days
 			de = getDateValue(outTime)
-			gDay = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+			gDay = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์']
 			de.dy = gDay[(gDay.indexOf(de.dy)-1<0?6:gDay.indexOf(de.dy)-1)]
 			dStart = returnDate(ds.y,ds.mo,ds.dy,ds.da,'ทั้งวัน')
             dEnd = returnDate(de.y,de.mo,de.dy,de.da-1)
