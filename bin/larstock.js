@@ -66,14 +66,26 @@ async function setLar(userName,dataid,state,now) {
             }
         } else if (ovq) {
             if (state == 'insert') { vap = ovq } else {
-                ovp = ovq + "0000"
-                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
+                ovq = ovq + "0000"
+                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovq,dataid,y[2]])
             }
         } else {
-            var ova = ov[0].vacation
+            if (ov[0].vacation) {
+                var ova = ov[0].vacation
+            } else {
+                if (w >= 2) {
+                    ova = 6
+                } else if (w == 0 && y[1] > x[1]) {
+                    ova = Math.floor(((y[1]-x[1]))/2)
+                } else if (w == 1) {
+                    ova = Math.floor((y[1])/2)
+                } else {
+                    ova = 0
+                }
+            }
             if (state == 'insert') { vaq = ova } else {
                 ovm = ova + "0000"
-                con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovm,dataid,y[2]])
+                con.q('UPDATE lar_status SET userName = ?,vacationp = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovm,ovm,dataid,y[2]])
             }
         }
     }
