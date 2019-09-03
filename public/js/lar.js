@@ -105,12 +105,12 @@ jQuery(function($) {
 
     }
 
-    function Generator() {};
-    Generator.prototype.rand =  Math.floor(Math.random() * 26) + Date.now();
+    function Generator() {}
+    Generator.prototype.rand =  Math.floor(Math.random() * 26) + Date.now()
     Generator.prototype.getId = function() {
         return this.rand++;
-    };
-    var idGen =new Generator();
+    }
+    var idGen =new Generator()
 
     var date = new Date(),
 	d = date.getDate(),

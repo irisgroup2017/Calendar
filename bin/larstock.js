@@ -49,6 +49,7 @@ async function setLar(userName,dataid,state,now) {
 
         ovr = ov[0].vacationr
         ovp = ov[0].vacationp
+        ovq = ov[0].vacationq
         if (ovr) {
             ovb = await dhmtonum(ovr.toString())
             if (ovb >= 6) { ovr = '060000' }
@@ -60,13 +61,19 @@ async function setLar(userName,dataid,state,now) {
             ovp2 = await plusdhm(ovm,ovp.toString())
             ovb = await dhmtonum(ovp2.toString())
             if (ovb >= 6) { ovp = '060000' } else { ovp = ovb }
-            if (state == 'insert') { vaq = ovp } else {
-                con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
+            if (state == 'insert') { vap = ovp } else {
+                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
+            }
+        } else if (ovq) {
+            if (state == 'insert') { vap = ovq } else {
+                ovp = ovq + "0000"
+                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
             }
         } else {
-            ovq = ov[0].vacationq
-            if (state == 'insert') { vaq = ovq } else {
-                con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovq,dataid,y[2]])
+            var ova = ov[0].vacation
+            if (state == 'insert') { vaq = ova } else {
+                ovm = ova + "0000"
+                con.q('UPDATE lar_status SET userName = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovm,dataid,y[2]])
             }
         }
     }
@@ -74,12 +81,15 @@ async function setLar(userName,dataid,state,now) {
     if (w >= 2) {
         va = 6
         pe = 6 
-    } else if (w == 0) {
+    } else if (w == 0 && y[1] > x[1]) {
         va = Math.floor(((y[1]-x[1]))/2)
         pe = Math.floor(((y[1]-x[1]))/2)
-    } else {
+    } else if (w == 1) {
         va = Math.floor((y[1])/2)
         pe = Math.floor((y[1])/2)
+    } else {
+        va = 0
+        pe = 0
     }
 
     if (w == 2) {

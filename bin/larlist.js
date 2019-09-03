@@ -1,5 +1,5 @@
 var con = require('../bin/mysql')
-
+log = require('../bin/logger')
 const llt = ['ลาป่วย','ลากิจ','ลาพักร้อน','ลาฝึกอบรบ','ลาทำหมัน','ลาคลอด','ลาอุปสมบท','ลารับราชการทหาร'],
 lle = ['sick','personal','vacation','training','sterily','maternity','religious','military'],
 lld = ['sickd','personald','vacationd','trainingd','sterilyd','maternityd','religiousd','militaryd'],
