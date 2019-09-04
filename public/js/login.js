@@ -18,14 +18,14 @@ jQuery(function($) {
               <div class="modal-body">\
                 <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
                 <form class="no-margin">\
-                  <h5>อีเมล์บริษัท :</h5>\
+                  <h5>ใส่ที่อยู่อีเมล์บริษัท :</h5>\
                   <span class="input-icon">\
                   <input id="email" type="text"/>\
                 </form>\
               </div>\
               <div class="modal-footer">\
-                <button type="button" class="btn btn-sm btn-danger" data-action="changepw"><i class="ace-icon fa fa-paper-plane-o"></i> Send Password</button>\
-                <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                <button type="button" class="btn btn-sm btn-danger" data-action="changepw"><i class="ace-icon fa fa-paper-plane-o"></i> ส่งข้อมูล</button>\
+                <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> ยกเลิก</button>\
               </div>\
             </div>\
           </div>\
