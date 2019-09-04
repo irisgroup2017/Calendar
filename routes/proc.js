@@ -279,13 +279,13 @@ router.post('/',async function(req, res) {
 			let mailOptions = {
 				from: 'iris4notice@gmail.com',                // sender
 				to: mailGroup,                // list of receivers
-				subject: "ขออนุญาติ"+larType,              // Mail subject
+				subject: "ขออนุญาต"+larType,              // Mail subject
 				attachments: {
 					// file on disk as an attachment
 					filename: (path?'เอกสารแนบประกอบการลา'+fileExt:null),
 					path: (path?path:null) // stream this file
 				},
-				html: '<h3>ขออนุญาติ'+larType+'</h3>\
+				html: '<h3>ขออนุญาต'+larType+'</h3>\
 				<h5>'+userName+'</h5>\
 				<table>\
 				<tr>\
@@ -323,8 +323,8 @@ router.post('/',async function(req, res) {
 			let mailOptions = {
 				from: 'iris4notice@gmail.com',                // sender
 				to: mailGroup,                // list of receivers
-				subject: "ขออนุญาติ"+larType,              // Mail subject
-				html: '<h3>ขออนุญาติ'+larType+'</h3>\
+				subject: "ขออนุญาต"+larType,              // Mail subject
+				html: '<h3>ขออนุญาต'+larType+'</h3>\
 				<h5>'+userName+'</h5>\
 				<table>\
 				<tr>\

@@ -58,7 +58,7 @@ async function send(status,user,larid,mail) {
         <td>'+timec.daylength+'</td>\
         </tr>\
         </table><br>\
-        <a href="'+qlink+'"><button class="blue">ไปยังหน้าหน้าเว็ป</button></a>'
+        <a href="'+qlink+'"><button class="blue">เข้าสู่ระบบ</button></a>'
     }
     log.logger('info',req.body)
     log.logger('info',mailOptions)
