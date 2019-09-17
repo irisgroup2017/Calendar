@@ -63,7 +63,7 @@ router.get('/', async function(req, res) {
 				var data = {
 					'dataid': result.dataid,
 					'userid': result.emid,
-					'username': result.name +' '+ result.lastName,
+					'username': result.name.replace(/\s+/g, '') +' '+ result.lastName.replace(/\s+/g, ''),
 					'mail': result.mail,
 					'operator': operator[0].operator
 				}
