@@ -30,7 +30,7 @@ async function getLar(userName,dataid,thisday) {
             duration = getDuration(result[i].start,result[i].end)
         } else { duration.d = 1 }
         j = result[i].className , k = result[i].title
-        if (j == 'label-grey') { 
+        if (j == 'label-grey') {
             LAR.sick = (LAR.sick ? LAR.sick+1 : 1)
             LAR.sickd = plusDuration(LAR.sickd,duration)
         }
@@ -157,7 +157,7 @@ function getDuration(start,end) {
     for (var i=0;i<option.unit.length;i++) {
         unitBase = option.unit[i]
         unitValue = option.units[unitBase]
-        if (unitValue < duration) {
+        if (unitValue <= duration) {
             Ans[unitBase] = Math.floor(duration / unitValue)
             duration = duration % unitValue
         }
