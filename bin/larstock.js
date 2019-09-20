@@ -66,7 +66,6 @@ async function setLar(userName,dataid,state,now) {
             }
         } else if (ovq) {
             if (state == 'insert') { vap = ovq } else {
-                ovq = ovq + "0000"
                 con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovq,dataid,y[2]])
             }
         } else {

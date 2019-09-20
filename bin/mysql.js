@@ -37,9 +37,13 @@ exports.q = async function (sql,values) {
                 break
             case 1062:
                 log.logger('error','duplicate entry')
+                log.logger('error','query: '+ sql)
+                log.logger('error','value: '+ values)
                 break
             default:
                 log.logger('error',err)
+                log.logger('error','query: '+ sql)
+                log.logger('error','value: '+ values)
                 break
         }
         c.end()
