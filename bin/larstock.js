@@ -25,8 +25,10 @@ async function setLar(userName,dataid,state,now) {
     y = gd(new Date(now)),
     w = y[2]-x[2]
     var ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
-    if (!ov[0]) { 
-        ovr = 0 
+    if (!ov[0]) {
+        if (w < 1) { vap = '000000' }
+        else if (w == 1) { vap = '0'+ Math.floor((12-(x[1]+1)/2)) +'0000' }
+        else if (w > 1) { vap = '060000' }
     }
     else {
         if (ov[0].sterilyd) {
@@ -84,17 +86,14 @@ async function setLar(userName,dataid,state,now) {
             }
             if (state == 'insert') { vaq = ova } else {
                 ovm = ova + "0000"
-                con.q('UPDATE lar_status SET userName = ?,vacationp = ?,vacationq = ? WHERE dataid = ? AND year = ?',[userName,ovm,ovm,dataid,y[2]])
+                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovm,dataid,y[2]])
             }
         }
     }
 
-    if ((w >= 2) || (w == 1 && y[1] > x[1])) {
+    if ((w >= 2) || (w == 1)) {
         va = 6
         pe = 6 
-    } else if (w == 1) {
-        va = Math.floor((y[1])/2)
-        pe = Math.floor((y[1])/2)
     } else if (w == 0 && y[1] > x[1]) {
         va = Math.floor(((y[1]-x[1]))/2)
         pe = Math.floor(((y[1]-x[1]))/2)
@@ -118,8 +117,8 @@ async function setLar(userName,dataid,state,now) {
     } else if (w > 3) { re = 30 }
     if (state == 'insert') {
         await con.q('INSERT INTO lar_status\
-        (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military,vacationp,vacationq)\
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi,vap,vaq])
+        (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military,vacationp)\
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi,vap])
     }
     if (state == 'update') {
         var daisuki = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]])
