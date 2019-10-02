@@ -126,8 +126,8 @@ $(document).ready(function() {
                     </form>\
                   </div>\
                   <div class="modal-footer">\
-                    <button type="button" class="btn btn-sm btn-danger" data-action="create_data"><i class="ace-icon fa fa-paper-plane-o"></i> Save</button>\
-                    <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                    <button type="button" class="btn btn-sm btn-danger" data-action="create_data"><i class="ace-icon fa fa-paper-plane-o"></i> บันทึก</button>\
+                    <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> ยกเลิก</button>\
                   </div>\
                 </div>\
               </div>\
@@ -256,8 +256,8 @@ $(document).ready(function() {
                 </form>\
               </div>\
               <div class="modal-footer">\
-                <button type="button" class="btn btn-sm btn-danger" data-action="deadd"><i class="ace-icon fa fa-paper-plane-o"></i> Send Password</button>\
-                <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                <button type="button" class="btn btn-sm btn-danger" data-action="deadd"><i class="ace-icon fa fa-paper-plane-o"></i> บันทึก</button>\
+                <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> ยกเลิก</button>\
               </div>\
             </div>\
           </div>\
@@ -308,8 +308,8 @@ $(document).ready(function() {
                 </form>\
               </div>\
               <div class="modal-footer">\
-                <button type="button" class="btn btn-sm btn-danger" data-action="deedit"><i class="ace-icon fa fa-paper-plane-o"></i> Send Password</button>\
-                <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                <button type="button" class="btn btn-sm btn-danger" data-action="deedit"><i class="ace-icon fa fa-paper-plane-o"></i> บันทึก</button>\
+                <button type="button" class="btn btn-sm btn-info" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> ยกเลิก</button>\
               </div>\
             </div>\
           </div>\

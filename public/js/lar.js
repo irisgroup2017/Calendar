@@ -887,7 +887,12 @@ jQuery(function($) {
                     calEvent.editable = false
                     calendar.fullCalendar('updateEvent', calEvent)
                     if (calEvent.title !== null) {
-                        var data = {};
+                        var data = {}
+                        ,me = $(this)
+                        if ( me.data('requestRunning') ) {
+                            return
+                        }
+                        me.data('requestRunning', true)
                         data.dataid = calEvent.dataid
                         data.state = 'savelar'
                         data.id = calEvent.id
@@ -931,6 +936,9 @@ jQuery(function($) {
                                 async: false,
                                 contentType: 'application/json',
                                 data: JSON.stringify(data),
+                                complete: function() {
+                                    me.data('requestRunning', false)
+                                },
                                 success: function(data) {
                                     for (i=0;i<data.length;i++) {
                                         $('tr[class='+ data[i].a +']').find('td:nth-child(2)').text(data[i].c)
