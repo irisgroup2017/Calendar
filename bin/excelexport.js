@@ -43,27 +43,45 @@ async function xlCreate(tstart,tend,res) {
         start = new Date(result[i].start*1000-25200000)
         startShow = new Date(result[i].start*1000)
         end = (result[i].end ? new Date((result[i].end)*1000-25200000) : '-' )
-        ws.cell(k,2).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
-        ws.cell(k,3).string(larType)
-        ws.cell(k,4).string(title)
-        if (end == '-') { 
-            ws.cell(k,5).string('1 วัน').style({alignment:{horizontal:'center'}}) } 
+        if (end == '-') {
+            ws.cell(k,2).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
+            ws.cell(k,3).string(larType)
+            ws.cell(k,4).string(title)  
+            ws.cell(k,5).string('1 วัน').style({alignment:{horizontal:'center'}}) 
+            k++
+        } 
         else {
             //1 ชม 3600 , 1 วัน 86400
             duration = (result[i].end > tend ? tend : result[i].end) - (result[i].start < tstart ? tstart : result[i].start)
             duration = moment.duration(duration,'second').format("d,[d],h,[h],m,[m]")
             duration = duration.split(',')
             if (duration.indexOf('h') > 0 && duration.indexOf('d') == -1) {
-                if (start.getHours() < 12 && end.getHours() > 13) { 
+                if (start.getHours() < 12 && end.getHours() > 13) {
                     fnum = duration.findIndex(num => num == 'h')
                     duration[fnum-1] = duration[fnum-1]-1
                 }
             }
-            duration = durt(duration)
-            if (duration == '8 ชั่วโมง ') { duration = '1 วัน'}
-            ws.cell(k,5).string(duration).style({alignment:{horizontal:'center'}}) 
+            if (duration.indexOf('d') > 0) {
+                fnum = (duration.findIndex(num => num == 'd')-1)
+                if (duration[fnum] > 1) {
+                    for (var j=0;j<duration[fnum];j++) {
+                        ws.cell(k,2).date(moment(startShow).add(j,'d')).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
+                        ws.cell(k,3).string(larType)
+                        ws.cell(k,4).string(title)  
+                        ws.cell(k,5).string('1 วัน').style({alignment:{horizontal:'center'}}) 
+                        k++
+                    }
+                }
+            } else {
+                duration = durt(duration)
+                if (duration == '8 ชั่วโมง ') { duration = '1 วัน'}
+                ws.cell(k,2).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
+                ws.cell(k,3).string(larType)
+                ws.cell(k,4).string(title)  
+                ws.cell(k,5).string(duration).style({alignment:{horizontal:'center'}}) 
+                k++
+            }
         }
-        k++
     }
     ws.cell(3,1,k-1,5).style({ 
         border: {
