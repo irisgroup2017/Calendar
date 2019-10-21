@@ -17,6 +17,12 @@ function telFormat(number) {
     } 
 }
 
+function Generator() {}
+Generator.prototype.rand =  Math.floor(Math.random() * 26) + Date.now()
+Generator.prototype.getId = function() {
+return this.rand++
+}
+
 /* GET home page. */
 router.get('/',async function(req, res) {
     var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -47,7 +53,7 @@ router.get('/',async function(req, res) {
                         ext: data.ext,
                         private: telFormat(data.private),
                         work: telFormat(data.work),
-                        email: data.email
+                        email: (data.email == "Not@Have.Email" ? "-" : data.email)
                     })
                 }
             } else {
@@ -109,7 +115,7 @@ router.post('/',async function(req,res){
         }
     }
     if (req.body.state == "cdata") {
-        let ID = req.body.ID,
+        let ID = (req.body.ID == undefined ? new Generator().getId() : req.body.ID),
         emid = req.body.data.emid,
         level = req.body.depart,
         name = req.body.data.name,
@@ -118,7 +124,7 @@ router.post('/',async function(req,res){
         ext = req.body.data.ext,
         com = req.body.data.com,
         pri = req.body.data.pri,
-        mail = req.body.data.mail,
+        mail = (req.body.data.mail == null ? "Not@Have.Email" : req.body.data.mail),
         line = await con.q('SELECT Max(line) line from contact_data WHERE level = ?',[level])
 
         if (line[0].line == null) {

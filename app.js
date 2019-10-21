@@ -69,6 +69,7 @@ editentitle = require('./routes/editentitle'),
 leavelist = require('./routes/leavelist'),
 vacationa = require('./routes/vacationa'),
 excelexport = require('./routes/excelexport'),
+hrexport = require('./routes/hrexport'),
 getlar = require('./routes/getlar')
 contact = require('./routes/contact')
 
@@ -91,6 +92,7 @@ app.use('/editentitle', editentitle)
 app.use('/leavelist', leavelist)
 app.use('/vacationa', vacationa)
 app.use('/excelexport', excelexport)
+app.use('/hrexport', hrexport)
 app.use('/getlar', getlar)
 app.use('/refreshdata', refreshdata)
 app.use('/contact', contact)

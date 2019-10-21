@@ -190,9 +190,6 @@ $(document).ready(function() {
             if (!empty) {
                 let depart = $('.box select option:selected').val(),
                 ID = $('.box select').attr('id')
-                if (ID == undefined) {
-                    ID = new Generator().rand
-                }
                 $.ajax({
                 url: '/contact',
                 type: "POST",
@@ -226,8 +223,9 @@ $(document).ready(function() {
                         </tr>'
                         line = $('tr[id=head-'+data.depart+']').index()
                         line += info.line
+                        console.log(line,data)
                         $('li[id='+data.ID+']').remove()
-                        $('tbody tr:eq('+line+')').after(code)
+                        $('.bodyt tr:eq('+line+')').after(code)
                         refreshContact()
                         $('body').removeClass('modal-open')
                         modal.remove() 
@@ -463,13 +461,6 @@ function isMail(evt) {
     }
     target.setSelectionRange(index,index)
 }
-
-function Generator() {}
-Generator.prototype.rand =  Math.floor(Math.random() * 26) + Date.now()
-Generator.prototype.getId = function() {
-return this.rand++
-}
-
 
 $('#contact_td').on('mouseenter','td',function() {
     var t = parseInt($(this).index()) + 1

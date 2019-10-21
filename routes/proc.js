@@ -249,7 +249,8 @@ router.post('/',async function(req, res) {
 		else { attach = '' }
 		if (className == 'label-grey') { larType = 'ลาป่วย' }
 		else if (className == 'label-success') { larType = 'ลากิจ' }
-		else if (className == 'label-warning') {	larType = 'ลาพักร้อน' }
+		else if (className == 'label-warning') { larType = 'ลาพักร้อน' }
+		else if (className == 'label-dark') { larType = 'ลากิจไม่รับค่าจ้าง'} 
 		else if (className == 'label-danger') {	larType = 'ลาสลับวันหยุด' }
 		else if (className == 'label-info') { larType = title }
 		mailGroup = req.body.mailGroup
