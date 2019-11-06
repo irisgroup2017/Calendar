@@ -13,7 +13,7 @@ router.get('/', async function(req, res) {
 			'operator': dataop,
 			'mail': mail
 		}
-		parms = { title: 'นำออกข้อมูล', head1: 'HR Excel Export' }
+		parms = { title: 'HR นำออกข้อมูล', head1: 'HR Excel Export' }
 		parms.user = userName
 		parms.operator = dataop
 	} else {
