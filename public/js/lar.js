@@ -929,7 +929,7 @@ jQuery(function($) {
                         }
                         data.boss = calEvent.boss
                         data.mailGroup = calEvent.mailGroup
-                        if (data !== null) {
+                        if (data !== null && data.id) {
                             $.ajax({
                                 url: '/proc',
                                 type: "POST",
