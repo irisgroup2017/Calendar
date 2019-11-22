@@ -3,8 +3,8 @@ xlsx = require('excel4node'),
 con = require('../bin/mysql'),
 workbook = new xlsx.Workbook(),
 moment = require("moment"),
-fs = require('fs'),
-exdata = require('../bin/exportdata')
+exdata = require('../bin/exportdata'),
+exportName = 'report excel',
 momentDurationFormatSetup = require("moment-duration-format")
 
 String.prototype.allReplace = function(obj) {
@@ -16,7 +16,7 @@ String.prototype.allReplace = function(obj) {
 }
 
 async function xlCreate(tstart,tend,res) {
-    var result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 0) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
+    let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 0) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
     ws = workbook.addWorksheet('report') , userName , k=1,
     starttime = moment(tstart*1000).add(543,'year').format("DD/MM/YYYY"),
     endtime = moment(tend*1000).add(543,'year').format("DD/MM/YYYY")
@@ -92,11 +92,11 @@ async function xlCreate(tstart,tend,res) {
             bottom: { style: 'thin' }
         } 
     })
-    workbook.write('excelexport'+starttime+'to'+endtime+' '+new Date().getTime()+'.xlsx',res)
+    workbook.write(exportName +' '+ starttime +' to '+ endtime+'.xlsx',res)
 }
 
 async function hrExport(tstart,tend,res) {
-    var result = await con.q('select privacy_data.emid AS emid,lar_data.title AS title,lar_data.fname AS fname,lar_data.start AS start,lar_data.end AS end,lar_data.swapDate AS swapDate,lar_data.allDay AS allDay,lar_data.className AS className,privacy_data.swtime AS swtime,privacy_data.ewtime AS ewtime from (lar_data left join privacy_data on((lar_data.dataid = privacy_data.dataid))) WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND lar_data.approve > 0) ORDER BY emid ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
+    let result = await con.q('select privacy_data.emid AS emid,lar_data.title AS title,lar_data.fname AS fname,lar_data.start AS start,lar_data.end AS end,lar_data.swapDate AS swapDate,lar_data.allDay AS allDay,lar_data.className AS className,privacy_data.swtime AS swtime,privacy_data.ewtime AS ewtime from (lar_data left join privacy_data on((lar_data.dataid = privacy_data.dataid))) WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND lar_data.approve > 0) ORDER BY emid ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
     ws = workbook.addWorksheet('report') , emid , k=1
     ws.cell(k,1).string('รหัสพนักงาน').style({alignment:{horizontal:'center'}})
     ws.cell(k,2).string('วันที่ลา').style({alignment:{horizontal:'center'}})
@@ -155,12 +155,10 @@ async function hrExport(tstart,tend,res) {
                 else {
                     for (let key in duration) {
                         if (typeof duration[key] != "number") { duration[key] = parseInt(duration[key]) }
-                        console.log(key,duration[key])
                         if (key == "d") { durt += duration[key] }
                         if (key == "h") { durt += duration[key]/8 }
                         if (key == "m") { durt += duration[key]/480 }
                     }
-                    console.log(durt)
                     ws.cell(k,7).string(durt.toString())
                     k++
                 }
@@ -178,7 +176,7 @@ async function hrExport(tstart,tend,res) {
             bottom: { style: 'thin' }
         } 
     })
-    workbook.write('excelforimport'+starttime+'to'+endtime+' '+new Date().getTime()+'.xlsx',res)
+    workbook.write(exportName +'.xlsx',res)
 }
 
 function durtdata(obj) {
