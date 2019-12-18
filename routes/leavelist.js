@@ -68,7 +68,7 @@ router.get('/', async function(req, res) {
                 approver = result[i].approver
             }
             else if (result[i].approve == 0) {
-				t = ll.getDateValue(result[i].hrapprovedate*1000 + (7 * 60 * 60))
+				t = ll.getDateValue(result[i].deldate*1000 + (7 * 60 * 60))
                 approvedate = t.da+' '+t.mo+' '+t.y+' ('+t.h+':'+t.mi+')'
                 approver = result[i].hrapprover
             }

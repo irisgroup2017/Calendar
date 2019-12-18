@@ -1,5 +1,6 @@
 const express = require('express'),
 xlsx = require('excel4node'),
+log = require('../bin/logger'),
 con = require('../bin/mysql'),
 workbook = new xlsx.Workbook(),
 moment = require("moment"),
@@ -16,10 +17,12 @@ String.prototype.allReplace = function(obj) {
 }
 
 async function xlCreate(tstart,tend,res) {
+    tstart = parseInt(tstart)+21600
+    tend = parseInt(tend)+108000
     let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 0) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
     ws = workbook.addWorksheet('report') , userName , k=1,
-    starttime = moment(tstart*1000).add(543,'year').format("DD/MM/YYYY"),
-    endtime = moment(tend*1000).add(543,'year').format("DD/MM/YYYY")
+    starttime = moment(tstart*1000).add(543,'years').format("DD/MM/YYYY"),
+    endtime = moment((tend-25200)*1000).add(543,'years').format("DD/MM/YYYY")
     ws.cell(k,1,k,5,true).string('สรุปข้อมูลการลาระหว่างวันที่ '+starttime+' ถึง '+endtime+' ').style({ alignment:{horizontal:'center'} , font: {underline: true} })
     k=k+2
     ws.cell(k,1).string('ชื่อ').style({alignment:{horizontal:'center'}})
@@ -96,7 +99,7 @@ async function xlCreate(tstart,tend,res) {
 }
 
 async function hrExport(tstart,tend,res) {
-    let result = await con.q('select privacy_data.emid AS emid,lar_data.title AS title,lar_data.fname AS fname,lar_data.start AS start,lar_data.end AS end,lar_data.swapDate AS swapDate,lar_data.allDay AS allDay,lar_data.className AS className,privacy_data.swtime AS swtime,privacy_data.ewtime AS ewtime from (lar_data left join privacy_data on((lar_data.dataid = privacy_data.dataid))) WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND lar_data.approve > 0) ORDER BY emid ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
+    let result = await con.q('select privacy_data.emid AS emid,lar_data.title AS title,lar_data.fname AS fname,lar_data.start AS start,lar_data.end AS end,lar_data.swapDate AS swapDate,lar_data.allDay AS allDay,lar_data.className AS className,privacy_data.swtime AS swtime,privacy_data.ewtime AS ewtime from (lar_data left join privacy_data on((lar_data.dataid = privacy_data.dataid))) WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND lar_data.approve > 0) ORDER BY emid ASC , start ASC , end ASC',[tstart,tend+86400,tstart,tend+86400]),
     ws = workbook.addWorksheet('report') , emid , k=1
     ws.cell(k,1).string('รหัสพนักงาน').style({alignment:{horizontal:'center'}})
     ws.cell(k,2).string('วันที่ลา').style({alignment:{horizontal:'center'}})
@@ -106,7 +109,6 @@ async function hrExport(tstart,tend,res) {
     ws.cell(k,6).string('วิธีลา').style({alignment:{horizontal:'center'}})
     ws.cell(k,7).string('จำนวนที่ลา').style({alignment:{horizontal:'center'}})
     k++
-
     for (i = 0;i<result.length;i++) {
         let line = result[i]
         starttime = moment(line.start*1000).format("YYYYMMDD"),
