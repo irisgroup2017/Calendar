@@ -152,28 +152,28 @@ block content
       $('.datepickerb').datepicker('show')
     })
 
-    $(".editline").click(function() {
+    $(document).on("click",".editline",function() {
       dline = $(this).parents('tr').find('td:nth-child(1)').text()
       dtitle = $(this).parents('tr').find('td:nth-child(2)').text()
       doffice = $(this).parents('tr').find('td:nth-child(3)').text()
       dsite = $(this).parents('tr').find('td:nth-child(4)').text()
 
-      $('.saveline').filter(function() {
+      $(document).on("filter",'.saveline',function() {
         if ($(this).css('display') == 'inline-block') {
           $(this).parents('tr').find('.saveline').css('display','none')
           $(this).parents('tr').find('.editline').css('display','inline-block')
         }
       })
       $('.ava').val(dtitle)
-      if (doffice=="")  { $('.datepickera').datepicker('update','') }
+      if (doffice=="")  { $('.datepickerb').datepicker('setDate',decodeDate(dsite)) }
       else { $('.datepickera').datepicker('setDate',decodeDate(doffice)) }
-      if (dsite=="")  { $('.datepickerb').datepicker('update','') }
+      if (dsite=="")  { $('.datepickera').datepicker('setDate',decodeDate(doffice)) }
       else { $('.datepickerb').datepicker('setDate',decodeDate(dsite)) }
       $(this).parents("tr").find(".saveline").css("display","inline-block")
       $(this).parents("tr").find(".editline").css("display","none")
     })
 
-    $('.saveline').click(function () {
+    $(document).on("click",'.saveline',function () {
       var dtitle = $('.ava').val(),
       doffice = ($('.datepickera').datepicker('getDate') ? $('.datepickera').datepicker('getDate').getTime() : 0),
       dsite = ($('.datepickerb').datepicker('getDate') ? $('.datepickerb').datepicker('getDate').getTime() : 0),
@@ -210,7 +210,7 @@ block content
         }
      })
 
-    $('.delete').click(function () {
+    $(document).on("click",'.delete',function () {
       dline = $(this).parents('tr').find('td:nth-child(1)').text()
       dtitle = $(this).parents('tr').find('td:nth-child(2)').text()
       doffice = $(this).parents('tr').find('td:nth-child(3)').text()
@@ -240,7 +240,7 @@ block content
           }
       })
     })
-    $('.addBtn').click(function() {
+    $(document).on("click",'.addBtn',function() {
       var stopfunction = 0
       $('.saveline').filter(function() {
         if ($(this).css('display') == 'inline-block') {
