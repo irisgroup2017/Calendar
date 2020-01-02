@@ -33,6 +33,8 @@ router.get('/', async function(req, res) {
         if (result[i].className == 'label-grey') { larType = 'ลาป่วย' }
         else if (result[i].className == 'label-success') { larType = 'ลากิจ' }
         else if (result[i].className == 'label-warning') { larType = 'ลาพักร้อน'} 
+        else if (result[i].className == 'label-dark') { larType = 'ลากิจไม่รับค่าจ้าง'} 
+        else if (result[i].className == 'label-danger') { larType = 'ลาสลับวันหยุด' }
         else { larType = result[i].title }
         timeKeep = ll.getDayTime(result[i].start,end,allDay)
         t = ll.getDateValue(result[i].cTime)

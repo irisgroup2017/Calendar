@@ -128,6 +128,16 @@ async function setLar(userName,dataid,state,now) {
     }
 }
 
+async function updateEnt(dataid) {
+    let firstYear = await con.q('SELECT cdate,userName FROM privacy_data WHERE dataid = ?',[dataid])
+    let thisYear = new Date().getFullYear()
+    let name = firstYear[0].userName
+    firstYear = new Date(firstYear[0].cdate*1000).getFullYear()
+    for (i=firstYear;i<=thisYear;i++) {
+        await updateLar(name,dataid,i)
+    }
+}
+
 async function updateLar(userName,dataid,now) {
     var a = new Date(now),
     now = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),(a.getMonth()==0 ? 11 : a.getMonth()),(a.getMonth()==0 ? 31 :a.getDate()),7).getTime()
