@@ -76,11 +76,12 @@ async function send(status,user,larid,mail) {
 }
 
 async function sendb(mail,pass) {
+  var user = mail.match(/^[\w.]+/)
   let mailOptions = {
     from: 'iris4notice@gmail.com',
     to: mail,
     subject: 'Password for login',
-    html: '<h3>รหัสเข้าใช้งานสำหรับ '+mail+' : '+pass+'</h3>'
+    html: '<h3>รหัสเข้าใช้งานสำหรับ '+user+' : '+pass+'</h3>'
   }
   transporter.sendMail(mailOptions, function (err, info) {
       if(err)

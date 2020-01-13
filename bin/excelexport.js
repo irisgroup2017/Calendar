@@ -20,21 +20,27 @@ async function xlCreate(tstart,tend,res) {
     tstart = parseInt(tstart)+21600
     tend = parseInt(tend)+108000
     let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 0) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
-    ws = workbook.addWorksheet('report') , userName , k=1,
+    ws = workbook.addWorksheet('report') , userName , k=1,l=0,
     starttime = moment(tstart*1000).add(543,'years').format("DD/MM/YYYY"),
     endtime = moment((tend-25200)*1000).add(543,'years').format("DD/MM/YYYY")
     ws.cell(k,1,k,5,true).string('สรุปข้อมูลการลาระหว่างวันที่ '+starttime+' ถึง '+endtime+' ').style({ alignment:{horizontal:'center'} , font: {underline: true} })
     k=k+2
     ws.cell(k,1).string('ชื่อ').style({alignment:{horizontal:'center'}})
-    ws.cell(k,2).string('วันที่ลา').style({alignment:{horizontal:'center'}})
-    ws.cell(k,3).string('ประเภทลา').style({alignment:{horizontal:'center'}})
-    ws.cell(k,4).string('รายละเอียดการลา').style({alignment:{horizontal:'center'}})
-    ws.cell(k,5).string('จำนวนวันลา').style({alignment:{horizontal:'center'}})
+    ws.cell(k,2).string('รหัสอ้างอิง').style({alignment:{horizontal:'center'}})
+    ws.cell(k,3).string('วันที่ลา').style({alignment:{horizontal:'center'}})
+    ws.cell(k,4).string('ประเภทลา').style({alignment:{horizontal:'center'}})
+    ws.cell(k,5).string('รายละเอียดการลา').style({alignment:{horizontal:'center'}})
+    ws.cell(k,6).string('จำนวนวันลา').style({alignment:{horizontal:'center'}})
     k++
     for (i = 0;i<result.length;i++) {
         if (userName != result[i].userName) {
+            if (l > 1) {
+                ws.cell(k-l,1,k-1,1,true).style({alignment:{vertical:'center'}})
+            }
+            l=0
             ws.cell(k,1).string(result[i].userName)
         }
+        l++
         userName = result[i].userName
         title = result[i].title
         if (result[i].className == 'label-grey') { larType = 'ลาป่วย' }
@@ -44,14 +50,16 @@ async function xlCreate(tstart,tend,res) {
         else if (result[i].className == 'label-danger') { larType = 'ลาสลับวันหยุด' , title = "สลับวันหยุดกับวันที่ "+moment(result[i].swapDate*1000-25200000).add(543,'year').format("DD/MM/YYYY") } 
         else { larType = result[i].title }
 
+        id = result[i].id
         start = new Date(result[i].start*1000-25200000)
         startShow = new Date(result[i].start*1000)
         end = (result[i].end ? new Date((result[i].end)*1000-25200000) : '-' )
         if (end == '-') {
-            ws.cell(k,2).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
-            ws.cell(k,3).string(larType)
-            ws.cell(k,4).string(title)  
-            ws.cell(k,5).string('1 วัน').style({alignment:{horizontal:'center'}}) 
+            ws.cell(k,2).number(id).style({numberFormat: '#############'})
+            ws.cell(k,3).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
+            ws.cell(k,4).string(larType)
+            ws.cell(k,5).string(title)  
+            ws.cell(k,6).string('1 วัน').style({alignment:{horizontal:'center'}}) 
             k++
         } 
         else {
@@ -69,25 +77,27 @@ async function xlCreate(tstart,tend,res) {
                 fnum = (duration.findIndex(num => num == 'd')-1)
                 if (duration[fnum] > 1) {
                     for (var j=0;j<duration[fnum];j++) {
-                        ws.cell(k,2).date(moment(startShow).add(j,'d')).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
-                        ws.cell(k,3).string(larType)
-                        ws.cell(k,4).string(title)  
-                        ws.cell(k,5).string('1 วัน').style({alignment:{horizontal:'center'}}) 
+                        ws.cell(k,2).number(id).style({numberFormat: '#############'})
+                        ws.cell(k,3).date(moment(startShow).add(j,'d')).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
+                        ws.cell(k,4).string(larType)
+                        ws.cell(k,5).string(title)  
+                        ws.cell(k,6).string('1 วัน').style({alignment:{horizontal:'center'}}) 
                         k++
                     }
                 }
             } else {
                 duration = durt(duration)
                 if (duration == '8 ชั่วโมง ') { duration = '1 วัน'}
-                ws.cell(k,2).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
-                ws.cell(k,3).string(larType)
-                ws.cell(k,4).string(title)  
-                ws.cell(k,5).string(duration).style({alignment:{horizontal:'center'}}) 
+                ws.cell(k,2).number(id).style({numberFormat: '#############'})
+                ws.cell(k,3).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
+                ws.cell(k,4).string(larType)
+                ws.cell(k,5).string(title)  
+                ws.cell(k,6).string(duration).style({alignment:{horizontal:'center'}}) 
                 k++
             }
         }
     }
-    ws.cell(3,1,k-1,5).style({ 
+    ws.cell(3,1,k-1,6).style({ 
         border: {
             left: { style: 'thin' },
             right: { style: 'thin' },
