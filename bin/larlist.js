@@ -132,7 +132,7 @@ async function viewLar(userName,dataid,thisday) {
                     a: llt[i],
                     b: 0,
                     c: (llt[i] == 'ลาทำหมัน' ? s1 : '0 วัน'),
-                    d: (llt[i] == 'ลาทำหมัน' ? s2 : LAR[llr[i]]['d']+' วัน'),
+                    d: (llt[i] == 'ลาทำหมัน' ? s2 : displayDuration(LAR[llr[i]])),
                     e: LAR[llr[i]]['o']
                 })
             }

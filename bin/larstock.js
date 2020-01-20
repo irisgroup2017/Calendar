@@ -128,13 +128,25 @@ async function setLar(userName,dataid,state,now) {
     }
 }
 
+async function updateAll() {
+    let query = "SELECT dataid FROM user_data WHERE status = 1"
+    let users = await con.q(query)
+    if (users) {
+        users.forEach(user => {
+            updateEnt(user.dataid)
+        })
+    }
+}
+
 async function updateEnt(dataid) {
     let firstYear = await con.q('SELECT cdate,userName FROM privacy_data WHERE dataid = ?',[dataid])
     let thisYear = new Date().getFullYear()
     let name = firstYear[0].userName
     firstYear = new Date(firstYear[0].cdate*1000).getFullYear()
-    for (i=firstYear;i<=thisYear;i++) {
-        await updateLar(name,dataid,i)
+    for (var i=firstYear;i<=thisYear;i++) {
+        let date = (i==thisYear ? new Date().getTime() : new Date(i,11,31).getTime())
+        log.logger("info",name+' '+date+' '+thisYear)
+        await updateLar(name,dataid,date)
     }
 }
 
@@ -221,3 +233,4 @@ function gd(a) {
 }
 exports.setLar = setLar
 exports.updateLar = updateLar
+exports.updateAll = updateAll
