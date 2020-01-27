@@ -16,7 +16,7 @@ async function managerExport(split,time,res) {
     const data = await listUser(parseInt(time))
     let workbook = new xlsx.Workbook()
     const splitpage = split
-    if (splitpage) {
+    if (splitpage == "true") {
         let index = workbook.addWorksheet("สารบัญ") 
         let users = []
         let linkname
@@ -138,7 +138,7 @@ async function listLar(dataid,time) {
     let start = new Date(a.getFullYear(),0,1,7).getTime()/1000
     let end = new Date(a.getFullYear(),11,31,7).getTime()/1000
     const worktime = (await con.q('SELECT swtime,ewtime FROM privacy_data WHERE dataid = ?',[dataid]))[0]
-    var lardata = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND approve > 1 AND start BETWEEN ? AND ?',[dataid,start,end])
+    var lardata = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND approve > 1 AND start BETWEEN ? AND ? ORDER BY start ASC',[dataid,start,end])
     const lartotal = await con.q('SELECT ?? FROM lar_status WHERE dataid = ? AND year = ?',[lcon,dataid,a.getFullYear()])
     const dataTime = {}
     const newtotal = (lartotal ? {...lartotal[0]} : "")
@@ -204,7 +204,7 @@ function pushItem(item,dataTime,calTime,time,vacationtime,worktime) {
         remain: thisremain,
         status: approve(item),
         approver: item.approver,
-        approved: moment((item.approvedate-25200)*1000).add(543,'years').format("DD/MM/YYYY")
+        approved: (item.approvedate ? moment((item.approvedate-25200)*1000).add(543,'years').format("DD/MM/YYYY") : "")
     }
     return LAR
 }

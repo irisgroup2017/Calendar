@@ -24,7 +24,7 @@ router.get('/', async function(req, res) {
                 'operator': dataop,
                 'mail': mail
             }
-            parms = { title: 'นำออกข้อมูลรายละเอียดการลาทั้งหมด', head1: 'Excel Export' }
+            parms = { title: 'นำออกข้อมูลสรุปรายละเอียดการลา', head1: 'Excel Export' }
             parms.yearlist = yearlist
             parms.thisyear = thisyear
             parms.user = userName

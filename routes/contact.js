@@ -2,6 +2,7 @@ var express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
 log = require('../bin/logger')
+const ls = require('../bin/larstock')
 
 
 function telFormat(number) {

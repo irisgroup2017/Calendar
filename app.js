@@ -8,12 +8,14 @@ var mysql = require('mysql')
 var app = express()
 var router = express.Router()
 var upload = require(__basedir+'/app/config/multer.config.js')
+var larstock = require("./bin/larstock")
+var schedule = require('node-schedule')
+var updateUser = schedule.scheduleJob("* 0 * * *",() => {
+	larstock.updateAll()
+	log.logger("warn","Update larstock")
+})
 require(__basedir+'/app/routers/application.router.js')(app, router, upload)
 require('dotenv').config()
-
-function updateAllMember() {
-	
-}
 
 function handleDisconnect() {
 	var con = mysql.createConnection({
