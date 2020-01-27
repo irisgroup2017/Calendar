@@ -2,7 +2,6 @@ const express = require('express'),
 xlsx = require('excel4node'),
 log = require('../bin/logger'),
 con = require('../bin/mysql'),
-workbook = new xlsx.Workbook(),
 moment = require("moment"),
 exdata = require('../bin/exportdata'),
 exportName = 'report excel',
@@ -17,6 +16,7 @@ String.prototype.allReplace = function(obj) {
 }
 
 async function xlCreate(tstart,tend,res) {
+    const workbook = new xlsx.Workbook()
     tstart = parseInt(tstart)+21600
     tend = parseInt(tend)+108000
     let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 0) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
@@ -109,6 +109,7 @@ async function xlCreate(tstart,tend,res) {
 }
 
 async function hrExport(tstart,tend,res) {
+    const workbook = new xlsx.Workbook()
     let result = await con.q('select privacy_data.emid AS emid,lar_data.title AS title,lar_data.fname AS fname,lar_data.start AS start,lar_data.end AS end,lar_data.swapDate AS swapDate,lar_data.allDay AS allDay,lar_data.className AS className,privacy_data.swtime AS swtime,privacy_data.ewtime AS ewtime from (lar_data left join privacy_data on((lar_data.dataid = privacy_data.dataid))) WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND lar_data.approve > 0) ORDER BY emid ASC , start ASC , end ASC',[tstart,tend+86400,tstart,tend+86400]),
     ws = workbook.addWorksheet('report') , emid , k=1
     ws.cell(k,1).string('รหัสพนักงาน').style({alignment:{horizontal:'center'}})

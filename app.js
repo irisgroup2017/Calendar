@@ -53,29 +53,30 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '/public')))
 
-var index = require('./routes/index'),
-authorize = require('./routes/authorize'),
-refreshdata = require('./routes/refreshdata'),
-calendar = require('./routes/calendar'),
-lar = require('./routes/lar'),
-proc = require('./routes/proc'),
-sumlar = require('./routes/sumlar'),
-login = require('./routes/login'),
-setting = require('./routes/setting'),
-search = require('./routes/search'),
-searchb = require('./routes/searchb'),
-profile = require('./routes/profile'),
-privacy = require('./routes/privacy'),
-approve = require('./routes/approve'),
-hr = require('./routes/hr'),
-delreq = require('./routes/delreq'),
-editentitle = require('./routes/editentitle'),
-leavelist = require('./routes/leavelist'),
-vacationa = require('./routes/vacationa'),
-excelexport = require('./routes/excelexport'),
-hrexport = require('./routes/hrexport'),
-getlar = require('./routes/getlar')
-contact = require('./routes/contact')
+const index = require('./routes/index')
+const authorize = require('./routes/authorize')
+const refreshdata = require('./routes/refreshdata')
+const calendar = require('./routes/calendar')
+const lar = require('./routes/lar')
+const proc = require('./routes/proc')
+const sumlar = require('./routes/sumlar')
+const login = require('./routes/login')
+const setting = require('./routes/setting')
+const search = require('./routes/search')
+const searchb = require('./routes/searchb')
+const profile = require('./routes/profile')
+const privacy = require('./routes/privacy')
+const approve = require('./routes/approve')
+const hr = require('./routes/hr')
+const delreq = require('./routes/delreq')
+const editentitle = require('./routes/editentitle')
+const leavelist = require('./routes/leavelist')
+const vacationa = require('./routes/vacationa')
+const excelexport = require('./routes/excelexport')
+const hrexport = require('./routes/hrexport')
+const getlar = require('./routes/getlar')
+const contact = require('./routes/contact')
+const exportmanager = require('./routes/exportmanager')
 
 app.use('/', index)
 app.use('/authorize', authorize)
@@ -100,6 +101,7 @@ app.use('/hrexport', hrexport)
 app.use('/getlar', getlar)
 app.use('/refreshdata', refreshdata)
 app.use('/contact', contact)
+app.use('/exportmanager', exportmanager)
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found')

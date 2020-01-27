@@ -1,0 +1,104 @@
+extends layout
+
+block content 
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ mixin ddl(year)
+  for t in year
+   option(value=t selected=(parms.thisyear == t ? true : false))=t
+ link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
+ link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
+ .col-sm-2
+  h4.text-info(align="center")=""
+ .col-md-3
+  .form-group
+   h3(style="margin:3px 0 0 0")='เลือกปีที่ต้องการ'
+    select.tyear(style="margin-left: 35px; font-size: 16px")
+     +ddl(parms.yearlist)
+
+ button(type="button" id="export" class="btn btn-sm btn-success")
+  i.ace-icon.fa.fa-file=' Export'
+ label(for="rdo1")
+  input(type="radio" id="rdo1" name="option" value="split" checked)
+  span.rdo
+  span="แยกรายบุคคล"
+ label(for="rdo2")
+  input(type="radio" id="rdo2" name="option" value="merge")
+  span.rdo
+  span="รวมหน้าเดียว"
+ +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js'])
+ link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
+ script.
+  $(document).ready(function(){
+    $("#export").click(function() {
+        let thisyear = (new Date()).getFullYear()
+        let time = $('.tyear').val()
+        let rdo = $("input[name=option]:checked").val()
+        console.log(rdo)
+        time = (time == thisyear ? new Date() : new Date(time,11,31))
+        $.ajax({
+            url: '/exportmanager',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                "option": (rdo=="split" ? true : false),
+                'time': time.getTime()
+            },
+            success: function (rlink) {
+                window.location.href = rlink
+            }
+        })
+    })
+  })
+ style.
+  label {
+    display: inline;
+    cursor: pointer;
+  }
+  .rdo {
+   margin-top: 8px;
+   position: relative;
+   display: block;
+   float: left;
+   width: 18px;
+   height: 18px;
+   border-radius: 10px;
+   background-color: #c0c0c0;
+   background-image: linear-gradient(#ffffff, #c0c0c0);
+   box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), inset 0 -1px 1px rgba(0,0,0,0.15);
+   transition: all 0.15s ease;
+  }
+  .rdo:after {
+   content: "";
+   position: absolute;
+   display: block;
+   top: 6px;
+   left: 6px;
+   width: 6px;
+   height: 6px;
+   border-radius: 50%;
+   background: #fff;
+   opacity: 0;
+   transform: scale(0);
+  }
+  .rdo + span {
+   float: left;
+   margin-left: 3px;
+   margin-right: 8px;
+   margin-top: 7px;
+  }
+  label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  }
+  label input[type="radio"]:checked + .rdo {
+  background-color: #ffffff;
+  background-image: linear-gradient(#008000, #cff3c7);
+  }
+  label input[type="radio"]:checked + .rdo:after {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.15s ease;
+  }
