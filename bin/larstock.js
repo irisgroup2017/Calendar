@@ -78,8 +78,6 @@ async function setLar(userName,dataid,state,now) {
                     ova = 6
                 } else if (w == 0 && y[1] > x[1]) {
                     ova = Math.floor(((y[1]-x[1]))/2)
-                } else if (w == 1) {
-                    ova = Math.floor((y[1])/2)
                 } else {
                     ova = 0
                 }
@@ -145,7 +143,6 @@ async function updateEnt(dataid) {
     firstYear = new Date(firstYear[0].cdate*1000).getFullYear()
     for (var i=firstYear;i<=thisYear;i++) {
         let date = (i==thisYear ? new Date().getTime() : new Date(i,11,31).getTime())
-        log.logger("info",name+' '+date+' '+thisYear)
         await updateLar(name,dataid,date)
     }
 }
