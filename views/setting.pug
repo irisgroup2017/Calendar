@@ -31,7 +31,7 @@ mixin tbl(namel)
    td=parms.objs[i].depart
    td=parms.objs[i].mail
    td=parms.objs[i].mailGroup
-   td=parms.objs[i++].userName
+   td=parms.objs[i].userName
    td.center
     a.saveline.hvr-icon-bounce(title="Save")
      i.fa.fa-floppy-o.hvr-icon
@@ -43,6 +43,11 @@ mixin tbl(namel)
      i.fa.fa-refresh.hvr-icon
     a.delete.hvr-icon-bounce(title="Delete" data-toggle="confirmation")
      i.fa.fa-trash.hvr-icon
+    a.active-status.hvr-icon-bounce(title="User Status")
+     if parms.objs[i++].status == 1
+      span.status.active="Active"
+     else
+      Span.status.not-active="Active"
     //-if cal .dropdown-divider
 block script
 

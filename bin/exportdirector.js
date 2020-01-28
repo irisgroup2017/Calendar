@@ -117,7 +117,7 @@ function pad2(num) {
 }
 
 async function listUser(time) {
-    let query = "SELECT dataid,userName FROM user_data WHERE status = 1 ORDER BY name ASC"
+    let query = "SELECT dataid FROM user_data WHERE status = 1 ORDER BY name ASC"
     let users = await con.q(query)
     let data = []
     let check

@@ -99,6 +99,22 @@ jQuery(function ($) {
 })
 
 $(document).ready(function(){
+    $(document).on("click",".active-status", function(){
+        $(this).children("span").toggleClass("active not-active")
+        let status = $(this).children("span").hasClass("active")
+        let id = $(this).parents("tr").attr("class")
+        $.ajax({
+            url: '/setting',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'stc',
+                'dataid': id,
+                'status': status
+            }
+        })
+    })
     $(document).on("click", ".addline", function(){
         function Generator() { }
         Generator.prototype.rand = Math.floor(Math.random() * 26) + Date.now()

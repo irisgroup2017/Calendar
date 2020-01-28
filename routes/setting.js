@@ -55,7 +55,8 @@ router.get('/', async function(req, res) {
 				jobPos: result[i].jobPos,
 				depart: result[i].depart,
 				mailGroup: result[i].mailGroup,
-				userName: result[i].userName
+				userName: result[i].userName,
+				status: result[i].status
 			})
 		}
 		parms.tbl = parms.objs.length
@@ -78,6 +79,11 @@ router.post('/',async function(req, res) {
 			result[0].ewtime = result[0].ewtime.substring(0,5)
 			res.json(result[0])
 		})
+	}
+	if (a.state == "stc") {
+		con.q("UPDATE user_data SET status = ? WHERE dataid = ?",[(a.status == "true" ? 1 : 0),a.dataid])
+		log.logger('info','Change Status : '+ req.cookies.user_name+' - ID '+a.dataid+' to '+a.status)
+		res.json(a)
 	}
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])

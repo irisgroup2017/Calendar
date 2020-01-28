@@ -10,7 +10,7 @@ var router = express.Router()
 var upload = require(__basedir+'/app/config/multer.config.js')
 var larstock = require("./bin/larstock")
 var schedule = require('node-schedule')
-var updateUser = schedule.scheduleJob("* 0 * * *",() => {
+var updateUser = schedule.scheduleJob("* 0 0 * *",() => {
 	larstock.updateAll()
 	log.logger("warn","Update larstock")
 })

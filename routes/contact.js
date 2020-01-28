@@ -28,9 +28,10 @@ return this.rand++
 router.get('/',async function(req, res) {
     var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
     if (userName) {
+        await reArrangeContact()
         log.logger('info',userName+' view contact')
         var result,
-        nameLst = await con.q('SELECT dataid,name,lastName FROM user_data ORDER BY name ASC'),
+        nameLst = await con.q('SELECT dataid,name,lastName FROM user_data WHERE status = 1 ORDER BY name ASC'),
         level = 0,
         depart = await con.q('SELECT * FROM depart_row ORDER BY row ASC,ID ASC')
         parms = { title: 'ข้อมูลติดต่อ', head1: 'ข้อมูลติดต่อ' }
@@ -217,5 +218,30 @@ router.post('/',async function(req,res){
     }
 res.end()
 })
+
+async function reArrangeContact() {
+    const names = await con.q('SELECT dataid FROM user_data WHERE status = 1 ORDER BY name ASC')
+	const contact = await con.q('SELECT dataid,level,line FROM contact_data ORDER BY level ASC,line ASC')
+	var namea = names.map(name => {
+		return name.dataid
+	},[])
+	let level,line = 0
+	contact.map(item => {
+		if (item.level != 14) {
+			if (level != item.level) { 
+				line = 0
+				level = item.level 
+			}
+			if (namea.indexOf(item.dataid) >= 0) {
+				if (line>0) {
+					con.q("UPDATE contact_data SET line=? WHERE dataid=?",[item.line-line,item.dataid])
+				}
+			} else {
+				con.q("DELETE FROM contact_data WHERE dataid = ?",[item.dataid])
+				line++
+			}
+		}
+	})
+}
 
 module.exports = router
