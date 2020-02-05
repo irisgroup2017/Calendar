@@ -1332,6 +1332,7 @@
 								mousemove: this.handleMouseMove,
 								mouseup: this.handleMouseUp,
 								click: this.handleClick,
+								click: this.handleDoubleClick,
 								selectstart: this.handleSelectStart,
 								contextmenu: this.handleContextMenu
 							}),
@@ -1378,6 +1379,9 @@
 						}),
 						(t.prototype.handleClick = function(t) {
 							this.shouldIgnoreMouse() || this.trigger('click', t);
+						}),
+						(t.prototype.handleDoubleClick = function(t) {
+							this.shouldIgnoreMouse() || this.trigger('dclick', t);
 						}),
 						(t.prototype.handleSelectStart = function(t) {
 							this.trigger('selectstart', t);

@@ -592,411 +592,478 @@ jQuery(function($) {
             $(this).css('z-index', 8);
             $('.tooltip').remove();
         },
-        eventClick: function(calEvent) { // this function is called when clicked event 
-            option = {
-                object: ['วัน','ชั่วโมง','นาที'],
-                unit: ['d','h','m'],
-                units: {
-                d: 86400,
-                h: 3600,
-                m: 60
-                }
-            }
-            function displayDuration(duration) {
-                var Ans = ''
-                for (var i=0;i<option.unit.length;i++) {
-                    unitBase = option.unit[i]
-                    if (duration[unitBase]>0) {
-                        Ans = Ans + duration[unitBase] + ' ' + option.object[i] + ' '
+        eventClick: function(calEvent,jsEvent,view) { // this function is called when clicked event
+            if (jsEvent.detail == 1) {
+                option = {
+                    object: ['วัน','ชั่วโมง','นาที'],
+                    unit: ['d','h','m'],
+                    units: {
+                    d: 86400,
+                    h: 3600,
+                    m: 60
                     }
                 }
-                return Ans
-            }
-            function getDuration(start,end) {
-                duration = end-start
-                Ans = []
-                for (var i=0;i<option.unit.length;i++) {
-                    unitBase = option.unit[i]
-                    unitValue = option.units[unitBase]
-                    if (unitValue <= duration) {
-                        Ans[unitBase] = Math.floor(duration / unitValue)
-                        duration = duration % unitValue
+                function displayDuration(duration) {
+                    var Ans = ''
+                    for (var i=0;i<option.unit.length;i++) {
+                        unitBase = option.unit[i]
+                        if (duration[unitBase]>0) {
+                            Ans = Ans + duration[unitBase] + ' ' + option.object[i] + ' '
+                        }
+                    }
+                    return Ans
+                }
+                function getDuration(start,end) {
+                    duration = end-start
+                    Ans = []
+                    for (var i=0;i<option.unit.length;i++) {
+                        unitBase = option.unit[i]
+                        unitValue = option.units[unitBase]
+                        if (unitValue <= duration) {
+                            Ans[unitBase] = Math.floor(duration / unitValue)
+                            duration = duration % unitValue
+                        }
+                    }
+                    return Ans
+                }
+                function duration(e) {
+                    if (!e.end) { return '1 วัน' }
+                    else {
+                    var st = e.start._d.getTime()/1000, en = e.end._d.getTime()/1000,
+                    du = getDuration(st,en)
+                    return displayDuration(du)
                     }
                 }
-                return Ans
-            }
-            function duration(e) {
-                if (!e.end) { return '1 วัน' }
-                else {
-                   var st = e.start._d.getTime()/1000, en = e.end._d.getTime()/1000,
-                   du = getDuration(st,en)
-                   return displayDuration(du)
-                }
-            }
 
-            if ($('#username').text() === calEvent.userName && calEvent.editable) {
-                if (calEvent.className == "label-grey") { larType = "ลาป่วย" }
-                else if (calEvent.className == "label-success")  { larType = "ลากิจ" }
-                else if (calEvent.className == "label-warning") { larType = "ลาพักร้อน" } 
-                else if (calEvent.className == "label-danger") { larType = "ลาสลับวันหยุด" } 
-                else if (calEvent.className == "label-dark") { larType = "ลากิจไม่รับค่าจ้าง" } 
-                else { larType = "ลาอื่นๆ" }
-                var data = [],datah = 0
-                data.dataid = calEvent.dataid
-                data.username = calEvent.userName
-                data.start = new Date(calEvent.start._i).toString().replace( /[\s|:]/g,'-').split('-').slice(0,7).toString()
-                if (sessionStorage.attach) {
-                    var file = sessionStorage.attach
-                    file = file.split('.')[0]
-                    if (file == data.start ) { datah = 1 }
-                }
-            if (larType == "ลาอื่นๆ") {
-
-                var modal = 
-                '<div class="modal fade">\
-                <div class="modal-dialog">\
-                <div class="modal-content">\
-                    <div class="modal-header">\
-                    <h5 class="modal-title">'+larType+'</h5>\
-                    </div>\
-                    <div class="modal-body">\
-                    <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                    <form method="POST" enctype="multipart/form-data" id="upsiwa">\
-                        <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
-                        <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
-                        <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
-                        <label>แก้หัวข้อ &nbsp;</label>\
-                        <div class="row">\
-                            <div class="col-md-6">\
-                            <select class="form-control" id="larType" name="larType" data-action="change">\
-                                <option>ลาฝึกอบรม</option>\
-                                <option>ลาทำหมัน</option>\
-                                <option>ลาคลอด</option>\
-                                <option>ลาอุปสมบท</option>\
-                                <option>ลารับราชการทหาร</option>\
-                            </select>\
-                            </div>\
-                            <div class="col-md-6">\<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
-                            </div>\
-                            <div class="wrapper">\
-                            <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
-                            <div class="file-upload">\
-                                <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
-                                <i class="fa fa-arrow-up"></i>\
-                            </div>\
-                            <div '+(datah==1 ?'class="delfile"':'class="delfile hidethis"')+''+(datah==1 ?' id="'+sessionStorage.attach+'"':'')+'>\
-                                <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
-                                <i class="fa fa-close delthis"></i></p>\
-                            </div>\
-                            </div>\
-                            <p class="lartype">วันคงเหลือ: ' +$('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text()+ '</p>\
-                            <p>ต้องการลา: '+duration(calEvent)+'</p>\
-                        </span>\
-                    </form>\
-                    </div>\
-                    <div class="modal-footer">\
-                        <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
-                        <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-                        <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-                    </div>\
-                </div>\
-                </div>\
-                </div>'
-            } 
-                else if (larType == "ลาสลับวันหยุด") {
-                    var modal = 
-                '<div class="modal fade">\
-                <div class="modal-dialog">\
-                <div class="modal-content">\
-                    <div class="modal-header">\
-                    <h5 class="modal-title">'+larType+'</h5>\
-                    </div>\
-                    <div class="modal-body">\
-                    <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                    <form method="POST" enctype="multipart/form-data" id="upsiwa">\
-                        <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
-                        <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
-                        <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
-                        <label>เลือกวันที่ต้องการสลับวันหยุด &nbsp;</label>\
-                        <div class="row">\
-                            <div class="col-md-6">\
-                             <div class="input-group date">\
-                              <input class="form-control datepicker" type="text" readonly placeholder="สลับวันหยุดกับวันที่">\
-                              <div class="input-group-addon pickday">\
-                               <span class="fa fa-calendar-check-o"></span>\
-                              </div>\
-                             </div>\
-                            </div>\
-                            <div class="col-md-6">\
-                            <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
-                            </div>\
-                            <div class="wrapper">\
-                            <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
-                            <div class="file-upload">\
-                                <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
-                                <i class="fa fa-arrow-up"></i>\
-                            </div>\
-                            <div class="delfile hidethis">\
-                                <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
-                                <i class="fa fa-close delthis"></i></p>\
-                            </div>\
-                            </div>\
-                        </span>\
-                    </form>\
-                    </div>\
-                    <div class="modal-footer">\
-                        <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
-                        <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-                        <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-                    </div>\
-                </div>\
-                </div>\
-                </div>'
-            } 
-                else {
-                var modal =
-                '<div class="modal fade">\
-                <div class="modal-dialog">\
-                <div class="modal-content">\
-                    <div class="modal-header">\
-                    <h5 class="modal-title">'+larType+'</h5>\
-                    </div>\
-                    <div class="modal-body">\
-                    <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                    <form method="POST" enctype="multipart/form-data" id="upsiwa">\
-                        <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
-                        <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
-                        <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
-                        <label>แก้หัวข้อ &nbsp;</label>\
-                        <input class="middle" autocomplete="off" type="text" id="larType" placeholder="' + calEvent.title + '"/>\
-                        <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
-                        <div class="wrapper">\
-                            <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
-                            <div class="file-upload">\
-                                <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
-                                <i class="fa fa-arrow-up"></i>\
-                            </div>\
-                            <div class="delfile hidethis">\
-                                <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
-                                <i class="fa fa-close delthis"></i></p>\
-                            </div>\
-                        </div>\
-                        <p style="padding-top: 10px">วันคงเหลือ: ' +$('td:contains('+larType+')').parents('tr').find('.dur').text()+ '</p>\
-                        <p>ต้องการใช้: '+duration(calEvent)+'</p>\
-                    </form>\
-                    </div>\
-                    <div class="modal-footer">\
-                        <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
-                        <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-                        <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-                    </div>\
-                </div>\
-                </div>\
-                </div>'; 
-            }
-                var modal = $(modal).appendTo('body');
-                $(modal).on('show.bs.modal',function(e) {
-                    var larload,larlist
-                    $.ajax({
-                        url: '/proc',
-                        type: "POST",
-                        dataType: "json",
-                        async: false,
-                        data: {
-                            'state':'loads'
-                        },
-                        success: function(objs) {
-                            larlist = objs
-                        }
-                    })
-                    var dd = $('td:contains('+$('#larType').val()+')').parents('tr').find('.dur').text()
-                    if (dd == 'undefined' || dd == "") { $('.lartype').text('วันคงเหลือ: '+larlist[$('#larType').val()]) }
-                    else { $('.lartype').text('วันคงเหลือ: '+dd) }
-                })
-                $('.datepicker').datepicker({
-                    ignoreReadonly: true,
-                    format: 'dd/MM/yyyy',
-                    todayHighlight: true,
-                    clearBtn: true
-                  })
-                $('.datepicker').datepicker().on('changeDate',function(e) {
-                    $('.datepicker').datepicker('hide')
-                })
-                $(document).on("click", ".input-group.date", function() {
-                    $('.datepicker').datepicker('show')
-                    if (!$('.datepicker.datepicker-inline').attr('style')) {
-                        $('.datepicker.datepicker-inline').remove()
-                    }
-                })
-                $('.viewattach').on("click",function() {
-
-                })
-                $('.delfile').on("click",function() {
-                    $.ajax({
-                        url: '/proc',
-                        type: "POST",
-                        dataType: "json",
-                        async: false,
-                        data: {
-                            'state':'delfile',
-                            'file': $(this).attr('id'),
-                            'username': $('#username').text()
-                        },
-                        success: function(objs) {
-                            $('.delfile').addClass('hidethis')
-                            sessionStorage.removeItem('attach')
-                        },
-                        error: (e) => {
-                            console.log(e.responseText)
-                        }
-                    })
-                })
-                $('select[id=larType]').on('change',function(e) {
-                    var larload,larlist
-                    $.ajax({
-                        url: '/proc',
-                        type: "POST",
-                        dataType: "json",
-                        async: false,
-                        data: {
-                            'state':'loads'
-                        },
-                        success: function(objs) {
-                            larlist = objs
-                        },
-                        error: (e) => {
-                            console.log(e.responseText)
-                        }
-                    })
-                    var dd = $('td:contains('+$(this).val()+')').parents('tr').find('.dur').text()
-                    if (dd == 'undefined' || dd == "") { $('.lartype').text('วันคงเหลือ: '+larlist[$(this).val()]) }
-                    else { $('.lartype').text('วันคงเหลือ: '+dd) }
-                })
-                modal.find('form').on('submit', function(ev){
-                    ev.preventDefault()
-                    $(this).prop('disabled',true)
-                    $('#upsiwa').ajaxForm(function() {
-                        alert("file upload!")
-                    })
-                    if (calEvent.className == 'label-danger') {
-                        calEvent.title = 'ลาสลับวันหยุด'
-                    } else {
-                        calEvent.title = $(this).find("#larType").val()
-                        if (calEvent.title == '') { calEvent.title = $(this).find("#larType").attr('placeholder') }
-                    }
-                    calEvent.editable = false
-                    calendar.fullCalendar('updateEvent', calEvent)
-                    if (calEvent.title !== null) {
-                        var data = {}
-                        ,me = $(this)
-                        if ( me.data('requestRunning') ) {
-                            return
-                        }
-                        me.data('requestRunning', true)
-                        data.dataid = calEvent.dataid
-                        data.state = 'savelar'
-                        data.id = calEvent.id
-                        data.title = calEvent.title
-                        data.userName = $('#username').text()
-                        data.cTime = calEvent.cTime
-                        if (calEvent.start !== null) {
-                            if (calEvent.start._d !== null) {
-                            data.start = calEvent.start._d
-                            }
-                        }
-                        else {
-                            data.start = null
-                        }
-                        if (calEvent.end !== null) {
-                            if (calEvent.end._d !== null) {
-                            data.end = calEvent.end._d;
-                            }
-                        }
-                        else {
-                            data.end = null
-                        }
-                        if (calEvent.allDay) {
-                            data.allDay = true
-                        }
-                        if (calEvent.className == 'label-danger') { 
-                            data.swapDate = $('.datepicker').datepicker('getDate').getTime()/1000
-                        }
-                        if (calEvent.className !== null) {
-                            data.className = calEvent.className
-                        }
-                        if ($('.delfile').attr('id') != undefined) { 
-                            data.attach = $('.delfile').attr('id') 
-                        }
-                        data.boss = calEvent.boss
-                        data.mailGroup = calEvent.mailGroup
-                        if (data !== null && data.id) {
-                            $.ajax({
-                                url: '/proc',
-                                type: "POST",
-                                async: false,
-                                contentType: 'application/json',
-                                data: JSON.stringify(data),
-                                complete: function() {
-                                    me.data('requestRunning', false)
-                                },
-                                success: function(data) {
-                                    for (i=0;i<data.length;i++) {
-                                        $('tr[class='+ data[i].a +']').find('td:nth-child(2)').text(data[i].c)
-                                        $('tr[class='+ data[i].a +']').find('td:nth-child(3)').text(data[i].d)
-                                        if (data[i].e) {
-                                            $('tr[class='+ data[i].a +']').find('td:nth-child(3)').removeClass("bg-success").addClass("bg-danger")
-                                        } else {
-                                            $('tr[class='+ data[i].a +']').find('td:nth-child(3)').removeClass("bg-danger").addClass("bg-success")
-                                        }
-                                    }
-                                    if (data.swapDate) {
-                                        thisswapdate = data.swapDate*1000
-                                        swapfrom = data.start*1000
-                                        datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
-                                        dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
-                                        $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
-                                    }
-                                    sessionStorage.removeItem('attach')
-                                }
-                            })
-                        }
-                        $('#calendar').fullCalendar( 'removeEvents',calEvent.id)
-                        calEvent.className = 'label-light'
-                        calEvent.title = calEvent.title  + ' (รออนุมัติ)'
-                        $('#calendar').fullCalendar( 'renderEvent',calEvent)
-                    }
-                    modal.modal("hide")
-                })
-                modal.find('button[data-action=delete]').on('click', async function() {
+                if ($('#username').text() === calEvent.userName && calEvent.editable) {
+                    if (calEvent.className == "label-grey") { larType = "ลาป่วย" }
+                    else if (calEvent.className == "label-success")  { larType = "ลากิจ" }
+                    else if (calEvent.className == "label-warning") { larType = "ลาพักร้อน" } 
+                    else if (calEvent.className == "label-danger") { larType = "ลาสลับวันหยุด" } 
+                    else if (calEvent.className == "label-dark") { larType = "ลากิจไม่รับค่าจ้าง" } 
+                    else { larType = "ลาอื่นๆ" }
+                    var data = [],datah = 0
+                    data.dataid = calEvent.dataid
+                    data.username = calEvent.userName
+                    data.start = new Date(calEvent.start._i).toString().replace( /[\s|:]/g,'-').split('-').slice(0,7).toString()
                     if (sessionStorage.attach) {
+                        var file = sessionStorage.attach
+                        file = file.split('.')[0]
+                        if (file == data.start ) { datah = 1 }
+                    }
+                if (larType == "ลาอื่นๆ") {
+
+                    var modal = 
+                    '<div class="modal fade">\
+                    <div class="modal-dialog">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                        <h5 class="modal-title">'+larType+'</h5>\
+                        </div>\
+                        <div class="modal-body">\
+                        <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                        <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+                            <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
+                            <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
+                            <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
+                            <label>แก้หัวข้อ &nbsp;</label>\
+                            <div class="row">\
+                                <div class="col-md-6">\
+                                <select class="form-control" id="larType" name="larType" data-action="change">\
+                                    <option>ลาฝึกอบรม</option>\
+                                    <option>ลาทำหมัน</option>\
+                                    <option>ลาคลอด</option>\
+                                    <option>ลาอุปสมบท</option>\
+                                    <option>ลารับราชการทหาร</option>\
+                                </select>\
+                                </div>\
+                                <div class="col-md-6">\<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
+                                </div>\
+                                <div class="wrapper">\
+                                <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+                                <div class="file-upload">\
+                                    <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                                    <i class="fa fa-arrow-up"></i>\
+                                </div>\
+                                <div '+(datah==1 ?'class="delfile"':'class="delfile hidethis"')+''+(datah==1 ?' id="'+sessionStorage.attach+'"':'')+'>\
+                                    <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                                    <i class="fa fa-close delthis"></i></p>\
+                                </div>\
+                                </div>\
+                                <p class="lartype">วันคงเหลือ: ' +$('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text()+ '</p>\
+                                <p>ต้องการลา: '+duration(calEvent)+'</p>\
+                            </span>\
+                        </form>\
+                        </div>\
+                        <div class="modal-footer">\
+                            <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+                            <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+                            <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                        </div>\
+                    </div>\
+                    </div>\
+                    </div>'
+                } 
+                    else if (larType == "ลาสลับวันหยุด") {
+                        var modal = 
+                    '<div class="modal fade">\
+                    <div class="modal-dialog">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                        <h5 class="modal-title">'+larType+'</h5>\
+                        </div>\
+                        <div class="modal-body">\
+                        <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                        <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+                            <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
+                            <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
+                            <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
+                            <label>เลือกวันที่ต้องการสลับวันหยุด &nbsp;</label>\
+                            <div class="row">\
+                                <div class="col-md-6">\
+                                <div class="input-group date">\
+                                <input class="form-control datepicker" type="text" readonly placeholder="สลับวันหยุดกับวันที่">\
+                                <div class="input-group-addon pickday">\
+                                <span class="fa fa-calendar-check-o"></span>\
+                                </div>\
+                                </div>\
+                                </div>\
+                                <div class="col-md-6">\
+                                <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
+                                </div>\
+                                <div class="wrapper">\
+                                <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+                                <div class="file-upload">\
+                                    <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                                    <i class="fa fa-arrow-up"></i>\
+                                </div>\
+                                <div class="delfile hidethis">\
+                                    <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                                    <i class="fa fa-close delthis"></i></p>\
+                                </div>\
+                                </div>\
+                            </span>\
+                        </form>\
+                        </div>\
+                        <div class="modal-footer">\
+                            <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+                            <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+                            <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                        </div>\
+                    </div>\
+                    </div>\
+                    </div>'
+                } 
+                else if (larType == "ลากิจ") {
+                    var reasonlist = ["บิดาเสียชีวิต","มารดาเสียชีวิต","คู่สมรสเสียชีวิต","บุตรธิดาเสียชีวิต","ญาติเสียชีวิต","บิดาเจ็บป่วย","มารดาเจ็บป่วย","คู่สมรสเจ็บป่วย","บุตรธิดาเจ็บป่วย","ติดต่อราชการทำใบขับขี่","ติดต่อราชการต่ออายุบัตรประจำตัวประชาชน","ติดต่อราชการ รับ/โอนที่ดิน","ติดต่อราชการเกี่ยวกับคดีความที่ศาล","เหตุผลอื่นๆ โปรดระบุ..."]
+                    var optionlist = reasonlist.map(item => {
+                            return "<option>"+item+"</option>"
+                    })
+                    var modal = 
+                    '<div class="modal fade">\
+                    <div class="modal-dialog">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                        <h5 class="modal-title">'+larType+'</h5>\
+                        </div>\
+                        <div class="modal-body">\
+                        <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                        <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+                            <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
+                            <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
+                            <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
+                            <label>แก้หัวข้อ &nbsp;</label>\
+                            <div class="row">\
+                                <div class="col-md-6">\
+                                <select class="form-control" id="larType" name="larType" data-action="change">\
+                                    '+optionlist.join("")+'\
+                                </select>\
+                                <input class="middle" style="margin-top: 5px; display: none;" autocomplete="off" type="text" id="larDetail" placeholder="ระบุสาเหตุอื่นๆ"/>\
+                                </div>\
+                                <div class="col-md-6">\<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
+                                </div>\
+                                <div class="wrapper">\
+                                <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+                                <div class="file-upload">\
+                                    <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                                    <i class="fa fa-arrow-up"></i>\
+                                </div>\
+                                <div '+(datah==1 ?'class="delfile"':'class="delfile hidethis"')+''+(datah==1 ?' id="'+sessionStorage.attach+'"':'')+'>\
+                                    <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                                    <i class="fa fa-close delthis"></i></p>\
+                                </div>\
+                                </div>\
+                                <p>วันคงเหลือ: ' +$('.'+larType+' .dur').text()+ '</p>\
+                                <p>ต้องการลา: '+duration(calEvent)+'</p>\
+                            </span>\
+                        </form>\
+                        </div>\
+                        <div class="modal-footer">\
+                            <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+                            <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+                            <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                        </div>\
+                    </div>\
+                    </div>\
+                    </div>'
+                } 
+                    else {
+                    var modal =
+                    '<div class="modal fade">\
+                    <div class="modal-dialog">\
+                    <div class="modal-content">\
+                        <div class="modal-header">\
+                        <h5 class="modal-title">'+larType+'</h5>\
+                        </div>\
+                        <div class="modal-body">\
+                        <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                        <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+                            <div class="hidethis"><input type="text" id="dataid" name="dataid" value="'+data.dataid+'"/></div>\
+                            <div class="hidethis"><input type="text" id="username" name="username" value="'+data.username+'"/></div>\
+                            <div class="hidethis"><input type="text" id="start" name="start" value="'+data.start+'"/></div>\
+                            <label>แก้หัวข้อ &nbsp;</label>\
+                            <input class="middle" autocomplete="off" type="text" id="larType" placeholder="' + calEvent.title + '"/>\
+                            <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
+                            <div class="wrapper">\
+                                <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+                                <div class="file-upload">\
+                                    <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                                    <i class="fa fa-arrow-up"></i>\
+                                </div>\
+                                <div class="delfile hidethis">\
+                                    <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                                    <i class="fa fa-close delthis"></i></p>\
+                                </div>\
+                            </div>\
+                            <p style="padding-top: 10px">วันคงเหลือ: ' +$('td:contains('+larType+')').parents('tr').find('.dur').text()+ '</p>\
+                            <p>ต้องการใช้: '+duration(calEvent)+'</p>\
+                        </form>\
+                        </div>\
+                        <div class="modal-footer">\
+                            <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+                            <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+                            <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                        </div>\
+                    </div>\
+                    </div>\
+                    </div>'; 
+                }
+                    var modal = $(modal).appendTo('body');
+                    $(modal).on('show.bs.modal',function(e) {
+                        var larlist
                         $.ajax({
                             url: '/proc',
                             type: "POST",
                             dataType: "json",
                             async: false,
                             data: {
-                                'state': 'delfile',
-                                'file': sessionStorage.attach,
+                                'state':'loads'
+                            },
+                            success: function(objs) {
+                                larlist = objs
+                            }
+                        })
+                        var dd = $('td:contains('+$('#larType').val()+')').parents('tr').find('.dur').text()
+                        if (dd == 'undefined' || dd == "") { $('.lartype').text('วันคงเหลือ: '+larlist[$('#larType').val()]) }
+                        else { $('.lartype').text('วันคงเหลือ: '+dd) }
+                    })
+                    $(document).on("change","#larType",function(e) {
+                        if ($(this).find("option:checked").val() == "เหตุผลอื่นๆ โปรดระบุ...") {
+                            $("#larDetail ").show()
+                        } else {
+                            $("#larDetail ").hide()
+                        }
+                    })
+                    $('.datepicker').datepicker({
+                        ignoreReadonly: true,
+                        format: 'dd/MM/yyyy',
+                        todayHighlight: true,
+                        clearBtn: true
+                    })
+                    $('.datepicker').datepicker().on('changeDate',function(e) {
+                        $('.datepicker').datepicker('hide')
+                    })
+                    $(document).on("click", ".input-group.date", function() {
+                        $('.datepicker').datepicker('show')
+                        if (!$('.datepicker.datepicker-inline').attr('style')) {
+                            $('.datepicker.datepicker-inline').remove()
+                        }
+                    })
+                    $('.viewattach').on("click",function() {
+
+                    })
+                    $('.delfile').on("click",function() {
+                        $.ajax({
+                            url: '/proc',
+                            type: "POST",
+                            dataType: "json",
+                            async: false,
+                            data: {
+                                'state':'delfile',
+                                'file': $(this).attr('id'),
                                 'username': $('#username').text()
                             },
                             success: function(objs) {
+                                $('.delfile').addClass('hidethis')
                                 sessionStorage.removeItem('attach')
                             },
                             error: (e) => {
                                 console.log(e.responseText)
                             }
                         })
-                    }
-                    calendar.fullCalendar('removeEvents' , function(ev){
-                        if ($('#username').text() ) return (ev.id == calEvent.id)
                     })
-                    modal.modal("hide")
-                })
-            
-                modal.modal('show').on('hidden.bs.modal', function(){
-                    modal.remove()
-                })
+                    $('select[id=larType]').on('change',function(e) {
+                        var larload,larlist
+                        $.ajax({
+                            url: '/proc',
+                            type: "POST",
+                            dataType: "json",
+                            async: false,
+                            data: {
+                                'state':'loads'
+                            },
+                            success: function(objs) {
+                                larlist = objs
+                            },
+                            error: (e) => {
+                                console.log(e.responseText)
+                            }
+                        })
+                        var dd = $('td:contains('+$(this).val()+')').parents('tr').find('.dur').text()
+                        if (dd == 'undefined' || dd == "") { $('.lartype').text('วันคงเหลือ: '+larlist[$(this).val()]) }
+                        else { $('.lartype').text('วันคงเหลือ: '+dd) }
+                    })
+                    modal.find('form').on('submit', function(ev){
+                        ev.preventDefault()
+                        $(this).prop('disabled',true)
+                        $('#upsiwa').ajaxForm(function() {
+                            alert("file upload!")
+                        })
+                        if (calEvent.className == 'label-danger') {
+                            calEvent.title = 'ลาสลับวันหยุด'
+                        } else if (calEvent.className == 'label-success') {
+                            calEvent.title = $(this).find('#larType').val()
+                            if (calEvent.title == "เหตุผลอื่นๆ โปรดระบุ...") { 
+                                $(this).find('#larDetail').val()
+                            }
+                        } else {
+                            calEvent.title = $(this).find("#larType").val()
+                            if (calEvent.title == '') { calEvent.title = $(this).find("#larType").attr('placeholder') }
+                        }
+                        calEvent.editable = false
+                        calendar.fullCalendar('updateEvent', calEvent)
+                        if (calEvent.title !== null) {
+                            var data = {}
+                            ,me = $(this)
+                            if ( me.data('requestRunning') ) {
+                                return
+                            }
+                            me.data('requestRunning', true)
+                            data.dataid = calEvent.dataid
+                            data.state = 'savelar'
+                            data.id = calEvent.id
+                            data.title = calEvent.title
+                            data.userName = $('#username').text()
+                            data.cTime = calEvent.cTime
+                            if (calEvent.start !== null) {
+                                if (calEvent.start._d !== null) {
+                                data.start = calEvent.start._d
+                                }
+                            }
+                            else {
+                                data.start = null
+                            }
+                            if (calEvent.end !== null) {
+                                if (calEvent.end._d !== null) {
+                                data.end = calEvent.end._d;
+                                }
+                            }
+                            else {
+                                data.end = null
+                            }
+                            if (calEvent.allDay) {
+                                data.allDay = true
+                            }
+                            if (calEvent.className == 'label-danger') { 
+                                data.swapDate = $('.datepicker').datepicker('getDate').getTime()/1000
+                            }
+                            if (calEvent.className !== null) {
+                                data.className = calEvent.className
+                            }
+                            if ($('.delfile').attr('id') != undefined) { 
+                                data.attach = $('.delfile').attr('id') 
+                            }
+                            data.boss = calEvent.boss
+                            data.mailGroup = calEvent.mailGroup
+                            if (data !== null && data.id) {
+                                $.ajax({
+                                    url: '/proc',
+                                    type: "POST",
+                                    async: false,
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(data),
+                                    complete: function() {
+                                        me.data('requestRunning', false)
+                                    },
+                                    success: function(data) {
+                                        for (i=0;i<data.length;i++) {
+                                            $('tr[class='+ data[i].a +']').find('td:nth-child(2)').text(data[i].c)
+                                            $('tr[class='+ data[i].a +']').find('td:nth-child(3)').text(data[i].d)
+                                            if (data[i].e) {
+                                                $('tr[class='+ data[i].a +']').find('td:nth-child(3)').removeClass("bg-success").addClass("bg-danger")
+                                            } else {
+                                                $('tr[class='+ data[i].a +']').find('td:nth-child(3)').removeClass("bg-danger").addClass("bg-success")
+                                            }
+                                        }
+                                        if (data.swapDate) {
+                                            thisswapdate = data.swapDate*1000
+                                            swapfrom = data.start*1000
+                                            datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
+                                            dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
+                                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
+                                        }
+                                        sessionStorage.removeItem('attach')
+                                    }
+                                })
+                            }
+                            $('#calendar').fullCalendar( 'removeEvents',calEvent.id)
+                            calEvent.className = 'label-light'
+                            calEvent.title = calEvent.title  + ' (รออนุมัติ)'
+                            $('#calendar').fullCalendar( 'renderEvent',calEvent)
+                        }
+                        modal.modal("hide")
+                    })
+                    modal.find('button[data-action=delete]').on('click', async function() {
+                        if (sessionStorage.attach) {
+                            $.ajax({
+                                url: '/proc',
+                                type: "POST",
+                                dataType: "json",
+                                async: false,
+                                data: {
+                                    'state': 'delfile',
+                                    'file': sessionStorage.attach,
+                                    'username': $('#username').text()
+                                },
+                                success: function(objs) {
+                                    sessionStorage.removeItem('attach')
+                                },
+                                error: (e) => {
+                                    console.log(e.responseText)
+                                }
+                            })
+                        }
+                        calendar.fullCalendar('removeEvents' , function(ev){
+                            if ($('#username').text() ) return (ev.id == calEvent.id)
+                        })
+                        modal.modal("hide")
+                    })
+                
+                    modal.modal('show').on('hidden.bs.modal', function(){
+                        modal.remove()
+                    })
+                }
             }
-		}
+        }
     })
 })
