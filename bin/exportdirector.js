@@ -2,6 +2,7 @@ const express = require('express')
 const xlsx = require('excel4node')
 const log = require('../bin/logger')
 const con = require('../bin/mysql')
+const util = require('util')
 const moment = require("moment")
 const exportName = 'report excel'
 const thai = ['ลาป่วย','ลากิจ','ลาพักร้อน','ลาฝึกอบรบ','ลาทำหมัน','ลาคลอด','ลาอุปสมบท','รารับราชการทหาร']
@@ -9,14 +10,28 @@ const base = ['sick','personal','vacation','training','sterily','maternity','rel
 const over = ['vacationr','vacationp','vacationq']
 const lcon = base.concat(over)
 const _ = require("lodash")
-const columnHead = ["ชื่อ-นามสกุล","วันที่บันทึก","วันเริ่มต้น","เวลาเริ่มต้น","วันสิ้นสุด","เวลาสิ้นสุด","ประเภทการลา","เหตุผลการลา","วันที่ขอสลับวัน","สิทธิวันลาปีนี้","สิทธิคงค้างปีที่แล้ว","สิทธิคงค้างปีที่แล้ว","รวมสิทธิวันลาที่ใช้ได้","รวมสิทธิวันลาที่ใช้ได้","จำนวนวันลา","จำนวนวันลา","คงเหลือวันลา","คงเหลือวันลา","สถานะการลา","ผู้อนุมัติ","วันที่อนุมัติ"]
+const columnHead = ["ชื่อ-นามสกุล","วันที่บันทึก","วันเริ่มต้น","เวลาเริ่มต้น","วันสิ้นสุด","เวลาสิ้นสุด","ประเภทการลา","เหตุผลการลา","วันที่ขอสลับวัน","สิทธิวันลาปีนี้","สิทธิคงค้างปีที่แล้ว (วัน)","สิทธิคงค้างปีที่แล้ว (ชั่วโมง)","รวมสิทธิวันลาที่ใช้ได้ (วัน)","รวมสิทธิวันลาที่ใช้ได้ (ชั่วโมง)","จำนวนวันลา (วัน)","จำนวนวันลา (ชั่วโมง)","คงเหลือวันลา (วัน)","คงเหลือวันลา (ชั่วโมง)","สถานะการลา","ผู้อนุมัติ","วันที่อนุมัติ"]
 const keys = ["name","insert","start","startTime","end","endTime","type","title","swap","thisyear","lastyear","totalyear","used","remain","status","approver","approved"]
 const borderStyle = ['none', 'thin', 'medium', 'dashed', 'dotted', 'thick', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
-async function managerExport(split,time,res) {
-    const data = await listUser(parseInt(time))
+
+async function managerExport(split,id,start,end,res) {
+ start = (parseInt(start)+25200)*1000
+ end = (parseInt(end)+25200)*1000
+ if (id != "empty") {
+  var data = []
+  let check
+  await Promise.all(id.map(async (user) => {
+   check = await listLar(user,start,end)
+   if (check.length) {
+       data.push(check)
+   }
+  }))
+ } else if (split !== "choose") { 
+  data = await listUser(start,end)
+ }
+ if (data && data.length) {
     let workbook = new xlsx.Workbook()
-    const splitpage = split
-    if (splitpage == "true") {
+    if (["split","choose"].indexOf(split) >= 0) {
         let index = workbook.addWorksheet("สารบัญ") 
         let users = []
         let linkname
@@ -71,9 +86,9 @@ async function managerExport(split,time,res) {
             index.cell(row++,col).formula('=HYPERLINK(CONCATENATE("#",CELL("Address",'+linkname+')),"'+user+'")').style({border:{left:{style:'thin'},right:{style:'thin'},bottom:{style:'dotted'}}})
         })
         index.cell(row,1,row,2).style({border:{top:{style:'thin'}}})
-    } else {
+    } else if (split == "merge") {
         let ws = workbook.addWorksheet("report") 
-        let col=1 
+        let col=1
         let row=1
         columnHead.forEach(head => {
             ws.cell(row,col++).string(head).style({alignment:{horizontal:'center'}})
@@ -109,22 +124,26 @@ async function managerExport(split,time,res) {
             }
         })
     }
-    workbook.write(exportName +'.xlsx',res)
+    workbook.writeP = util.promisify(workbook.write)
+    await workbook.writeP(exportName +'.xlsx')
+    res.status(200).send("/exportmanager/download")
+   } else { res.status(204).send("empty") }
+
 }
 
 function pad2(num) {
     return (num < 10 ? "0"+num : num)
 }
 
-async function listUser(time) {
+async function listUser(start,end) {
     let query = "SELECT dataid FROM user_data WHERE status = 1 ORDER BY name ASC"
     let users = await con.q(query)
     let data = []
     let check
-    if (users) {
+    if (users.length) {
         await Promise.all(users.map(async (user) => {
-            check = await listLar(user.dataid,time)
-            if (check) {
+            check = await listLar(user.dataid,start,end)
+            if (check.length) {
                 data.push(check)
             }
         }))
@@ -132,33 +151,42 @@ async function listUser(time) {
     return data
 }
 
-async function listLar(dataid,time) {
-    let a = new Date(time)
-    let LAR = []
-    let start = new Date(a.getFullYear(),0,1,7).getTime()/1000
-    let end = new Date(a.getFullYear(),11,31,7).getTime()/1000
-    const worktime = (await con.q('SELECT swtime,ewtime FROM privacy_data WHERE dataid = ?',[dataid]))[0]
-    var lardata = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND approve > 1 AND start BETWEEN ? AND ? ORDER BY start ASC',[dataid,start,end])
-    const lartotal = await con.q('SELECT ?? FROM lar_status WHERE dataid = ? AND year = ?',[lcon,dataid,a.getFullYear()])
-    const dataTime = {}
-    const newtotal = (lartotal ? {...lartotal[0]} : "")
-    if (lardata == []) {
-        return null
+async function listLar(dataid,start,end) {
+ let startYear = new Date(start).getFullYear()
+ let endYear = new Date(end).getFullYear()
+ let diff = endYear - startYear
+ let LAR = []
+ start = start/1000
+ end = end/1000
+ if (diff >= 0) {
+  for (let year=startYear;year<=endYear;year++) {
+   let dstart = new Date(year,0,1,7).getTime()/1000
+   let dend = new Date(year,11,31,7).getTime()/1000
+   let worktime = (await con.q('SELECT swtime,ewtime FROM privacy_data WHERE dataid = ?',[dataid]))[0]
+   let lardata = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND approve > 1 AND start BETWEEN ? AND ?',[dataid,dstart,dend])
+   let lartotal = await con.q('SELECT ?? FROM lar_status WHERE dataid = ? AND year = ?',[lcon,dataid,year])
+   let dataTime = {}
+   let newtotal = (lartotal ? {...lartotal[0]} : "")
+    if (lardata.length) {
+     Object.keys(newtotal).map(key => {
+      dataTime[key] = numtoarray(key, newtotal[key])
+     }, {})
+     let testdata = {...dataTime}
+     let saveTime = calculateTime(testdata)
+     let calTime = _.cloneDeep(saveTime)
+     let vacationtime = vacationRemain(testdata)
+     await Promise.all(lardata.map(function(item,index) {
+      if (item.approve != 0 && item.approve != 1) {
+       calTime = updateTime(item,calTime)
+       if (start < item.start && end > item.start ) {
+        LAR.push(pushItem(item,dataTime,calTime,saveTime,vacationtime,worktime))
+       }
+      }
+     }))
     }
-    Object.keys(newtotal).map(key => {
-        dataTime[key] = numtoarray(key, newtotal[key])
-    }, {})
-    const testdata = {...dataTime}
-    let saveTime = calculateTime(testdata)
-    let calTime = _.cloneDeep(saveTime)
-    const vacationtime = vacationRemain(testdata)
-    await Promise.all(lardata.map(function(item,index) {
-        if (item.approve != 0 && item.approve != 1) {
-            calTime = updateTime(item,calTime)
-            LAR.push(pushItem(item,dataTime,calTime,saveTime,vacationtime,worktime))
-        }
-    }))
-    return LAR
+  }
+ }
+ return LAR
 }
 
 function pushItem(item,dataTime,calTime,time,vacationtime,worktime) {
@@ -204,7 +232,7 @@ function pushItem(item,dataTime,calTime,time,vacationtime,worktime) {
         remain: thisremain,
         status: approve(item),
         approver: item.approver,
-        approved: (item.approvedate ? moment((item.approvedate-25200)*1000).add(543,'years').format("DD/MM/YYYY") : "")
+        approved: moment((item.approvedate-25200)*1000).add(543,'years').format("DD/MM/YYYY")
     }
     return LAR
 }

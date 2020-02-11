@@ -7,52 +7,216 @@ block content
  mixin ddl(year)
   for t in year
    option(value=t selected=(parms.thisyear == t ? true : false))=t
+ mixin snl(names)
+  for n in names
+   li(class=n.dataid)
+    input(type="checkbox" value=`${n.name} ${n.lastName}`)
+    span=`${n.name} ${n.lastName}`
+   
  link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
- .col-sm-2
-  h4.text-info(align="center")=""
- .col-md-3
-  .form-group
-   h3(style="margin:3px 0 0 0")='เลือกปีที่ต้องการ'
-    select.tyear(style="margin-left: 35px; font-size: 16px")
-     +ddl(parms.yearlist)
-
- button(type="button" id="export" class="btn btn-sm btn-success")
-  i.ace-icon.fa.fa-file=' Export'
- label(for="rdo1")
-  input(type="radio" id="rdo1" name="option" value="split" checked)
-  span.rdo
-  span="แยกรายบุคคล"
- label(for="rdo2")
-  input(type="radio" id="rdo2" name="option" value="merge")
-  span.rdo
-  span="รวมหน้าเดียว"
+ .row
+  .col-sm-2
+   h4.text-info(align="right")="เลือกช่วงเวลา"
+  .col-sm-3
+   .form-group
+    .input-group.input-daterange.datepicker(data-provide="datepicker")
+     input.form-control.datepickera(type='text')
+     .input-group-addon='to'
+     input.form-control.datepickerb(type='text')
+  .col-sm-7
+   button(type="button" id="export" class="btn btn-sm btn-success")
+    i.ace-icon.fa.fa-file=' Export'
+   label(for="rdo1")
+    input(type="radio" id="rdo1" name="option" value="choose" checked)
+    span.rdo
+    span
+     dl.dropdown
+      dt
+       a(href="#")
+        span.hida="เลือกรายชื่อ"
+        p.multiselect
+      dd
+       .multi-select
+        ul
+         +snl(parms.names)
+   label(for="rdo2")
+    input(type="radio" id="rdo2" name="option" value="split")
+    span.rdo
+    span="แยกรายชื่อ"
+   label(for="rdo3")
+    input(type="radio" id="rdo3" name="option" value="merge")
+    span.rdo
+    span="รวมหน้าเดียว"
+ 
  +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js'])
  link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
  script.
-  $(document).ready(function(){
+  $(document).ready(function(){ 
+   $(window).on("load",function() {
+    var d = new Date()
+     $('.datepickera').datepicker('setDate',new Date(d.getFullYear(),d.getMonth()-1,21))
+     $('.datepickerb').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),20))
+   })
+   $('.datepicker').datepicker({
+    ignoreReadonly: true,
+    format: 'dd/MM/yyyy',
+    todayHighlight: true
+   })
+   $('.datepickera').datepicker().on('changeDate',function(e){
+       $('.datepickera').datepicker('hide')
+       $('.datepickerb').datepicker('show')
+   })
+   $('.datepickerb').datepicker().on('changeDate',function(e){
+       $('.datepickerb').datepicker('hide')
+   })
+
+   $(".tyear").on("click",function(){
+     $(".month-list").toggleClass("hide")
+   })
+
+   $(".dropdown dt a").on('click', function() {
+     $(".dropdown dd ul").slideToggle('fast')
+   })
+
+   $(".dropdown dd ul li").on('click', function() {
+     $(this).find("input").attr("checked",!$(this).find("input").attr("checked"))
+   })
+    
+    function getSelectedValue(id) {
+      return $("#" + id).find("dt a span.value").html()
+    }
+    
+    $('.multi-select li').on('click', function() {
+      let title = $(this).find("input").val() + ","
+      let id = $(this).attr("class")
+    
+      if ($(this).find("input").is(':checked')) {
+        var html = '<span class="'+ id +'" title="' + title + '">' + title + '</span>'
+        $('.multiselect').append(html)
+        $(".hida").hide()
+      } else {
+        $('span[title="' + title + '"]').remove()
+        if ($(".dropdown a span").length == 1) {
+          $(".hida").show()
+        }
+      }
+    })
     $("#export").click(function() {
         let thisyear = (new Date()).getFullYear()
         let time = $('.tyear').val()
         let rdo = $("input[name=option]:checked").val()
-        console.log(rdo)
+        let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
+        let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
+        let selected = $(".multiselect span")
+        let id = $.map(selected,function(span,index) {
+          return span.className
+        })
+        if (!id.length || rdo !== "choose") { id = "empty"}
         time = (time == thisyear ? new Date() : new Date(time,11,31))
         $.ajax({
-            url: '/exportmanager',
-            type: "POST",
-            dataType: 'json',
-            async: false,
-            data: { 
-                "option": (rdo=="split" ? true : false),
-                'time': time.getTime()
-            },
-            success: function (rlink) {
-                window.location.href = rlink
-            }
+         url: '/exportmanager',
+          type: "POST",
+          async: false,
+          data: {
+              "option": rdo,
+              "id": id,
+              "start": datepicka,
+              "end": datepickb
+          },
+          success: function (data,res,jqXHR) {
+           let status = jqXHR.status
+           if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
+           if (status == 200) {
+            window.location = data
+           }
+          },
+          error: function (e) {
+           console.log("error",e)
+          }
         })
     })
   })
  style.
+  .tyear {
+   /* for Firefox */
+   -moz-appearance: none;
+   /* for Chrome */
+   -webkit-appearance: none;
+   cursor: pointer;
+   border: 0px;
+  }
+  .tyear > option {
+    display: none;
+  }
+  .tyear:hover {
+    color: #0080ff;
+  }
+  .select-year {
+    border: 1px solid #c0c0c0;
+    border-radius: 60px;
+    padding: 5px 0;
+    margin-left: 15px;
+    display: inline;
+  }
+  .year-dec {
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  .year-inc {
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  .month-list {
+    position: absolute;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 5px;
+    border: 2px solid #c0c0c0;
+    box-shadow: 2px 2px #d7d7d7;
+    background: #d3e4e3;
+    margin: 7px 0 0 0;
+  }
+  .month-list + .hide {
+    display: none;
+  }
+  .month-list .month-item {
+    display: none;
+  }
+  input[name="month"] + label {
+    font-size: 18px;
+    text-decoration: none;
+    text-align: center;
+    padding: 5px 10px;
+  }
+  input[type="radio"] + label:hover {
+    cursor: pointer;
+    background: #d2dbe8;
+    box-shadow: 2px 2px #97cbff;
+  }
+  input[type="radio"]:checked + label {
+    animation: select-effect 0.5s;
+    animation-fill-mode: forwards;
+  }
+  @keyframes select-effect {
+    from {
+      background: #d2dbe8;;
+      box-shadow: 2px 2px #97cbff;
+    }
+    to {
+      background: #d5ffd5;
+      box-shadow: 2px 2px #67e9a8;
+    }
+  }
+  @keyframes unselect-effect {
+    from {
+      background: #d5ffd5;
+      box-shadow: 2px 2px #67e9a8;
+    }
+    to {
+      background: none;
+    }
+  }
   label {
     display: inline;
     cursor: pointer;
@@ -101,4 +265,101 @@ block content
   opacity: 1;
   transform: scale(1);
   transition: all 0.15s ease;
+  }
+  .dropdown dd,
+   .dropdown dt {
+   margin: 0px;
+   padding: 0px;
+  }
+ 
+  .dropdown ul {
+  margin: -1px 0 0 0;
+  }
+  .dropdown dd {
+  position: relative;
+  }
+  .dropdown a,
+  .dropdown a:visited {
+   text-decoration: none;
+   outline: none;
+   font-size: 12px;
+  }
+  .dropdown dt a {
+   border: solid 2px #e2e2e2;
+   background: #ffffff;
+   border-radius: 10px;
+   color: #5f5f5f;
+   display: block;
+   margin-top: -6px;
+   padding: 4px 20px 0 10px;
+   min-height: 10px;
+   line-height: 10px;
+   overflow: hidden;
+   width: 272px;
+  } 
+  .dropdown dt a span,
+   .multiselct span {
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 3px 0 0;
+  }
+  .dropdown dd ul {
+   background-color: #e6e6e6;
+   border: 0;
+   color: #000000;
+   display: none;
+   left: 0px;
+   padding: 2px 15px 2px 5px;
+   position: absolute;
+   border: solid 1px #616161;
+   border-radius: 5px;
+   top: 5px;
+   width: 280px;
+   list-style: none;
+   height: 80vh;
+   overflow: auto;
+  }
+  .dropdown span.value {
+   display: none;
+  }
+  .dropdown dd ul li input {
+   display: none;
+  }
+  .dropdown dd ul li span:before {
+   content: '';
+   margin-right: 3px;
+   display: inline-block;
+   background: #55D8C6;
+   position: absolute;
+   left: 8px;
+   margin-top: 4px;
+   height: 10px;
+   width: 10px;
+   margin-right: 10px;
+   box-shadow: 0px 1px 0 0 rgba(0, 0, 0, .2);
+   box-sizing: border-box;
+   border: 5px solid #fff;
+   transition: border .3s ease;
+  }
+  .dropdown dd ul li span {
+   color: #808080;
+   display: inline-block;
+   padding: 0 0 0 1.5em;
+   cursor: pointer;
+  }
+  .dropdown dd ul li {
+    margin-top: 2px;
+  }
+  .dropdown dd ul li:hover {
+   color: #1602c8;
+  }
+  .dropdown dd ul li input:checked + span:before {
+   border-color: #fff;
+   border-width: 2px;
+  }
+  .dropdown dd ul li input + span {
+   transition: color .7s ease;
+  }
+  .dropdown dd ul li input:checked + span {
+   color: #004000;
   }
