@@ -45,7 +45,7 @@ router.post('/', async function(req, res) {
 	if (req.body.state == 'getvacation') {
 		var result = await con.q('SELECT wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
 		var mydata = await con.q('SELECT * FROM vacation_list WHERE '+(result[0].wplace == 1? 'doffice' : 'dsite')+' BETWEEN ? AND ?',[req.body.start,req.body.end])
-		var myswap = await con.q('SELECT swapDate,start FROM lar_data WHERE className = ? AND dataid = ? AND start BETWEEN ? AND ?',['label-danger',req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
+		var myswap = await con.q('SELECT title,swapDate,start FROM lar_data WHERE className = ? AND dataid = ? AND swapDate BETWEEN ? AND ? AND approve > 0',['label-danger',req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
 		var myattach = await con.q('SELECT start,fname FROM lar_data WHERE dataid = ? AND start BETWEEN ? AND ?',[req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
 		req.body.wplace = (result[0].wplace == 1 ? 'doffice' : 'dsite')
 		req.body.mydata = mydata

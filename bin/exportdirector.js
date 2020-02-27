@@ -37,7 +37,7 @@ async function managerExport(split,id,start,end,res) {
         let linkname
         data.forEach(table => {
             if (table != [] && table[0]) {
-                let ws = workbook.addWorksheet(table[0].name) 
+                let ws = workbook.addWorksheet(table[0].name)
                 users.push(table[0].name)
                 let col=1 
                 let row=1

@@ -20,13 +20,13 @@ function remodule(d) {
 router.post('/',async function(req, res) {
 	if (!req.cookies.user_dataid) { res.redirect('/') }
 	if (req.body.state == "delfile") {
-		var file =  __basedir + '/bin/doc/' +req.body.username+ '/' +req.body.file
+		var file =  __basedir + '\\public\\doc\\' +req.body.username+ '\\' +req.body.file
 		if (fs.existsSync(file)) {
 			fs.unlinkSync(file)
-			log.logger('info',data.username+' Delete attachment: '+file)
-			res.send(true)
+			log.logger('info',req.body.username+' Delete attachment: '+file)
+			res.status(200).send(true)
 		} else {
-			res.send(false)
+			res.status(200).send(false)
 		}
 	}
 	if (req.body.state == "loadacc") {
@@ -106,15 +106,27 @@ router.post('/',async function(req, res) {
 		con.q(sql,[req.cookies.user_mail,req.cookies.user_name,req.body.start,req.body.end])
 		.then(result => {
 			var objs = [],
-			end,allDay,classn
+			end,allDay,classn,title
 			for (var i = 0; i < result.length; i++) {
 				if (result[i].boss || result[i].userName == req.cookies.user_name) {
+					if (result[i].swapDate) {
+						thisswapdate = result[i].swapDate*1000
+						dateread = ("0"+new Date(thisswapdate).getDate()).slice(-2)+ '/' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'/'+ new Date(thisswapdate).getFullYear()
+						title = "สลับวันหยุดกับวันที่ "+ dateread
+					} else {
+						title = result[i].title
+					}
 					if (result[i].end) {
 						end = timestamp.toDate(result[i].end)
 					} else {
 						end = null
 					}
-					if (result[i].approve == 2) { classn = 'label-light' , result[i].title = result[i].title + ' (รออนุมัติ)' } else { classn = result[i].className }
+					if (result[i].approve == 2) { 
+						classn = 'label-light' 
+						title = title + ' (รออนุมัติ)' 
+					} else { 
+						classn = result[i].className 
+					}
 					if (result[i].allDay) {
 						allDay = true
 					} else {
@@ -124,7 +136,7 @@ router.post('/',async function(req, res) {
 						objs.push({
 							dataid: result[i].dataid,
 							id: result[i].id,
-							title: result[i].title,
+							title: title,
 							boss: result[i].boss,
 							mailGroup: result[i].mailGroup,
 							start: timestamp.toDate(result[i].start),
@@ -243,7 +255,7 @@ router.post('/',async function(req, res) {
 		}
 		if (req.body.attach != null) { 
 			attach = req.body.attach 
-			path = __basedir + '/bin/doc/' + userName+ '/' + attach
+			path = __basedir + '/public/doc/' + userName+ '/' + attach
 			fileExt = attach.substring(attach.lastIndexOf('.')).toLowerCase()
 		}
 		else { attach = '' }

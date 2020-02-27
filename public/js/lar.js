@@ -213,16 +213,17 @@ jQuery(function($) {
                     mylen=Math.max(len1,len2,len3)
                     for (var i=0;i<mylen;i++) {
                         if (data.myswap[i]) {
-                            thisswapdate = await data.myswap[i].swapDate*1000 
-                            swapfrom = await data.myswap[i].start*1000
+                            thisswapdate = data.myswap[i].swapDate*1000 
+                            swapfrom = data.myswap[i].start*1000
+                            swaptitle = data.myswap[i].title
                             if (listday.indexOf(thisswapdate)) {
                                 datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
                                 dateread = ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
-                                $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
+                                $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">'+swaptitle+'<br>ใช้สิทธิลาวันที่<br>'+dateread+'</div>')
                             }
                         }
                         if (data.mydata[i]) { 
-                            thisvacation = await data.mydata[i][data.wplace]
+                            thisvacation = data.mydata[i][data.wplace]
                             if (listday.indexOf(thisvacation)) {
                                 datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)
                                 $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data.mydata[i].dtitle+'</div>')
@@ -573,7 +574,8 @@ jQuery(function($) {
         eventMouseover: function (calEvent, jsEvent) { // this function is called when move mouse over event
             var tooltip =
                 '<div class="tooltip">\
-                <div class="tooltip-inner">ลาโดย ' + calEvent.userName + '\
+                    <div class="tooltip-inner">' + calEvent.title + '\
+                    <br>ลาโดย ' + calEvent.userName + '\
                 </div>\
             </div>';
             var $tooltip = $(tooltip).appendTo('body');
@@ -727,6 +729,7 @@ jQuery(function($) {
                                 <span class="fa fa-calendar-check-o"></span>\
                                 </div>\
                                 </div>\
+                                <input class="middle" style="margin-top: 5px;" autocomplete="off" type="text" id="larDetail" placeholder="สาเหตุที่ต้องทำงานในวันหยุด"/>\
                                 </div>\
                                 <div class="col-md-6">\
                                 <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
@@ -896,7 +899,6 @@ jQuery(function($) {
                         $.ajax({
                             url: '/proc',
                             type: "POST",
-                            dataType: "json",
                             async: false,
                             data: {
                                 'state':'delfile',
@@ -940,11 +942,11 @@ jQuery(function($) {
                             alert("file upload!")
                         })
                         if (calEvent.className == 'label-danger') {
-                            calEvent.title = 'ลาสลับวันหยุด'
+                            calEvent.title = $(this).find('#larDetail').val()
                         } else if (calEvent.className == 'label-success') {
                             calEvent.title = $(this).find('#larType').val()
                             if (calEvent.title == "เหตุผลอื่นๆ โปรดระบุ...") { 
-                                $(this).find('#larDetail').val()
+                                calEvent.title = $(this).find('#larDetail').val()
                             }
                         } else {
                             calEvent.title = $(this).find("#larType").val()
@@ -1020,7 +1022,7 @@ jQuery(function($) {
                                             swapfrom = data.start*1000
                                             datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
                                             dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
-                                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">สลับวันหยุดกับวันที่<br>'+dateread+'</div>')
+                                            $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">'+data.title+'<br>ใช้สิทธิลาวันที่<br>'+dataread+'</div>')
                                         }
                                         sessionStorage.removeItem('attach')
                                     }
@@ -1028,8 +1030,14 @@ jQuery(function($) {
                             }
                             $('#calendar').fullCalendar( 'removeEvents',calEvent.id)
                             calEvent.className = 'label-light'
-                            calEvent.title = calEvent.title  + ' (รออนุมัติ)'
-                            $('#calendar').fullCalendar( 'renderEvent',calEvent)
+                            if (calEvent.className == 'label-danger') {
+                                swapfrom = data.swapDate*1000
+                                dateread =  ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
+                                calEvent.title = 'สลับวันหยุดกับวันที่ '+ dateread  + ' (รออนุมัติ)'
+                            } else {
+                                calEvent.title = calEvent.title  + ' (รออนุมัติ)'
+                                $('#calendar').fullCalendar( 'renderEvent',calEvent)
+                            }
                         }
                         modal.modal("hide")
                     })
@@ -1060,6 +1068,25 @@ jQuery(function($) {
                     })
                 
                     modal.modal('show').on('hidden.bs.modal', function(){
+                        if (sessionStorage.attach) {
+                            $.ajax({
+                                url: '/proc',
+                                type: "POST",
+                                dataType: "json",
+                                async: false,
+                                data: {
+                                    'state': 'delfile',
+                                    'file': sessionStorage.attach,
+                                    'username': $('#username').text()
+                                },
+                                success: function(objs) {
+                                    sessionStorage.removeItem('attach')
+                                },
+                                error: (e) => {
+                                    console.log(e.responseText)
+                                }
+                            })
+                        }
                         modal.remove()
                     })
                 }

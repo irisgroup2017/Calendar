@@ -15,17 +15,5 @@ block content
    script(src="js/"+t)
  if parms.user
   h3= "Login as " + parms.user
- else
-  if parms.objs[0]
-   .container
-    table.table
-     thead.thead-info
-      tr
-       th.center='ประเภท'
-       th.center='การใช้งาน'
-       th.center='ช่วงเวลา'
-       th.center='ระยะเวลา'
-       th.center='ผู้จอง'
-     tbody
-      +table(parms.objs)
+ 
    

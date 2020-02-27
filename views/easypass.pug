@@ -1,0 +1,39 @@
+extends layout
+
+block content
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='css/'+t)
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ mixin ecwrite(src)
+  for t in src
+   tr
+    th(scope="row")=t.id
+    td=t.unixid
+    td=t.license
+    td=t.province
+    td(data-type="currency")=t.amount
+    td=t.remark
+    td=moment(t.updated).format("DD/MM/YYYY, HH:MM")
+ .container
+  table.responsive-table
+   caption="ยอดเงินคงเหลือ Easypass"
+    thead
+     tr
+      th(scope="col")="OBU ID"
+      th(scope="col")="Smart Card ID"
+      th(scope="col")="License Plate"
+      th(scope="col")="Province"
+      th(scope="col")="Cash balance"
+      th(scope="col")="Remark"
+      th(scope="col")="Update ON"
+    tbody
+     +ecwrite(parms.easypass)
+    tfoot
+     tr
+      td="** อัพเดทเวลาเที่ยงคืนของทุกวัน"
+ +scss(["easypass.css"])
+
+
