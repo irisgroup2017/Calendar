@@ -133,6 +133,7 @@ router.post('/',async function(req, res) {
 		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime,wplace) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,a.name+' '+a.lastName,a.mailGroup,0,0,'08:30:00','17:30:00',0])
 		await ls.setLar(a.name+' '+a.lastName,a.dataid,'insert',new Date().getTime())
 		log.logger('info','ADD ID : '+ req.cookies.user_name+' - '+a.emid)
+		larstock.updateAll()
 		res.json(a)
 	}
 	if (a.state == 'resetpassword') {

@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const con = require("../bin/mysql")
 const log = require("../bin/logger")
+const report = require("../bin/exporteasypass")
 
 /* GET /calendar. */
 router.get('/',async function(req, res) {
@@ -29,6 +30,10 @@ router.get('/',async function(req, res) {
 		moment: require('moment'),
 		parms: parms
 	})
+})
+
+router.get('/download', async function(req, res) {
+	await report.exp(res)
 })
 
 module.exports = router

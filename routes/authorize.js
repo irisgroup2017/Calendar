@@ -17,7 +17,7 @@ function relogin(status,res) {
 router.post('/', async function(req, res) {
 	var username = req.body.username,
 	password = req.body.password,
-	sql = 'SELECT * FROM user_data WHERE userName = ?'
+	sql = 'SELECT * FROM user_data WHERE userName = ? && status = 1'
 	if (username && password) {
 		if (req.body.redirect) { var redirect = req.body.redirect }
 		result = await con.q(sql,username)

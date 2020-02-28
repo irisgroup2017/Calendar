@@ -4,29 +4,32 @@ const log = require('../bin/logger')
 const con = require('../bin/mysql')
 const util = require('util')
 const moment = require("moment")
+const exportName = "report_easypass.xlsx"
 
 function calCash (cash,topup) {
     if (topup > cash) {
         num = topup - cash
         num = Math.round(num/100)*100
+        return num
     }
+    return 0
 }
 
-async function ExportEasypass() {
-    const compid = "0105549022418(0000)"
+async function exportEasypass(res) {
+    const compid = "0105549022418"
     const result = await con.q("SELECT * FROM licenseplate_data JOIN easypass_data ON licenseplate_data.unixid = easypass_data.unixid")
     const wb = new xlsx.Workbook()
     const ws = wb.addWorksheet("EasypassList")
-    const priceFormatWithBorderBody = wbcreateStyle({ numberFormat: "#,##0.00; (#,##0.00); -", border: { left: { style: thin }, right: { style: thin }, bottom: { style: dotted } } })
-    const priceFormatWithBorderFooter = wbcreateStyle({ numberFormat: "#,##0.00; (#,##0.00); -", border: { left: { style: thin }, right: { style: thin }, bottom: { style: thin } } })
-    const borderHead = wbcreateStyle({ border: { left: { style: thin }, right: { style: thin }, top: { style: thin }, bottom: { style: thin } } })
-    const borderBody = wbcreateStyle({ border: { left: { style: thin }, right: { style: thin }, bottom: { style: dotted } } })
-    const borderFooter = wbcreateStyle({ border: { left: { style: thin }, right: { style: thin }, bottom: { style: thin } } })
+    const priceFormatWithBorderBody = wb.createStyle({ numberFormat: "#,##0.00; (#,##0.00); -", border: { left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "dotted" } } })
+    const priceFormatWithBorderFooter = wb.createStyle({ numberFormat: "#,##0.00; (#,##0.00); -", border: { left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } } })
+    const borderHead = wb.createStyle({ border: { left: { style: "thin" }, right: { style: "thin" }, top: { style: "thin" }, bottom: { style: "thin" } } })
+    const borderBody = wb.createStyle({ border: { left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "dotted" } } })
+    const borderFooter = wb.createStyle({ border: { left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } } })
     let row=10
     let col=1
     ws.cell(1,1).string("ข้อมูลผู้ใช้")
     ws.cell(1,2).string("เลขภาษี 0105549022418")
-    ws.cell(1,4,1,5,true).string("เลขภาษี 0105549022418").style({ fill: { bgColor: "F9F908" } })
+    ws.cell(1,4,1,5,true).string("เลขภาษี 0105549022418").style({ fill: { type: "pattern", patternType: 'solid', bgColor: "F9F908" } })
     ws.cell(2,1).string("เลขบัตรประชาชน/เลขทะเบียนพาณิชย์")
     ws.cell(2,4).string(compid)
     ws.cell(3,1).string("ชื่อ - นามสกุล")
@@ -51,9 +54,9 @@ async function ExportEasypass() {
         num = (row-9).toString()
         obu = item.id
         smid = item.unixid.toString()
-        plate = item.plate +" "+ item.province
+        plate = item.license +" "+ item.province
         balance = parseInt(item.amount.replace(",",""))
-        topup = item.topup
+        topup = item.top
         cash = calCash(balance,topup)
 
         ws.cell(row,col++).string(num).style(borderBody)
@@ -68,8 +71,9 @@ async function ExportEasypass() {
     })
 
     ws.cell(row,col,row,6,true).style(borderFooter)
-    ws.cell(row,7).formula("SUM(G10:G"+row+")").style(priceFormatWithBorderFooter)
+    ws.cell(row,7).formula("SUM(G"+10+":G"+(row-1)+")").style(priceFormatWithBorderFooter)
 
+    //Truncate(((256*8.7109375+Truncate(128/7))/256)*7)
     ws.column(1).setWidth(10.71)
     ws.column(2).setWidth(21.43)
     ws.column(3).setWidth(20)
@@ -78,10 +82,10 @@ async function ExportEasypass() {
     ws.column(6).setWidth(23.57)
     ws.column(7).setWidth(16.14)
     ws.setPrintArea(1, 1, row, 7)
-//Truncate(((256*8.7109375+Truncate(128/7))/256)*7)
+
     wb.writeP = util.promisify(wb.write)
-    await wb.writeP(exportName +'.xlsx')
-    res.status(200).send("/exportmanager/download")
+    await wb.writeP(exportName)
+    res.download(exportName)
 }
 
-module.exports.exp = ExportEasypass
+module.exports.exp = exportEasypass
