@@ -15,7 +15,7 @@ router.get('/',async function(req, res) {
 			'mail': mail
 		}
 		const result = await con.q("SELECT * FROM licenseplate_data JOIN easypass_data ON licenseplate_data.unixid = easypass_data.unixid")
-		parms = { 
+		parms = {
 			title: 'Easypass', 
 			head1: 'ยอดเงินคงเหลือ', 
 			head2: ' ' + userName,

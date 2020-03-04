@@ -85,6 +85,11 @@ router.post('/',async function(req, res) {
 		log.logger('info','Change Status : '+ req.cookies.user_name+' - ID '+a.dataid+' to '+a.status)
 		res.json(a)
 	}
+	if (a.state == "comp") {
+		con.q("UPDATE privacy_data SET company_id = ? WHERE dataid = ?",[parseInt(a.comp),a.dataid])
+		log.logger('info','Change Company : '+ req.cookies.user_name+' - ID '+a.dataid+' to company ID '+a.comp)
+		res.json(a)
+	}
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])
 		ls.setLar(a.userName,a.dataid,'update',new Date().getTime())
@@ -129,9 +134,11 @@ router.post('/',async function(req, res) {
 		res.json(a)
 	}
 	if (a.state === 'add') {
-		await con.q('INSERT INTO user_data (dataid,emid,name,lastName,jobPos,depart,mail,mailGroup,userName,password) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.emid,a.name,a.lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.password])
-		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime,wplace) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,a.name+' '+a.lastName,a.mailGroup,0,0,'08:30:00','17:30:00',0])
-		await ls.setLar(a.name+' '+a.lastName,a.dataid,'insert',new Date().getTime())
+		let name = a.name.replace(/\s/g, '')
+		let lastName = a.lastName.replace(/\s/g, '')
+		await con.q('INSERT INTO user_data (dataid,emid,name,lastName,jobPos,depart,mail,mailGroup,userName,password) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.emid,name,lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.password])
+		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime,wplace) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,name+' '+lastName,a.mailGroup,0,0,'08:30:00','17:30:00',0])
+		await ls.setLar(name+' '+lastName,a.dataid,'insert',new Date().getTime())
 		log.logger('info','ADD ID : '+ req.cookies.user_name+' - '+a.emid)
 		larstock.updateAll()
 		res.json(a)

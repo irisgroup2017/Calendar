@@ -17,6 +17,9 @@ block content
     td(data-type="currency")=t.amount
     td=t.remark
     td=moment(t.updated).format("DD/MM/YYYY, HH:MM")
+    td#topupamount(data-type="currency" contenteditable)=t.top
+     i.fa.fa-floppy-o
+
  .container
   table.responsive-table
    caption="ยอดเงินคงเหลือ Easypass"
@@ -29,11 +32,40 @@ block content
       th(scope="col")="Cash balance"
       th(scope="col")="Remark"
       th(scope="col")="Update ON"
+      th(scopr="col")="Amount to Top-up"
     tbody
      +ecwrite(parms.easypass)
     tfoot
      tr
       td="** อัพเดทเวลาเที่ยงคืนของทุกวัน"
+      td
+      td
+      td
+      td
+      td
+      td
+      td(style="text-align: center")
+       input.btn.btn-success.export-button(type="button" value="Export")
  +scss(["easypass.css"])
-
-
+ script.
+  function currencyFormat(n, fixFloat) {
+    return parseInt(n.replace(",","")).toFixed(fixFloat).replace(/(\d)(?=(\d{3})+\.)/g,res => { return res +","})
+  }
+  $( document ).ready(function() {
+    let convertCurrency = $("table #topupamount")
+    $.each(convertCurrency, (index,value) => {
+      $(value).text(currencyFormat($(value).text(),2))
+    })
+  })
+  $(document).on("keyup","#topupamount",e => {
+    var charCode = e.which ? e.which : e.keyCode
+    if (charCode > 31 != 45 && ((charCode < 48) || charCode > 57)) {
+      $(e.target).text(currencyFormat($(e.target).text(),2))
+      e.preventDefault()
+    } else {
+      e.preventDefault()
+    }
+  })
+  $(document).on("click",".export-button",function(){
+    window.location.href = "/easypass/download"
+  })

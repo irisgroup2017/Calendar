@@ -30,7 +30,7 @@ async function getContent(url) {
   json.push({
    no: parseInt(param[0]),
    id: param[2],
-   smartcard: parseInt(param[3]),
+   smartcard: param[3],
    idcard: param[4],
    amount: param[5],
    lp: param[6],

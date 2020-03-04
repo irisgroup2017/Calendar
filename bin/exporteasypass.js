@@ -53,7 +53,7 @@ async function exportEasypass(res) {
     result.forEach(item => {
         num = (row-9).toString()
         obu = item.id
-        smid = item.unixid.toString()
+        smid = item.unixid
         plate = item.license +" "+ item.province
         balance = parseInt(item.amount.replace(",",""))
         topup = item.top

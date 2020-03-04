@@ -1,5 +1,5 @@
 jQuery(function ($) {
-    $('#wplace').click(function() {
+    $(document).on('click','#wplace',function() {
         $('#wplace').attr('checked',this.checked)
         $.ajax({
             url: '/setting',
@@ -23,7 +23,22 @@ jQuery(function ($) {
             }
         })
     })
-    $('#boss').click(function() {
+    $(document).on('click',"comSelectbox",function() {
+        let comp = $("#cusSelectbox :selected").val()
+        $.ajax({
+            url: '/setting',
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: { 
+                'state': 'comp',
+                'emid': $('#privacyID').text(),
+                'dataid': $('#privacyID').attr('class'),
+                'comp': comp,
+            }
+        })
+    })
+    $(document).on('click','#boss',function() {
         $('#boss').attr('checked',this.checked)
         $.ajax({
             url: '/setting',
@@ -41,6 +56,7 @@ jQuery(function ($) {
             }
         })
     })
+    $('#')
     $('.datepicker').datepicker({
         ignoreReadonly: true,
         format: 'dd MM yyyy',
@@ -194,7 +210,7 @@ $(document).ready(function(){
     })
 
 
-    $('.resetline').click(function(){
+    $(document).on('click','.resetline',function(){
         dataid = $(this).parents('tr').attr('class')
         datausername = $(this).parents('tr').find('td:nth-child(8)').text()
         $.confirm({
@@ -228,7 +244,7 @@ $(document).ready(function(){
         })
     })
 
-    $(".delete").click(function(){
+    $(document).on('click','.delete',function(){
         dataid = $(this).parents('tr').attr('class')
         datausername = $(this).parents('tr').find('td:nth-child(8)').text()
         $.confirm({
@@ -263,7 +279,7 @@ $(document).ready(function(){
         })
     })
 
-    $('.rb-txt').click(function() {
+    $(document).on('click','.rb-txt',function() {
         $(this).addClass('rotate')
         $(this).one("webkitAnimationEnd oanimationend msAnimationEnd animationend",function(event) {
             if (event.target.className=='rb-txt rotate') {
@@ -331,6 +347,7 @@ $(document).ready(function(){
                 $('#timepicker2').val(data.ewtime)
                 $('#privacyID').text(data.emid)
                 $('#privacyID').attr('class',data.dataid)
+                $('#comSelectbox').val(data.comp)
                 $('#privacyName').text(data.userName)
                 $('#privacyMailGroup').text(data.mailGroup)
                 if (data.wplace) { $('#wplace').attr('checked',true) }
