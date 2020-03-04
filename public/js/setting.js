@@ -23,8 +23,8 @@ jQuery(function ($) {
             }
         })
     })
-    $(document).on('click',"comSelectbox",function() {
-        let comp = $("#cusSelectbox :selected").val()
+    $(document).on('click',"#comSelectbox",function() {
+        let comp = $("#comSelectbox :selected").val()
         $.ajax({
             url: '/setting',
             type: "POST",
@@ -56,7 +56,6 @@ jQuery(function ($) {
             }
         })
     })
-    $('#')
     $('.datepicker').datepicker({
         ignoreReadonly: true,
         format: 'dd MM yyyy',
@@ -347,9 +346,11 @@ $(document).ready(function(){
                 $('#timepicker2').val(data.ewtime)
                 $('#privacyID').text(data.emid)
                 $('#privacyID').attr('class',data.dataid)
-                $('#comSelectbox').val(data.comp)
+                $('#comSelectbox').val(data.company_id)
                 $('#privacyName').text(data.userName)
                 $('#privacyMailGroup').text(data.mailGroup)
+                //console.log(data.wplace)
+                //console.log(data.boss)
                 if (data.wplace) { $('#wplace').attr('checked',true) }
                 else { $('#wplace').attr('checked',false) }
                 if (data.boss) { $('#boss').attr('checked',true) }
@@ -388,7 +389,7 @@ $(document).ready(function(){
                     },
                     afterClose: function() {
                         //$(".thumb").hide()
-                        window.location.reload(true)
+                        //window.location.reload(true)
                     }
                 })
             }

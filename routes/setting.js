@@ -86,7 +86,7 @@ router.post('/',async function(req, res) {
 		res.json(a)
 	}
 	if (a.state == "comp") {
-		con.q("UPDATE privacy_data SET company_id = ? WHERE dataid = ?",[parseInt(a.comp),a.dataid])
+		con.q("UPDATE privacy_data SET company_id = ? WHERE dataid = ?",[a.comp,a.dataid])
 		log.logger('info','Change Company : '+ req.cookies.user_name+' - ID '+a.dataid+' to company ID '+a.comp)
 		res.json(a)
 	}
