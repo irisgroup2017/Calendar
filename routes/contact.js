@@ -2,8 +2,6 @@ var express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
 log = require('../bin/logger')
-const ls = require('../bin/larstock')
-
 
 function telFormat(number) {
     if (number) {
@@ -227,20 +225,18 @@ async function reArrangeContact() {
 	},[])
 	let level,line = 0
 	contact.map(item => {
-		if (item.level != 14) {
-			if (level != item.level) { 
-				line = 0
-				level = item.level 
-			}
-			if (namea.indexOf(item.dataid) >= 0) {
-				if (line>0) {
-					con.q("UPDATE contact_data SET line=? WHERE dataid=?",[item.line-line,item.dataid])
-				}
-			} else {
-				con.q("DELETE FROM contact_data WHERE dataid = ?",[item.dataid])
-				line++
-			}
-		}
+        if (level != item.level) { 
+            line = 0
+            level = item.level 
+        }
+        if (namea.indexOf(item.dataid) >= 0) {
+            if (line>0) {
+                con.q("UPDATE contact_data SET line=? WHERE dataid=?",[item.line-line,item.dataid])
+            }
+        } else {
+            con.q("DELETE FROM contact_data WHERE dataid = ?",[item.dataid])
+            line++
+        }
 	})
 }
 
