@@ -178,6 +178,16 @@
   .responsive-table tbody td[data-type=currency] {
     text-align: right;
   }
+  .responsive-table tbody td[data-type=currency] i {
+    cursor: pointer;
+    color: #1d96b2;
+    padding-right: 4px;
+  }
+  .responsive-table tbody td[data-type=currency] span {
+    display: inline-block;
+    min-width: 90px;
+    min-height: 15px;
+  }
   .responsive-table tbody td[data-title]:before {
     content: attr(data-title);
     float: left;

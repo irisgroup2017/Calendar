@@ -11,14 +11,16 @@ block content
   for t in src
    tr
     th(scope="row")=t.id
-    td=t.unixid
-    td=t.license
+    td.scid=t.unixid
+    td.lipl=t.license
     td=t.province
     td(data-type="currency")=t.amount
     td=t.remark
     td=moment(t.updated).format("DD/MM/YYYY, HH:MM")
-    td#topupamount(data-type="currency" contenteditable)=t.top
-     i.fa.fa-floppy-o
+    td.topupamount(data-type="currency")
+     i.fa.fa-floppy-o.cash-save(style="display: none;")
+     span.editable(contenteditable)
+      =t.top
 
  .container
   table.responsive-table
@@ -48,23 +50,59 @@ block content
        input.btn.btn-success.export-button(type="button" value="Export")
  +scss(["easypass.css"])
  script.
-  function currencyFormat(n, fixFloat) {
-    return parseInt(n.replace(",","")).toFixed(fixFloat).replace(/(\d)(?=(\d{3})+\.)/g,res => { return res +","})
+  function currencyFormat(n) {
+    let num = n.replace(",","").replace(/(\d)(?=(\d{3})+(?!\d))/g,res => { return res +","})
+    return (num == NaN ? 0 : num)
   }
+  function currencyRemove(n) {
+    let num = parseInt(n.replace(",",""))
+    return (num == NaN ? 0 : num)
+  }
+
   $( document ).ready(function() {
-    let convertCurrency = $("table #topupamount")
+    let convertCurrency = $("table .topupamount span")
     $.each(convertCurrency, (index,value) => {
-      $(value).text(currencyFormat($(value).text(),2))
+      let cash = currencyFormat($(value).text())
+      $(value).text(cash)
     })
   })
-  $(document).on("keyup","#topupamount",e => {
+  $(document).on("keypress",".editable",function(e) {
+    let target = $(e.target).parents("td").find(".cash-save")
     var charCode = e.which ? e.which : e.keyCode
-    if (charCode > 31 != 45 && ((charCode < 48) || charCode > 57)) {
-      $(e.target).text(currencyFormat($(e.target).text(),2))
-      e.preventDefault()
+    if (charCode > 47 && charCode < 58) {
+      $(target).css("display","inline-block")
     } else {
       e.preventDefault()
     }
+  })
+  $("span.editable").bind("focusin",function(e){
+    let cash = currencyRemove($(this).text())
+    $(this).text(cash)
+  })
+  $(".editable").bind("focusout",function(e){
+    let cash = currencyFormat($(this).text())
+    $(this).text(cash)
+  })
+  $(document).on("click",".cash-save",function() {
+    let target = $(this).parents("td").find(".cash-edit")
+    let scid = $(this).parents("tr").find(".scid").text()
+    let plate = $(this).parents("tr").find(".lipl").text()
+    let cash = currencyFormat($(target).text())
+    /*
+    $.ajax({
+          url: '/easypass',
+          type: "POST",
+          dataType: 'json',
+          async: false,
+          data: { 
+              'state': 'topupc',
+              'scid': scid,
+              'cash': target,
+              'plate': plate
+          }
+      })*/
+    $(target).text(cash)
+    $(this).css("display","none")
   })
   $(document).on("click",".export-button",function(){
     window.location.href = "/easypass/download"

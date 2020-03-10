@@ -31,6 +31,14 @@ router.get('/',async function(req, res) {
 		parms: parms
 	})
 })
+//con.q("UPDATE user_data SET status = ? WHERE dataid = ?",[(a.status == "true" ? 1 : 0),a.dataid])
+router.post('/', async function(req, res) {
+	if (req.body.state == "topupc") {
+		con.q("UPDATE licenseplate_data SET top = ? WHERE unixid = ?",[req.body.cash,req.body.scid])
+		log.logger("info","change topup value of"+req.body.plate+" to "+req.body.cash+" by "+req.cookies.user_name)
+	}
+	res.end()
+})
 
 router.get('/download', async function(req, res) {
 	await report.exp(res)
