@@ -321,6 +321,7 @@ $(document).ready(function(){
         })
     })
     $(document).on("click", ".sort-row", function(){
+        console.log($(this))
         var col = $(this).index()+1
         var table = $(this).parents("table")
         var allrow = $(table).find("tbody tr")
@@ -332,8 +333,10 @@ $(document).ready(function(){
                 let nextrow = $(thisrow).next()
                 let thisdata = $(thisrow).find("td:nth-child("+col+")").data("source")
                 let nextdata = $(nextrow).find("td:nth-child("+col+")").data("source")
-                if (thisdata && nextdata) {
-                    if (thisdata.toLowerCase() > nextdata.toLowerCase()) {
+                if (thisdata && (nextdata || nextdata == "")) {
+                    thisdata = (isNaN(thisdata) ? thisdata.toLowerCase() : parseInt(thisdata))
+                    nextdata = (isNaN(nextdata) ? nextdata.toLowerCase() : parseInt(nextdata))
+                    if (thisdata > nextdata) {
                         $(thisrow).before($(nextrow))
                         switching = true
                         n++
@@ -341,7 +344,6 @@ $(document).ready(function(){
                 } 
             })
         }
-        console.log(n)
     })
     $(document).on("click", ".privacy", function(){
         var dataid = $(this).parents('tr').attr('class')

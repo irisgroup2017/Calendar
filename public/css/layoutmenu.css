@@ -224,9 +224,10 @@
  animation-delay: 0.2s;
 }
 .sub-menu .menu-item:hover {
- overflow: hidden !important;
+ overflow: hidden;
  cursor: pointer;
- background: #9bcaf1;
+ background: #118bf0;
+ width: 100%;
 }
 .sub-menu .menu-item:hover > a {
  text-decoration: none;
@@ -234,10 +235,8 @@
  animation-timing-function: linear;
 }
 @keyframes textslide {
- 0% { margin-left: 0%; }
- 60% { margin-left: -100%; }
- 90% { margin-left: 15%; }
- 100% { margin-left: 0%; }
+ 0% { margin-left: 100%; }
+ 100% { margin-left: -150%; }
 }
 .sub-menu .menu-item a {
  padding: 0 0.75rem;
