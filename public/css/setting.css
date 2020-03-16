@@ -53,3 +53,7 @@ table.table .add.error {
     -khtml-user-select: none; /* webkit (konqueror) browsers */
     -ms-user-select: none;
 }
+
+.close-animatedModal {
+    top: 20px;
+}

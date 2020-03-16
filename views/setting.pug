@@ -23,15 +23,16 @@ mixin tbl(namel)
  -var cal = namel-(i+1)
  while i < namel
   -var dataid = parms.objs[i].dataid
+  -var data = parms.objs[i]
   tr(class=dataid)
-   td=parms.objs[i].emid
-   td=parms.objs[i].name
-   td=parms.objs[i].lastName
-   td=parms.objs[i].jobPos
-   td=parms.objs[i].depart
-   td=parms.objs[i].mail
-   td=parms.objs[i].mailGroup
-   td=parms.objs[i].userName
+   td(data-source=data.emid)=data.emid
+   td(data-source=data.name)=data.name
+   td(data-source=data.lastName)=data.lastName
+   td(data-source=data.jobPos)=data.jobPos
+   td(data-source=data.depart)=data.depart
+   td(data-source=data.mail)=data.mail
+   td(data-source=data.mailGroup)=data.mailGroup
+   td(data-source=data.userName)=data.userName
    td.center
     a.saveline.hvr-icon-bounce(title="Save")
      i.fa.fa-floppy-o.hvr-icon
@@ -55,15 +56,15 @@ block content
  table.table.table-condensed#manage
   thead.thead-info
    tr
-    th.center='Employee ID'
-    th.center='Name'
-    th.center='Lastname'
-    th.center='Job Position'
-    th.center='Depart'
-    th.center='E-mail'
-    th.center='Boss Mail'
-    th.center='User Login'
-    th.center='Action'
+    th.sort-row.center='Employee ID'
+    th.sort-row.center='Name'
+    th.sort-row.center='Lastname'
+    th.sort-row.center='Job Position'
+    th.sort-row.center='Depart'
+    th.sort-row.center='E-mail'
+    th.sort-row.center='Boss Mail'
+    th.sort-row.center='User Login'
+    th.sort-row.center='Action'
   tbody#manage
    +tbl(parms.tbl)
    tr
@@ -91,7 +92,7 @@ block content
 block footer
  #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
   .close-animatedModal
-   i.fa.fa-remove.fa-3x
+   i.fa.fa-cog.fa-3x
   .modal-content
    .container
     .col-12
@@ -160,3 +161,5 @@ block footer
               +srd([['super-happy',''],['happy','User'],['neutral','Boss'],['sad','HR'],['super-sad','Admin']])
              table.h5
               +schk(['Use Reservation','Use Leave Form','Approve Leave','Summary Leave','Leave List','HR manager','Setting'])
+   .close-animatedModal
+    i.fa.fa-remove.fa-3x CLOSE

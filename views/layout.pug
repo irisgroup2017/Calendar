@@ -6,64 +6,58 @@ mixin ssrc(scr)
  for t in scr
   script(src="js/"+t)
 mixin menu(menu)
- -var menul = [[['/contact','ข้อมูลติดต่อ'],['/lar','ระบบลา'],['/leavelist','รายงานการลา'],['/profile','ดูข้อมูล/เปลี่ยนรหัสผ่าน']],[['/contact','ข้อมูลติดต่อ'],['/lar','ระบบลา'],['/leavelist','รายงานการลา'],['/profile','ดูข้อมูล/เปลี่ยนรหัสผ่าน']],[['/contact','ข้อมูลติดต่อ'],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา'],['/profile','ดูข้อมูล/เปลี่ยนรหัสผ่าน']],[['/contact','ข้อมูลติดต่อ'],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา'],['/profile','ดูข้อมูล/เปลี่ยนรหัสผ่าน'],['/hr','HR อนุมัติการลา'],['/delreq','รายการขอยกเลิกการลา'],['/editentitle','แก้ไขสิทธิการลา'],['/vacationa','ตั้งค่าวันหยุดประจำปี'],['/excelexport','นำออกข้อมูล'],['/exportmanager',"นำออกข้อมูลสรุปรายละเอียดการลา"],['/setting','ตั้งค่า']],[['/contact','ข้อมูลติดต่อ'],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา'],['/delreq','รายการขอยกเลิกการลา'],['/vacationa','ตั้งค่าวันหยุดประจำปี'],['/excelexport','นำออกข้อมูล'],['/exportmanager',"นำออกข้อมูลสรุปรายละเอียดการลา"],['/setting','ตั้งค่า'],['/profile','ดูข้อมูล/เปลี่ยนรหัสผ่าน']]]
+ -var menui = [['ข้อมูล'],['ใช้งาน'],['รายงาน'],['การอนุมัติ'],['นำออกข้อมูล'],['ตั้งค่า'],['/contact','ข้อมูลติดต่อ'],['easypass',"รายการยอดคงเหลือบัตรผ่านทางด่วน"],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/hr','HR อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา'],['/profile','ดูข้อมูล/เปลี่ยนรหัสผ่าน'],['/hr','HR อนุมัติการลา'],['/delreq','รายการขอยกเลิกการลา'],['/editentitle','แก้ไขสิทธิการลา'],['/vacationa','ตั้งค่าวันหยุดประจำปี'],['/excelexport','นำออกข้อมูล'],['/exportmanager',"นำออกข้อมูลสรุปรายละเอียดการลา"],['/setting','ตั้งค่า']]
+ -var menul = [[0,[6,7],1,[8],2,[12],5,[13]],[0,[6,7],1,[8],2,[12],5,[13]],[0,[6,7],1,[8],2,[12],3,[9],5,[13]],[0,[6,7],1,[8],2,[12],3,[10,15],4,[18,19],5,[13,16,17,20]],[0,[6,7],1,[8],2,[12],3,[9,10,15],4,[18,19],5,[13,16,17,20]]]
  -var menun = {'0':0,'1':1,'2':2,'3':3,'4':4}
- nav.gn-menu-wrapper
-  .gn-scroller
-   ul.gn-menu
-    for t in menul[menun[menu]]
-     if t[1]==title
-      li.gn-selected
-       a
-        span=t[1]
-         title=title
-     else
-      li
-       a(href=t[0])
-        span=t[1]
-    li.selected
-     a(href='/authorize/signout')
-      span='ออกจากระบบ'
+ -var navmenu = menul[menun[menu]]
+ -var n = 0
+ each t in navmenu
+  if t.length == undefined
+   -var item = menui[t]
+   -n++
+   li.menu-item
+    a(href="#")=item[0]
+    if navmenu[n].length > 0
+     ol.sub-menu
+      each item in navmenu[n]
+       -var subitem = menui[item]
+       li.menu-item
+        a(href=subitem[0])=subitem[1]
+     -n++
 html
-  head
-  meta(charset='utf-8')
-  meta(http-equiv="X-UA-Compatible" , content="IE=edge,chrome=1")
-  meta(name="description" , content="with draggable and editable events")
-  meta(name="viewport" , content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
-  +scss(['bootstrap.min.css','jquery-ui.custom.min.css','fullcalendar.min.css','shine.css','ace-ie.min.css','font-awesome.min.css','layoutmenu.css'])
-  link(rel="stylesheet" href="css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style")
-  //if lte IE 9
-  link(rel="stylesheet" href="css/ace-part2.min.css" class="ace-main-stylesheet")
-  +ssrc(['jquery.min.js','bootstrap.min.js','ace-extra.min.js','classie.js','layoutmenu.js'])
-   
-  block script
-  body(class="no-skin")
-   .main-content
-    ul.gn-menu-main#gn-menu
-     li.gn-trigger
-      a
-       span='เมนู'
+ head
+ meta(charset='utf-8')
+ meta(http-equiv="X-UA-Compatible" , content="IE=edge,chrome=1")
+ meta(name="description" , content="with draggable and editable events")
+ meta(name="viewport" , content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
+ +scss(['bootstrap.min.css','jquery-ui.custom.min.css','fullcalendar.min.css','shine.css','ace-ie.min.css','font-awesome.min.css','layoutmenu.css'])
+ link(rel="stylesheet" href="css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style")
+ link(rel="stylesheet" href="css/ace-part2.min.css" class="ace-main-stylesheet")
+ +ssrc(['jquery.min.js','bootstrap.min.js','ace-extra.min.js','classie.js','layoutmenu.js'])
+  
+ block script
+ body(class="no-skin")
+  .main-content
+   nav.gn-menu-main
+    .menu
+     ol
       if parms.user
+       li.menu-item
+        a(href="/")
+         i.fa.fa-home.fa-2
+         span#username(style="padding-left:2px;")=parms.user
        +menu(parms.operator)
-     li.wink
-      a
-       span=parms.head1
-     if parms.user
-      li
-       a
-        span#username=parms.user
-     else
-      li
-       a(href='/login')
-        span='ลงชื่อเข้าใช้'
-    .page-content(style="padding-bottom: 15px;")
-     block content
-      .footer
-       .footer-inner
-        .footer-content
-    //-a(href="#" , id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse")
-     //-i.ace-icon.fa.fa-angle-double-up.icon-only.bigger-110
-  block footer
-  if parms.user
-   script.
-    new gnMenu( document.getElementById( 'gn-menu' ) )
+       li.menu-item
+        a(href="/authorize/signout") ออกจากระบบ
+      else
+       li.menu-item
+        a(href='/login')
+         span='ลงชื่อเข้าใช้'
+  .page-content(style="padding-bottom: 15px;")
+   block content
+   .footer
+    .footer-inner
+     .footer-content
+   //-a(href="#" , id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse")
+    //-i.ace-icon.fa.fa-angle-double-up.icon-only.bigger-110
+   block footer

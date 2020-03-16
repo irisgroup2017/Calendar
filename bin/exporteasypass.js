@@ -9,7 +9,7 @@ const exportName = "report_easypass.xlsx"
 function calCash (cash,topup) {
     if (topup > cash) {
         num = topup - cash
-        num = Math.round(num/100)*100
+        num = (Math.floor(num/500)+(num%500 > 350 ? 1 : 0))*500
         return num
     }
     return 0

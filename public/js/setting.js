@@ -320,7 +320,29 @@ $(document).ready(function(){
             }
         })
     })
-
+    $(document).on("click", ".sort-row", function(){
+        var col = $(this).index()+1
+        var table = $(this).parents("table")
+        var allrow = $(table).find("tbody tr")
+        var n = 0
+        var switching = true
+        while (switching) {
+            switching = false
+            $.each(allrow, function(index,thisrow) {
+                let nextrow = $(thisrow).next()
+                let thisdata = $(thisrow).find("td:nth-child("+col+")").data("source")
+                let nextdata = $(nextrow).find("td:nth-child("+col+")").data("source")
+                if (thisdata && nextdata) {
+                    if (thisdata.toLowerCase() > nextdata.toLowerCase()) {
+                        $(thisrow).before($(nextrow))
+                        switching = true
+                        n++
+                    }
+                } 
+            })
+        }
+        console.log(n)
+    })
     $(document).on("click", ".privacy", function(){
         var dataid = $(this).parents('tr').attr('class')
         $.ajax({
@@ -349,8 +371,6 @@ $(document).ready(function(){
                 $('#comSelectbox').val(data.company_id)
                 $('#privacyName').text(data.userName)
                 $('#privacyMailGroup').text(data.mailGroup)
-                //console.log(data.wplace)
-                //console.log(data.boss)
                 if (data.wplace) { $('#wplace').attr('checked',true) }
                 else { $('#wplace').attr('checked',false) }
                 if (data.boss) { $('#boss').attr('checked',true) }
