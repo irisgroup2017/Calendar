@@ -17,9 +17,6 @@ $(document).ready(function(){
         $('.datepickerb').datepicker('hide')
     })
 
-    $('.rdo').on("click",function(){
-        $("#checkthis").prop("checked",!$("#checkthis").prop("checked"))
-    })
     $(".tyear").on("click",function(){
         $(".month-list").toggleClass("hide")
     })
@@ -31,10 +28,7 @@ $(document).ready(function(){
     $(".dropdown dd ul li").on('click', function() {
         $(this).find("input").attr("checked",!$(this).find("input").attr("checked"))
     })
-    
     $("#view").on("click",function() {
-        let thisyear = (new Date()).getFullYear()
-        let rdo = $("input[name=option]:checked").val()
         let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
         let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
         let selected = $(".multiselect span")
@@ -43,19 +37,17 @@ $(document).ready(function(){
         })
 
         if (!id.length || rdo !== "choose") { id = "empty" }
-        time = (time == thisyear ? new Date() : new Date(time,11,31))
         $.ajax({
             url: '/exportmanager',
             type: "POST",
             async: false,
             data: {
                 "state": "view",
-                "option": rdo,
                 "id": id,
                 "start": datepicka,
                 "end": datepickb
             },
-            success: function (data) {
+            success: function (data,res,jqXHR) {
                 let status = jqXHR.status
                 if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
                 if (status == 200) {
@@ -65,8 +57,43 @@ $(document).ready(function(){
                         paging: false,
                         searching: true,
                         ordering: true,
+                        orderMulti: true,
                         pageLength: 50,
-                        data = data
+                        data: data,
+                        rowGroup: {
+                            dataSrc: 'name'
+                        },
+                        "search": {
+                            "regex": true,
+                            "smart": true
+                        },
+                          columnDefs:[
+                            {
+                                searchPanes:{
+                                    threshold: 0.99,
+                                },
+                                targets:[0]
+                            }
+                        ],
+                        columns:[
+                            { data: "name"},
+                            { data: "insert"},
+                            { data: "start"},
+                            { data: "startTime"},
+                            { data: "end"},
+                            { data: "endTime"},
+                            { data: "type"},
+                            { data: "title"},
+                            { data: "swap"},
+                            { data: "thisyear"},
+                            { data: "lastyear"},
+                            { data: "totalyear"},
+                            { data: "used"},
+                            { data: "remain"},
+                            { data: "status"},
+                            { data: "approver"},
+                            { data: "approved"}
+                        ]
                     })
                 }
             },
@@ -77,7 +104,6 @@ $(document).ready(function(){
     })
 
     $("#export").click(function() {
-        let thisyear = (new Date()).getFullYear()
         let rdo = $("input[name=option]:checked").val()
         let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
         let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
@@ -87,7 +113,6 @@ $(document).ready(function(){
         })
 
         if (!id.length || rdo !== "choose") { id = "empty"}
-        time = (time == thisyear ? new Date() : new Date(time,11,31))
         $.ajax({
             url: '/exportmanager',
             type: "POST",

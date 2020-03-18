@@ -943,7 +943,7 @@ jQuery(function($) {
                         })
                         if (calEvent.className == 'label-danger') {
                             calEvent.title = $(this).find('#larDetail').val()
-                            if (calEvent.title == "") { console.log(calEvent.title); $(this).find('#larDetail').addClass('blank-error') ; return }
+                            if (calEvent.title == "") { $(this).find('#larDetail').addClass('blank-error') ; return }
                         } else if (calEvent.className == 'label-success') {
                             calEvent.title = $(this).find('#larType').val()
                             if (calEvent.title == "เหตุผลอื่นๆ โปรดระบุ...") { 

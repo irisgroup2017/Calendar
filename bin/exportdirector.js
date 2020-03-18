@@ -26,12 +26,12 @@ async function managerExport(split,id,start,end,res) {
        data.push(check)
    }
   }))
- } else if (split !== "choose") { 
+ } else { 
   data = await listUser(start,end)
  }
  if (data && data.length) {
     let workbook = new xlsx.Workbook()
-    if (["split","choose"].indexOf(split) >= 0) {
+    if (split == "split") {
         let index = workbook.addWorksheet("สารบัญ") 
         let users = []
         let linkname
@@ -128,7 +128,42 @@ async function managerExport(split,id,start,end,res) {
     await workbook.writeP(exportName +'.xlsx')
     res.status(200).send("/exportmanager/download")
    } else { res.status(204).send("empty") }
+}
 
+async function managerView(id,start,end) {
+    var ans = []
+    start = (parseInt(start)+25200)*1000
+    end = (parseInt(end)+25200)*1000
+    if (id != "empty") {
+        var data = []
+        let check
+        await Promise.all(id.map(async (user) => {
+            check = await listLar(user,start,end)
+            if (check.length) {
+                data.push(check)
+            }
+        }))
+    } else { 
+        data = await listUser(start,end)
+    }
+
+    if (data && data.length) {
+        data.forEach(table => {
+            if (table.length) {
+                table.forEach(item => {
+                    //"lastyear","totalyear","used","remain"
+                    this.lastyear = (this.lastyear ? displayDuration(this.lastyear) : 0)
+                    this.totalyear = (this.totalyear ? displayDuration(this.totalyear) : 0)
+                    this.used = (this.used ? displayDuration(this.used) : 0)
+                    this.remain = (this.remain ? displayDuration(this.remain) : 0)
+                    ans.push(item)
+                })
+            }
+        })
+    } else {
+        return null
+    }
+    return ans
 }
 
 function pad2(num) {
@@ -379,7 +414,7 @@ function displayDuration(duration) {
             Ans = Ans + duration[unitBase] + ' ' + option.object[i] + ' '
         }
     }
-    if (Ans == '') { Ans = '' }
+    if (Ans == '') { Ans = 0 }
     return Ans
 }
 
@@ -441,3 +476,4 @@ function sToDhm(s) {
 }
 
 exports.managerExport = managerExport
+exports.managerView = managerView

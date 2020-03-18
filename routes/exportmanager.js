@@ -58,9 +58,13 @@ router.post('/',async function(req,res) {
     rlink = '/exportmanager/export?id='+id+'&option='+param.option+'&start='+param.start+'&end='+param.end
     res.redirect(rlink)
  } else {
-
+    var data = await excel.managerView(id,param.start,param.end)
+    if (data != null) {
+        res.status(200).json(data)
+    } else {
+        res.status(204).end()
+    }
  }
- //res.json(rlink)
  res.end()
 })
 

@@ -12,7 +12,9 @@ block content
    li(class=n.dataid)
     input(type="checkbox" value=`${n.name} ${n.lastName}`)
     span=`${n.name} ${n.lastName}`
-   
+ link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
+ link(rel='stylesheet' , href='css/exportmanager.css')
+ link(rel='stylesheet' , href='css/datatable/datatables.min.css')
  link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
  .row
@@ -29,9 +31,9 @@ block content
     i.ace-icon.fa.fa-table  View
    button.btn.btn-sm.btn-success#export(type="button")
     i.ace-icon.fa.fa-file  Export
-   label(for="rdo1")
-    input(type="checkbox" id="checkthis" name="option" value="choose" checked)
-    span.rdo
+   label(for="checkthis")
+    input(type="checkbox" id="checkthis" value="choose")
+    span.chk
     span
      dl.dropdown
       dt
@@ -42,16 +44,13 @@ block content
        .multi-select
         ul
          +snl(parms.names)
-   //label(for="rdo2")
+   label(for="rdo1")
     input(type="radio" id="rdo2" name="option" value="split")
     span.rdo
     span แยกรายชื่อ
-   //label(for="rdo3")
-    input(type="radio" id="rdo3" name="option" value="merge")
+   label(for="rdo1")
+    input(type="radio" id="rdo2" name="option" value="merge" checked)
     span.rdo
     span รวมหน้าเดียว
- .show-table
+ table.show-table.display.nowrap
  +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','exportmanager.js','datatables.min.js'])
- link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
- link(rel='stylesheet' , href='css/exportmanager.css')
- link(rel='stylesheet' , href='css/datatables.min.css')
