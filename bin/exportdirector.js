@@ -151,11 +151,11 @@ async function managerView(id,start,end) {
         data.forEach(table => {
             if (table.length) {
                 table.forEach(item => {
-                    //"lastyear","totalyear","used","remain"
-                    this.lastyear = (this.lastyear ? displayDuration(this.lastyear) : 0)
-                    this.totalyear = (this.totalyear ? displayDuration(this.totalyear) : 0)
-                    this.used = (this.used ? displayDuration(this.used) : 0)
-                    this.remain = (this.remain ? displayDuration(this.remain) : 0)
+                    item.thisyear = (item.thisyear ? item.thisyear+ " วัน" : "")
+                    item.lastyear = (item.lastyear ? displayDuration(item.lastyear) : "")
+                    item.totalyear = (item.totalyear ? displayDuration(item.totalyear) : "")
+                    item.used = (item.used ? displayDuration(item.used) : "")
+                    item.remain = (item.remain ? displayDuration(item.remain) : "")
                     ans.push(item)
                 })
             }
@@ -193,11 +193,12 @@ async function listLar(dataid,start,end) {
  let LAR = []
  start = start/1000
  end = end/1000
+ let depart = (await con.q('SELECT depart FROM user_data WHERE dataid = ?',[dataid]))[0]
+ let worktime = (await con.q('SELECT swtime,ewtime FROM privacy_data WHERE dataid = ?',[dataid]))[0]
  if (diff >= 0) {
   for (let year=startYear;year<=endYear;year++) {
    let dstart = new Date(year,0,1,7).getTime()/1000
    let dend = new Date(year,11,31,7).getTime()/1000
-   let worktime = (await con.q('SELECT swtime,ewtime FROM privacy_data WHERE dataid = ?',[dataid]))[0]
    let lardata = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND approve > 1 AND start BETWEEN ? AND ?',[dataid,dstart,dend])
    let lartotal = await con.q('SELECT ?? FROM lar_status WHERE dataid = ? AND year = ?',[lcon,dataid,year])
    let dataTime = {}
@@ -214,7 +215,7 @@ async function listLar(dataid,start,end) {
       if (item.approve != 0 && item.approve != 1) {
        calTime = updateTime(item,calTime)
        if (start < item.start && end > item.start ) {
-        LAR.push(pushItem(item,dataTime,calTime,saveTime,vacationtime,worktime))
+        LAR.push(pushItem(item,dataTime,calTime,saveTime,vacationtime,worktime,depart.depart))
        }
       }
      }))
@@ -224,7 +225,7 @@ async function listLar(dataid,start,end) {
  return LAR
 }
 
-function pushItem(item,dataTime,calTime,time,vacationtime,worktime) {
+function pushItem(item,dataTime,calTime,time,vacationtime,worktime,depart) {
     let LAR = {}
     let ctime = item.cTime
     let recday,remday,totalday,thisremain,typeis,remain
@@ -252,6 +253,7 @@ function pushItem(item,dataTime,calTime,time,vacationtime,worktime) {
     }
     LAR = {
         name: item.userName,
+        depart: depart,
         insert: moment((ctime-25200)*1000).add(543,'years').format("DD/MM/YYYY"),
         start: moment((item.start)*1000).add(543,'years').format("DD/MM/YYYY"),
         end: (item.end ? moment((item.end-25300)*1000).add(543,'years').format("DD/MM/YYYY") : ""),
@@ -414,7 +416,7 @@ function displayDuration(duration) {
             Ans = Ans + duration[unitBase] + ' ' + option.object[i] + ' '
         }
     }
-    if (Ans == '') { Ans = 0 }
+    if (Ans == '') { Ans = "" }
     return Ans
 }
 

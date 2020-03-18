@@ -54,45 +54,39 @@ $(document).ready(function(){
                     $(".show-table").DataTable({
                         destroy: true,
                         scrollX: true,
-                        paging: false,
+                        paging: true,
                         searching: true,
                         ordering: true,
                         orderMulti: true,
                         pageLength: 50,
                         data: data,
-                        rowGroup: {
+                        //orderFixed: [0, 'asc'],
+                        /*rowGroup: {
                             dataSrc: 'name'
-                        },
+                        },*/
                         "search": {
                             "regex": true,
                             "smart": true
                         },
-                          columnDefs:[
-                            {
-                                searchPanes:{
-                                    threshold: 0.99,
-                                },
-                                targets:[0]
-                            }
-                        ],
                         columns:[
-                            { data: "name"},
-                            { data: "insert"},
-                            { data: "start"},
-                            { data: "startTime"},
-                            { data: "end"},
-                            { data: "endTime"},
-                            { data: "type"},
-                            { data: "title"},
-                            { data: "swap"},
-                            { data: "thisyear"},
-                            { data: "lastyear"},
-                            { data: "totalyear"},
-                            { data: "used"},
-                            { data: "remain"},
-                            { data: "status"},
-                            { data: "approver"},
-                            { data: "approved"}
+                            { data: "name", title: "ชื่อ - นามสกุล" },
+                            { data: "depart", title: "สังกัดฝ่าย" },
+                            { data: "insert", title: "วันที่ยื่นขอ" },
+                            { data: "start", title: "วันเริ่มต้น" },
+                            { data: "startTime", className: "dt-body-center", title: "เวลาเริ่มต้น" },
+                            { data: "end", title: "วันสิ้นสุด" },
+                            { data: "endTime", className: "dt-body-center", title: "เวลาสิ้นสุด" },
+                            { data: "type", title: "ประเภทการลา" },
+                            { data: "title", title: "เหตุผลการลา" },
+                            { data: "swap", className: "dt-body-center", title: "วันที่สลับวันหยุด" },
+                            { data: "thisyear", className: "dt-body-center", title: "สิทธิได้รับปีนี้" },
+                            { data: "lastyear" , className: "dt-body-center" , title: "สิทธิคงเหลือปีก่อน" },
+                            { data: "totalyear" , className: "dt-body-center" , title: "สิทธิในปีนี้" },
+                            { data: "used" , className: "dt-body-center" , title: "ใช้" },
+                            { data: "remain" , className: "dt-body-center" , title: "คงเหลือ" },
+                            { data: "status", title: "สถานะ" },
+                            { data: "approver", title: "ผู้อนุมัติ" },
+                            { data: "approved", title: "วันที่อนุมัติ" }
                         ]
                     })
                 }
