@@ -44,7 +44,7 @@ async function exportEasypass(res) {
     let col=1
     ws.cell(1,1).string("ข้อมูลผู้ใช้")
     ws.cell(1,2).string("เลขภาษี 0105549022418")
-    ws.cell(1,4,1,5,true).string("เลขภาษี 0105549022418").style({ fill: { type: "pattern", patternType: 'solid', fgColor: "F9F908" } })
+    ws.cell(1,4,1,5,true).string("เลขภาษี "+compid).style({ fill: { type: "pattern", patternType: 'solid', fgColor: "F9F908" } })
     ws.cell(2,1).string("เลขบัตรประชาชน/เลขทะเบียนพาณิชย์")
     ws.cell(2,4).string(compid)
     ws.cell(3,1).string("ชื่อ - นามสกุล")

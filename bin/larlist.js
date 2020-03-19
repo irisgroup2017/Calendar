@@ -141,7 +141,7 @@ async function viewLar(userName,dataid,thisday) {
     return LARS
 }
 
-option = {
+const option = {
     object: ['วัน','ชั่วโมง','นาที'],
     unit: ['d','h','m'],
     units: {
