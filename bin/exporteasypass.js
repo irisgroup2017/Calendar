@@ -15,11 +15,26 @@ function calCash (cash,topup) {
     return 0
 }
 
+option = {
+    margins: {
+        bottom: 0.4,
+        footer: 0.1,
+        header: 0.1,
+        left: 0.4,
+        right: 0.6,
+        top: 0.6
+    },
+    pageSetup: {
+        orientation: 'landscape',
+        scale: 85,
+    }
+}
+
 async function exportEasypass(res) {
     const compid = "0105549022418"
     const result = await con.q("SELECT * FROM licenseplate_data JOIN easypass_data ON licenseplate_data.unixid = easypass_data.unixid")
     const wb = new xlsx.Workbook()
-    const ws = wb.addWorksheet("EasypassList")
+    const ws = wb.addWorksheet("EasypassList",option)
     const priceFormatWithBorderBody = wb.createStyle({ numberFormat: "#,##0.00; (#,##0.00); -", border: { left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "dotted" } } })
     const priceFormatWithBorderFooter = wb.createStyle({ numberFormat: "#,##0.00; (#,##0.00); -", border: { left: { style: "thin" }, right: { style: "thin" }, bottom: { style: "thin" } } })
     const borderHead = wb.createStyle({ border: { left: { style: "thin" }, right: { style: "thin" }, top: { style: "thin" }, bottom: { style: "thin" } } })
@@ -29,7 +44,7 @@ async function exportEasypass(res) {
     let col=1
     ws.cell(1,1).string("ข้อมูลผู้ใช้")
     ws.cell(1,2).string("เลขภาษี 0105549022418")
-    ws.cell(1,4,1,5,true).string("เลขภาษี 0105549022418").style({ fill: { type: "pattern", patternType: 'solid', bgColor: "F9F908" } })
+    ws.cell(1,4,1,5,true).string("เลขภาษี 0105549022418").style({ fill: { type: "pattern", patternType: 'solid', fgColor: "F9F908" } })
     ws.cell(2,1).string("เลขบัตรประชาชน/เลขทะเบียนพาณิชย์")
     ws.cell(2,4).string(compid)
     ws.cell(3,1).string("ชื่อ - นามสกุล")

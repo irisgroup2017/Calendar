@@ -60,6 +60,13 @@ $(document).ready(function(){
                         orderMulti: true,
                         pageLength: 50,
                         data: data,
+                        fixedColumns: {
+                            leftColumns: 2
+                        },
+                        fixedHeader: {
+                            header: true,
+                            footer: false
+                        },
                         //orderFixed: [0, 'asc'],
                         /*rowGroup: {
                             dataSrc: 'name'
