@@ -15,7 +15,7 @@ function calCash (cash,topup) {
     return 0
 }
 
-option = {
+const option = {
     margins: {
         bottom: 0.4,
         footer: 0.1,

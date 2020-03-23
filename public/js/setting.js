@@ -321,22 +321,27 @@ $(document).ready(function(){
         })
     })
     $(document).on("click", ".sort-row", function(){
-        console.log($(this))
         var col = $(this).index()+1
         var table = $(this).parents("table")
-        var allrow = $(table).find("tbody tr")
         var n = 0
         var switching = true
         while (switching) {
+            var allrow = $(table).find("tbody tr")
             switching = false
             $.each(allrow, function(index,thisrow) {
                 let nextrow = $(thisrow).next()
                 let thisdata = $(thisrow).find("td:nth-child("+col+")").data("source")
                 let nextdata = $(nextrow).find("td:nth-child("+col+")").data("source")
-                if (thisdata && (nextdata || nextdata == "")) {
-                    thisdata = (isNaN(thisdata) ? thisdata.toLowerCase() : parseInt(thisdata))
-                    nextdata = (isNaN(nextdata) ? nextdata.toLowerCase() : parseInt(nextdata))
-                    if (thisdata > nextdata) {
+                if (thisdata && (nextdata || nextdata == "") && thisdata != nextdata) {
+                    if (nextdata != "") {
+                        thisdata = (isNaN(thisdata) ? thisdata.toLowerCase() : parseInt(thisdata))
+                        nextdata = (isNaN(nextdata) ? nextdata.toLowerCase() : parseInt(nextdata))
+                        if (thisdata > nextdata) {
+                            $(thisrow).before($(nextrow))
+                            switching = true
+                            n++
+                        }
+                    } else {
                         $(thisrow).before($(nextrow))
                         switching = true
                         n++
