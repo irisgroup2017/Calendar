@@ -185,7 +185,10 @@ $(document).ready(function(){
                     <a class="editline hvr-icon-bounce" title="Edit"><i class="fa fa-pencil-square-o hvr-icon"></i></a>\
                     <a class="privacy hvr-icon-bounce" title="Privacy Setting"><i class="fa fa-address-card-o hvr-icon"></i></a>\
                     <a class="resetline hvr-icon-spin" title="Reset Password"><i class="fa fa-refresh hvr-icon"></i></a>\
-                    <a class="delete hvr-icon-bounce" title="Delete"><i class="fa fa-trash hvr-icon"></i></a></td>'
+                    <a class="delete hvr-icon-bounce" title="Delete"><i class="fa fa-trash hvr-icon"></i></a>\
+                    <a class="active-status hvr-icon-bounce" title="User Status">\
+                        <span class="status active">Active</span></a>\
+                    </td>'
 
                     $('tbody[id=manage]').find('tr:last-child').addClass(data.dataid)
                     $('.'+data.dataid).find('td:last-child').remove()

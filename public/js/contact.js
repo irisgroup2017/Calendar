@@ -90,37 +90,37 @@ $(document).ready(function() {
                         </select>\
                     </div>\
                     <div class="Wrapper">\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text emid" placeholder="รหัสพนักงาน, ต.ย. 0000000" onkeypress="return isNumber(event)" onchange="checkEmp(this.value)">\
-                            <label for="input" class="Input-label">รหัสพนักงาน</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text emid" placeholder="รหัสพนักงาน, ต.ย. 0000000" onkeypress="return isNumber(event)" onchange="checkEmp(this.value)">\
+                            <label for="input" class="input-label">รหัสพนักงาน</label>\
                         </div>\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text name" placeholder="ชื่อ นามสกุล">\
-                            <label for="input" class="Input-label">ชื่อ-นามสกุล</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text name" placeholder="ชื่อ นามสกุล">\
+                            <label for="input" class="input-label">ชื่อ-นามสกุล</label>\
                         </div>\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text job" placeholder="ตำแหน่งงาน">\
-                            <label for="input" class="Input-label">ตำแหน่งงาน</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text job" placeholder="ตำแหน่งงาน">\
+                            <label for="input" class="input-label">ตำแหน่งงาน</label>\
                         </div>\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text nname" placeholder="ชื่อเล่น">\
-                            <label for="input" class="Input-label">ชื่อเล่น</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text nname" placeholder="ชื่อเล่น">\
+                            <label for="input" class="input-label">ชื่อเล่น</label>\
                         </div>\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text ext" placeholder="เบอร์ภายใน" onkeypress="return isPhone(event)">\
-                            <label for="input" class="Input-label">เบอร์ภายใน</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text ext" placeholder="เบอร์ภายใน" onkeypress="return isPhone(event)">\
+                            <label for="input" class="input-label">เบอร์ภายใน</label>\
                         </div>\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text com" placeholder="เบอร์บริษัท" onkeypress="return isPhone(event)">\
-                            <label for="input" class="Input-label">เบอร์บริษัท</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text com" placeholder="เบอร์บริษัท" onkeypress="return isPhone(event)">\
+                            <label for="input" class="input-label">เบอร์บริษัท</label>\
                         </div>\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text pri" placeholder="เบอร์ส่วนตัว" onkeypress="return isPhone(event)">\
-                            <label for="input" class="Input-label">เบอร์ส่วนตัว</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text pri" placeholder="เบอร์ส่วนตัว" onkeypress="return isPhone(event)">\
+                            <label for="input" class="input-label">เบอร์ส่วนตัว</label>\
                         </div>\
-                        <div class="Input">\
-                            <input type="text" id="input" class="Input-text mail" placeholder="อีเมล์" onkeypress="return isMail(event)" pattern=".+@iris.co.th">\
-                            <label for="input" class="Input-label">อีเมล์</label>\
+                        <div class="input">\
+                            <input type="text" id="input" class="input-text mail" placeholder="อีเมล์" onkeypress="return isMail(event)" pattern=".+@iris.co.th">\
+                            <label for="input" class="input-label">อีเมล์</label>\
                         </div>\
                     </div>\
                     </form>\
@@ -146,10 +146,10 @@ $(document).ready(function() {
                     },
                 success: function(data) {
                     let box = $('.box select')
-                    $('.Input .emid').val(data.emid)
-                    $('.Input .name').val(data.name)
-                    $('.Input .job').val(data.job)
-                    $('.Input .mail').val(data.mail)
+                    $('.input .emid').val(data.emid)
+                    $('.input .name').val(data.name)
+                    $('.input .job').val(data.job)
+                    $('.input .mail').val(data.mail)
                     box.append('<optgroup label="เลือกแผนก">')
                     for (let i=0;i < data.depart.length;i++) {
                         box.append('<option value="'+data.depart[i].ID+'">'+data.depart[i].depart+'</option>')
@@ -247,9 +247,9 @@ $(document).ready(function() {
               <div class="modal-body">\
                 <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
                 <form class="no-margin">\
-                <div class="Input">\
-                    <input type="text" id="deadd" class="Input-text" placeholder="ชื่อหน่วยงาน">\
-                    <label for="input" class="Input-label">ชื่อหน่วยงาน</label>\
+                <div class="input">\
+                    <input type="text" id="deadd" class="input-text" placeholder="ชื่อหน่วยงาน">\
+                    <label for="input" class="input-label">ชื่อหน่วยงาน</label>\
                 </div>\
                 </form>\
               </div>\
@@ -262,7 +262,7 @@ $(document).ready(function() {
         </div>'
         var modal = $(modal).appendTo('body')
         modal.find('button[data-action=deadd]').on('click',function() {
-            var depart = $('input[class=Input-text]').val()
+            var depart = $('input[class=input-text]').val()
             $.ajax({
                 url: '/contact',
                 type: "POST",
@@ -299,9 +299,9 @@ $(document).ready(function() {
               <div class="modal-body">\
                 <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
                 <form class="no-margin">\
-                <div class="Input">\
-                    <input type="text" id="'+$(this).parents("tr").attr('id')+'" class="Input-text" placeholder="ชื่อหน่วยงาน" value="'+$(this).parents("tr").find('td:first-child').text()+'">\
-                    <label for="input" class="Input-label">ชื่อหน่วยงาน</label>\
+                <div class="input">\
+                    <input type="text" id="'+$(this).parents("tr").attr('id')+'" class="input-text" placeholder="ชื่อหน่วยงาน" value="'+$(this).parents("tr").find('td:first-child').text()+'">\
+                    <label for="input" class="input-label">ชื่อหน่วยงาน</label>\
                 </div>\
                 </form>\
               </div>\
@@ -314,8 +314,8 @@ $(document).ready(function() {
         </div>'
         var modal = $(modal).appendTo('body')
         modal.find('button[data-action=deedit]').on('click',function() {
-            var depart = $('input[class=Input-text]').val(),
-            ID = $('input[class=Input-text]').attr('id')
+            var depart = $('input[class=input-text]').val(),
+            ID = $('input[class=input-text]').attr('id')
             $.ajax({
                 url: '/contact',
                 type: "POST",
@@ -401,13 +401,13 @@ function checkEmp(emid) {
                 if (data != 'empty') {
                     for (const item of data) {
                         $('.box select').attr('id',item.ID)
-                        $('.Input .name').val(item.name)
-                        $('.Input .job').val(item.job)
-                        $('.Input .nname').val(item.nickname)
-                        $('.Input .ext').val(item.ext)
-                        $('.Input .com').val(item.work)
-                        $('.Input .pri').val(item.private)
-                        $('.Input .mail').val(item.email)
+                        $('.input .name').val(item.name)
+                        $('.input .job').val(item.job)
+                        $('.input .nname').val(item.nickname)
+                        $('.input .ext').val(item.ext)
+                        $('.input .com').val(item.work)
+                        $('.input .pri').val(item.private)
+                        $('.input .mail').val(item.email)
                     }
                 }
             }

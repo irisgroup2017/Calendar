@@ -136,7 +136,7 @@ router.post('/',async function(req, res) {
 	if (a.state === 'add') {
 		let name = a.name.replace(/\s/g, '')
 		let lastName = a.lastName.replace(/\s/g, '')
-		await con.q('INSERT INTO user_data (dataid,emid,name,lastName,jobPos,depart,mail,mailGroup,userName,password) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.emid,name,lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.password])
+		await con.q('INSERT INTO user_data (dataid,emid,name,lastName,jobPos,depart,mail,mailGroup,userName,password,status) VALUES (?,?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.emid,name,lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.password,1])
 		await con.q('INSERT INTO privacy_data (dataid,cdate,emid,userName,mailGroup,boss,operator,swtime,ewtime,wplace) VALUES (?,?,?,?,?,?,?,?,?,?)',[a.dataid,a.cdate,a.emid,name+' '+lastName,a.mailGroup,0,0,'08:30:00','17:30:00',0])
 		await ls.setLar(name+' '+lastName,a.dataid,'insert',new Date().getTime())
 		log.logger('info','ADD ID : '+ req.cookies.user_name+' - '+a.emid)

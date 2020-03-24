@@ -518,7 +518,7 @@ tr:hover {
     content: "\25B6";
 }
 
-/* Input Box */
+/* input Box */
 
 
 :root {
@@ -562,12 +562,12 @@ tr:hover {
     max-width: 80%;
 }
 
-.Input {
+.input {
     margin-top: 20px;
     position: relative;
 }
 
-.Input-text {
+.input-text {
   display: block;
   margin: 0;
   padding: var(--inputPaddingV) var(--inputPaddingH);
@@ -582,28 +582,28 @@ tr:hover {
   transition: box-shadow var(--transitionDuration);
 }
 
-.Input-text::-webkit-input-placeholder {
+.input-text::-webkit-input-placeholder {
   color: #B0BEC5;
 }
 
-.Input-text:-ms-input-placeholder {
+.input-text:-ms-input-placeholder {
   color: #B0BEC5;
 }
 
-.Input-text::-ms-input-placeholder {
+.input-text::-ms-input-placeholder {
   color: #B0BEC5;
 }
 
-.Input-text::placeholder {
+.input-text::placeholder {
   color: #B0BEC5;
 }
 
-.Input-text:focus {
+.input-text:focus {
   outline: none;
   box-shadow: 0.2rem 0.8rem 1.6rem var(--colorPrimary600);
 }
 
-.Input-label {
+.input-label {
   display: block;
   position: absolute;
   bottom: 50%;
@@ -640,13 +640,13 @@ tr:hover {
     -webkit-transform var(--inputTransitionDuration) var(--inputTransitionTF);
 }
 
-.Input-text:placeholder-shown + .Input-label {
+.input-text:placeholder-shown + .input-label {
   visibility: hidden;
   z-index: -1;
 }
 
-.Input-text:not(:placeholder-shown) + .Input-label,
-.Input-text:focus:not(:placeholder-shown) + .Input-label {
+.input-text:not(:placeholder-shown) + .input-label,
+.input-text:focus:not(:placeholder-shown) + .input-label {
   visibility: visible;
   z-index: 1;
   opacity: 1;
@@ -676,7 +676,7 @@ tr:hover {
     width: 100%;
 }
 
-.Input .error {
+.input .error {
     border-color: red !important;
 }
 
