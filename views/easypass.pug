@@ -69,7 +69,8 @@ block content
   $(document).on("keypress",".editable",function(e) {
     let target = $(e.target).parents("td").find(".cash-save")
     var charCode = e.which ? e.which : e.keyCode
-    if (charCode > 47 && charCode < 58) {
+    console.log(e)
+    if ((charCode > 47 && charCode < 58) ) {
       $(target).css("display","inline-block")
     } else {
       e.preventDefault()

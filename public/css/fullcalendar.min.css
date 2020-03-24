@@ -618,7 +618,7 @@ a.fc-more:hover {
 }
 .fc-toolbar .fc-state-active,
 .fc-toolbar .ui-state-active {
-	z-index: 4;
+	z-index: auto;
 }
 .fc-toolbar button:focus {
 	z-index: 5;
