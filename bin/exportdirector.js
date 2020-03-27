@@ -15,8 +15,8 @@ const keys = ["name","insert","start","startTime","end","endTime","type","title"
 const borderStyle = ['none', 'thin', 'medium', 'dashed', 'dotted', 'thick', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
 
 async function managerExport(split,id,start,end,res) {
- start = (parseInt(start)+25200)*1000
- end = (parseInt(end)+25200)*1000
+ start = (parseInt(start))*1000
+ end = (parseInt(end))*1000
  if (id != "empty") {
   var data = []
   let check
@@ -132,8 +132,8 @@ async function managerExport(split,id,start,end,res) {
 
 async function managerView(id,start,end) {
     var ans = []
-    start = (parseInt(start)+25200)*1000
-    end = (parseInt(end)+25200)*1000
+    start = (parseInt(start)-1)*1000
+    end = (parseInt(end)+1)*1000
     if (id != "empty") {
         var data = []
         let check
@@ -261,7 +261,7 @@ function pushItem(item,dataTime,calTime,time,vacationtime,worktime,depart) {
         endTime: ( item.allDay ? worktime.ewtime.substring(0,5) : moment((item.end-25200)*1000).add(543,'years').format("HH:mm") ),
         type: type,
         title: (item.swapDate ? "" : larType(item.className,item.title)[1]),
-        swap: (item.swapDate ? moment((item.swapDate-25200)*1000).add(543,'years').format("DD/MM/YYYY") : ""),
+        swap: (item.swapDate ? moment((item.swapDate)*1000).add(543,'years').format("DD/MM/YYYY") : ""),
         thisyear: (recday ? recday.d.toString() : recday),
         lastyear: remday,
         totalyear: totalday,

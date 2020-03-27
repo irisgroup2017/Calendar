@@ -223,6 +223,14 @@
  animation-duration: 0.4s;
  animation-delay: 0.2s;
 }
+.sub-menu .menu-item:nth-child(4) {
+  animation-duration: 0.5s;
+  animation-delay: 0.3s;
+}
+.sub-menu .menu-item:nth-child(5) {
+animation-duration: 0.6s;
+animation-delay: 0.4s;
+}
 .sub-menu .menu-item:hover {
  overflow: hidden;
  cursor: pointer;
@@ -271,7 +279,7 @@
  .menu > ol > .menu-item {
    flex: 0;
    opacity: 0;
-   animation: enter 0.3s ease-out forwards;
+   animation: enter 2 ease-out forwards;
  }
  .menu > ol > .menu-item:nth-child(1) {
    animation-delay: 0s;
@@ -288,6 +296,9 @@
  .menu > ol > .menu-item:nth-child(5) {
    animation-delay: 0.4s;
  }
+ .menu > ol > .menu-item:nth-child(6) {
+  animation-delay: 0.5s;
+}
  .menu > ol > .menu-item + .menu-item {
    margin-top: 0.75rem;
  }

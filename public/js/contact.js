@@ -3,6 +3,10 @@ $(document).ready(function() {
     if ($('#contact_td > .headt > tr:first > th:last-child').text() == "เครื่องมือ") {
         refreshContact()
         refreshDepart()
+        $('#contact_td tr').addClass('nodrag nodrop')
+        $('#depart_td tr').addClass('nodrag nodrop')
+        $('#contact_td tr').css('cursor','default')
+        $('#depart_td tr').css('cursor','default')
     }
     // jquery
     $('.contact_td').on('click','.li-edit',function() {
@@ -204,7 +208,7 @@ $(document).ready(function() {
                 success: function(data) {
                         let line,info=data.data,
                         code = '\
-                        <tr class="boding" id="body-'+data.ID+'" style="cursor: move;">\
+                        <tr class="boding" id="body-'+data.ID+'">\
                             <td>'+info.emid+'</td>\
                             <td>'+info.name+'</td>\
                             <td>'+info.job+'</td>\
@@ -237,6 +241,22 @@ $(document).ready(function() {
         modal.modal('show').on('hidden.bs.modal', function(){
           modal.remove()
         })
+    })
+
+    $('#contact_td').on('click','#toggleDragAndDrop',function(){
+        if ($('#contact_td').hasClass('nodrag')) {
+            $('#contact_td').removeClass('nodrag nodrop')
+            $('#contact_td tr').addClass('nodrag nodrop')
+            $('#depart_td tr').addClass('nodrag nodrop')
+            $('#contact_td tr').css('cursor','default')
+            $('#depart_td tr').css('cursor','default')
+        } else {
+            $('#contact_td').addClass('nodrag nodrop')
+            $('#contact_td tr').removeClass('nodrag nodrop')
+            $('#depart_td tr').removeClass('nodrag nodrop')
+            $('#contact_td tr').css('cursor','move')
+            $('#depart_td tr').css('cursor','move')
+        }
     })
     
     $('.depart_td').on('click','.de-add',function() {

@@ -84,11 +84,11 @@ block content
     $(this).text(cash)
   })
   $(document).on("click",".cash-save",function() {
-    let target = $(this).parents("td").find(".cash-edit")
+    let target = $(this).parents("td").find(".editable")
     let scid = $(this).parents("tr").find(".scid").text()
     let plate = $(this).parents("tr").find(".lipl").text()
-    let cash = currencyFormat($(target).text())
-    /*
+    let money = $(target).text().replace(",","")
+    $(this).css("display","none")
     $.ajax({
           url: '/easypass',
           type: "POST",
@@ -97,12 +97,11 @@ block content
           data: { 
               'state': 'topupc',
               'scid': scid,
-              'cash': target,
+              'cash': money,
               'plate': plate
           }
-      })*/
+      })
     $(target).text(cash)
-    $(this).css("display","none")
   })
   $(document).on("click",".export-button",function(){
     window.location.href = "/easypass/download"

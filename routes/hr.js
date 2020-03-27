@@ -23,7 +23,7 @@ router.get('/', async function(req, res) {
 		// Redirect to home
 		res.redirect('/')
     }
-    result = await con.q('SELECT * FROM lar_data WHERE approve = ?',3)
+    result = await con.q('SELECT * FROM lar_data WHERE approve = ? ORDER BY start ASC',3)
     parms.objs = []
 	var end = '',
 	allDay = ''

@@ -34,8 +34,11 @@ router.get('/',async function(req, res) {
 //con.q("UPDATE user_data SET status = ? WHERE dataid = ?",[(a.status == "true" ? 1 : 0),a.dataid])
 router.post('/', async function(req, res) {
 	if (req.body.state == "topupc") {
-		con.q("UPDATE licenseplate_data SET top = ? WHERE unixid = ?",[req.body.cash,req.body.scid])
-		log.logger("info","change topup value of"+req.body.plate+" to "+req.body.cash+" by "+req.cookies.user_name)
+		let cash = parseInt(req.body.cash)
+		let scid = req.body.scid
+		let plate = req.body.plate
+		con.q("UPDATE licenseplate_data SET top = ? WHERE unixid = ?",[cash,scid])
+		log.logger("info","change topup value of "+plate+" to "+cash+" by "+req.cookies.user_name)
 	}
 	res.end()
 })

@@ -60,7 +60,7 @@ router.get('/', async function(req, res) {
 			else if (result[i].approve == 4) {
 				t = ll.getDateValue(result[i].hrapprovedate*1000 + (7 * 60 * 60))
                 approvedate = t.da+' '+t.mo+' '+t.y+' ('+t.h+':'+t.mi+')'
-                approver = result[i].hrapprover
+                approver = (result[i].hrapprover === "ธนกร จริยเพียรพันธุ์" ? "Admin" : result[i].hrapprover)
             }
             else if (result[i].approve == 1) {
 				t = ll.getDateValue(result[i].approvedate*1000 + (7 * 60 * 60))
@@ -70,7 +70,7 @@ router.get('/', async function(req, res) {
             else if (result[i].approve == 0) {
 				t = ll.getDateValue(result[i].deldate*1000 + (7 * 60 * 60))
                 approvedate = t.da+' '+t.mo+' '+t.y+' ('+t.h+':'+t.mi+')'
-                approver = result[i].hrapprover
+                approver = (result[i].hrapprover === "ธนกร จริยเพียรพันธุ์" ? "Admin" : result[i].hrapprover)
             }
             if (result[i].delreq == 1) { larstatus = 'แจ้งยกเลิก: ' + approvedate , classn = 'bg-warning' }
 			else if (result[i].approve == 0) { larstatus = 'ยกเลิก: ' + approvedate , classn = 'strikeout' } 

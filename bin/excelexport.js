@@ -17,9 +17,9 @@ String.prototype.allReplace = function(obj) {
 
 async function xlCreate(tstart,tend,res) {
     const workbook = new xlsx.Workbook()
-    tstart = parseInt(tstart)+21600
-    tend = parseInt(tend)+108000
-    let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 0) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
+    tstart = parseInt(tstart)
+    tend = parseInt(tend)+116000
+    let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 1) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
     ws = workbook.addWorksheet('report') , userName , k=1,l=0,
     starttime = moment(tstart*1000).add(543,'years').format("DD/MM/YYYY"),
     endtime = moment((tend-25200)*1000).add(543,'years').format("DD/MM/YYYY")
@@ -47,7 +47,7 @@ async function xlCreate(tstart,tend,res) {
         else if (result[i].className == 'label-success') { larType = 'ลากิจ' }
         else if (result[i].className == 'label-warning') { larType = 'ลาพักร้อน'} 
         else if (result[i].className == 'label-dark') { larType = 'ลากิจไม่รับค่าจ้าง'} 
-        else if (result[i].className == 'label-danger') { larType = 'ลาสลับวันหยุด' , title = "สลับวันหยุดกับวันที่ "+moment(result[i].swapDate*1000-25200000).add(543,'year').format("DD/MM/YYYY") } 
+        else if (result[i].className == 'label-danger') { larType = 'ลาสลับวันหยุด' , title = "สลับวันหยุดกับวันที่ "+moment(result[i].swapDate*1000).add(543,'year').format("DD/MM/YYYY") } 
         else { larType = result[i].title }
 
         id = result[i].id
