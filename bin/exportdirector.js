@@ -269,7 +269,7 @@ function pushItem(item,dataTime,calTime,time,vacationtime,worktime,depart) {
         remain: thisremain,
         status: approve(item),
         approver: item.approver,
-        approved: moment((item.approvedate-25200)*1000).add(543,'years').format("DD/MM/YYYY")
+        approved: (item.approvedate ? moment((item.approvedate-25200)*1000).add(543,'years').format("DD/MM/YYYY") : "")
     }
     return LAR
 }
