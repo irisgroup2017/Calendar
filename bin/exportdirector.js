@@ -22,7 +22,7 @@ async function managerExport(split,id,start,end,res) {
   let check
   await Promise.all(id.map(async (user) => {
    check = await listLar(user,start,end)
-   if (check.length) {
+   if (check.length > 0) {
        data.push(check)
    }
   }))
@@ -137,17 +137,19 @@ async function managerView(id,start,end) {
     if (id != "empty") {
         var data = []
         let check
+        id.map(test => {
+            log.logger("info",test)
+        })
         await Promise.all(id.map(async (user) => {
-            check = await listLar(user,start,end)
-            if (check.length) {
-                data.push(check)
-            }
+         check = await listLar(user,start,end)
+         if (check.length > 0) {
+             data.push(check)
+         }
         }))
     } else { 
         data = await listUser(start,end)
     }
-
-    if (data && data.length) {
+    if (data && (data.length > 0)) {
         data.forEach(table => {
             if (table.length) {
                 table.forEach(item => {

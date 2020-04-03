@@ -36,10 +36,10 @@ async function getContent(url) {
    lp: param[6],
    update: new Date().getTime()
   })
- };
+ }
  saveEasypass(json)
- closeBrowser(browser);
- return "Done";
+ closeBrowser(browser)
+ return "Done"
 }
 
 async function saveEasypass(data) {

@@ -41,7 +41,6 @@ router.get('/', async function(req, res) {
 router.get('/download', async function(req, res) {
  let file = '././report excel.xlsx'
  res.download(file)
-
 })
 
 router.get('/export', async function(req, res) {
@@ -58,11 +57,11 @@ router.post('/',async function(req,res) {
     rlink = '/exportmanager/export?id='+id+'&option='+param.option+'&start='+param.start+'&end='+param.end
     res.redirect(rlink)
  } else {
-    var data = await excel.managerView(id,param.start,param.end)
+    var data = await excel.managerView(JSON.parse(id),param.start,param.end)
     if (data != null) {
         res.status(200).json(data)
     } else {
-        res.status(204).end()
+        res.status(204).end(data)
     }
  }
  res.end()

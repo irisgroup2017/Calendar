@@ -3,6 +3,7 @@ const router = express.Router()
 const con = require("../bin/mysql")
 const log = require("../bin/logger")
 const report = require("../bin/exporteasypass")
+const epass = require("../bin/easypass")
 
 /* GET /calendar. */
 router.get('/',async function(req, res) {
@@ -41,6 +42,12 @@ router.post('/', async function(req, res) {
 		log.logger("info","change topup value of "+plate+" to "+cash+" by "+req.cookies.user_name)
 	}
 	res.end()
+})
+
+router.get('/update', async function(req, res) {
+	await epass.get()
+	log.logger("info","Update Easypass")
+	res.redirect('/easypass')
 })
 
 router.get('/download', async function(req, res) {

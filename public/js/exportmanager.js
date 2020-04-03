@@ -24,10 +24,6 @@ $(document).ready(function(){
     $(".dropdown dt a").on('click', function() {
         $(".dropdown dd ul").slideToggle('fast')
     })
-
-    $(".dropdown dd ul li").on('click', function() {
-        $(this).find("input").attr("checked",!$(this).find("input").attr("checked"))
-    })
     $("#view").on("click",function() {
         let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
         let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
@@ -35,8 +31,9 @@ $(document).ready(function(){
         let id = $.map(selected,function(span,index) {
             return span.className
         })
+        console.log(id)
 
-        if (!id.length || rdo !== "choose") { id = "empty" }
+        if (!id.length) { id = "empty" }
         $.ajax({
             url: '/exportmanager',
             type: "POST",
@@ -113,7 +110,7 @@ $(document).ready(function(){
             return span.className
         })
 
-        if (!id.length || rdo !== "choose") { id = "empty"}
+        if (!id.length) { id = "empty"}
         $.ajax({
             url: '/exportmanager',
             type: "POST",
@@ -138,15 +135,11 @@ $(document).ready(function(){
         })
     })
 })
-
-function getSelectedValue(id) {
-    return $("#" + id).find("dt a span.value").html()
-    }
     
-    $('.multi-select li').on('click', function() {
+$('.multi-select li').on('click', function() {
+    $(this).find("input").attr("checked",!$(this).find("input").attr("checked"))
     let title = $(this).find("input").val() + ","
     let id = $(this).attr("class")
-    
     if ($(this).find("input").is(':checked')) {
         var html = '<span class="'+ id +'" title="' + title + '">' + title + '</span>'
         $('.multiselect').append(html)
