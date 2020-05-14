@@ -12,9 +12,12 @@ const larstock = require("./bin/larstock")
 const epass = require("./bin/easypass")
 const schedule = require('node-schedule')
 const log = require('./bin/logger')
+const favicon = require('serve-favicon')
+
 schedule.scheduleJob("0 0 0 * * *",async () => {
-	larstock.updateAll()
-	await epass.get()
+ larstock.updateAll()
+ fingerscan.fingerToJSON()
+	epass.get()
 	log.logger("info","Auto Update Database")
 })
 require(__basedir+'/app/routers/application.router.js')(app, router, upload)
@@ -31,7 +34,7 @@ function handleDisconnect() {
 	con.connect(function(err) { 
 	  if(err) { 
 		console.log('error when connecting to db:', err)
-		setTimeout(handleDisconnect, 2000)
+		setTimeout(handleDisconnect, 10000)
 	  }                                    
 	});                                
 	con.on('error', function(err) {
@@ -44,14 +47,15 @@ function handleDisconnect() {
 			con.release()                   
 			throw err                 
 	  }
-	});
-  }
+	})
+}
 handleDisconnect()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
+app.use(favicon(path.join(__dirname,"favicon.ico")))
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -83,6 +87,8 @@ const getlar = require('./routes/getlar')
 const contact = require('./routes/contact')
 const exportmanager = require('./routes/exportmanager')
 const easypass = require('./routes/easypass')
+const setting2 = require('./routes/setting2')
+const forms = require('./routes/forms')
 
 app.use('/', index)
 app.use('/authorize', authorize)
@@ -109,6 +115,8 @@ app.use('/refreshdata', refreshdata)
 app.use('/contact', contact)
 app.use('/exportmanager', exportmanager)
 app.use('/easypass', easypass)
+app.use('/setting2', setting2)
+app.use('/forms',forms)
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found')

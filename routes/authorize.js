@@ -20,8 +20,7 @@ router.post('/', async function(req, res) {
 	sql = 'SELECT * FROM user_data WHERE userName = ? && status = 1'
 	if (username && password) {
 		if (req.body.redirect) { var redirect = req.body.redirect }
-		result = await con.q(sql,username)
-		result = result[0]
+		result = (await con.q(sql,username))[0]
 		if (result !== undefined) {
 			operator = await con.q('SELECT operator FROM privacy_data WHERE dataid = ?',result.dataid)
 			if (password == result.password) {

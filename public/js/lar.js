@@ -113,9 +113,9 @@ jQuery(function($) {
     var idGen =new Generator()
 
     var date = new Date(),
-	d = date.getDate(),
+	   d = date.getDate(),
     m = date.getMonth(),
-	y = date.getFullYear(),
+	   y = date.getFullYear(),
 
     events = [],
     mailGroup = "",
@@ -185,8 +185,8 @@ jQuery(function($) {
             //if this month is current month send information last day with current time
             if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
             */
-            var endtime = view.end._i,
-            listday = JSON.parse(sessionStorage.date)
+            var endtime = view.end._i
+            var listday = JSON.parse(sessionStorage.date)
             if (view.type == 'basic') {
                 for (var i=0;i<listday.length;i++) {
                     thisday = new Date(listday[i])
@@ -196,6 +196,30 @@ jQuery(function($) {
                     }
                 }   
             }
+              // Time Scan
+           let dayrender = JSON.parse(sessionStorage.fingerscan)
+           if (view.type = 'month') {
+            $.ajax({
+             url: '/proc/fingerscan',
+             type: "POST",
+             dataType: "json",
+             async: false,
+             data: {
+              user: $('#username').text()
+             },
+             success: function (fs) {
+              for (const item in dayrender) {
+               if (fs[item]) {
+                let scandate = fs[item]
+                let row = dayrender[item].r
+                let col = dayrender[item].c
+                let stime = (scandate.start ? scandate.start : "ไม่มีข้อมูล" )
+                let etime = (scandate.end ? scandate.end : "ไม่มีข้อมูล" )
+                $('.fc-row:nth-child('+row+') .fc-content-skeleton thead td:nth-child('+col+')').append('<br> <div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> '+stime+'</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> '+etime+'</div>')
+               }
+              }
+             }
+            })
             $.ajax({
                 url: '/lar',
                 type: "POST",
@@ -219,7 +243,8 @@ jQuery(function($) {
                             if (listday.indexOf(thisswapdate)) {
                                 datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
                                 dateread = ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
-                                $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate">'+swaptitle+'<br>ใช้สิทธิลาวันที่<br>'+dateread+'</div>')
+                                $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate"></div>')
+                                $('.fc-day-top[data-date="'+datewrite+'"').append('<div class="fc-ltr">'+swaptitle+' ใช้สิทธิลาวันที่ '+dateread)
                             }
                         }
                         if (data.mydata[i]) { 
@@ -228,7 +253,7 @@ jQuery(function($) {
                                 datewrite = new Date(thisvacation).getFullYear()+ '-' +("0"+(new Date(thisvacation).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisvacation).getDate()).slice(-2)
                                 $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="vdate">'+data.mydata[i].dtitle+'</div>')
                             }
-                        } 
+                        }
                         if (data.myattach[i]) {
                             thisattach = data.myattach[i].start*1000
                             if (listday.indexOf(thisattach) && data.myattach[i].fname) {
@@ -240,6 +265,7 @@ jQuery(function($) {
                 }
             })
             sessionStorage.removeItem('date')
+            sessionStorage.removeItem('fingerscan')
             if (sessionStorage.attach) { 
                 $.ajax({
                     url: '/proc',
@@ -303,18 +329,33 @@ jQuery(function($) {
                     }
                 })
             }
+           }
         },
-        dayRender: function(date, cell) {
-            var thisdate = []
-            if (sessionStorage.date) {
-                thisdate = JSON.parse(sessionStorage.date)
-                thisdate.push(date._d.getTime())
-                thisdate = JSON.stringify(thisdate)
-            } else {
-                thisdate.push(date._d.getTime())
-                thisdate = JSON.stringify(thisdate)
-            }
-            sessionStorage.setItem('date',thisdate)
+        dayRender: function(date, el,view) {
+         let row = $(el[0]).parents('.fc-row').index()+1
+         let col = el[0].cellIndex+1
+         let day = el[0].dataset.date
+         let fingerscan = {}
+         if (sessionStorage.fingerscan) {
+          fingerscan = JSON.parse(sessionStorage.fingerscan)
+          fingerscan[day] = { c: col,r:row }
+          fingerscan = JSON.stringify(fingerscan)
+         } else {
+          fingerscan[day] = { c: col,r:row }
+          fingerscan = JSON.stringify(fingerscan)
+         }
+         sessionStorage.setItem('fingerscan',fingerscan)
+
+         var thisdate = []
+         if (sessionStorage.date) {
+             thisdate = JSON.parse(sessionStorage.date)
+             thisdate.push(date._d.getTime())
+             thisdate = JSON.stringify(thisdate)
+         } else {
+             thisdate.push(date._d.getTime())
+             thisdate = JSON.stringify(thisdate)
+         }
+         sessionStorage.setItem('date',thisdate)
         },
         drop: function(date, jsEvent,ui,resourceId) { // this function is called when something is dropped
             if (sessionStorage.attach) { alert("กรุณาทำการลาครั้งละ 1 รายการ"); return }

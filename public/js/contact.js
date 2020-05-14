@@ -51,7 +51,7 @@ $(document).ready(function() {
             $(this).parents('tr').find('.li-save').toggle()
         }
     })
-    
+
     $('.contact_td').on('click','.li-delete',function() {
         let table = $(this).closest('tbody')
         $.ajax({

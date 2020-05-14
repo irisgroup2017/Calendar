@@ -1,0 +1,13 @@
+.container {
+ border: 1px solid #c5d1d0;
+ border-radius: 20px;
+ overflow: hidden;
+ width: 100%;
+ background: linear-gradient(45deg, white, rgb(241, 239, 239));
+ padding: 15px !important;
+}
+
+.profile-edit-btn:hover {
+ color: #589bbc;
+ background-color: aquamarine;
+}

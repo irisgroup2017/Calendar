@@ -1,0 +1,54 @@
+extends layout
+
+block content
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='../css/'+t)
+ mixin ssrc(scr)
+  for t in scr
+   script(src="../js/"+t)
+ .container
+  .row
+   h2.center=parms.formname
+   .form-style-5
+    fieldset
+     legend
+      span.number 1
+      ="ขอมูลการร้องขอ"
+     input#depart(type="text" placeholder="ตำแหน่งงาน")
+     input#volumn(type="number" placeholder="จำนวน (อัตรา)")
+     input#cost(type="number" placeholder="งบประมาณ")
+    fieldset
+     legend
+      span.number 2
+      ="รายละเอียดแผนอัตรากำลังคน"
+    .b-submit-form.center บันทึกฟอร์ม
+block footer
+ +scss(['form.css','datatable/datatables.min.css'])
+ +ssrc(['datatables.min.js'])
+ script.
+  $(document).on('click','.b-add-group',function(){
+   let thisrow = $('.form-style-5 fieldset').length
+   if (thisrow > 20) {
+    alert("สามารถใส่ข้อมูลได้ 20 ตำแหน่ง")
+   } else {
+    let code = '<fieldset><legend><span class="number">'+(thisrow+1)+'</span>รายละเอียดแผนอัตรากำลังคน</legend><input class="req-pos" type="text" placeholder="ตำแหน่ง"><input class="req-bud" type="number" placeholder="งบประมาณ"><input class="req-jan" type="number" placeholder="1. จำนวนตำแหน่ง (เดือนมกราคม)"><input class="req-feb" type="number" placeholder="2. จำนวนตำแหน่ง (เดือนกุมภาพันธ์)"><input class="req-mar" type="number" placeholder="3. จำนวนตำแหน่ง (เดือนมีนาคม)"><input class="req-apr" type="number" placeholder="4. จำนวนตำแหน่ง (เดือนเมษายน)"><input class="req-may" type="number" placeholder="5. จำนวนตำแหน่ง (เดือนพฤษภาคม)"><input class="req-jun" type="number" placeholder="6. จำนวนตำแหน่ง (เดือนมิถุนายน)"><input class="req-jul" type="number" placeholder="7. จำนวนตำแหน่ง (เดือนกรกฎาคม)"><input class="req-aug" type="number" placeholder="8. จำนวนตำแหน่ง (เดือนสิงหาคม)"><input class="req-sep" type="number" placeholder="9. จำนวนตำแหน่ง (เดือนกันยายน)"><input class="req-oct" type="number" placeholder="10. จำนวนตำแหน่ง (เดือนตุลาคม)"><input class="req-nov" type="number" placeholder="11. จำนวนตำแหน่ง (เดือนพฤษศจิกายน)"><input class="req-dec" type="number" placeholder="12. จำนวนตำแหน่ง (เดือนธันวาคม)"><input class="req-cur" type="number" placeholder="จำนวนตำแหน่งปัจจุบัน"><input class="req-rep" type="number" placeholder="จำนวนที่ต้องการทดแทน"><input class="req-inc" type="number" placeholder="จำนวนที่ต้องการเพิ่ม"><input class="req-tot" type="number" placeholder="จำนวนทั้งหมด"><div class="b-add-group center">เพิ่มตำแหน่งอื่น</div></fieldset>'
+    $('.form-style-5 fieldset:last-of-type').after(code)
+    $(this).remove()
+   }
+  })
+  $(document).on('click','.b-submit-form',function(){
+   const depart = ($('#depart').val() ? $('#depart').val() : "")
+   const volumn = ($('#volumn').val() ? $('#volumn').val() : "")
+   const cost = ($('#cost').val() ? $('#cost').val() : "")
+    $.ajax({
+     url: '/forms/fm-hr-01-04',
+     type: "POST",
+     dataType: 'json',
+     data: {
+       depart: depart,
+       volumn: volumn,
+       cost: cost
+      }
+    })
+  })

@@ -17,6 +17,15 @@ function remodule(d) {
 	if (d.length+i == 2) { a= d.substring(0,2-i) + ' นาที' }
 	return a
 }
+
+router.post('/fingerscan',async function(req, res) {
+ if (!req.cookies.user_dataid) { res.redirect('/') }
+ id = req.cookies.user_dataid
+ let path = __basedir+ '/bin/fingerscan/' +id+ '.json'
+ const fingerscan = fs.readFileSync(path)
+ res.send(fingerscan)
+})
+
 router.post('/',async function(req, res) {
 	if (!req.cookies.user_dataid) { res.redirect('/') }
 	if (req.body.state == "delfile") {

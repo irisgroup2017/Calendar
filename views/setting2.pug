@@ -1,0 +1,256 @@
+extends layout
+mixin scss(scss)
+ for t in scss
+  link(rel='stylesheet' , href='css/'+t)
+mixin ssrc(scr)
+ for t in scr
+  script(src="js/"+t)
+mixin ddl(year)
+ for t in year
+  option(value=t selected=(parms.thisyear == t ? true : false))=t
+mixin tbl(namel)
+ for block in namel
+  //-var user-status = (block.status ? "user-enable" : "user-disable")
+  tr(id=block.dataid class=block.status ? "" : "user-disable")
+   td=block.emid
+   td=block.name
+   td=block.lastName
+   td=block.jobPos
+   td=block.depart
+   td=block.mail
+   td=block.mailGroup
+   td Option
+mixin deplist(list)
+ for dep in list
+  option(value=dep.depid)=dep.deptitle
+mixin bosslist(list)
+ for boss in list
+  option(value=boss.bossmail)=boss.bossname
+block script
+ +scss(['setting2.css','bootstrap-datepicker.min.css','datatable/datatables.min.css','datatable/buttons.dataTables.min.css','clockpicker.min.css','jquery-confirm.min.css','animate.min.css'])
+ link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
+ link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
+
+block content
+ table.display.cell-border.nowrap#display-table(style="width:100%")
+  thead
+   tr
+    th รหัสพนักงาน
+    th ชื่อ
+    th นามสกุล
+    th ตำแหน่ง
+    th สังกัดฝ่าย
+    th อีเมลล์
+    th อีเมลล์ผู้บังคับบัญชา
+    th คำสั่ง
+  tbody#manage
+   +tbl(parms.objs)
+
+block footer
+ #adderModal.animated.emp-modal-add(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+  .close-adderModal
+   i.fa.fa-close.fa-3x
+  .modal-content.emp-profile
+   .container(style="width:auto;")
+    .row.profile-inner
+     h4.center เพิ่มข้อมูลพนักงาน
+     fieldset.form-horizontal
+      .col-md-4
+       .form-group
+        lebel.col-md.control-label รหัสพนักงาน
+        .col-md
+         input#add-emid.input-md(placeholder="กรอกรหัสพนักงาน")
+       .form-group
+        lebel.col-md.control-label ชื่อ
+        .col-md
+         input#add-name.input-md(placeholder="กรอกชื่อจริง")
+       .form-group
+        lebel.col-md.control-label นามสกุล
+        .col-md
+         input#add-lastname.input-md(placeholder="กรอกนามสกุล")
+       .form-group
+        lebel.col-md.control-label ตำแหน่ง
+        .col-md
+         input#add-position.input-md(placeholder="กรอกตำแหน่ง")
+       .form-group
+        lebel.col-md.control-label ฝ่าย
+        span
+         a.button.de-add.fa.fa-plus-square  เพิ่มฝ่าย
+        .col-md
+         select#add-depart
+          +deplist(parms.departlist)
+       .form-group
+        lebel.col-md.control-label ผู้บังคับบัญชา
+        .col-md
+         select#add-boss
+          +bosslist(parms.bosslist)
+         
+      .col-md-4
+       .form-group
+        lebel.col-md.control-label ชื่อเล่น
+        .col-md
+         input#add-nickname.input-md(placeholder="กรอกชื่อเล่น")
+       .form-group
+        lebel.col-md.control-label เบอร์ติดต่อภายใน
+        .col-md
+         input#add-teli.input-md(type="number" placeholder="กรอกเบอร์ภายใน")
+       .form-group
+        lebel.col-md.control-label เบอร์โทรส่วนตัว
+        .col-md
+         input#add-tel.input-md(type="number" placeholder="กรอกเบอร์ส่วนตัว")
+       .form-group
+        lebel.col-md.control-label เบอร์โทรบริษัท
+        .col-md
+         input#add-telw.input-md(placeholder="กรอกเบอร์บริษัท")
+       .form-group
+        lebel.col-md.control-label อีเมลล์
+        .col-md
+         input#add-mail.input-md(placeholder="กรอกอีเมลล์")
+       .form-group
+        lebel.col-md.control-label ชื่อบัญชีเข้าใช้งาน
+        .col-md
+         input#add-username.input-md(placeholder="กรอกชื่อบัญชี")
+      .col-md-4
+       .form-group
+         lebel.col-md.control-label สังกัดบริษัท
+         .col-md
+         select#add-company
+          option(value=0)="ไอริส กรุ๊ป"
+          option(value=1)="ไบร์ท พรีแคสเตอร์"
+          option(value=2)="ริคโค เมอร์คาโต"
+       .form-group
+        lebel.col-md.control-label วันเริ่มงาน
+        .col-md
+         .input-md.date
+          input#add-startdate.center.datepicker(type="text" value=parms.cdate)
+       .form-group
+        lebel.col-md.control-label ช่วงเวลาทำงาน
+        .col-md
+         input#add-starttime.col-md-3.center.timepicker1(type="text" value='')
+         i.col-md-1.ace-icon.fa.fa-minus(style="padding: 7px 0px 0px 0px;")
+         input#add-endtime.col-md-3.center.timepicker2(type="text" value='')
+       .form-group
+        label.col-md สถานที่ปฏิบัติงาน
+        .col-md
+         label(for="add-oplace")
+          input.radio-op.add-w#add-oplace(type="radio" name="place" value=0 checked=(parms.wplace != 1 ? true : false))
+          .label-op.add-oplace ออฟฟิสใหญ่
+         label(for="add-splace")
+          input.radio-op.add-w#add-splace(type="radio" name="place" value=1 checked=(parms.wplace == 1 ? true : false))
+          .label-op.add-splace หน้างาน
+       .form-group
+        label.col-md ระดับตำแหน่ง
+        .col-md
+         label(for="add-puser")
+          input.radio-op.add-p#add-puser(type="radio" name="power" value=0 checked=(parms.boss != 1 ? true : false))
+          .label-op.add-puser พนักงาน
+         label(for="add-pboss")
+          input.radio-op.add-p#add-pboss(type="radio" name="power" value=1 checked=(parms.boss == 1 ? true : false))
+          .label-op.add-pboss ผู้บังคับบัญชา
+       .form-group
+        label.col-md ระดับการใช้งาน
+        .col-md
+         label(for="add-ruser")
+          input.radio-op.add-r#add-ruser(type="radio" name="access" value=1 checked=(parms.operator == 1 ? true : false))
+          .label-op.add-ruser ผู้ใช้งาน
+         label(for="add-rboss")
+          input.radio-op.add-r#add-rboss(type="radio" name="access" value=2 checked=(parms.operator == 2 ? true : false))
+          .label-op.add-rboss หัวหน้า
+         label(for="add-rhr")
+          input.radio-op.add-r#add-rhr(type="radio" name="access" value=3 checked=(parms.operator == 3 ? true : false))
+          .label-op.add-rhr ฝ่ายบุคคล
+         label(for="add-radmin")
+          input.radio-op.add-r#add-radmin(type="radio" name="access" value=4 checked=(parms.operator == 4 ? true : false))
+          .label-op.add-radmin ผู้ดูแล
+         
+     .row.profile-footer
+      .col-md-9
+      .col-md-3
+       input#emp-add.btn.btn-success(type="submit" name="addProfile" value="เพิ่มข้อมูล")
+ #editorModal.animated.emp-modal(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+  .close-editorModal
+   i.fa.fa-close.fa-3x
+  .modal-content.emp-profile
+   .container
+    .row
+     .col-md-4
+      .user-status Status
+      //if we have time.may add picture profile
+     .col-md-6
+      .profile-head
+       h5
+        span#edit-name Name
+        span  
+        span#edit-lastname Lastname
+        span  (
+        span#edit-nickname nickname
+        span )
+       h6#edit-job Job Position
+       p.profile-depart#edit-depart Department
+     .col-md-2
+      input.profile-btn.edit-user(name="editProfile" value="Edit Profile")
+      input.profile-btn.del-user(name="deleteProfile" value="Delete Profile")
+    .row
+     .col-md-4
+      .row
+       .col-sm-1
+        i.fa.fa-id-card-o
+       .col-sm-5
+        span#edit-emid Employee ID
+      .row
+       .col-sm-1
+        i.fa.fa-building-o 
+       .col-sm-5
+        span#edit-wplace สถานที่ทำงาน
+      .row
+       .col-sm-1
+        i.fa.fa-briefcase
+       .col-sm-5
+        span#edit-stime 00:00
+        span  - 
+        span#edit-etime 00:00
+      .row
+       .col-sm-1
+        i.fa.fa-phone
+       .col-sm-5
+        span#edit-phone 02-196-1100-1 (ext)
+      .row
+       .col-sm-1
+        i.fa.fa-mobile
+       .col-sm-5 
+        span#edit-mobile Phone number
+      .row
+       .col-sm-1
+        i.fa.fa-envelope-o
+       .col-sm-5
+        span#edit-email Email
+     .col-md-6
+      .row
+       .col-md-3
+        p วันที่เริ่มงาน
+       .col-md-5
+        p#edit-sdate DD/MM/YYYY
+      .row
+       .col-md-3
+        p ผู้บังคับบัญชา
+       .col-md-5
+        p#edit-boss ชื่อ-สกุล (Email)
+      .row
+       .col-md-3
+        p username
+       .col-md-5
+        p#edit-username userName
+      .row
+       .col-md-3
+        p password
+       .col-md-5
+        i#edit-password Reset Password
+      .row
+       .col-md-3
+        p กำหนดวันลาออก (show if value)
+       .col-md-5
+        p.retirement#edit-password DD/MM/YYYY
+     .col-md-2
+    
+
+ +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','clockpicker.min.js','setting2.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])

@@ -6,7 +6,7 @@ const CTA_SELECTOR = '#btnsubmit';
 const con = require('../bin/mysql')
 
 async function startBrowser() {
- const browser = await puppeteer.launch({ headless: true });
+ const browser = await puppeteer.launch({ headless: false });
  const page = await browser.newPage();
  return {browser, page};
 }

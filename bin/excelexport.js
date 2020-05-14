@@ -18,11 +18,11 @@ String.prototype.allReplace = function(obj) {
 async function xlCreate(tstart,tend,res) {
     const workbook = new xlsx.Workbook()
     tstart = parseInt(tstart)
-    tend = parseInt(tend)+116000
+    tend = parseInt(tend)
     let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 1) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
     ws = workbook.addWorksheet('report') , userName , k=1,l=0,
     starttime = moment(tstart*1000).add(543,'years').format("DD/MM/YYYY"),
-    endtime = moment((tend-25200)*1000).add(543,'years').format("DD/MM/YYYY")
+    endtime = moment(tend*1000).add(543,'years').format("DD/MM/YYYY")
     ws.cell(k,1,k,5,true).string('สรุปข้อมูลการลาระหว่างวันที่ '+starttime+' ถึง '+endtime+' ').style({ alignment:{horizontal:'center'} , font: {underline: true} })
     k=k+2
     ws.cell(k,1).string('ชื่อ').style({alignment:{horizontal:'center'}})
