@@ -9,38 +9,83 @@ block content
    script(src="js/"+t)
  .container
   .row
-   .col
-    .panel.panel-info
-     .panel-heading
-      h3.panel-title=parms.user
-     .panel-body
-      .row
-       .col-md-12
-        table.table.table-user-information
-         tbody
-          tr
-           td="รหัสพนักงาน"
-           td=parms.objs[0].emid
-          tr
-           td="แผนก"
-           td=parms.objs[0].depart
-          tr
-           td="ตำแหน่ง"
-           td=parms.objs[0].jobPos
-          tr
-           td="อีเมลล์"
-           td=parms.objs[0].mail
-          tr
-           td="เปลี่ยนรหัสผ่าน"
-           td=parms.objs[0].userName
-            a.cpass.hvr-icon-spin(title="Change password")
-             i.fa.fa-refresh.hvr-icon
-   .col
+   .col-md-4
+    //button.profile-edit-btn Status
+    //if we have time.may add picture profile
+   .col-md-6
+    .profile-head
+     h5
+      span#edit-name=parms.objs[0].name
+      span  
+      span#edit-lastname=parms.objs[0].lastname
+      span  (
+      span#edit-nickname=parms.objs[0].nickname
+      span )
+     h6#edit-job=parms.objs[0].jobPos
+     p.profile-depart#edit-depart=parms.objs[0].depart
+   .col-md-2
+    .row
+     input.profile-edit-btn.cpass(type="submit" name="editProfile" value="เปลี่ยนรหัสผ่าน")
+  .row
+   .col-md-4
+    .row
+     .col-sm-1
+      i.fa.fa-id-card-o
+     .col-sm-5
+      span#edit-emid=parms.objs[0].emid
+    .row
+     .col-sm-1
+      i.fa.fa-building-o 
+     .col-sm-5
+      span#edit-wplace=parms.objs[0].workplace
+    .row
+     .col-sm-1
+      i.fa.fa-briefcase
+     .col-sm-5
+      span#edit-stime=parms.objs[0].swtime
+      span  - 
+      span#edit-etime=parms.objs[0].ewtime
+    .row
+     .col-sm-1
+      i.fa.fa-phone
+     .col-sm-5
+      span#edit-phone=parms.objs[0].workphone
+    .row
+     .col-sm-1
+      i.fa.fa-mobile
+     .col-sm-5 
+      span#edit-mobile=parms.objs[0].privatephone
+    .row
+     .col-sm-1
+      i.fa.fa-envelope-o
+     .col-sm-5
+      span#edit-email=parms.objs[0].mail
+   .col-md-6
+    .row
+     .col-md-3
+      p วันที่เริ่มงาน
+     .col-md-5
+      p#edit-sdate=parms.objs[0].cdate
+    .row
+     .col-md-3
+      p ผู้บังคับบัญชา
+     .col-md-5
+      p#edit-boss=parms.objs[0].bossname
+    .row
+     .col-md-3
+      p username
+     .col-md-5
+      p#edit-username=parms.objs[0].username
+    .row
+     .col-md-3
+      p password
+     .col-md-5
+      i#edit-password=parms.objs[0].password
  style.
   .cpass {
       padding-left: 8px;
   }
- +scss(['hover.css','bootstrap-grid.min.css'])
+ +scss(['hover.css','bootstrap-grid.min.css','setting2.css','profile.css'])
  script.
   jQuery(function($) {
    $(document).on("click", ".cpass", function(){
@@ -103,7 +148,7 @@ block content
         modal.find(".error").first().focus()
         if(!empty){
             var oldpass,newpass1,newpass2
-            input.each(function(){
+            input.each(function() {
                 if ($(this).attr('id') == "oldpass") { oldpass = $(this).val() }
                 if ($(this).attr('id') == "newpass1") { newpass1 = $(this).val() }
                 if ($(this).attr('id') == "newpass2") { newpass2 = $(this).val() }
@@ -113,7 +158,7 @@ block content
                     url: '/profile',
                     type: "POST",
                     dataType: 'text',
-                    data: { 
+                    data: {
                         'oldpass': oldpass,
                         'newpass1': newpass1,
                         'newpass2': newpass2

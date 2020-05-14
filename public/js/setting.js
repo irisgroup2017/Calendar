@@ -482,6 +482,6 @@ $(document).ready(function(){
                     'userName': userName
                 }
             })
-		}
+	    	}
     })
 })

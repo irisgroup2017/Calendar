@@ -1,10 +1,10 @@
 doctype html
 mixin scss(scss)
  for t in scss
-  link(rel='stylesheet' , href='css/'+t)
+  link(rel='stylesheet' , href='../css/'+t)
 mixin ssrc(scr)
  for t in scr
-  script(src="js/"+t)
+  script(src="../js/"+t)
 mixin menu(menu)
  -var menui = [['ข้อมูล'],['ใช้งาน'],['รายงาน'],['การอนุมัติ'],['นำออกข้อมูล'],['ตั้งค่า'],['/contact','ข้อมูลติดต่อ'],['easypass',"รายการยอดคงเหลือบัตรผ่านทางด่วน"],['/lar','ระบบลา'],['/approve','อนุมัติการลา'],['/hr','HR อนุมัติการลา'],['/sumlar','ดูข้อมูลการลา (รายบุคคล)'],['/leavelist','รายงานการลา'],['/profile','ดูข้อมูล/เปลี่ยนรหัสผ่าน'],['/hr','HR อนุมัติการลา'],['/delreq','รายการขอยกเลิกการลา'],['/editentitle','แก้ไขสิทธิการลา'],['/vacationa','ตั้งค่าวันหยุดประจำปี'],['/excelexport','นำออกข้อมูล'],['/exportmanager',"นำออกข้อมูลสรุปรายละเอียดการลา"],['/setting','ตั้งค่า']]
  -var menul = [[0,[6,7],1,[8],2,[12],5,[13]],[0,[6,7],1,[8],2,[12],5,[13]],[0,[6,7],1,[8],2,[12],3,[9],5,[13]],[0,[6,7],1,[8],2,[12],3,[10,15],4,[18,19],5,[13,16,17,20]],[0,[6,7],1,[8],2,[12],3,[9,10,15],4,[18,19],5,[13,16,17,20]]]
@@ -26,13 +26,12 @@ mixin menu(menu)
      -n++
 html
  head
+ title=parms.title
  meta(charset='utf-8')
  meta(http-equiv="X-UA-Compatible" , content="IE=edge,chrome=1")
  meta(name="description" , content="with draggable and editable events")
  meta(name="viewport" , content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
- +scss(['bootstrap.min.css','jquery-ui.custom.min.css','fullcalendar.min.css','shine.css','ace-ie.min.css','font-awesome.min.css','layoutmenu.css'])
- link(rel="stylesheet" href="css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style")
- link(rel="stylesheet" href="css/ace-part2.min.css" class="ace-main-stylesheet")
+ +scss(['bootstrap.min.css','jquery-ui.custom.min.css','fullcalendar.min.css','shine.css','ace-ie.min.css','font-awesome.min.css','layoutmenu.css','ace.min.css','ace-part2.min.css'])
  +ssrc(['jquery.min.js','bootstrap.min.js','ace-extra.min.js','classie.js','layoutmenu.js'])
   
  block script

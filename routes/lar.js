@@ -4,8 +4,13 @@ ll = require('../bin/larlist'),
 con = require('../bin/mysql'),
 larstock = require('../bin/larstock'),
 log = require('../bin/logger')
+let fingerscan = require('../bin/fingerscan')
 
 /* GET /lar. */
+router.get('/loaddata', async function(req, res) {
+ fingerscan.fingerToJSON()
+ res.redirect('/lar')
+})
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
 	if (userName) {
@@ -19,7 +24,7 @@ router.get('/', async function(req, res) {
 		parms.lars = await ll.viewLar(userName,dataid,new Date().getTime())
 		parms.larl = parms.lars.length
 		parms.user = userName
-		parms.operator = dataop
+  parms.operator = dataop
 	} else {
 		res.redirect('/login')
 	}
