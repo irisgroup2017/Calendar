@@ -20,7 +20,10 @@ async function getContent(url) {
  await page.goto(url,{ waitUntil: 'networkidle0' });
  await page.type(USERNAME_SELECTOR,file.username);
  await page.type(PASSWORD_SELECTOR,file.password);
- await page.click(CTA_SELECTOR);
+ await Promise.all([
+  page.waitForNavigation(),
+  await page.$eval(CTA_SELECTOR, elem => elem.click())
+]);
  await page.goto('https://www.thaieasypass.com/en/easypass/smartcard', {waitUntil: 'networkidle0'})
  const trs = await page.$$('tbody tr')
  var json = []
@@ -77,7 +80,7 @@ async function getLicensePlate(id) {
 }
 
 async function getEasypass() {
- await getContent("https://www.thaieasypass.com/en/member/login");
+ await getContent("https://www.thaieasypass.com/th/member/login");
 }
 
 module.exports.get = getEasypass
