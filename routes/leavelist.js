@@ -83,7 +83,7 @@ router.get('/', async function(req, res) {
 			else if (result[i].className == 'label-success') { larType = 'ลากิจ' }
 			else if (result[i].className == 'label-warning') { larType = 'ลาพักร้อน' } 
 			else { larType = result[i].title }
-			timeKeep = ll.getDayTime(result[i].start,end,allDay,result2[0].swtime.substring(0,5),result2[0].ewtime.substring(0,5))
+			timeKeep = ll.getDayTime(result[i].start*1000 + (7 * 60 * 60),end,allDay,result2[0].swtime.substring(0,5),result2[0].ewtime.substring(0,5))
 			t = ll.getDateValue(result[i].cTime)
 			cTime = t.dy+', '+t.da+' '+t.mo+' '+t.y+' ('+t.h+':'+t.mi+')'
 			parms.objs.push({
