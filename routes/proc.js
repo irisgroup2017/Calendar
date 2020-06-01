@@ -6,6 +6,13 @@ nodemailer = require('nodemailer'),
 ll = require('../bin/larlist'),
 log = require('../bin/logger'),
 fs = require('fs')
+const transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {
+		user: process.env.USERMAIL,
+		pass: process.env.USERPASS
+	}
+  })
 
 function remodule(d) {
 	var i,a,d=d.toString()
@@ -286,17 +293,9 @@ router.post('/',async function(req, res) {
 			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,attach]
 		}
 		var sql = await 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
-		con.q(sql,c)
 		var userdat = await con.q('SELECT userName,password FROM user_data WHERE mail = ?',mailGroup),
 		qlink = 'http://webapp.iris.co.th:3000/authorize?username='+userdat[0].userName+'&password='+userdat[0].password+'&redirect=approve',
 		timec = ll.getDayTime(start,end,allDay)
-		const transporter = nodemailer.createTransport({
-			service: 'gmail',
-			auth: {
-				user: process.env.USERMAIL,
-				pass: process.env.USERPASS
-			}
-		  })
 		if (path) {
 			let mailOptions = {
 				from: 'iris4notice@gmail.com',                // sender

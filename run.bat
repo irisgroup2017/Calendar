@@ -1,3 +1,2 @@
-supervisor -w %cd% node %cd%"\bin\www"
-//supervisor -w . node .\bin\www
+supervisor -w %cd% TZ=utc+7 node %cd%"\bin\www"
 //npm install -g supervisor
