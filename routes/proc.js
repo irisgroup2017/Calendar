@@ -293,6 +293,7 @@ router.post('/',async function(req, res) {
 			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,attach]
 		}
 		var sql = await 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
+		con.q(sql,c)
 		var userdat = await con.q('SELECT userName,password FROM user_data WHERE mail = ?',mailGroup),
 		qlink = 'http://webapp.iris.co.th:3000/authorize?username='+userdat[0].userName+'&password='+userdat[0].password+'&redirect=approve',
 		timec = ll.getDayTime(start,end,allDay)
