@@ -17,7 +17,7 @@ const favicon = require('serve-favicon')
 schedule.scheduleJob("0 0 0 * * *",async () => {
  larstock.updateAll()
  fingerscan.fingerToJSON()
-	epass.get()
+	await epass.get()
 	log.logger("info","Auto Update Database")
 })
 require(__basedir+'/app/routers/application.router.js')(app, router, upload)

@@ -2,6 +2,7 @@ const xlsx = require('excel4node')
 const log = require('../logger')
 const con = require('../mysql')
 const Excel = require('exceljs')
+const prepare = require('./preparedata/prepareexcel')
 
 async function gen(id,data,res) {
  let [filename,sheetname] = getName(id)
@@ -33,14 +34,8 @@ async function gen(id,data,res) {
     }
   }
  }
- workbook.xlsx.writeFile("test1.xlsx")
-}
-
-function getName(id) {
- switch (id) {
-  case "FM-HR-01-02":
-   return ["FM-HR-01-02 แผนอัตรากำลังคน ประจำปี.xlsx","แผนอัตรากำลังคน"]
- }
+ await workbook.xlsx.writeFile("test1.xlsx")
+ res.download("/","test1.xlsx")
 }
 
 async function dataProcess(id,data) {
@@ -56,31 +51,16 @@ async function dataProcess(id,data) {
      7: [2,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
     }
    }
-   info = await fmhr0102(data)
+   info = await prepare.fmhr0102(data)
    return {cell,info}
  }
 }
 
-function fmhr0102(data) {
- let info = {}
- let dat = data.data
- let ex = {}
- let item = ["reg-pos","reg-bud","reg-jan","reg-feb","reg-mar","reg-apr","reg-may","reg-jun","reg-jul","reg-aug","reg-sep","reg-oct","reg-nov","reg-dec","reg-cur","reg-rep","reg-inc","reg-tot"]
- dat.forEach(e => {
-   let i=0
-   ex[i] = []
-   for (var k in e) {
-    ex[i].push((i==1 ? finform(e[k]) : e[k]))
-   }
-   i++
- })
- info.data = ["formid",data.depart,data.bdyear]
- info.loop = ex
- return info
+function getName(id) {
+ switch (id) {
+  case "FM-HR-01-02":
+   return ["FM-HR-01-02 แผนอัตรากำลังคน ประจำปี.xlsx","แผนอัตรากำลังคน"]
+ }
 }
 
-function finform(n) {
- n=n.replace(/[,|e]/g,"")
- return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-}
 exports.gen = gen

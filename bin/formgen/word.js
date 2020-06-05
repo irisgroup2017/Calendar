@@ -3,6 +3,7 @@ var Docxtemplater = require('docxtemplater');
 
 var fs = require('fs');
 var path = require('path');
+const prepare = require('./preparedata/prepareword')
 
 function replaceErrors(key, value) {
  if (value instanceof Error) {
@@ -26,6 +27,14 @@ function errorHandler(error) {
  throw error;
 }
 
+async function dataProcess(id,data) {
+ //let data
+ switch (id) {
+  case "FM-HR-01-04":
+   return prepare.fmhr0104(data)
+ }                    
+}
+
 function getName(id) {
  switch (id) {
   case "FM-HR-01-04":
@@ -36,7 +45,7 @@ function getName(id) {
 async function gen(id,data,res) {
  var filename = getName(id)
  var content = fs.readFileSync(__dirname+ '/form/' +filename, 'binary');
-
+ var data = dataProcess(id,data)
  var zip = new PizZip(content);
  var doc;
  try {
@@ -47,14 +56,7 @@ async function gen(id,data,res) {
  }
 
  //set the templateVariables
- doc.setData({
-  date: '30 เมษายน 2563',
-  job: 'เจ้าหน้าที่ฝ่ายการตลาด',
-  volumn: '27',
-  cost: '30,000',
-  chk_cost: 'บาท/เดือน',
-  workplace: 'สำนักงานใหญ่'
- });
+ doc.setData(data);
 
  try {
   // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
@@ -65,8 +67,7 @@ async function gen(id,data,res) {
   errorHandler(error);
  }
 
- var buf = doc.getZip()
-           .generate({type: 'nodebuffer'});
+ var buf = doc.getZip().generate({type: 'nodebuffer'});
 
  // buf is a nodejs buffer, you can either write it to a file or do anything else with it.
  fs.writeFileSync("test1.docx", buf);

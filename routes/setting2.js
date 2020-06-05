@@ -143,7 +143,7 @@ router.post('/get/:id',async function(req,res) {
   }
   res.json(parms)
  }
- res.send(500,"N/A")
+ res.end("N/A")
 })
 
 function dateThai(date) {

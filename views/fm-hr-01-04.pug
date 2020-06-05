@@ -15,32 +15,180 @@ block content
      legend
       span.number 1
       ="ขอมูลการร้องขอ"
-     input#depart(type="text" placeholder="ตำแหน่งงาน")
-     input#volumn(type="number" placeholder="จำนวน (อัตรา)")
-     input#cost(type="number" placeholder="งบประมาณ")
+     input#inp-depart(type="text" placeholder="ตำแหน่งงาน")
+     input#inp-volumn(type="number" placeholder="จำนวน (อัตรา)")
     fieldset
      legend
       span.number 2
-      ="รายละเอียดแผนอัตรากำลังคน"
+      ="งบประมาณที่ตั้ง"
+     input#inp-cost(type="number" placeholder="งบประมาณ")
+     input#rdo-perm(type="radio" name="costper")
+     label(for="rdo-perm")
+      .tick_mark
+     span บาทต่อเดือน
+     br
+     input#rdo-perd(type="radio" name="costper")
+     label(for="rdo-perd")
+      .tick_mark
+     span บาทต่อวัน
+    fieldset
+     legend
+      span.number 3
+      ="สถานที่ปฏิบัติงาน"
+     input#rdo-office(type="radio" name="workplace")
+     label(for="rdo-office")
+      .tick_mark
+     span สำนักงานใหญ่
+     br
+     input#rdo-site(type="radio" name="workplace")
+     label(for="rdo-site")
+      .tick_mark
+     span หน่วยงาน
+     input#cmt-site.rdo-comment
+    fieldset
+     legend
+      span.number 4
+      ="ประเภทการจ้าง"
+     input#rdo-emp-per(type="radio" name="empdur")
+     label(for="rdo-emp-per")
+      .tick_mark
+     span ประจำ
+     br
+     input#rdo-emp-mon(type="radio" name="empdur")
+     label(for="rdo-emp-mon")
+      .tick_mark
+     span รายเดือน
+     br
+     input#rdo-emp-day(type="radio" name="empdur")
+     label(for="rdo-emp-day")
+      .tick_mark
+     span รายวัน
+     br
+     input#rdo-emp-tem(type="radio" name="empdur")
+     label(for="rdo-emp-tem")
+      .tick_mark
+     span ชั่วคราว
+     .input-group.rdo-comment.input-daterange(data-provide="datepicker")
+      input.datepickerstart(type="text")
+      .input-group-addon to
+      input.datepickerend(type="text")
+    fieldset
+     legend
+      span.number 5
+      ="เหตุผลในการขอ"
+     input#rdo-posinc(type="radio" name="reqreason")
+     label(for="rdo-posinc")
+      .tick_mark
+     span อัตราเพิ่ม
+     br
+     input#rdo-posrep(type="radio" name="reqreason")
+     label(for="rdo-posrep")
+      .tick_mark
+     span อัตราทดแทน
+     br
+     input#rdo-posoth(type="radio" name="reqreason")
+     label(for="rdo-posoth")
+      .tick_mark
+     span อื่นๆ
+     input#cmt-pos.rdo-comment
+    fieldset
+     legend
+      span.number 6
+      ="คุณสมบัติเฉพาะตำแหน่ง"
+     input#rdo-genm(type="radio" name="gender")
+     label(for="rdo-genm")
+      .tick_mark
+     span เพศชาย
+     br
+     input#rdo-genf(type="radio" name="gender")
+     label(for="rdo-genf")
+      .tick_mark
+     span เพศหญิง
+     input#inp-regage(type="number" placeholder="อายุ")
+     input#inp-regedu(type="text" placeholder="วุฒิการศึกษา")
+     input#inp-regexp(type="text" placeholder="ประสบการณ์")
+     input#inp-regoth(type="text" placeholder="คุณสมบัติอื่นๆ")
+     input#inp-regdet(type="text" placeholder="ลักษณะงานและหน้าที่ความรับผิดชอบหลักโดยสังเขป")
+    fieldset
+     legend
+      span.number 7
+      ="ลงชื่อผู้ขอ"
+     input#inp-regsign(type="text" placeholder="ชื่อ-นามสกุลผู้ขอ")
+     input#inp-regdept(type="text" placeholder="ตำแหน่งงาน")
     .b-submit-form.center บันทึกฟอร์ม
 block footer
- +scss(['form.css','datatable/datatables.min.css'])
- +ssrc(['datatables.min.js'])
+ +scss(['form.css','datatable/datatables.min.css','bootstrap-datepicker.min.css'])
+ +ssrc(['moment.min.js','transition.js','collapse.js','datatables.min.js','bootstrap-datepicker.min.js'])
  script.
-  $(document).on('click','.b-add-group',function(){
-   let thisrow = $('.form-style-5 fieldset').length
-   if (thisrow > 20) {
-    alert("สามารถใส่ข้อมูลได้ 20 ตำแหน่ง")
-   } else {
-    let code = '<fieldset><legend><span class="number">'+(thisrow+1)+'</span>รายละเอียดแผนอัตรากำลังคน</legend><input class="req-pos" type="text" placeholder="ตำแหน่ง"><input class="req-bud" type="number" placeholder="งบประมาณ"><input class="req-jan" type="number" placeholder="1. จำนวนตำแหน่ง (เดือนมกราคม)"><input class="req-feb" type="number" placeholder="2. จำนวนตำแหน่ง (เดือนกุมภาพันธ์)"><input class="req-mar" type="number" placeholder="3. จำนวนตำแหน่ง (เดือนมีนาคม)"><input class="req-apr" type="number" placeholder="4. จำนวนตำแหน่ง (เดือนเมษายน)"><input class="req-may" type="number" placeholder="5. จำนวนตำแหน่ง (เดือนพฤษภาคม)"><input class="req-jun" type="number" placeholder="6. จำนวนตำแหน่ง (เดือนมิถุนายน)"><input class="req-jul" type="number" placeholder="7. จำนวนตำแหน่ง (เดือนกรกฎาคม)"><input class="req-aug" type="number" placeholder="8. จำนวนตำแหน่ง (เดือนสิงหาคม)"><input class="req-sep" type="number" placeholder="9. จำนวนตำแหน่ง (เดือนกันยายน)"><input class="req-oct" type="number" placeholder="10. จำนวนตำแหน่ง (เดือนตุลาคม)"><input class="req-nov" type="number" placeholder="11. จำนวนตำแหน่ง (เดือนพฤษศจิกายน)"><input class="req-dec" type="number" placeholder="12. จำนวนตำแหน่ง (เดือนธันวาคม)"><input class="req-cur" type="number" placeholder="จำนวนตำแหน่งปัจจุบัน"><input class="req-rep" type="number" placeholder="จำนวนที่ต้องการทดแทน"><input class="req-inc" type="number" placeholder="จำนวนที่ต้องการเพิ่ม"><input class="req-tot" type="number" placeholder="จำนวนทั้งหมด"><div class="b-add-group center">เพิ่มตำแหน่งอื่น</div></fieldset>'
-    $('.form-style-5 fieldset:last-of-type').after(code)
-    $(this).remove()
-   }
+  $('.input-daterange input').each(function(index) {
+    $(this).datepicker({
+     ignoreReadonly: true,
+     format: 'dd MM yyyy',
+     todayHighlight: true,
+     isBuddhist: true,
+     language: "th"
+    })
+    var d = new Date()
+    $(this).datepicker('setDate',new Date(d.getFullYear(),d.getMonth()+index,d.getDate()))
   })
   $(document).on('click','.b-submit-form',function(){
-   const depart = ($('#depart').val() ? $('#depart').val() : "")
-   const volumn = ($('#volumn').val() ? $('#volumn').val() : "")
-   const cost = ($('#cost').val() ? $('#cost').val() : "")
+   let data = {}
+   let required = true
+   const comment = $(document).find('[id^="inp-"]')
+   const radio = $(document).find('[id^="rdo-"]')
+   var radioRequire = []
+   var radioChecked = []
+   $(comment).each(function() {
+    let id = $(this).attr('id')
+    let val = $(this).val()
+    if (val == "") {
+     $(this).addClass("required")
+     required = false
+    } else {
+     data[id] = val
+     $(this).removeClass("required")
+    }
+   })
+   $(radio).each(function() {
+    let id = $(this).attr('id')
+    let checked = $(this)[0].checked
+    let name = $(this).attr('name')
+    if (checked) {
+     radioChecked.push(name)
+     data[id] = name
+     if (id == "rdo-site" || id == "rdo-posoth") {
+      let cid = $('#'+id).parent('fieldset').find('.rdo-comment').attr('id')
+      let value = $('#'+id).parent('fieldset').find('.rdo-comment').val()
+      if (value == "") {
+       required = false
+       $('#'+id).parent('fieldset').find('.rdo-comment').addClass("required")
+      } else {
+        data[cid] = value
+        $('#'+id).parent('fieldset').find('.rdo-comment').removeClass("required")
+      }
+     }
+     if (id == "rdo-emp-tem") {
+        data.dstart = $('.datepickerstart').datepicker('getDate').getTime()/1000
+        data.dend = $('.datepickerend').datepicker('getDate').getTime()/1000
+     }
+    } else {
+     if (radioRequire.indexOf(name) < 0) {
+      radioRequire.push(name)
+     }
+    }
+   })
+   radioRequire.forEach(function(name) {
+     if (radioChecked.indexOf(name) < 0) {
+      required = false
+      $(document).find('[name='+name+'] + label').addClass("required")
+     } else {
+      $(document).find('[name='+name+'] + label').removeClass("required")
+     }
+    })
+   if (required) {
+    console.log(data)
+   }
+   /*
     $.ajax({
      url: '/forms/fm-hr-01-04',
      type: "POST",
@@ -51,4 +199,5 @@ block footer
        cost: cost
       }
     })
+    */
   })

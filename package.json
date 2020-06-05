@@ -39,10 +39,15 @@
 		"supervisor": "^0.12.0",
 		"unix-timestamp": "^0.2.0",
 		"xlsx": "^0.13.5"
-	},
+ },
+ "nodemonConfig": {
+  "ext": "*.js,*.pug,*.json,.env",
+  "ignore": ["logs/*", "bin/formgen/*"],
+  "delay": "1500"
+ },
 	"devDependencies": {},
 	"scripts": {
-		"start": "node ./bin/www"
+		"start": "nodemon --watch .env --watch . ./bin/www"
 	},
 	"author": "SlyCat",
 	"license": "ISC"
