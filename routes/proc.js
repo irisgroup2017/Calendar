@@ -29,7 +29,11 @@ router.post('/fingerscan',async function(req, res) {
  if (!req.cookies.user_dataid) { res.redirect('/') }
  id = req.cookies.user_dataid
  let path = __basedir+ '/bin/fingerscan/' +id+ '.json'
- const fingerscan = fs.readFileSync(path)
+  try {
+   var fingerscan = fs.readFileSync(path)
+  } catch (err) {
+   if (err.code !== 'ENOENT') throw err
+ }
  res.send(fingerscan)
 })
 
