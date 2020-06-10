@@ -13,6 +13,7 @@ const epass = require("./bin/easypass")
 const schedule = require('node-schedule')
 const log = require('./bin/logger')
 const favicon = require('serve-favicon')
+const fingerscan = require('./bin/fingerscan')
 
 schedule.scheduleJob("0 0 0 * * *",async () => {
  larstock.updateAll()

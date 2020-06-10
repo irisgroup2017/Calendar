@@ -4,6 +4,8 @@ const fs = require('fs')
 
 async function fingerToJSON() {
  let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ?',[1])
+ let dbfile = path.join(__basedir,"DB_FingerScan.mdb").replace(/\\/g,"\\\\")
+ let mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source="+dbfile+";",false)
  for (const id of userlist) {
   let ID = id.dataid
   let emid = id.emid
@@ -33,8 +35,8 @@ async function fingerToJSON() {
    }
   }
   let data = JSON.stringify(dateInfo)
-  let filepath = __dirname+ '/fingerscan/' +ID+ '.json'
-  fs.writeFileSync(filepath,data)
+  let filepath = __dirname+ '\\fingerscan\\' +ID+ '.json'
+  fs.writeFileSync(filepath,data,{ flag: "w" })
   }
  }
 }
