@@ -3,4 +3,5 @@
 /node_modules/*
 /public/doc/*
 .env
+DB_FingerScan.mdb
 

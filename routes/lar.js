@@ -4,7 +4,7 @@ ll = require('../bin/larlist'),
 con = require('../bin/mysql'),
 larstock = require('../bin/larstock'),
 log = require('../bin/logger')
-let fingerscan = require('../bin/fingerscan')
+const fingerscan = require('../bin/fingerscan')
 
 /* GET /lar. */
 router.get('/loaddata', async function(req, res) {

@@ -17,6 +17,7 @@ async function closeBrowser(browser) {
 
 async function getContent(url) {
  const {browser, page} = await startBrowser();
+ await page.goto('https://www.thaieasypass.com/',{ waitUntil: 'networkidle0' })
  await page.goto(url,{ waitUntil: 'networkidle0' });
  await page.type(USERNAME_SELECTOR,file.username);
  await page.type(PASSWORD_SELECTOR,file.password);
