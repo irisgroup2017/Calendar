@@ -17,8 +17,8 @@ const fingerscan = require('./bin/fingerscan')
 
 schedule.scheduleJob("0 0 0 * * *",async () => {
  larstock.updateAll()
+ await epass.get()
  fingerscan.fingerToJSON()
-	await epass.get()
 	log.logger("info","Auto Update Database")
 })
 require(__basedir+'/app/routers/application.router.js')(app, router, upload)

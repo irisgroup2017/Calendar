@@ -1,6 +1,7 @@
 const log = require('../bin/logger')
 const ADODB = require('node-adodb')
 const fs = require('fs')
+const path = require('path')
 
 async function fingerToJSON() {
  let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ?',[1])
@@ -12,7 +13,6 @@ async function fingerToJSON() {
   //let stime = "#3/21/2020#"
   //let etime = "#4/20/2020#"
   ADODB.debug = true
-  let mdb = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=Z:\\DB_FingerScan.mdb;',false)
   let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"'")
   //let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE (PersonCardID = '"+emid+"' AND ((TimeInout) Between "+stime+" And "+etime+"))")
   if (timelist != undefined) {
