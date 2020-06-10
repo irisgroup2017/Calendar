@@ -2,6 +2,7 @@
 /logs
 /node_modules/*
 /public/doc/*
+/bin/fingerscan/*
 /bin/fingerscanf/*
 .env
 DB_FingerScan.mdb
