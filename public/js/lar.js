@@ -196,9 +196,37 @@ jQuery(function($) {
                     }
                 }   
             }
+            if (view.type == 'agendaDay') {
+             $.ajax({
+              url: '/lar/swaptime',
+              type: "POST",
+              dataType: "json",
+              async: false,
+              data: {
+               time: (view.start._i/1000)-25200
+              },
+              success: function (fs) {
+               for (const item of fs) {
+                let swaptitle = item.title
+                let swaptime = swaptitle.match(/\d\d/g)
+                let swaptop = (swaptime[0]*40)+((swaptime[1]/30)*20)
+                let swapbottom = (-(swaptime[2]*40)+((swaptime[3]/30)*20))
+                swaptime = swaptitle.match(/\d\d:\d\d/g)
+                let swapre = swaptime[0] +":"+ swaptime[1]
+                swaptime = swaptime[0] +"-"+ swaptime[1]
+                swaptitle = swaptitle.replace(swapre,"")
+                let swapdate = moment((item.start-25200)*1000).format('DD/MM/YY')
+                let starttime = moment((item.start-25200)*1000).format('HH:mm')
+                let endtime = moment((item.end-25200)*1000).format('HH:mm')
+                let content = '<div class="fc-bgevent" style="top: '+swaptop+'px; bottom: '+swapbottom+'px; background-color: #ffff80;">'+swaptime+' '+swaptitle+' ใช้ลาในวัน '+swapdate+' เวลา '+starttime+'-'+endtime+'</div>'
+                $('.fc-content-col .fc-bgevent-container').append(content)
+               }
+              }
+            })
+           }
               // Time Scan
            let dayrender = JSON.parse(sessionStorage.fingerscan)
-           if (view.type == 'month') {
+           if (view.type == 'month' || view.type == 'basic') {
             $.ajax({
              url: '/proc/fingerscan',
              type: "POST",
@@ -244,7 +272,15 @@ jQuery(function($) {
                                 datewrite = new Date(thisswapdate).getFullYear()+ '-' +("0"+(new Date(thisswapdate).getMonth()+1)).slice(-2) +'-'+ ("0"+new Date(thisswapdate).getDate()).slice(-2)
                                 dateread = ("0"+new Date(swapfrom).getDate()).slice(-2) + '/' +("0"+(new Date(swapfrom).getMonth()+1)).slice(-2) +'/'+ new Date(swapfrom).getFullYear()
                                 $('.fc-bg td[data-date="'+datewrite+'"').append('<div class="swapdate"></div>')
-                                $('.fc-day-top[data-date="'+datewrite+'"').append('<div class="fc-ltr">'+swaptitle+' ใช้สิทธิลาวันที่ '+dateread)
+                                if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
+                                 let swaptime = swaptitle.match(/\d\d:\d\d/g)
+                                 let swapre = swaptime[0] +":"+ swaptime[1]
+                                 swaptime = swaptime[0] +"-"+ swaptime[1]
+                                 swaptitle = swaptitle.replace(swapre,"")
+                                 $('.fc-day-top[data-date="'+datewrite+'"').append('<div class="fc-ltr">'+swaptime+' '+swaptitle+' ใช้สิทธิลาวันที่ '+dateread)
+                                } else {
+                                 $('.fc-day-top[data-date="'+datewrite+'"').append('<div class="fc-ltr">'+swaptitle+' ใช้สิทธิลาวันที่ '+dateread)
+                                }
                             }
                         }
                         if (data.mydata[i]) { 

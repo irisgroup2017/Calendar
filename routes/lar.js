@@ -1,9 +1,9 @@
-var express = require('express'),
-router = express.Router(),
-ll = require('../bin/larlist'),
-con = require('../bin/mysql'),
-larstock = require('../bin/larstock'),
-log = require('../bin/logger')
+var express = require('express')
+const router = express.Router()
+const ll = require('../bin/larlist')
+const con = require('../bin/mysql')
+const larstock = require('../bin/larstock')
+const log = require('../bin/logger')
 const fingerscan = require('../bin/fingerscan')
 
 /* GET /lar. */
@@ -11,6 +11,7 @@ router.get('/loaddata', async function(req, res) {
  fingerscan.fingerToJSON()
  res.redirect('/lar')
 })
+
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
 	if (userName) {
@@ -29,6 +30,15 @@ router.get('/', async function(req, res) {
 		res.redirect('/login')
 	}
 	res.render('lar', parms)
+})
+
+router.post('/swaptime',async function(req,res) {
+ let result = await con.q('SELECT * FROM lar_data WHERE swapDate = ? AND dataid = ?',[req.body.time,req.cookies.user_dataid])
+ if (result) {
+  res.json(result)
+ } else {
+  res.end("")
+ }
 })
 
 router.post('/', async function(req, res) {
