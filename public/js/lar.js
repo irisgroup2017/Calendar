@@ -476,6 +476,7 @@ jQuery(function($) {
                 var data = {}
                 data.id = copiedEventObject.id
                 data.editable = 'editable'
+                data.view = resourceId.type
                 data.title = copiedEventObject.title
                 data.userName = $('#username').text()
                 data.cTime = Date.now()
@@ -517,7 +518,7 @@ jQuery(function($) {
             }
         },
         eventResize: function (event,delta,revertFunc) { // this function is called when resize events
-            if (event.className == 'label-danger') { revertFunc() }
+            if (event.className == 'label-danger' && event.view != 'agendaDay') { revertFunc() }
             createEvent = true
             var newEventStart = event.start._d.getTime()
             var newEventClass = event.className[0]
