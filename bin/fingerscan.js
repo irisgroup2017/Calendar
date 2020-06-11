@@ -2,27 +2,47 @@ const log = require('../bin/logger')
 const ADODB = require('node-adodb')
 const fs = require('fs')
 const path = require('path')
+const con = require('./mysql')
 
 async function fingerToJSON() {
  let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ?',[1])
- let dbfile = path.join(__basedir,"DB_FingerScan.mdb").replace(/\\/g,"\\\\")
- let mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source="+dbfile+";",false)
+ //let dbfile = path.join(__basedir,"DB_FingerScan.mdb").replace(/\\/g,"\\\\")
+ ADODB.debug = true
+ const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\clone\\Calendar\\DB_FingerScan.mdb';",false)
  for (const id of userlist) {
   let ID = id.dataid
   let emid = id.emid
+  let table = "em"+ ID.toString()
+  let datesearch
+  let tableexist = await con.q('SHOW TABLES FROM calendar LIKE ?',[table])
+  if (!tableexist) { 
+   await con.q('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time)')
+   datesearch = "#01/01/2000#"
+  } else {
+   datesearch = await con.q('SELECT DATE_FORMAT(MAX(date), "#%d/%m/%Y#") AS date FROM '+table,"")
+   datesearch = (datesearch ? datesearch.date : "#01/01/2000#")
+   console.log(datesearch)
+  }
   //let stime = "#3/21/2020#"
   //let etime = "#4/20/2020#"
-  ADODB.debug = true
-  let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"'")
+  //TimeInout 19/9/2016 22:18:00
+  let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND TimeInout > '"+datesearch+"'")
   //let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE (PersonCardID = '"+emid+"' AND ((TimeInout) Between "+stime+" And "+etime+"))")
+  log.logger('info',timelist)
+  /*
   if (timelist != undefined) {
    let dateInfo = {}
+   let dateFormat,dateSplit,date,obj,objold,ti,start,end
    for (const time of timelist) {
-   let dateFormat = time.TimeInout
-   let dateSplit = dateFormat.split("T")
-   let date = dateSolve(dateSplit)
-   let obj = date.y +"-"+ date.mo +"-"+ date.d
-   let ti = date.h+":"+date.mi
+    dateFormat = time.TimeInout
+    dateSplit = dateFormat.split("T")
+    date = dateSolve(dateSplit)
+    obj = date.y +"-"+ date.mo +"-"+ date.d
+    ti = date.h+":"+date.mi
+
+    if (oldobj != obj) {
+     con.q('INSERT INTO')
+    }
    if (dateInfo[obj]) {
     dateInfo[obj].end = ti
    } else {
@@ -33,11 +53,12 @@ async function fingerToJSON() {
      dateInfo[obj].start = ti
     }
    }
+   objold = obj
   }
   let data = JSON.stringify(dateInfo)
   let filepath = __dirname+ '\\fingerscan\\' +ID+ '.json'
   fs.writeFileSync(filepath,data,{ flag: "w" })
-  }
+  }*/
  }
 }
 

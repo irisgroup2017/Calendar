@@ -1,0 +1,71 @@
+extends layout
+
+block script
+ script(src="js/ckeditor/build/ckeditor.js")
+
+block content
+ div#ckeditor
+ 
+ script.
+  ClassicEditor
+   .create( document.querySelector( '#ckeditor' ) , {
+    toolbar: {
+     items: [
+      'heading',
+      '|',
+      'undo',
+      'redo',
+      '|',
+      'fontColor',
+      'FontBackgroundColor',
+      'fontSize',
+      'bold',
+      'italic',
+      'underline',
+      '|',
+      'bulletedList',
+      'numberedList',
+      'todoList',
+      '|',
+      'indent',
+      'outdent',
+      'pageBreak',
+      '|',
+      'link',
+      'imageUpload',
+      'blockQuote',
+      'insertTable',
+      'mediaEmbed',
+      'CKFinder',
+      '|',
+      'specialCharacters',
+      'subscript',
+      'superscript'
+     ]
+    },
+    language: 'en',
+    image: {
+     toolbar: [
+      'imageTextAlternative',
+      'imageStyle:full',
+      'imageStyle:side'
+     ]
+    },
+    table: {
+     contentToolbar: [
+      'tableColumn',
+      'tableRow',
+      'mergeTableCells',
+      'tableProperties'
+     ]
+    },
+    licenseKey: ''
+   }).then( editor => {
+    window.editor = editor;
+   } )
+   .catch( error => {
+    console.error( 'Oops, something gone wrong!' );
+    console.error( 'Please, report the following error in the https://github.com/ckeditor/ckeditor5 with the build id and the error stack trace:' );
+    console.warn( 'Build id: y1gmkuaifnvc-vhlc4s6ulaep' );
+    console.error( error );
+   } )
