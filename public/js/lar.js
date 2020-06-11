@@ -208,18 +208,20 @@ jQuery(function($) {
               success: function (fs) {
                for (const item of fs) {
                 let swaptitle = item.title
-                let swaptime = swaptitle.match(/\d\d/g)
-                let swaptop = (swaptime[0]*40)+((swaptime[1]/30)*20)
-                let swapbottom = (-(swaptime[2]*40)+((swaptime[3]/30)*20))
-                swaptime = swaptitle.match(/\d\d:\d\d/g)
-                let swapre = swaptime[0] +":"+ swaptime[1]
-                swaptime = swaptime[0] +"-"+ swaptime[1]
-                swaptitle = swaptitle.replace(swapre,"")
-                let swapdate = moment((item.start-25200)*1000).format('DD/MM/YY')
-                let starttime = moment((item.start-25200)*1000).format('HH:mm')
-                let endtime = moment((item.end-25200)*1000).format('HH:mm')
-                let content = '<div class="fc-bgevent" style="top: '+swaptop+'px; bottom: '+swapbottom+'px; background-color: #ffff80;">'+swaptime+' '+swaptitle+' ใช้ลาในวัน '+swapdate+' เวลา '+starttime+'-'+endtime+'</div>'
-                $('.fc-content-col .fc-bgevent-container').append(content)
+                if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
+                 let swaptime = swaptitle.match(/\d\d/g)
+                 let swaptop = (swaptime[0]*40)+((swaptime[1]/30)*20)
+                 let swapbottom = (-(swaptime[2]*40)+((swaptime[3]/30)*20))
+                 swaptime = swaptitle.match(/\d\d:\d\d/g)
+                 let swapre = swaptime[0] +":"+ swaptime[1]
+                 swaptime = swaptime[0] +"-"+ swaptime[1]
+                 swaptitle = swaptitle.replace(swapre,"")
+                 let swapdate = moment((item.start-25200)*1000).format('DD/MM/YY')
+                 let starttime = moment((item.start-25200)*1000).format('HH:mm')
+                 let endtime = moment((item.end-25200)*1000).format('HH:mm')
+                 let content = '<div class="fc-bgevent" style="top: '+swaptop+'px; bottom: '+swapbottom+'px; background-color: #ffff80;">'+swaptime+' '+swaptitle+' ใช้ลาในวัน '+swapdate+' เวลา '+starttime+'-'+endtime+'</div>'
+                 $('.fc-content-col .fc-bgevent-container').append(content)
+                }
                }
               }
             })

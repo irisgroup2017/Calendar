@@ -33,9 +33,9 @@ router.get('/', async function(req, res) {
 	approvedate = '',
 	dayPlus = 0,
 	hourPlus = 0,
-    minPlus = 0
+ minPlus = 0
 	for (var i = 0; i < result.length; i++) {
-			if (result[i].end) { end = result[i].end } else { end = null }
+			if (result[i].end) { end = (result[i].end-25200)*1000 } else { end = null }
             if (result[i].allDay) {	allDay = true } else { allDay = false }
 
             if (result[i].delreq == 1) {
@@ -84,14 +84,23 @@ router.get('/', async function(req, res) {
    else if (result[i].className == 'label-warning') { larType = 'ลาพักร้อน' } 
    else if (result[i].className == 'label-danger') { 
     larType = 'สลับวันหยุด' 
-
+    let swaptitle = result[i].title
+    if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
+     let swaptime = swaptitle.match(/\d\d/g)
+     let swaptop = (swaptime[0]*40)+((swaptime[1]/30)*20)
+     let swapbottom = (-(swaptime[2]*40)+((swaptime[3]/30)*20))
+     swaptime = swaptitle.match(/\d\d:\d\d/g)
+     let swapre = swaptime[0] +":"+ swaptime[1]
+     swaptime = swaptime[0] +"-"+ swaptime[1]
+     result[i].title = swaptitle.replace(swapre,"")
+    }
    } 
 			else { larType = result[i].title }
-			timeKeep = ll.getDayTime(result[i].start*1000 + (7 * 60 * 60),end,allDay,result2[0].swtime.substring(0,5),result2[0].ewtime.substring(0,5))
+			timeKeep = ll.getDayTime(result[i].start,end,allDay,result2[0].swtime.substring(0,5),result2[0].ewtime.substring(0,5))
 			t = ll.getDateValue(result[i].cTime)
 			cTime = t.dy+', '+t.da+' '+t.mo+' '+t.y+' ('+t.h+':'+t.mi+')'
 			parms.objs.push({
-                id: result[i].id,
+    id: result[i].id,
 				lartype: larType,
 				title: result[i].title,
 				dateStart: timeKeep.dateStart,
