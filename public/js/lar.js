@@ -235,7 +235,9 @@ jQuery(function($) {
              dataType: "json",
              async: false,
              data: {
-              user: $('#username').text()
+              user: $('#username').text(),
+              start: moment(view.start).format("YYYY-MM-DD"),
+              end: moment(view.end).format("YYYY-MM-DD")
              },
              success: function (fs) {
               for (const item in dayrender) {
@@ -243,8 +245,8 @@ jQuery(function($) {
                 let scandate = fs[item]
                 let row = dayrender[item].r
                 let col = dayrender[item].c
-                let stime = (scandate.start ? scandate.start : "ไม่มีข้อมูล" )
-                let etime = (scandate.end ? scandate.end : "ไม่มีข้อมูล" )
+                let stime = (scandate.timestart != "00:00:00" ? scandate.timestart.substring(0,5) : "ไม่มีข้อมูล" )
+                let etime = (scandate.timeend != "00:00:00" ? scandate.timeend.substring(0,5) : "ไม่มีข้อมูล" )
                 $('.fc-row:nth-child('+row+') .fc-content-skeleton thead td:nth-child('+col+')').append('<br> <div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> '+stime+'</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> '+etime+'</div>')
                }
               }

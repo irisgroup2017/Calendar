@@ -6,7 +6,6 @@ const con = require('./mysql')
 
 async function fingerToJSON() {
  let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ?',[1])
- //let dbfile = path.join(__basedir,"DB_FingerScan.mdb").replace(/\\/g,"\\\\")
  ADODB.debug = true
  const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\clone\\Calendar\\DB_FingerScan.mdb';",false)
  for (const id of userlist) {
@@ -14,52 +13,60 @@ async function fingerToJSON() {
   let emid = id.emid
   let table = "em"+ ID.toString()
   let datesearch
-  let tableexist = await con.q('SHOW TABLES FROM calendar LIKE ?',[table])
-  if (!tableexist) { 
-   await con.q('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time)')
+  let tableexist = await con.e('SHOW TABLES FROM calendar LIKE ?',[table])
+  if (tableexist.length == 0) {
+   console.log("CREATE TABLE ID: "+ID)
+   await con.e('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time)',[])
    datesearch = "#01/01/2000#"
   } else {
-   datesearch = await con.q('SELECT DATE_FORMAT(MAX(date), "#%d/%m/%Y#") AS date FROM '+table,"")
-   datesearch = (datesearch ? datesearch.date : "#01/01/2000#")
-   console.log(datesearch)
+   datesearch = (await con.q('SELECT DATE_FORMAT(MAX(date), "#%d/%m/%Y#") AS date FROM '+table))[0]
+   //datesearch = (await con.q('SELECT DATE_FORMAT(DATE_ADD(MAX(date),INTERVAL 1 DAY), "#%d/%m/%Y#") AS date FROM '+table))[0]
+   datesearch = (datesearch.date != undefined ? datesearch.date : "#01/01/2000#")
   }
-  //let stime = "#3/21/2020#"
-  //let etime = "#4/20/2020#"
-  //TimeInout 19/9/2016 22:18:00
-  let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND TimeInout > '"+datesearch+"'")
+  let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND `TimeInout` > "+datesearch+" ORDER BY TimeInout ASC")
   //let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE (PersonCardID = '"+emid+"' AND ((TimeInout) Between "+stime+" And "+etime+"))")
-  log.logger('info',timelist)
-  /*
-  if (timelist != undefined) {
-   let dateInfo = {}
-   let dateFormat,dateSplit,date,obj,objold,ti,start,end
-   for (const time of timelist) {
+  let max = timelist.length
+  if (max != 0) {
+   max = max - 1
+   let dateFormat,dateSplit,date,ti
+   let obj = objold = start = end = false
+   for (const [index,time] of timelist.entries()) {
     dateFormat = time.TimeInout
     dateSplit = dateFormat.split("T")
     date = dateSolve(dateSplit)
-    obj = date.y +"-"+ date.mo +"-"+ date.d
+    dateobj = date.y +"-"+ date.mo +"-"+ date.d
     ti = date.h+":"+date.mi
-
-    if (oldobj != obj) {
-     con.q('INSERT INTO')
-    }
-   if (dateInfo[obj]) {
-    dateInfo[obj].end = ti
-   } else {
-    dateInfo[obj] = {}
-    if (parseInt(date.h) > 13) {
-     dateInfo[obj].end = ti
+    if (!obj) {
+     obj = dateobj
+     objold = dateobj
     } else {
-     dateInfo[obj].start = ti
+     obj = dateobj
+    }
+    if (objold != obj) {
+     if (start || end) {
+      con.e('INSERT INTO '+table+' VALUES (?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end])
+      start = false
+      end = false
+     }
+    }
+    if (start) {
+     end = ti
+    } else {
+     if (parseInt(date.h) > 12) {
+      end = ti
+     } else {
+      start = ti
+     }
+    }
+    objold = obj
+    if (max == index) {
+     con.e('INSERT INTO '+table+' VALUES (?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end])
+     log.logger("info","Updated: scan time ID "+ID+" have "+index+" record")
     }
    }
-   objold = obj
   }
-  let data = JSON.stringify(dateInfo)
-  let filepath = __dirname+ '\\fingerscan\\' +ID+ '.json'
-  fs.writeFileSync(filepath,data,{ flag: "w" })
-  }*/
  }
+ console.log("Complete add finger scan")
 }
 
 function dateSolve(dateSplit) {

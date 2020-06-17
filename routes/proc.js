@@ -28,13 +28,14 @@ function remodule(d) {
 router.post('/fingerscan',async function(req, res) {
  if (!req.cookies.user_dataid) { res.redirect('/') }
  id = req.cookies.user_dataid
- let path = __basedir+ '/bin/fingerscan/' +id+ '.json'
-  try {
-   var fingerscan = fs.readFileSync(path)
-  } catch (err) {
-   if (err.code !== 'ENOENT') throw err
+ let table = "em" + id.toString()
+ let tableexist = await con.q('SHOW TABLES FROM calendar LIKE ?',[table])
+ if (tableexist.length != 0) { 
+  let result = await con.q('SELECT DATE_FORMAT(date,"%Y-%m-%d") AS date,timestart,timeend FROM '+table+' WHERE (date BETWEEN ? AND ?)',[req.body.start,req.body.end])
+  result = result.reduce((acc,it) => (acc[it.date] = it,acc),{})
+  res.json(result)
  }
- res.send(fingerscan)
+ res.end("")
 })
 
 router.post('/',async function(req, res) {
@@ -52,7 +53,7 @@ router.post('/',async function(req, res) {
 	if (req.body.state == "loadacc") {
 		result = await con.q('SELECT swtime,ewtime,wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
 		req.body.fcwend = result[0].ewtime.substring(0,5)
-		req.body.fcwstart = result[0].swtime.substring(0,5)
+  req.body.fcwstart = result[0].swtime.substring(0,5)
 		if (result[0].wplace == 1) {
 			req.body.fcwdow = [1,2,3,4,5]	
 		} else {
@@ -66,7 +67,6 @@ router.post('/',async function(req, res) {
 			var objs = []
 			var end = ''
 			var allDay = ''
-	
 			for (var i = 0; i < result.length; i++) {
 				if (result[i].end) {
 					end = timestamp.toDate(result[i].end)
@@ -98,7 +98,7 @@ router.post('/',async function(req, res) {
 		})
 	}
 	if (req.body.state == 'loads') {
-		var result = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[req.cookies.user_dataid,new Date().getFullYear()])
+  var result = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[req.cookies.user_dataid,new Date().getFullYear()])
 		objs = {
 			'ลาป่วย': (result[0].sickr ? remodule(result[0].sickr) : result[0].sick+' วัน'),
 			'ลากิจ': (result[0].personalr ? remodule(result[0].personalr) : result[0].personal+' วัน'),

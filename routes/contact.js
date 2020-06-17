@@ -218,8 +218,8 @@ res.end()
 })
 
 async function reArrangeContact() {
-    const names = await con.q('SELECT dataid FROM user_data WHERE status = 1 ORDER BY name ASC')
-	const contact = await con.q('SELECT dataid,level,line FROM contact_data ORDER BY level ASC,line ASC')
+ const names = await con.q('SELECT dataid FROM user_data WHERE status = 1 ORDER BY name ASC')
+ const contact = await con.q('SELECT dataid,level,line FROM contact_data ORDER BY level ASC,line ASC')
 	var namea = names.map(name => {
 		return name.dataid
 	},[])

@@ -9,7 +9,7 @@ const fingerscan = require('../bin/fingerscan')
 /* GET /lar. */
 router.get('/loaddata', async function(req, res) {
  fingerscan.fingerToJSON()
- res.redirect('/lar')
+ res.redirect('/')
 })
 
 router.get('/', async function(req, res) {
@@ -33,11 +33,12 @@ router.get('/', async function(req, res) {
 })
 
 router.post('/swaptime',async function(req,res) {
- let result = await con.q('SELECT * FROM lar_data WHERE swapDate = ? AND dataid = ?',[req.body.time,req.cookies.user_dataid])
+ let id = req.cookies.user_dataid
+ let result = await con.q('SELECT * FROM lar_data WHERE swapDate = ? AND dataid = ?',[req.body.time,id])
  if (result) {
   res.json(result)
  } else {
-  res.end("")
+  res.send("")
  }
 })
 
@@ -50,7 +51,7 @@ router.post('/', async function(req, res) {
 	if (req.body.state == 'viewrender') {
 		if (req.cookies.user_name) {
 			await larstock.updateLar(req.cookies.user_name,req.cookies.user_dataid,parseInt(req.body.endtime))
-			updatedur = await ll.viewLar(req.cookies.user_name,req.cookies.user_dataid,parseInt(req.body.endtime))
+   updatedur = await ll.viewLar(req.cookies.user_name,req.cookies.user_dataid,parseInt(req.body.endtime))
 		} else {
 			res.redirect('/login')
 		}

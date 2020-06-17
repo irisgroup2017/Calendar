@@ -114,15 +114,11 @@ async function setLar(userName,dataid,state,now) {
         }
     } else if (w > 3) { re = 30 }
     if (state == 'insert') {
-        await con.q('INSERT INTO lar_status\
-        (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military,vacationp)\
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi,vap])
+        await con.q('INSERT INTO lar_status (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military,vacationp) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',[dataid,userName,y[2],si,pe,va,tr,st,ma,re,mi,vap])
     }
     if (state == 'update') {
         var daisuki = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]])
-        await con.q('UPDATE lar_status SET\
-        userName = ?,sick = ?,personal = ?,vacation = ?,training = ?,sterily = ?,maternity = ?,religious = ?,military = ?\
-        WHERE dataid = ? AND year = ?',[userName,si-daisuki[0][lle[0]],pe-daisuki[0][lle[1]],va-daisuki[0][lle[2]],tr-daisuki[0][lle[3]],st-daisuki[0][lle[4]],ma-daisuki[0][lle[5]],re-daisuki[0][lle[6]],mi-daisuki[0][lle[7]],dataid,y[2]])
+        await con.q('UPDATE lar_status SET userName = ?,sick = ?,personal = ?,vacation = ?,training = ?,sterily = ?,maternity = ?,religious = ?,military = ? WHERE dataid = ? AND year = ?',[userName,si-daisuki[0][lle[0]],pe-daisuki[0][lle[1]],va-daisuki[0][lle[2]],tr-daisuki[0][lle[3]],st-daisuki[0][lle[4]],ma-daisuki[0][lle[5]],re-daisuki[0][lle[6]],mi-daisuki[0][lle[7]],dataid,y[2]])
     }
 }
 
