@@ -23,10 +23,12 @@ $(document).on('click','.testbutton',function() {
   /*
   let contentDisplay = []
   $(content).each(function() {
-   contentDisplay.push($(this).addClass('pagebreak'))
+   contentDisplay.push($(this).addClass('modal-memo-content'))
   })
   */
- $('#modal-memo-content').html(content)
+ $('.modal-memo').not(':first').remove()
+ $('.modal-memo').html('<div class="modal-page"><img class="modal-logo" src="img/logo.jpg"><div class="modal-memo-head"><div class="modal-memo-title center">บันทึกภายใน</div><table><tbody><tr><td><div class="modal-memo-cell"><div class="modal-memo-topic">ถึง:</div><div class="modal-memo-subject" id="modal-to"></div></div></td><td><div class="modal-memo-cell"><div class="modal-memo-topic">เลขที่เอกสาร:</div><div class="modal-memo-subject" id="modal-no"></div></div></td><td><div class="modal-memo-cell"><div class="modal-memo-topic">วันที่:</div><div class="modal-memo-subject" id="modal-date"></div></div></td></tr><tr><td><div class="modal-memo-cell"><div class="modal-memo-topic">สำเนาเรียน:</div><div class="modal-memo-subject" id="modal-cc"></div></div></td><td colspan="2"><div class="modal-memo-cell"><div class="modal-memo-topic">จาก:</div><div class="modal-memo-subject" id="modal-from"></div></div></td></tr><tr><td colspan="3"><div class="modal-memo-cell"><div class="modal-memo-topic">เรื่อง:</div><div class="modal-memo-subject" id="modal-subject"></div></div></td></tr><tr><td colspan="3"><div class="modal-memo-cell"><div class="modal-memo-topic">เอกสารแนบ:</div><div class="modal-memo-subject" id="modal-attach"></div></div></td></tr></tbody></table><div class="modal-memo-content"></div><div class="modal-section-signature"></div><div class="row justify-content-end"><div class="col-5"><div class="modal-section-admin" id="modal-section-admin"></div></div></div><div class="row justify-content-around"><div class="col-5"><div class="modal-section-approve" id="modal-section-approve"></div></div><div class="col-5"><div class="modal-section-boss" id="modal-section-boss"></div></div></div><div class="modal-memo-end"></div></div></div>')
+ $('.modal-memo-content:first').html(content)
 
   if (data["memo-admin"] != undefined) {
    let name = data["memo-admin"]
@@ -102,14 +104,25 @@ function snipMe() {
    return;
  }
  var content = $(this).find('.modal-page .modal-memo-head')
- var long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight());
+ var long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight()+10);
  var children = $(content).children().toArray();
  var removed = [];
  while (long > 0 && children.length > 0) {
-   var child = children.pop();
-   $(child).detach();
-   removed.unshift(child);
-   long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight());
+   var child = children.pop()
+   var cont = $(child).attr('class')
+   var childcontent = $(child).children().toArray()
+   if (cont == "modal-memo-content") {
+    while (long > 0 && childcontent.length > 0) {
+     child = childcontent.pop()
+     removed.unshift('<div class="modal-memo-content">'+child.outerHTML+'</div>')
+     $(child).detach()
+     long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight()+10)
+    }
+   } else {
+    removed.unshift(child)
+    $(child).detach()
+    long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight())
+   }
  }
  if (removed.length > 0) {
    var a4 = $('.modal-memo:last');
@@ -117,7 +130,7 @@ function snipMe() {
    content = $('.modal-memo:last .modal-page .modal-memo-head')
    content.append(removed);
    $(this).after(a4);
-   snipMe.call(a4[page_count]);
+   snipMe.call(a4[0]);
  }
 }
 

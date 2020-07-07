@@ -109,6 +109,7 @@
  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
  align-content: center;
  margin-bottom: 15mm;
+ overflow-x: hidden;
  overflow-y: auto;
 }
 
@@ -157,10 +158,13 @@
  width: calc(100% - 25mm);
 }
 
+.modal-memo-content:first-child {
+ margin-top: 8px;
+}
+
 .modal-memo-content {
  display: block;
  text-indent: 10mm;
- padding-top: 3mm;
  overflow-wrap: anywhere;
 }
 
@@ -256,32 +260,41 @@
 
 /* Print */
 
+@page {
+ size: A4;
+ margin: 0;
+}
+
 @media print {
  body {
-  width: 210mm;
-  height: 297mm;
-  margin: 0;
-  padding: 0;
-  text-overflow: clip;
-}
+  height: 100%;
+  width: 100%;
+ }
+ .modal-memo:first-child {
+  position: absolute;
+  top: 0px;
+ }
  .modal-memo {
-   box-shadow: none;
-   margin: 0;
-   width: auto;
-   height: auto;
-  }
+  width: 210mm;
+  height: 297mm;    
+  display: block;
+  margin: 0;
+  border: initial;
+  border-radius: initial;
+  min-height: initial;
+  box-shadow: initial;
+  background: initial;
+  page-break-after: always;
+ }
+
+ a[href]:after {
+  content: none !important;
+}
+
  body * {
   visibility: hidden;
  }
  .modal-memo * {
   visibility: visible;
  }
-}
-
-@media print {
- .page-break {
-   display: block;
-   page-break-before: always;
- }
- size: A4 portrait;
 }
