@@ -177,6 +177,7 @@ $(document).ready(function(){
    async: false,
    success: function(data) {
     if (data != "N/A") {
+     
      $('#edit-emid').text(data.emid)
      $('#edit-wplace').text(data.workplace)
      $('#edit-stime').text(data.swtime)
