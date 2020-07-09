@@ -21,6 +21,11 @@
  --padding-right: 20mm;
 }
 
+* {
+ box-sizing: border-box;
+ -moz-box-sizing: border-box;
+}
+
 .memo-head {
  margin-top: 10px;
  margin-left: auto;
@@ -96,6 +101,10 @@
 }
 
 /* MEMO Sheet */
+table + .modal-memo-content {
+ margin-top: 8px;
+}
+
 .modal-memo {
  display: block;
  font-family: 'Sarabun', sans-serif;
@@ -104,7 +113,6 @@
  width: 210mm;
  height: 297mm;
  min-height: 297mm;
- border: 1px #D3D3D3 solid;
  box-sizing: border-box;
  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
  align-content: center;
@@ -116,8 +124,8 @@
 .modal-page {
  display: block;
  padding: var(--padding-top) var(--padding-right) var(--padding-bottom) var(--padding-left);
- height: auto;
  width: 210mm;
+ min-height: 297mm;
 }
 
 .modal-logo {
@@ -259,42 +267,37 @@
 }
 
 /* Print */
-
 @page {
  size: A4;
  margin: 0;
 }
 
 @media print {
- body {
-  height: 100%;
-  width: 100%;
+ html, body {
+  width: auto;
+  height: auto;        
+}
+ body * {
+  visibility: hidden;
  }
- .modal-memo:first-child {
-  position: absolute;
-  top: 0px;
+ 
+ .modal-memo * {
+  visibility: visible;
  }
  .modal-memo {
-  width: 210mm;
-  height: 297mm;    
   display: block;
   margin: 0;
   border: initial;
   border-radius: initial;
+  width: initial;
   min-height: initial;
   box-shadow: initial;
   background: initial;
   page-break-after: always;
+  overflow: hidden;
  }
 
  a[href]:after {
   content: none !important;
-}
-
- body * {
-  visibility: hidden;
- }
- .modal-memo * {
-  visibility: visible;
  }
 }

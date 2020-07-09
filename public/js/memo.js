@@ -134,6 +134,20 @@ function snipMe() {
  }
 }
 
+function printPDF() {
+ var pdf = new jsPDF('l', 'pt', 'a4')
+ var doc = $(".modal-memo")
+ window.html2canvas = html2canvas
+ var options = {
+  pagesplit: true
+ }
+ pdf.html(doc, {
+  callback: function (pdf) {
+      pdf.save('DOC.pdf')
+  }
+ })
+}
+
 /*
  var doc = new jsPDF();
  var specialElementHandlers = {
