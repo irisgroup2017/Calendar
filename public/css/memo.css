@@ -274,6 +274,8 @@ table + .modal-memo-content {
 
 @media print {
  html, body {
+  display: block;
+  top: 0;
   width: auto;
   height: auto;        
 }
@@ -284,6 +286,7 @@ table + .modal-memo-content {
  .modal-memo * {
   visibility: visible;
  }
+
  .modal-memo {
   display: block;
   margin: 0;

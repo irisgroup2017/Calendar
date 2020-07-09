@@ -134,18 +134,19 @@ function snipMe() {
  }
 }
 
-function printPDF() {
- var pdf = new jsPDF('l', 'pt', 'a4')
- var doc = $(".modal-memo")
- window.html2canvas = html2canvas
- var options = {
-  pagesplit: true
- }
- pdf.html(doc, {
-  callback: function (pdf) {
-      pdf.save('DOC.pdf')
+async function printPDF() {
+ var specialElementHandlers = {
+  'DIV to be rendered out': function(element, renderer){
+   return true;
   }
+ }
+ var pdf = new jsPDF()
+ var doc = $(".modal-memo").html()
+ window.html2canvas = html2canvas
+ await pdf.html(doc,{
+  'elementHandlers': specialElementHandlers
  })
+ pdf.save('test.pdf')
 }
 
 /*
