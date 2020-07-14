@@ -125,12 +125,17 @@ function snipMe() {
    }
  }
  if (removed.length > 0) {
-   var a4 = $('.modal-memo:last');
+   var a4 = $('.modal-memo:last')
    $(a4).after('<div class="modal-memo"><div class="modal-page"><div class="modal-memo-head"></div></div></div>')
    content = $('.modal-memo:last .modal-page .modal-memo-head')
-   content.append(removed);
-   $(this).after(a4);
-   snipMe.call(a4[0]);
+   content.append(removed)
+   $(this).after(a4)
+   $(a4).addClass("overflow-hidden")
+   var a4new = $(".modal-memo:last")
+   snipMe.call(a4new[0])
+ } else {
+  var a4 = $('.modal-memo:last')
+  $(a4).addClass("overflow-hidden")
  }
 }
 

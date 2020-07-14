@@ -117,8 +117,11 @@ table + .modal-memo-content {
  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
  align-content: center;
  margin-bottom: 15mm;
- overflow-x: hidden;
  overflow-y: auto;
+}
+
+.overflow-hidden {
+ overflow: hidden !important;
 }
 
 .modal-page {
