@@ -32,6 +32,11 @@ router.get('/', async function(req, res) {
 	res.render('lar', parms)
 })
 
+router.get('/update',async function(req,res) {
+ larstock.updateAll()
+ res.redirect('/lar')
+})
+
 router.post('/swaptime',async function(req,res) {
  let id = req.cookies.user_dataid
  let result = await con.q('SELECT * FROM lar_data WHERE swapDate = ? AND dataid = ?',[req.body.time,id])

@@ -52,41 +52,46 @@ async function setLar(userName,dataid,state,now) {
         ovr = ov[0].vacationr
         ovp = ov[0].vacationp
         ovq = ov[0].vacationq
-        if (ovr) {
-            ovb = await dhmtonum(ovr.toString())
-            if (ovb >= 6) { ovr = '060000' }
-            if (state == 'insert') { vap = ovr } else {
-                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
-            }
-        } else if (ovp) {
-            ovm = ov[0].vacation + "0000"
-            ovp2 = await plusdhm(ovm,ovp.toString())
-            ovb = await dhmtonum(ovp2.toString())
-            if (ovb >= 6) { ovp = '060000' } else { ovp = ovb }
-            if (state == 'insert') { vap = ovp } else {
-                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
-            }
-        } else if (ovq) {
-            if (state == 'insert') { vap = ovq } else {
-                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovq,dataid,y[2]])
-            }
-        } else {
-            if (ov[0].vacation) {
-                var ova = ov[0].vacation
-            } else {
-                if (w >= 2) {
-                    ova = 6
-                } else if (w == 0 && y[1] > x[1]) {
-                    ova = Math.floor(((y[1]-x[1]))/2)
-                } else {
-                    ova = 0
-                }
-            }
-            if (state == 'insert') { vaq = ova } else {
-                ovm = ova + "0000"
-                con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovm,dataid,y[2]])
-            }
-        }
+        if (w % 2) {
+         if (ovr) {
+          ovb = await dhmtonum(ovr.toString())
+          if (ovb >= 6) { ovr = '060000' }
+          if (state == 'insert') { vap = ovr } else {
+           con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
+          }
+         } else if (ovp) {
+          ovm = ov[0].vacation + "0000"
+          ovp2 = await plusdhm(ovm,ovp.toString())
+          ovb = await dhmtonum(ovp2.toString())
+          if (ovb >= 6) { ovp = '060000' } else { ovp = ovb }
+          if (state == 'insert') { vap = ovp } else {
+           con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
+          }
+         } else if (ovq) {
+          if (state == 'insert') { vap = ovq } else {
+           con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovq,dataid,y[2]])
+          }
+         } else {
+          if (ov[0].vacation) {
+           var ova = ov[0].vacation
+          } else {
+           if (w >= 2) {
+            ova = 6
+           } else if (w == 0 && y[1] > x[1]) {
+            ova = Math.floor(((y[1]-x[1]))/2)
+           } else {
+            ova = 0
+           }
+          }
+          if (state == 'insert') { vaq = ova } else {
+           ovm = ova + "0000"
+           con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovm,dataid,y[2]])
+          }
+         }
+       } else {
+        vap = "000000"
+        con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,vap,dataid,y[2]])
+       }
     }
 
     if ((w >= 2) || (w == 1)) {
