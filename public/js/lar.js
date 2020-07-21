@@ -140,7 +140,7 @@ jQuery(function($) {
     request.send()
     */
    
-    var leaveExcept = 3
+    var leaveExcept = 7
     var vacation = (leaveExcept*60*60*24*1000)
     var fcwend,fcwstart,fcwdow
 

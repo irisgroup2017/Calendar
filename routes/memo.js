@@ -23,7 +23,6 @@ router.get('/', async function(req, res) {
   }
   //let test = await api.getAll('/depart/find/all')
   let test = await api.get('/depart/find/field',depart)
-  console.log(test)
 	} else {
 		res.redirect('login')
 	}
