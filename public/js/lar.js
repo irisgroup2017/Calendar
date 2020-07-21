@@ -121,7 +121,27 @@ jQuery(function($) {
     mailGroup = "",
     isClicked = false,
     isDblClicked = false
+    /*
+    var request = new XMLHttpRequest()
 
+    request.open('GET', 'https://ghibliapi.herokuapp.com/films', true)
+    request.onload = function () {
+      // Begin accessing JSON data here
+      var data = JSON.parse(this.response)
+
+      if (request.status >= 200 && request.status < 400) {
+        data.forEach((movie) => {
+          console.log(movie.title)
+        })
+      } else {
+        console.log('error')
+      }
+    }
+    request.send()
+    */
+   
+    var leaveExcept = 3
+    var vacation = (leaveExcept*60*60*24*1000)
     var fcwend,fcwstart,fcwdow
 
     $.ajax({
@@ -456,9 +476,9 @@ jQuery(function($) {
                 }
             })
             tddate = new Date(y,m,d,0).getTime()
-            if (copiedEventObject.start < tddate+604800000 && copiedEventObject.className == 'label-warning') { 
+            if (copiedEventObject.start < tddate+vacation && copiedEventObject.className == 'label-warning') { 
                 createEvent = false 
-                alert("การลาพักร้อน กรุณาลาล่วงหน้า 1 สัปดาห์");
+                alert("การลาพักร้อน กรุณาลาล่วงหน้า "+leaveExcept+" วัน");
             }
             /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             if (resourceId.type == 'agendaDay') { 
@@ -555,9 +575,9 @@ jQuery(function($) {
                 }
             })
             tddate = new Date(y,m,d,0).getTime()
-            if (event.start < tddate+604800000 && event.className == 'label-warning') { 
+            if (event.start < tddate+vacation && event.className == 'label-warning') { 
                 createEvent = false 
-                alert("การลาพักร้อน กรุณาลาล่วงหน้า 1 สัปดาห์");
+                alert("การลาพักร้อน กรุณาลาล่วงหน้า "+leaveExcept+" วัน");
             }
             /*var bh = $('#calendar').fullCalendar('option', 'businessHours')
             if (event.source.calendar.view.type == 'agendaDay') { 
@@ -629,9 +649,9 @@ jQuery(function($) {
             }
             })
             tddate = new Date(y,m,d,0).getTime()
-            if (event.start < tddate+604800000 && event.className == 'label-warning') { 
+            if (event.start < tddate+vacation && event.className == 'label-warning') { 
                 createEvent = false 
-                alert("การลาพักร้อน กรุณาลาล่วงหน้า 1 สัปดาห์");
+                alert("การลาพักร้อน กรุณาลาล่วงหน้า "+leaveExcept+" วัน");
             }
             /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
             if (event.source.calendar.view.type == 'agendaDay') { 
