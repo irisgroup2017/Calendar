@@ -20,6 +20,8 @@ async function setLar(userName,dataid,state,now) {
     8.ลารับราชการทหาร 60 วัน 1 ครั้ง
     */
     var si=30,pe=0,va=0,tr=30,st=1,ma=90,re=0,mi=60,vap=null,vaq=null
+    var depart = (await con.q('SELECT depart FROM user_data WHERE dataid = ?',dataid))[0].depart
+    console.log(depart)
     var swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',dataid)
     var x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),
@@ -52,7 +54,7 @@ async function setLar(userName,dataid,state,now) {
         ovr = ov[0].vacationr
         ovp = ov[0].vacationp
         ovq = ov[0].vacationq
-        if (w % 2) {
+        if (w % 2 && depart != "BRI") {
          if (ovr) {
           ovb = await dhmtonum(ovr.toString())
           if (ovb >= 6) { ovr = '060000' }
