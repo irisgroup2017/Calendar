@@ -21,7 +21,6 @@ async function setLar(userName,dataid,state,now) {
     */
     var si=30,pe=0,va=0,tr=30,st=1,ma=90,re=0,mi=60,vap=null,vaq=null
     var depart = (await con.q('SELECT depart FROM user_data WHERE dataid = ?',dataid))[0].depart
-    console.log(depart)
     var swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',dataid)
     var x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),

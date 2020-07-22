@@ -8,8 +8,8 @@ const fingerscan = require('../bin/fingerscan')
 
 /* GET /lar. */
 router.get('/loaddata', async function(req, res) {
- fingerscan.fingerToJSON()
- res.redirect('/')
+ await fingerscan.fingerToJSON()
+ res.redirect('/lar')
 })
 
 router.get('/', async function(req, res) {

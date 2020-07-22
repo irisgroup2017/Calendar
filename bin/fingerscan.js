@@ -5,9 +5,9 @@ const path = require('path')
 const con = require('./mysql')
 
 async function fingerToJSON() {
- let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ?',[1])
+ let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ? AND depart <> ?',[1,'BRI'])
  ADODB.debug = true
- const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\Calendar\\DB_FingerScan.mdb';",false)
+ const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\clone\\Calendar\\DB_FingerScan.mdb';",false)
  for (const id of userlist) {
   let ID = id.dataid
   let emid = id.emid
@@ -17,14 +17,12 @@ async function fingerToJSON() {
   if (tableexist.length == 0) {
    console.log("CREATE TABLE ID: "+ID)
    await con.e('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time)',[])
-   datesearch = "#01/01/2000#"
+   datesearch = "#2000/01/01#"
   } else {
-   datesearch = (await con.q('SELECT DATE_FORMAT(MAX(date), "#%d/%m/%Y#") AS date FROM '+table))[0]
-   //datesearch = (await con.q('SELECT DATE_FORMAT(DATE_ADD(MAX(date),INTERVAL 1 DAY), "#%d/%m/%Y#") AS date FROM '+table))[0]
-   datesearch = (datesearch.date != undefined ? datesearch.date : "#01/01/2000#")
+   datesearch = (await con.q('SELECT DATE_FORMAT(MAX(date), "#%Y/%m/%d#") AS date FROM '+table))[0]
+   datesearch = (datesearch.date != undefined ? datesearch.date : "#2000/01/01#")
   }
-  let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND `TimeInout` > "+datesearch+" ORDER BY TimeInout ASC")
-  //let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE (PersonCardID = '"+emid+"' AND ((TimeInout) Between "+stime+" And "+etime+"))")
+  let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND TimeInout > "+datesearch+" ORDER BY TimeInout ASC")
   let max = timelist.length
   if (max != 0) {
    max = max - 1
@@ -67,6 +65,7 @@ async function fingerToJSON() {
   }
  }
  console.log("Complete add finger scan")
+ return "ok"
 }
 
 function dateSolve(dateSplit) {

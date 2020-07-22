@@ -70,7 +70,7 @@ $(document).ready(function(){
                          b = new Date(b[2],b[1],b[0]).getTime()
                          c = b-a
                          if (data.type == "ลาพักร้อน" && c < 25200000) {
-                          $('td', row).eq(3).addClass('highlight')
+                          $('td', row).eq(2).addClass('highlight')
                          }
                         },
                         //orderFixed: [0, 'asc'],
