@@ -53,7 +53,7 @@ async function setLar(userName,dataid,state,now) {
         ovr = ov[0].vacationr
         ovp = ov[0].vacationp
         ovq = ov[0].vacationq
-        if (w % 2 && depart != "BRI") {
+        if (w % 2 || depart == "BRI" || y[2] < 2021) {
          if (ovr) {
           ovb = await dhmtonum(ovr.toString())
           if (ovb >= 6) { ovr = '060000' }
