@@ -199,8 +199,8 @@ async function listLar(dataid,start,end) {
  let worktime = (await con.q('SELECT swtime,ewtime FROM privacy_data WHERE dataid = ?',[dataid]))[0]
  if (diff >= 0) {
   for (let year=startYear;year<=endYear;year++) {
-   let dstart = new Date(year,0,1,7).getTime()/1000
-   let dend = new Date(year,11,31,7).getTime()/1000
+   let dstart = (new Date(year,0,1,7).getTime()-1)/1000
+   let dend = (new Date(year,11,31,7).getTime()+1)/1000
    let lardata = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND approve > 1 AND start BETWEEN ? AND ?',[dataid,dstart,dend])
    let lartotal = await con.q('SELECT ?? FROM lar_status WHERE dataid = ? AND year = ?',[lcon,dataid,year])
    let dataTime = {}
