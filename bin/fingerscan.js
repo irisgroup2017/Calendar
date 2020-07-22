@@ -7,7 +7,7 @@ const con = require('./mysql')
 async function fingerToJSON() {
  let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ?',[1])
  ADODB.debug = true
- const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\clone\\Calendar\\DB_FingerScan.mdb';",false)
+ const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\Calendar\\DB_FingerScan.mdb';",false)
  for (const id of userlist) {
   let ID = id.dataid
   let emid = id.emid
