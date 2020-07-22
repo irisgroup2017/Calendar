@@ -5,4 +5,5 @@
 /bin/fingerscan/*
 .env
 DB_FingerScan.mdb
+*.xlsx
 
