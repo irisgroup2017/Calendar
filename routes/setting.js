@@ -181,7 +181,8 @@ router.post('/',async function(req, res) {
 		await con.q('UPDATE user_data SET emid = ?,name = ?,lastName = ?,jobPos = ?,depart = ?,mail = ?,mailGroup = ?,userName = ? WHERE dataid = ?',[a.emid,a.name,a.lastName,a.jobPos,a.depart,a.mail,a.mailGroup,a.userName,a.dataid])
 		await con.q('UPDATE privacy_data SET emid = ?,userName = ?,mailGroup = ? WHERE dataid = ?',[a.emid,a.name+' '+a.lastName,a.mailGroup,a.dataid])
 		await con.q('UPDATE lar_data SET userName = ?,mailGroup = ? WHERE dataid = ?',[a.name+' '+a.lastName,a.mailGroup,a.dataid])
-		log.logger('info','Edit detail ID : '+ req.cookies.user_name+' - '+a.emid)
+  log.logger('info','Edit detail ID : '+ req.cookies.user_name+' - '+a.emid)
+  larstock.updateAll()
 		res.json(a)
 	}
 })

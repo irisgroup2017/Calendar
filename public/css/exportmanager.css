@@ -1,3 +1,7 @@
+.highlight {
+ background-color: #ffff80;
+ color: #000000;
+}
 .tyear {
     /* for Firefox */
     -moz-appearance: none;

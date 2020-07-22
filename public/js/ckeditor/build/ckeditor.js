@@ -5,8 +5,8 @@
 (function (t) {
   t["en"] = Object.assign(t["en"] || {}, {
     a: "Cannot upload file:",
-    b: "",
-    c: "",
+    b: "Type your title",
+    c: "Type or paste your content here.",
     d: "Image toolbar",
     e: "Table toolbar",
     f: "leftwards double arrow",

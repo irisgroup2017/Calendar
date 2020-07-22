@@ -1,0 +1,148 @@
+extends layout
+
+mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='css/'+t)
+mixin ssrc(scr)
+ for t in scr
+  script(src="js/"+t)
+
+block script
+ link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
+
+block content
+ .container
+  .memo-head
+   .memo-title.center บันทึกภายใน
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ถึง:
+        input#memo-to.memo-ans(type="text")
+      td
+       .memo-quiz
+        .memo-quest เลขที่เอกสาร:
+        input#memo-no.memo-ans(type="text")
+      td
+       .memo-quiz
+        .memo-quest วันที่:
+        input#memo-date.memo-ans(type="text")
+     tr
+      td
+       .memo-quiz
+        .memo-quest สำเนาเรียน:
+        input#memo-cc.memo-ans(type="text")
+      td(colspan="2")
+       .memo-quiz
+        .memo-quest จาก:
+        input#memo-from.memo-ans(type="text")
+     tr
+      td(colspan="3")
+       .memo-quiz
+        .memo-quest เรื่อง:
+        input#memo-subject.memo-ans(type="text")
+     //tr
+      td(colspan="3")
+       .memo-quiz
+        .memo-quest เอกสารแนบ:
+        input#memo-attach.memo-ans(type="text")
+  .memo-sheet
+   #memoeditor
+  .memo-head
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ผู้ออกเอกสาร:
+        input#memo-admin.memo-ans(type="text")
+     //tr
+      td
+       .memo-quiz 
+        .memo-quest ตำแหน่ง:
+        input#memo-adminj.memo-ans(type="text")
+  .memo-head
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ผู้บังคับบัญชา:
+        input#memo-boss.memo-ans(type="text")
+     //tr
+      td
+       .memo-quiz 
+        .memo-quest ตำแหน่ง:
+        input#memo-bossj.memo-ans(type="text")
+  .memo-head
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ผู้อนุมัติ:
+        input#memo-approve.memo-ans(type="text")
+     //tr
+      td
+       .memo-quiz
+        .memo-quest ตำแหน่ง:
+        input#memo-approvej.memo-ans(type="text")
+  input.testbutton(type="button")
+ +ssrc(['/ckeditor/ckeditor.js','memo.js','animatemodal.min.js','html2canvas.min.js'])
+ script(src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js")
+ +scss(['memo.css','animate.min.css'])
+ #editorModal.animated.emp-modal(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+  .close-editorModal
+   i.fa.fa-close.fa-3x
+  .modal-memo
+   .modal-page
+    img.modal-logo(src="img/logo.jpg")
+    .modal-memo-head
+     .modal-memo-title.center บันทึกภายใน
+     table
+      tbody
+       tr
+        td
+         .modal-memo-cell
+          .modal-memo-topic ถึง:
+          .modal-memo-subject#modal-to
+        td
+         .modal-memo-cell
+          .modal-memo-topic เลขที่เอกสาร:
+          .modal-memo-subject#modal-no
+        td
+         .modal-memo-cell
+          .modal-memo-topic วันที่:
+          .modal-memo-subject#modal-date
+       tr
+        td
+         .modal-memo-cell
+          .modal-memo-topic สำเนาเรียน:
+          .modal-memo-subject#modal-cc
+        td(colspan="2")
+         .modal-memo-cell
+          .modal-memo-topic จาก:
+          .modal-memo-subject#modal-from
+       tr
+        td(colspan="3")
+         .modal-memo-cell
+          .modal-memo-topic เรื่อง:
+          .modal-memo-subject#modal-subject
+       //tr
+        td(colspan="3")
+         .modal-memo-cell
+          .modal-memo-topic เอกสารแนบ:
+          .modal-memo-subject#modal-attach
+     .modal-memo-content
+     .modal-section-signature
+     .row.justify-content-end
+      .col-5
+       .modal-section-admin#modal-section-admin
+     .row.justify-content-around
+      .col-5
+       .modal-section-approve#modal-section-approve
+      .col-5
+       .modal-section-boss#modal-section-boss
+     .modal-memo-end

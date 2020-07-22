@@ -6,6 +6,7 @@ nodemailer = require('nodemailer'),
 ll = require('../bin/larlist'),
 log = require('../bin/logger'),
 fs = require('fs')
+const larstock = require('../bin/larstock')
 const transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {

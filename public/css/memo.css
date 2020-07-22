@@ -1,0 +1,313 @@
+:root {
+ --table-border: #bebbbb;
+ --input-color: #99A3BA;
+ --input-border: #CDD9ED;
+ --input-background: #fff;
+ --input-placeholder: #CBD1DC;
+ --input-border-focus: #275EFE;
+ --group-color: var(--input-color);
+ --group-border: var(--input-border);
+ --group-background: #EEF4FF;
+ --group-color-focus: #fff;
+ --group-border-focus: var(--input-border-focus);
+ --group-background-focus: #b1c0ee;
+ --group-color-error: rgb(15, 15, 15);
+ --group-border-error: #ff0000;
+ --group-background-error: var(--group-background);
+ --modal-table-border: #000000;
+ --padding-top: 14mm;
+ --padding-bottom: 14mm;
+ --padding-left: 20mm;
+ --padding-right: 20mm;
+}
+
+html,body {
+ overflow: unset !important;
+}
+
+* {
+ box-sizing: border-box;
+ -moz-box-sizing: border-box;
+}
+
+.memo-head {
+ margin-top: 10px;
+ margin-left: auto;
+ margin-right: auto;
+ margin-bottom: 10px;
+ width: 21cm;
+ font-family: 'Sarabun', sans-serif;
+ font-size: 14px;
+}
+
+.memo-head .memo-title {
+ font-size: 20px;
+ width: 21cm;
+}
+
+.memo-head table {
+ border: 2px var(--table-border) solid;
+ width: 21cm;
+}
+
+.memo-head tr:not(:last-child) {
+ border-bottom: 1px var(--table-border) solid;
+}
+
+.memo-head tr td:not(:last-child) {
+ border-right: 1px var(--table-border) solid;
+}
+
+.memo-head tr td .memo-quiz {
+ position: relative;
+ z-index: 1;
+ -webkit-box-flex: 1;
+ flex: 1 1 auto;
+ margin-top: 0;
+ margin-bottom: 0;
+}
+
+.memo-quiz > .memo-quest {
+ display: inline-flex;
+ justify-content: flex-end;
+ background-color: var(--group-background);
+ border-right: 1px var(--table-border) dotted;
+ width: 2.5cm;
+}
+
+.memo-quiz > .memo-quest + .memo-ans {
+ border: 0px;
+ width: calc(100% - 2.5cm);
+}
+
+.memo-quiz > .memo-quest + .memo-ans:focus-within {
+ padding: 0 !important;
+ padding-left: 3px !important;
+ color: var(--group-color-focus);
+ background: var(--group-background-focus);
+ border-color: var(--group-border-focus);
+}
+
+.memo-quiz > .memo-quest + .memo-ans.memo-error {
+ padding: 0px !important;
+ padding-left: 3px !important;
+ color: var(--group-color-error);
+ background: var(--group-background-error);
+ border: 1px solid var(--group-border-error);
+}
+
+.memo-sheet {
+ font-family: 'Sarabun', sans-serif;
+ margin-left: auto;
+ margin-right: auto;
+ width: 21cm;
+ /*height: 29.7cm;*/
+}
+
+/* MEMO Sheet */
+table + .modal-memo-content {
+ margin-top: 8px;
+}
+
+.modal-memo {
+ display: block;
+ font-family: 'Sarabun', sans-serif;
+ border: 1px gray solid;
+ margin: 20mm auto;
+ width: 210mm;
+ height: 297mm;
+ min-height: 297mm;
+ box-sizing: border-box;
+ box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+ align-content: center;
+ margin-bottom: 15mm;
+ overflow-y: auto;
+}
+
+.overflow-hidden {
+ overflow: hidden !important;
+}
+
+.modal-page {
+ display: block;
+ padding: var(--padding-top) var(--padding-right) var(--padding-bottom) var(--padding-left);
+ width: 210mm;
+ min-height: 297mm;
+}
+
+.modal-logo {
+ width: 40mm;
+}
+
+.modal-memo-head {
+ padding-top: 3mm;
+ padding-bottom: 2mm;
+}
+
+.memo-title,.modal-memo-title {
+ font-size: 18px;
+}
+
+.modal-memo-head table {
+ width: 100%;
+ border: 2px var(--modal-table-border) solid;
+}
+.modal-memo-head tr:not(:last-child) {
+ border-bottom: 1px var(--modal-table-border) solid;
+}
+
+.modal-memo-head tr td:not(:last-child) {
+ border-right: 1px var(--modal-table-border) solid;
+}
+
+.modal-memo-cell > .modal-memo-topic {
+ display: inline-flex;
+ padding-left: 2px;
+ width: 25mm;
+}
+
+.modal-memo-cell > .modal-memo-topic + .modal-memo-subject {
+ display: inline-flex;
+ padding-left: 2px;
+ border: 0px;
+ width: calc(100% - 25mm);
+}
+
+.modal-memo-content:first-child {
+ margin-top: 8px;
+}
+
+.modal-memo-content {
+ display: block;
+ text-indent: 10mm;
+ overflow-wrap: anywhere;
+}
+
+.modal-section-signature {
+ margin-top: 15mm;
+}
+
+.modal-section-seperate {
+ margin-top: 5mm;
+}
+
+.modal-section-admin {
+ display: block;
+ width: 100%;
+ text-align: center;
+}
+.modal-section-boss {
+ display: block;
+ width: 100%;
+ text-align: center;
+}
+.modal-section-approve {
+ display: block;
+ width: 100%;
+ text-align: center;
+}
+.memo-approve-comment {
+ text-indent: 5mm;
+ text-align: left;
+}
+.memo-comment-approve {
+ display: block;
+ text-align: left;
+ width: auto;
+}
+.memo-comment-underline {
+ position: relative;
+ width: auto;
+ border-bottom: 1px black dashed;
+}
+
+.modal-comment-memo {
+ display: flex;
+}
+.modal-comment-memo .memo-comment-underline {
+ flex-grow: 1;
+ border-bottom: 1px dashed black;
+ margin-left: 5px;
+}
+
+.modal-memo-end {
+ margin-top: 5mm;
+ display: block;
+ border-bottom: solid 4px black;
+}
+
+.justify-content-start {
+ -webkit-box-pack: start !important;
+ -ms-flex-pack: start !important;
+ justify-content: flex-start !important;
+}
+
+.justify-content-end {
+ -webkit-box-pack: end !important;
+ -ms-flex-pack: end !important;
+ justify-content: flex-end !important;
+}
+
+.justify-content-center {
+ -webkit-box-pack: center !important;
+ -ms-flex-pack: center !important;
+ justify-content: center !important;
+}
+
+.justify-content-between {
+ -webkit-box-pack: justify !important;
+ -ms-flex-pack: justify !important;
+ justify-content: space-between !important;
+}
+
+.justify-content-around {
+ -ms-flex-pack: distribute !important;
+ justify-content: space-around !important;
+}
+
+.modal-memo-content > table * {
+ text-indent: 0mm;
+}
+
+.modal-memo-content > table td,th {
+ padding: 0px 2px !important;
+}
+
+/* Print */
+@page {
+ size: A4;
+ margin: 0;
+}
+
+@media print {
+ html, body {
+  display: block;
+  top: 0;
+  width: auto;
+  height: auto;        
+}
+ body * {
+  visibility: hidden;
+ }
+ 
+ .modal-memo * {
+  visibility: visible;
+ }
+
+ .modal-memo {
+  display: block;
+  margin: 0;
+  border: initial;
+  border-radius: initial;
+  width: initial;
+  min-height: initial;
+  box-shadow: initial;
+  background: initial;
+  page-break-after: always;
+  overflow: hidden;
+ }
+
+ a[href]:after {
+  content: none !important;
+ }
+}

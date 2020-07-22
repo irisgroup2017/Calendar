@@ -1,7 +1,7 @@
 var app = require('../app'), 
 debug = require('debug')('datatest:server'), 
 http = require('http'), 
-port = normalizePort(process.env.PORT || '3000')
+port = normalizePort(process.env.PORTAPI || '3000')
 server = http.createServer(app)
 app.set('port', port)
 server.listen(port)

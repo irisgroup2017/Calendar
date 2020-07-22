@@ -31,7 +31,6 @@ $(document).ready(function(){
         let id = $.map(selected,function(span,index) {
             return span.className
         })
-        console.log(id)
 
         if (!id.length) { id = "empty" }
         $.ajax({
@@ -63,6 +62,16 @@ $(document).ready(function(){
                         fixedHeader: {
                             header: true,
                             footer: true
+                        },
+                        createdRow: function ( row, data, index ) {
+                         let a = data.insert.split("/")
+                         let b = data.start.split("/")
+                         a = new Date(a[2],a[1],a[0]).getTime()
+                         b = new Date(b[2],b[1],b[0]).getTime()
+                         c = b-a
+                         if (data.type == "ลาพักร้อน" && c < 25200000) {
+                          $('td', row).eq(3).addClass('highlight')
+                         }
                         },
                         //orderFixed: [0, 'asc'],
                         /*rowGroup: {
