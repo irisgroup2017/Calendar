@@ -1,4 +1,5 @@
 var con = require('../bin/mysql')
+const e = require('express')
 log = require('../bin/logger')
 const llt = ['ลาป่วย','ลากิจ','ลาพักร้อน','ลาฝึกอบรบ','ลาทำหมัน','ลาคลอด','ลาอุปสมบท','ลารับราชการทหาร'],
 lle = ['sick','personal','vacation','training','sterily','maternity','religious','military'],
@@ -272,13 +273,13 @@ function minusDuration(remain,duration) {
     var Ans = [],chk=['d','h','m']
     if (!Array.isArray(remain)) {
         remain = {
-            'd':Number(remain),
-            'h':0,
-            'm':0
+            d:Number(remain),
+            h:0,
+            m:0
         }
     }
     for (var i=0;i<3;i++) {
-        if (duration === undefined || isNaN(duration)) { duration = {'d':0,'h':0,'m':0} }
+        if (duration === undefined || isNaN(duration)) { duration = {d:0,h:0,m:0} }
         if (remain[chk[i]] == undefined || isNaN(remain[chk[i]])) { remain[chk[i]] = 0 }
         if (duration[chk[i]] == undefined || isNaN(duration[chk[i]])) { duration[chk[i]] = 0 }
     }
@@ -305,38 +306,38 @@ function minusDuration(remain,duration) {
         return Ans
     }
     else {
-        if (duration.m > 60) {
-            remain.h = duration.m/60
-            Ans.m = 60-(duration.m % 60)
-            duration.m = 0
-        }
         if (duration.m > 0) {
-            remain.d = remain.d - 1
-            remain.h = 7+remain.h           
-            Ans.m = (60+remain.m)-duration.m
-        }
-        if (duration.h > 8) {
-            remain.d = remain.d - duration.h/8
-            Ans.h = 8-(Ans.h % 8)
-            duration.h = 0
-        }
-        if (duration.h > 0 && remain.h < duration.h) {
-            remain.d = remain.d-1
-            remain.h = 8+remain.h
-            Ans.h = (8+remain.d)-duration.d
-        }
-        if (duration.h > 0 && remain.h > duration.h) {
-            Ans.h = remain.h-duration.h
-        }
+         if (remain.m < duration.m) {
+          if (remain.h == 0) {
+           remain.d = remain.d - 1
+           remain.h = 7
+           remain.m = 60
+          } else {
+           remain.h = remain.h - 1
+           remain.m = remain.m + 60
+          }
+         }
+         Ans.m = remain.m - duration.m
+        } else { Ans.m = remain.m }
+
+        if (duration.h > 0) {
+         if (remain.h < duration.h) {
+          remain.d = remain.d - 1
+          remain.h = remain.h + 8
+         }
+         Ans.h = remain.h - duration.h
+        } else { Ans.h = remain.h }
+
         if (duration.d > 0) {
-            remain.d = remain.d-duration.d
+         Ans.d = remain.d - duration.d
+        } else { Ans.d = remain.d }
+
+        if (Ans.d < 0) {
+         Ans.o = true
+         Ans.d = Math.abs(Ans.d)
+        } else {
+         Ans.o = false
         }
-        if (remain.h > 8) { 
-            remain.d = remain.d-(remain.h/8) 
-            remain.h = remain.h % 8
-        }
-        Ans.o = false
-        Ans.d = remain.d
         return Ans
     }
 }

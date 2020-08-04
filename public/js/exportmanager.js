@@ -60,8 +60,7 @@ $(document).ready(function(){
                             leftColumns: 2
                         },
                         fixedHeader: {
-                            header: true,
-                            footer: true
+                            header: true
                         },
                         createdRow: function ( row, data, index ) {
                          let a = data.insert.split("/")
