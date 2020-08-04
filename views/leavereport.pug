@@ -3,10 +3,10 @@ extends layout
 block content
  mixin ssrc(scr)
   for t in scr
-   script(src="js/"+t)
+   script(src="../js/"+t)
  mixin scss(scss)
   for t in scss
-   link(rel='stylesheet' , href='../css/'+t)
+   link(rel='stylesheet' , href='css/'+t)
  mixin listyear(year)
   -var n = 2018
   while (n <= year)
@@ -14,6 +14,7 @@ block content
  mixin listmonth(month)
   each item,index in month
    button.month-item.dropdown-item(value=index)=item
+ +scss(['bootstrap-datepicker.min.css','datatable/datatables.min.css'])
  .menu-row
   .col-sm-1
    .dropdown
@@ -39,7 +40,7 @@ block content
      +listmonth(parms.month)
   button(type="button" id="search" class="btn btn-sm btn-success")
    i.ace-icon.fa.fa-search  Search
- .table-row
+ .table-row.hide
   table.show-table.display.cell-border.nowrap
    thead
     tr
@@ -52,7 +53,7 @@ block content
      th(colspan="2") ลาป่วย
      th(colspan="2") ลากิจ
      th(colspan="2") ลาพักร้อน
-     th(colspan="2") ลาอื่นๆ
+     th ลาอื่นๆ
     tr
      th ใช้
      th สิทธิ
@@ -61,10 +62,8 @@ block content
      th ใช้
      th สิทธิ
      th ใช้
-     th สิทธิ
 
- +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','leavereport.js','datatables.min.js'])
- +scss(['bootstrap-datepicker.min.css','datatables.min.css'])
+ +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','datatables.min.js','dataTables.buttons.min.js','leavereport.js'])
  style.
   .menu-row { width:100%;margin-bottom:15px }
   table {width: 100% !important;margin: auto;overflow: auto;}

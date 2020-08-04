@@ -1,14 +1,17 @@
 // Setup page
 
-$(window).on("load",function() {
- var d = new Date()
- $('.datepickera').datepicker('setDate',new Date(d.getFullYear(),d.getMonth()-1,21))
- $('.datepickerb').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),20))
+$(document).ready(function(){ 
+ $(window).on("load",function() {
+  var d = new Date()
 
- $('.datepicker').datepicker({
-  ignoreReadonly: true,
-  format: 'dd MM yyyy',
-  todayHighlight: true
+  $('.datepicker').datepicker({
+   ignoreReadonly: true,
+   format: 'dd MM yy',
+   todayHighlight: true
+  })
+
+  $('.datepickera').datepicker('setDate',(moment().startOf('isoweek'))._d)
+  $('.datepickerb').datepicker('setDate',(moment().endOf('isoweek'))._d)
  })
 })
 
@@ -44,35 +47,50 @@ $('#search').on('click',function() {
      if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
      if (status == 200) {
       $(".show-table").DataTable({
+       responsive: true,
        destroy: true,
        paging: true,
-       searching: false,
+       searching: true,
        ordering: true,
        orderMulti: true,
        pageLength: 100,
-       fixedHeader: {
-           header: true,
-           footer: true
-       },
        data: data,
+       fixedHeader: {
+        header: true,
+        footer: true
+       },
        createdRow: function ( row, data, index ) {
-        $('td', row).eq(1).text(data.swtime+"-"+data.ewtime)
-        $('td', row).eq(4).text(data.forgetmorning+data.forgetevening)
+        $('td', row).eq(1).text(data.swtime.substring(0, 5)+" - "+data.ewtime.substring(0, 5))
+        $('td', row).eq(2).text((data.late > 0 ? data.late : "-"))
+        $('td', row).eq(3).text((data.hurry > 0 ? data.hurry : "-"))
+        $('td', row).eq(4).text((data.forgetmorning > 0 || data.forgetevening > 0 ? data.forgetmorning+data.forgetevening : "-"))
+        $('td', row).eq(5).text((data.leavecount.lw ? data.leavecount.lw : "-"))
+        $('td', row).eq(6).text((data.leavecount.si ? data.leavecount.si : "-"))
+        $('td', row).eq(7).text((data.totalleave.si ? data.totalleave.si : "-"))
+        $('td', row).eq(8).text((data.leavecount.pe ? data.leavecount.pe : "-"))
+        $('td', row).eq(9).text((data.totalleave.pe ? data.totalleave.pe : "-"))
+        $('td', row).eq(10).text((data.leavecount.va ? data.leavecount.va : "-"))
+        $('td', row).eq(11).text((data.totalleave.va ? data.totalleave.va : "-"))
+        $('td', row).eq(12).text((data.leavecount.ot ? data.leavecount.ot : "-"))
        },
        columns: [
         { data: "userName" },
-        { data: null, render: { start: "swtime", end: "ewtime" } },
+        { data: null , className: "dt-body-center" , render: { start: "swtime", end: "ewtime" } },
         { data: "late" },
         { data: "hurry" },
         { data: null, render: { forgetm: "forgetmorning", forgete: "forgetevening" } },
-        { data: "leavecount", render: { lw: "lw" } },
-        { data: "leavecount", render: { si: "si" } },
-        { data: "leavecount", render: { pe: "pe" } },
-        { data: "leavecount", render: { va: "va" } },
-        { data: "leavecount", render: { ot: "ot" } }
+        { data: "leavecount.lw" },
+        { data: "leavecount.si" },
+        { data: "totalleave.si" },
+        { data: "leavecount.pe" },
+        { data: "totalleave.pe" },
+        { data: "leavecount.va" },
+        { data: "totalleave.va" },
+        { data: "leavecount.ot" }
        ]
       })
      }
+     $('.table-row').removeClass('hide')
     }
    })
   } else {
@@ -107,7 +125,7 @@ $('.masterplan .dropdown-item').on('click',function() {
 
 $('.item-year .year-item').on('click',function() {
  let year = $(this).val()
- $('.item-year a').removeClass('active')
+ $('.year-item').removeClass('active')
  $('#dropdownyear').text($(this).text())
  $(this).addClass('active')
 })
@@ -116,7 +134,7 @@ $('.item-year .year-item').on('click',function() {
 
 $('.item-month .month-item').on('click',function() {
  let month = $(this).val()
- $('.item-month a').removeClass('active')
+ $('.month-item').removeClass('active')
  $('#dropdownmonth').text($(this).text())
  $(this).addClass('active')
 })
@@ -131,6 +149,3 @@ $('.datepickera').datepicker().on('changeDate',function(e){
 $('.datepickerb').datepicker().on('changeDate',function(e){
  $('.datepickerb').datepicker('hide')
 })
-
-//datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
-//datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
