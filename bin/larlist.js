@@ -270,7 +270,6 @@ function plusDuration(old,new1) {
 }
 
 function minusDuration(remain,duration) {
- console.log(remain,duration)
     var Ans = [],chk=['d','h','m']
     if (!Array.isArray(remain)) {
         remain = {
@@ -339,7 +338,6 @@ function minusDuration(remain,duration) {
         } else {
          Ans.o = false
         }
-        console.log(Ans)
         return Ans
     }
 }
