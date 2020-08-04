@@ -13,16 +13,32 @@ async function fingerToJSON() {
   let emid = id.emid
   let table = "em"+ ID.toString()
   let datesearch
-  let tableexist = await con.e('SHOW TABLES FROM calendar LIKE ?',[table])
+
+  let tableexist = await con.e("SHOW TABLES FROM calendar LIKE 'machine_data'")
+  if (tableexist.length == 0) {
+   await con.e('CREATE TABLE machine_data (MachID tinyint(3) PRIMARY KEY,MachCode tinyint(3),MachName varchar(100))')
+   machineSearch = 0
+  } else {
+   machineSearch = await con.q("SELECT MAX(MachID) AS MachID FROM 'machine_data'")
+   machineSearch = (machineSearch != undefined ? machineSearch.MachID : 0)
+  }
+  let machineList = await mdb.query("SELECT MachID,MachCode,MachName FROM FCM_Machine WHERE MachID >= "+machineSearch+" ORDER BY MachID ASC")
+  if (machineList.length) {
+   for (const [index,item] of machineList.entries()) {
+    con.e('INSERT INTO machine_data VALUES (?,?,?)',[item.MachID,item.MachCode,item.MachName])
+   }
+  }
+
+  tableexist = await con.e('SHOW TABLES FROM calendar LIKE ?',[table])
   if (tableexist.length == 0) {
    console.log("CREATE TABLE ID: "+ID)
-   await con.e('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time)',[])
+   await con.e('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time,MachCode tinyint(3))',[])
    datesearch = "#2000/01/01#"
   } else {
    datesearch = (await con.q('SELECT DATE_FORMAT(MAX(date), "#%Y/%m/%d#") AS date FROM '+table))[0]
    datesearch = (datesearch.date != undefined ? datesearch.date : "#2000/01/01#")
   }
-  let timelist = await mdb.query("SELECT TimeInout FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND TimeInout > "+datesearch+" ORDER BY TimeInout ASC")
+  let timelist = await mdb.query("SELECT TimeInout,MachCode FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND TimeInout > "+datesearch+" ORDER BY TimeInout ASC")
   let max = timelist.length
   if (max != 0) {
    max = max - 1
@@ -30,6 +46,7 @@ async function fingerToJSON() {
    let obj = objold = start = end = false
    for (const [index,time] of timelist.entries()) {
     dateFormat = time.TimeInout
+    place = time.MachCode
     dateSplit = dateFormat.split("T")
     date = dateSolve(dateSplit)
     dateobj = date.y +"-"+ date.mo +"-"+ date.d
@@ -42,7 +59,7 @@ async function fingerToJSON() {
     }
     if (objold != obj) {
      if (start || end) {
-      con.e('INSERT INTO '+table+' VALUES (?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end])
+      con.e('INSERT INTO '+table+' VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end,place])
       start = false
       end = false
      }
@@ -58,7 +75,7 @@ async function fingerToJSON() {
     }
     objold = obj
     if (max == index) {
-     con.e('INSERT INTO '+table+' VALUES (?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end])
+     con.e('INSERT INTO '+table+' VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end,place])
      log.logger("info","Updated: scan time ID "+ID+" have "+index+" record")
     }
    }
