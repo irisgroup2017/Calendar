@@ -7,7 +7,7 @@ const con = require('./mysql')
 async function fingerToJSON() {
  let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ? AND depart <> ?',[1,'BRI'])
  ADODB.debug = true
- const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\Calendar\\DB_FingerScan.mdb';",false)
+ const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\clone\\Calendar\\DB_FingerScan.mdb';",false)
  for (const id of userlist) {
   let ID = id.dataid
   let emid = id.emid
@@ -19,10 +19,10 @@ async function fingerToJSON() {
    await con.e('CREATE TABLE machine_data (MachID tinyint(3) PRIMARY KEY,MachCode tinyint(3),MachName varchar(100))')
    machineSearch = 0
   } else {
-   machineSearch = await con.q("SELECT MAX(MachID) AS MachID FROM 'machine_data'")
-   machineSearch = (machineSearch != undefined ? machineSearch.MachID : 0)
+   machineSearch = await con.e("SELECT MAX(MachID) AS MachID FROM machine_data")
+   machineSearch = (machineSearch != undefined ? machineSearch[0].MachID : 0)
   }
-  let machineList = await mdb.query("SELECT MachID,MachCode,MachName FROM FCM_Machine WHERE MachID >= "+machineSearch+" ORDER BY MachID ASC")
+  let machineList = await mdb.query("SELECT MachID,MachCode,MachName FROM FCM_Machine WHERE MachID > "+machineSearch+" ORDER BY MachID ASC")
   if (machineList.length) {
    for (const [index,item] of machineList.entries()) {
     con.e('INSERT INTO machine_data VALUES (?,?,?)',[item.MachID,item.MachCode,item.MachName])

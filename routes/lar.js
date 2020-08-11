@@ -13,7 +13,7 @@ router.get('/loaddata', async function(req, res) {
 })
 
 router.get('/', async function(req, res) {
-	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
+ var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
 	if (userName) {
 		data = {
 			'username': userName,

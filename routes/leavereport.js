@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const log = require('../bin/logger')
+const dns = require('dns')
 
 router.get('/',async function(req,res) {
  var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -20,6 +21,25 @@ router.get('/',async function(req,res) {
 		res.redirect('/login')
  }
  res.render('leavereport',parms)
+})
+
+router.post('/ip',async function(req,res) {
+ var url = (req.get('host').split(':'))[0]
+  let ip
+  async function ipResolve() {
+   return new Promise((resolve,reject) => {
+    dns.lookup(url,(err,address,family) => {
+     if (err) { reject(err) }
+     resolve(address !== undefined ? address : 'localhost')
+    })
+   })
+  } 
+  try {
+   ip = await ipResolve()
+  } catch(err) {
+   console.log(err.stack)
+  }
+  res.send(req.protocol+"://"+ip)
 })
 
 module.exports = router

@@ -32,8 +32,17 @@ $('#search').on('click',function() {
    opt2 = $('.datepickerb').datepicker('getDate').getTime()
   }
   if (opt1 && (opt2 || opt2 == null)) {
+   var ip
    $.ajax({
-    url: 'http://localhost:69/leavereport/get',
+    url: '/leavereport/ip',
+    type: "post",
+    async: false,
+    success: function (data) {
+     ip = data
+    }
+   })
+   $.ajax({
+    url: ip+':69/leavereport/get',
     type: "post",
     dataType: "json",
     async: false,

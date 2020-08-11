@@ -121,28 +121,10 @@ jQuery(function($) {
     mailGroup = "",
     isClicked = false,
     isDblClicked = false
-    /*
-    var request = new XMLHttpRequest()
-
-    request.open('GET', 'https://ghibliapi.herokuapp.com/films', true)
-    request.onload = function () {
-      // Begin accessing JSON data here
-      var data = JSON.parse(this.response)
-
-      if (request.status >= 200 && request.status < 400) {
-        data.forEach((movie) => {
-          console.log(movie.title)
-        })
-      } else {
-        console.log('error')
-      }
-    }
-    request.send()
-    */
    
     var leaveExcept = 7
     var vacation = (leaveExcept*60*60*24*1000)
-    var fcwend,fcwstart,fcwdow
+    var fcwend,fcwstart,fcwdow,ip
 
     $.ajax({
         url: '/proc',
@@ -156,6 +138,7 @@ jQuery(function($) {
             fcwend = data.fcwend
             fcwstart = data.fcwstart
             fcwdow = data.fcwdow
+            ip = data.ip
         }
     })
 

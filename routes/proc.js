@@ -6,6 +6,7 @@ nodemailer = require('nodemailer'),
 ll = require('../bin/larlist'),
 log = require('../bin/logger'),
 fs = require('fs')
+const dns = require('dns')
 const larstock = require('../bin/larstock')
 const transporter = nodemailer.createTransport({
 	service: 'gmail',
@@ -52,14 +53,30 @@ router.post('/',async function(req, res) {
 		}
 	}
 	if (req.body.state == "loadacc") {
+  var url = (req.get('host').split(':'))[0]
+  let ip
+  async function ipResolve() {
+   return new Promise((resolve,reject) => {
+    dns.lookup(url,(err,address,family) => {
+     if (err) { reject(err) }
+     resolve(address !== undefined ? address : 'localhost')
+    })
+   })
+  } 
+  try {
+   ip = await ipResolve()
+  } catch(err) {
+   console.log(err.stack)
+  }
 		result = await con.q('SELECT swtime,ewtime,wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
 		req.body.fcwend = result[0].ewtime.substring(0,5)
   req.body.fcwstart = result[0].swtime.substring(0,5)
 		if (result[0].wplace == 1) {
 			req.body.fcwdow = [1,2,3,4,5]	
 		} else {
-			req.body.fcwdow = [1,2,3,4,5,6]	
-		}
+			req.body.fcwdow = [1,2,3,4,5,6]
+  }
+  req.body.ip = ip
 		res.json(req.body)
 	}
 	if (req.body.state == 'load') {
