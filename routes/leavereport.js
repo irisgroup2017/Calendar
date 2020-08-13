@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const log = require('../bin/logger')
 const dns = require('dns')
+const getIp = require('../bin/getip')
 
 router.get('/',async function(req,res) {
  var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -11,7 +12,7 @@ router.get('/',async function(req,res) {
 			'dataid': dataid,
 			'operator': dataop,
 			'mail': mail
-		}
+  }
 		parms = { title: 'รายงานการปฎิบัติงานของพนักงาน', head1: 'Employee Report' }
 		parms.user = userName
   parms.operator = dataop
@@ -23,7 +24,7 @@ router.get('/',async function(req,res) {
  res.render('leavereport',parms)
 })
 
-router.post('/ip',async function(req,res) {
+router.post('/address',async function(req,res) {
  var url = (req.get('host').split(':'))[0]
   let ip
   async function ipResolve() {
@@ -33,13 +34,18 @@ router.post('/ip',async function(req,res) {
      resolve(address !== undefined ? address : 'localhost')
     })
    })
-  } 
+  }
   try {
    ip = await ipResolve()
   } catch(err) {
    console.log(err.stack)
   }
-  res.send(req.protocol+"://"+ip)
+  res.send(req.protocol+"://" + ip)
+})
+
+router.post('/ip',async function(req,res) {
+ let ip = req.protocol+"://" + getIp.get.Ethernet[0]
+  res.send(ip)
 })
 
 module.exports = router
