@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const log = require('../bin/logger')
 const dns = require('dns')
-const getIp = require('../bin/getip')
 
 router.get('/',async function(req,res) {
  var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -44,8 +43,11 @@ router.post('/address',async function(req,res) {
 })
 
 router.post('/ip',async function(req,res) {
- let ip = req.protocol+"://" + getIp.get.Ethernet[0]
-  res.send(ip)
+ let ip = {
+  protocal:req.protocol+"://",
+  ip: getIp.get.Ethernet[0]
+ }
+  res.json(ip)
 })
 
 module.exports = router

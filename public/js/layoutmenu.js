@@ -20,8 +20,8 @@
 	}
 
 	function gnMenu( el, options ) {	
-		this.el = el;
-		this._init();
+  this.el = el;
+  this._init();
 	}
 
 	gnMenu.prototype = {

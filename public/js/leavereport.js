@@ -2,16 +2,14 @@
 
 $(document).ready(function(){ 
  $(window).on("load",function() {
-  var d = new Date()
+  $('.datepickera').datepicker('setDate',(moment().startOf('isoweek'))._d)
+  $('.datepickerb').datepicker('setDate',(moment().endOf('isoweek'))._d)
 
   $('.datepicker').datepicker({
    ignoreReadonly: true,
-   format: 'dd MM yy',
+   format: 'dd',
    todayHighlight: true
   })
-
-  $('.datepickera').datepicker('setDate',(moment().startOf('isoweek'))._d)
-  $('.datepickerb').datepicker('setDate',(moment().endOf('isoweek'))._d)
  })
 })
 
@@ -34,74 +32,78 @@ $('#search').on('click',function() {
   if (opt1 && (opt2 || opt2 == null)) {
    var ip
    $.ajax({
-    url: '/leavereport/ip',
+    url: '/getip',
     type: "post",
     async: false,
     success: function (data) {
      ip = data
     }
    })
-   $.ajax({
-    url: ip+':69/leavereport/get',
-    type: "post",
-    dataType: "json",
-    async: false,
-    data: {
-        state: state,
-        opt1: opt1,
-        opt2: opt2
-    },
-    success: function (data,res,jqXHR) {
-     let status = jqXHR.status
-     if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
-     if (status == 200) {
-      $(".show-table").DataTable({
-       responsive: true,
-       destroy: true,
-       paging: true,
-       searching: true,
-       ordering: true,
-       orderMulti: true,
-       pageLength: 100,
-       data: data,
-       fixedHeader: {
-        header: true,
-        footer: true
-       },
-       createdRow: function ( row, data, index ) {
-        $('td', row).eq(1).text(data.swtime.substring(0, 5)+" - "+data.ewtime.substring(0, 5))
-        $('td', row).eq(2).text((data.late > 0 ? data.late : "-"))
-        $('td', row).eq(3).text((data.hurry > 0 ? data.hurry : "-"))
-        $('td', row).eq(4).text((data.forgetmorning > 0 || data.forgetevening > 0 ? data.forgetmorning+data.forgetevening : "-"))
-        $('td', row).eq(5).text((data.leavecount.lw ? data.leavecount.lw : "-"))
-        $('td', row).eq(6).text((data.leavecount.si ? data.leavecount.si : "-"))
-        $('td', row).eq(7).text((data.totalleave.si ? data.totalleave.si : "-"))
-        $('td', row).eq(8).text((data.leavecount.pe ? data.leavecount.pe : "-"))
-        $('td', row).eq(9).text((data.totalleave.pe ? data.totalleave.pe : "-"))
-        $('td', row).eq(10).text((data.leavecount.va ? data.leavecount.va : "-"))
-        $('td', row).eq(11).text((data.totalleave.va ? data.totalleave.va : "-"))
-        $('td', row).eq(12).text((data.leavecount.ot ? data.leavecount.ot : "-"))
-       },
-       columns: [
-        { data: "userName" },
-        { data: null , className: "dt-body-center" , render: { start: "swtime", end: "ewtime" } },
-        { data: "late" },
-        { data: "hurry" },
-        { data: null, render: { forgetm: "forgetmorning", forgete: "forgetevening" } },
-        { data: "leavecount.lw" },
-        { data: "leavecount.si" },
-        { data: "totalleave.si" },
-        { data: "leavecount.pe" },
-        { data: "totalleave.pe" },
-        { data: "leavecount.va" },
-        { data: "totalleave.va" },
-        { data: "leavecount.ot" }
-       ]
-      })
+   var ipc = ip.ip.split('.')
+   if (ipc[0] == 192 && ipc[1] == 168 && ipc[2] == 40) {
+    $.ajax({
+     url: ip.protocal +''+ ip.ip +':69/leavereport/get',
+     type: "post",
+     dataType: "json",
+     async: false,
+     data: {
+         state: state,
+         opt1: opt1,
+         opt2: opt2
+     },
+     success: function (data,res,jqXHR) {
+      let status = jqXHR.status
+      if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
+      if (status == 200) {
+       $(".show-table").DataTable({
+        responsive: true,
+        destroy: true,
+        paging: true,
+        searching: true,
+        ordering: true,
+        orderMulti: true,
+        pageLength: 100,
+        data: data,
+        fixedHeader: {
+         header: true
+        },
+        createdRow: function ( row, data, index ) {
+         $('td', row).eq(1).text(data.swtime.substring(0, 5)+" - "+data.ewtime.substring(0, 5))
+         $('td', row).eq(2).text((data.late > 0 ? data.late : "-"))
+         $('td', row).eq(3).text((data.hurry > 0 ? data.hurry : "-"))
+         $('td', row).eq(4).text((data.forgetmorning > 0 || data.forgetevening > 0 ? data.forgetmorning+data.forgetevening : "-"))
+         $('td', row).eq(5).text((data.leavecount.lw ? data.leavecount.lw : "-"))
+         $('td', row).eq(6).text((data.leavecount.si ? data.leavecount.si : "-"))
+         $('td', row).eq(7).text((data.totalleave.si ? data.totalleave.si : "-"))
+         $('td', row).eq(8).text((data.leavecount.pe ? data.leavecount.pe : "-"))
+         $('td', row).eq(9).text((data.totalleave.pe ? data.totalleave.pe : "-"))
+         $('td', row).eq(10).text((data.leavecount.va ? data.leavecount.va : "-"))
+         $('td', row).eq(11).text((data.totalleave.va ? data.totalleave.va : "-"))
+         $('td', row).eq(12).text((data.leavecount.ot ? data.leavecount.ot : "-"))
+        },
+        columns: [
+         { data: "userName" },
+         { data: null , className: "dt-body-center" , render: { start: "swtime", end: "ewtime" } },
+         { data: "late" },
+         { data: "hurry" },
+         { data: null, render: { forgetm: "forgetmorning", forgete: "forgetevening" } },
+         { data: "leavecount.lw" },
+         { data: "leavecount.si" },
+         { data: "totalleave.si" },
+         { data: "leavecount.pe" },
+         { data: "totalleave.pe" },
+         { data: "leavecount.va" },
+         { data: "totalleave.va" },
+         { data: "leavecount.ot" }
+        ]
+       })
+      }
+      $('.table-row').removeClass('hide')
      }
-     $('.table-row').removeClass('hide')
-    }
-   })
+    })
+   } else {
+    alert('สามารถเรียกดูข้อมูลภายในเครือข่ายสำนักงานใหญ่เท่านั้น')
+   }
   } else {
    alert('กรุณาเลือกรายละเอียดสำหรับการเรียกข้อมูลรายงาน')
   }

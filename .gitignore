@@ -14,3 +14,4 @@ bin/daemon/hririsgroup.out.log
 bin/daemon/hririsgroup.wrapper.log
 bin/daemon/hririsgroup.xml
 report_easypass.xlsx
+bin/fingerscan.js

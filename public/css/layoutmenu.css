@@ -21,7 +21,7 @@
     float: left;
     height: 100%;
     border-right: 1px solid #c6d0da;
-    text-align: center;
+    text-align: left;
 }
 
 /* icon-only trigger (menu item) */
@@ -90,7 +90,7 @@
 
 .gn-menu {
     border-bottom: 1px solid #c6d0da;
-    text-align: left;
+    text-align: center;
     font-size: 18px;
 }
 
@@ -100,7 +100,6 @@
 }
 
 .gn-submenu li {
-    overflow: hidden;
     height: 0;
     -webkit-transition: height 0.3s;
     -moz-transition: height 0.3s;
@@ -145,14 +144,14 @@
 	.gn-menu-wrapper.gn-open-all {
 			-webkit-transform: translateX(0px);
 			-moz-transform: translateX(0px);
-            transform: translateX(0px);
-            z-index: 3;
-            width: 100%;
+   transform: translateX(0px);
+   z-index: 3;
+   width: 100%;
 	}
 
 	.gn-menu-wrapper.gn-open-all .gn-scroller {
-        z-index: 3;
-        width: 130%
+  z-index: 3;
+  width: 130%
 	}
 }
 
@@ -163,18 +162,19 @@
 }
 .menu ol {
  list-style-type: none;
+ width: auto;
  margin: 0 auto;
- padding: 0;
+ padding: 0 10px;
 }
 .menu > ol {
- max-width: 1000px;
  padding: 0 2rem;
- display: flex;
+ display: table;
 }
 .menu > ol > .menu-item {
- flex: 1;
- padding: 0.25rem 0;
+ display: table-cell;
+ padding: 0.25rem 10px;
 }
+
 .menu > ol > .menu-item:after {
  content: "";
  position: absolute;
@@ -189,13 +189,11 @@
  transition: transform 0.2s ease;
  opacity: 1;
 }
-.menu > ol > .menu-item:hover:after {
- transform: scale(1);
-}
+
 .menu-item {
  position: relative;
  line-height: 2.5rem;
- text-align: center;
+ text-align: left;
 }
 .menu-item a {
  overflow: hidden;
@@ -205,10 +203,10 @@
  color: #FFF;
 }
 .sub-menu .menu-item {
- width: auto;
  background: #3abadade;
  opacity: 0;
  transform-origin: bottom;
+ padding: 3px 5px;
  animation: enter 0.2s ease forwards;
 }
 .sub-menu .menu-item:nth-child(1) {
@@ -237,15 +235,6 @@ animation-delay: 0.4s;
  background: #118bf0;
  width: 100%;
 }
-.sub-menu .menu-item:hover > a {
- text-decoration: none;
- animation: textslide 3s infinite;
- animation-timing-function: linear;
-}
-@keyframes textslide {
- 0% { margin-left: 0%; }
- 100% { margin-left: -150%; }
-}
 .sub-menu .menu-item a {
  padding: 0 0.75rem;
 }
@@ -270,16 +259,14 @@ animation-delay: 0.4s;
  }
  .menu > ol {
    display: none;
-   background: #3abadade;
-   flex-direction: column;
+   display: inline-block;
    justify-content: center;
-   height: 100vh;
    animation: fade 0.2s ease-out;
  }
  .menu > ol > .menu-item {
-   flex: 0;
-   opacity: 0;
-   animation: enter 2 ease-out forwards;
+  width: 100%;
+  opacity: 0;
+  animation: enter 2 ease-out forwards;
  }
  .menu > ol > .menu-item:nth-child(1) {
    animation-delay: 0s;
@@ -311,7 +298,7 @@ animation-delay: 0.4s;
   z-index: 1;
  }
  .menu:hover > ol {
-   display: flex;
+   display: inline-block;
  }
  .menu:hover:after {
    box-shadow: none;

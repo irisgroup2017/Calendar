@@ -548,7 +548,7 @@ tr:hover {
   /* floated labels */
   --inputPaddingV: var(--gutterMd);
   --inputPaddingH: var(--gutterLg);
-  --inputFontSize: var(--fontSizeLg);
+  --inputFontSize: var(--fontSizeMd);
   --inputLineHeight: var(--lineHeightMd);
   --labelScaleFactor: 0.6;
   --labelDefaultPosY: 50%;

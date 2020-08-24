@@ -1,8 +1,79 @@
 jQuery(function($) {
 
  CKEDITOR.replace( 'memoeditor' )
+ var users,departs
+ $.ajax({
+  url: '/cross',
+  type: "POST",
+  async: false,
+  data: {
+   path: '/users/find/field',
+   option: {
+    attributes: ['dataid','name','lastName','mail','jobPos','depart'],
+    where: {
+    status: 1
+    },
+    raw: true
+   }
+  },
+  success: function (data) {
+   users = data.map(item => {
+    return { dataid: item.dataid, name: item.name +' '+ item.lastName, mail:item.mail , jobPos: item.jobPos }
+   })
+  }
+ })
 
- $(document).on('click','.testbutton',function() {
+ $.ajax({
+  url: '/cross',
+  type: "POST",
+  async: false,
+  data: {
+   path: '/depart/find/field',
+   option: {
+    attributes: ['ID','depart','depart_mail','depart_short'],
+    raw: true
+   }
+  },
+  success: function (data) {
+   departs = data
+  }
+ })
+
+ console.log(users)
+ console.log(departs)
+
+ $(document).on('keypress','.memo-ans:focus',function(e){
+  let next = $(this).next()
+  if ($(next).attr('class') == 'popupUserlist') {
+   $(next).remove()
+  }
+
+  let input = e.key
+  let result = getList(input,users,departs)
+
+  let html = '<ol class="popupUserlist" style="z-index: '+(maxZIndex()+1)+';">\
+  <li class="popupUserlistItem">test1</li>\
+  <li class="popupUserlistItem">test2</li>\
+  <li class="popupUserlistItem">test3</li>\
+  <li class="popupUserlistItem">test4</li>\
+  <li class="popupUserlistItem">test5</li>\
+  <li class="popupUserlistItem">test6</li>\
+  <li class="popupUserlistItem">test7</li>\
+  <li class="popupUserlistItem">test8</li>\
+  <li class="popupUserlistItem">test9</li>\
+  <li class="popupUserlistItem">test10</li>\
+  </ol>'
+  $(this).after(html)
+ })
+
+ $(document).on('focusout','.memo-ans',function() {
+  let next = $(this).next()
+  if ($(next).attr('class') == 'popupUserlist') {
+   $(next).remove()
+  }
+ })
+
+ $(document).on('click','.preview-button',function() {
   let checkAns = true
   let data = {}
   $('.memo-ans').each(function(index,item) {
@@ -17,7 +88,6 @@ jQuery(function($) {
     data[id] = val
     $(item).removeClass("memo-error")
    }
-   //console.log(data)
   })
 
   if (checkAns) {
@@ -29,7 +99,83 @@ jQuery(function($) {
    })
    */
   $('.modal-memo').not(':first').remove()
-  $('.modal-memo').html('<div class="modal-page"><img class="modal-logo" src="img/logo.jpg"><div class="modal-memo-head"><div class="modal-memo-title center">บันทึกภายใน</div><table><tbody><tr><td><div class="modal-memo-cell"><div class="modal-memo-topic">ถึง:</div><div class="modal-memo-subject" id="modal-to"></div></div></td><td><div class="modal-memo-cell"><div class="modal-memo-topic">เลขที่เอกสาร:</div><div class="modal-memo-subject" id="modal-no"></div></div></td><td><div class="modal-memo-cell"><div class="modal-memo-topic">วันที่:</div><div class="modal-memo-subject" id="modal-date"></div></div></td></tr><tr><td><div class="modal-memo-cell"><div class="modal-memo-topic">สำเนาเรียน:</div><div class="modal-memo-subject" id="modal-cc"></div></div></td><td colspan="2"><div class="modal-memo-cell"><div class="modal-memo-topic">จาก:</div><div class="modal-memo-subject" id="modal-from"></div></div></td></tr><tr><td colspan="3"><div class="modal-memo-cell"><div class="modal-memo-topic">เรื่อง:</div><div class="modal-memo-subject" id="modal-subject"></div></div></td></tr><tr><td colspan="3"><div class="modal-memo-cell"><div class="modal-memo-topic">เอกสารแนบ:</div><div class="modal-memo-subject" id="modal-attach"></div></div></td></tr></tbody></table><div class="modal-memo-content"></div><div class="modal-section-signature"></div><div class="row justify-content-end"><div class="col-5"><div class="modal-section-admin" id="modal-section-admin"></div></div></div><div class="row justify-content-around"><div class="col-5"><div class="modal-section-approve" id="modal-section-approve"></div></div><div class="col-5"><div class="modal-section-boss" id="modal-section-boss"></div></div></div><div class="modal-memo-end"></div></div></div>')
+  $('.modal-memo').html('\
+  <div class="modal-page">\
+   <img class="modal-logo" src="img/logo.jpg">\
+   <div class="modal-memo-head">\
+    <div class="modal-memo-title center">บันทึกภายใน</div>\
+    <table>\
+     <tbody>\
+      <tr>\
+       <td>\
+        <div class="modal-memo-cell">\
+         <div class="modal-memo-topic">ถึง:</div>\
+         <div class="modal-memo-subject" id="modal-to"></div>\
+        </div>\
+       </td>\
+       <td>\
+        <div class="modal-memo-cell">\
+         <div class="modal-memo-topic">เลขที่เอกสาร:</div>\
+         <div class="modal-memo-subject" id="modal-no"></div>\
+        </div>\
+       </td>\
+       <td>\
+        <div class="modal-memo-cell">\
+         <div class="modal-memo-topic">วันที่:</div>\
+         <div class="modal-memo-subject" id="modal-date"></div>\
+        </div>\
+       </td>\
+      </tr>\
+      <tr>\
+       <td>\
+        <div class="modal-memo-cell">\
+         <div class="modal-memo-topic">สำเนาเรียน:</div>\
+         <div class="modal-memo-subject" id="modal-cc"></div>\
+        </div>\
+       </td>\
+       <td colspan="2">\
+        <div class="modal-memo-cell">\
+        <div class="modal-memo-topic">จาก:</div>\
+        <div class="modal-memo-subject" id="modal-from"></div>\
+        </div>\
+       </td>\
+      </tr>\
+      <tr>\
+       <td colspan="3">\
+        <div class="modal-memo-cell">\
+        <div class="modal-memo-topic">เรื่อง:</div>\
+        <div class="modal-memo-subject" id="modal-subject"></div>\
+        </div>\
+       </td>\
+      </tr>\
+      <tr>\
+       <td colspan="3">\
+        <div class="modal-memo-cell">\
+         <div class="modal-memo-topic">เอกสารแนบ:</div>\
+         <div class="modal-memo-subject" id="modal-attach"></div>\
+        </div>\
+       </td>\
+      </tr>\
+     </tbody>\
+    </table>\
+    <div class="modal-memo-content"></div>\
+    <div class="modal-section-signature"></div>\
+    <div class="justify-content-end">\
+     <div class="justify-item">\
+      <div class="modal-section-admin" id="modal-section-admin"></div>\
+     </div>\
+    </div>\
+    <div class="justify-content-around">\
+     <div class="justify-around">\
+      <div class="modal-section-approve" id="modal-section-approve"></div>\
+     </div>\
+     <div class="justify-around">\
+      <div class="modal-section-boss" id="modal-section-boss"></div>\
+     </div>\
+    </div>\
+    <div class="modal-memo-end"></div>\
+   </div>\
+  </div>')
   $('.modal-memo-content:first').html(content)
 
    if (data["memo-admin"] != undefined) {
@@ -45,9 +191,9 @@ jQuery(function($) {
     let job = (data["memo-bossj"] != undefined ? data["memo-bossj"] : "......................................")
     let code = '<div class="modal-section-seperate memo-approve-comment">ความคิดเห็น\
                 <br><br></div>\
+                 <div class="memo-comment-underline"></div><br>\
                  <div class="memo-comment-underline"></div>\
-                 <br>\
-                 <div class="memo-comment-underline"></div>\
+                 <div class="memo-comment-approve">ผู้ตรวจสอบ</div>\
                 <div class="memo-boss-name">('+name+')</div>\
                 <div class="memo-boss-job">'+job+'</div>'
     $('#modal-section-boss').html(code)
@@ -60,17 +206,22 @@ jQuery(function($) {
     let job = (data["memo-approvej"] != undefined ? data["memo-approvej"] : "......................................")
     let code = '<div class="modal-section-seperate memo-approve-comment">ความคิดเห็น\
                 <br><br></div>\
+                 <div class="memo-comment-underline"></div><br>\
                  <div class="memo-comment-underline"></div>\
-                 <span class="modal-comment-memo"><div class="memo-comment-approve">ผู้อนุมัติ</div><div class="memo-comment-underline"></div></span>\
+                 <div class="memo-comment-approve">ผู้อนุมัติ</div>\
                 <div class="memo-approve-name">('+name+')</div>\
                 <div class="memo-approve-job">'+job+'</div>'
     $('#modal-section-approve').html(code)   
    } else {
     $('#modal-section-approve').html("")
    }
-
+   
    $('.modal-memo').each(function() {
     snipMe.call(this)
+   })
+
+   $(document).on('click','.close-button',function() {
+    $('.close-editorModal').click()
    })
    
    $("#editorModal").animatedModal({
@@ -95,18 +246,19 @@ jQuery(function($) {
      }
     }
    })
-   //console.log(test)
   }
  })
- var max_pages = 100;
+ 
+ var max_pages = 30;
  var page_count = 0;
+ var pagesize = 20*0.2645833333
  function snipMe() {
   page_count++;
   if (page_count > max_pages) {
     return;
   }
   var content = $(this).find('.modal-page .modal-memo-head')
-  var long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight()+10);
+  var long = ($(this)[0].scrollHeight) - Math.ceil($(this).height());
   var children = $(content).children().toArray();
   var removed = [];
   while (long > 0 && children.length > 0) {
@@ -118,17 +270,17 @@ jQuery(function($) {
       child = childcontent.pop()
       removed.unshift('<div class="modal-memo-content">'+child.outerHTML+'</div>')
       $(child).detach()
-      long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight()+10)
+      long = ($(this)[0].scrollHeight) - Math.ceil($(this).height());
      }
     } else {
      removed.unshift(child)
      $(child).detach()
-     long = $(this)[0].scrollHeight - Math.ceil($(this).innerHeight())
+     long = ($(this)[0].scrollHeight) - Math.ceil($(this).height());
     }
   }
   if (removed.length > 0) {
     var a4 = $('.modal-memo:last')
-    $(a4).after('<div class="modal-memo"><div class="modal-page"><div class="modal-memo-head"></div></div></div>')
+    $(a4).after('<div class="modal-memo"><div class="modal-page" style="page-break-before: always;"><div class="modal-memo-head"></div></div></div>')
     content = $('.modal-memo:last .modal-page .modal-memo-head')
     content.append(removed)
     $(this).after(a4)
@@ -138,38 +290,49 @@ jQuery(function($) {
   } else {
    var a4 = $('.modal-memo:last')
    $(a4).addClass("overflow-hidden")
-  }
- }
-
- async function printPDF() {
-  var specialElementHandlers = {
-   'DIV to be rendered out': function(element, renderer){
-    return true;
+   if ($('.print-button').length == 0) {
+    $(a4).after('\
+    <div class="button-section" style="position:relative; top:-20px;">\
+     <button class="btn btn-secondary testbutton close-button" type="button">Close</button>\
+     <button class="btn btn-success testbutton print-button" type="button" onclick="printDiv()">Print</button>\
+    </div>')
    }
   }
-  var pdf = new jsPDF()
-  var doc = $(".modal-memo").html()
-  window.html2canvas = html2canvas
-  await pdf.html(doc,{
-   'elementHandlers': specialElementHandlers
-  })
-  pdf.save('test.pdf')
  }
-
- /*
-  var doc = new jsPDF();
-  var specialElementHandlers = {
-      '#editor': function (element, renderer) {
-          return true;
-      }
-  };
-
-  $('#cmd').click(function () {
-      doc.fromHTML($('#content').html(), 15, 15, {
-          'width': 170,
-              'elementHandlers': specialElementHandlers
-      });
-      doc.save('sample-file.pdf');
-  });
- */
 })
+
+async function printDiv() {
+ printElement = $('.modal-memo')
+ var mywindow = window.open('', 'PRINT');
+ var cssList = ['../css/ace.min.css','../css/memo.css','../css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
+ var loadCount = cssList.length
+
+ mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+ for (css in cssList) {
+  var link = mywindow.document.createElement('link');
+  link.setAttribute("rel", "stylesheet");
+  link.setAttribute("type", "text/css");
+  link.onload = function(){
+   if (--loadCount == 0) {
+    mywindow.print();
+    mywindow.close();
+   }
+  }
+  link.setAttribute("href", cssList[css]);
+  mywindow.document.getElementsByTagName("head")[0].appendChild(link);
+ }
+ mywindow.document.write('</head><body >');
+ for (item of printElement) {
+  mywindow.document.write(item.innerHTML);
+ }
+ mywindow.document.write('</body></html>');
+}
+
+function maxZIndex() { return Array.from(document.querySelectorAll('body *')).map(a => parseFloat(window.getComputedStyle(a).zIndex)).filter(a => !isNaN(a)).sort().pop(); }
+function getList(m,users,departs) {
+ let ans
+ users.filter(item => {
+  
+ })
+ return m
+}

@@ -6,17 +6,6 @@ lle = ['sick','personal','vacation','training','sterily','maternity','religious'
 lld = ['sickd','personald','vacationd','trainingd','sterilyd','maternityd','religiousd','militaryd'],
 llr = ['sickr','personalr','vacationr','trainingr','sterilyr','maternityr','religiousr','militaryr']
 
-function remodule(d) {
-	var i,a=[],d=d.toString()
-	if (d.length < 5) {i=1} else {i=0}
-	if (d.length == 3) {i=1} else {i=0}
-	if (d.length == 1) {i=1} else {i=0}
-	if (d.length+i == 6) { a.a= Number(d.substring(0,2-i)) , a.b= Number((Number(d.substring(2-i,2)) == 0 ? 0 : d.substring(2-i,2))) , a.c= Number((Number(d.substring(4-i,2)) == 0 ? 0 : d.substring(4-i,2))) }
-	if (d.length+i == 4) { a.a = 0 , a.b= Number(d.substring(0,2-i)) , a.c = Number((Number(d.substring(2-i,2)) == 0 ? d.substring(2-i,2) : d.substring(2-i,2))) }
-	if (d.length+i == 2) { a.a = 0 , a.b = 0 , a.c = Number(d.substring(0,2-i)) }
-	return a
-}
-
 async function getLar(userName,dataid,thisday) {
     a = new Date(thisday),
     LAR = [],

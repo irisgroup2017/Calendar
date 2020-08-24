@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 		user: process.env.USERMAIL,
 		pass: process.env.USERPASS
 	}
-  })
+})
 
 function remodule(d) {
 	var i,a,d=d.toString()
@@ -130,8 +130,9 @@ router.post('/',async function(req, res) {
 		res.json(objs)
 	}
 	if (req.body.state == 'loadm') {
-		var sql = 'SELECT * FROM privacy_data WHERE userName = ?'
-		result = await con.q(sql,req.body.userName)
+  var dataid = req.cookies.user_dataid
+		var sql = 'SELECT * FROM privacy_data WHERE dataid = ?'
+		result = await con.q(sql,dataid)
 		result = result[0]
 		var objs = {}
 		objs.dataid = result.dataid

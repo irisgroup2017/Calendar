@@ -69,7 +69,7 @@ block content
      tr
       td 
        .memo-quiz 
-        .memo-quest ผู้บังคับบัญชา:
+        .memo-quest ผู้ตรวจสอบ:
         input#memo-boss.memo-ans(type="text")
      //tr
       td
@@ -89,9 +89,10 @@ block content
        .memo-quiz
         .memo-quest ตำแหน่ง:
         input#memo-approvej.memo-ans(type="text")
-  input.testbutton(type="button")
+  .button-section
+   button.testbutton.preview-button(type="button") ดูตัวอย่าง
  +ssrc(['/ckeditor/ckeditor.js','memo.js','animatemodal.min.js','html2canvas.min.js'])
- script(src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js")
+ //script(src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js")
  +scss(['memo.css','animate.min.css'])
  #editorModal.animated.emp-modal(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
   .close-editorModal
@@ -137,12 +138,12 @@ block content
           .modal-memo-subject#modal-attach
      .modal-memo-content
      .modal-section-signature
-     .row.justify-content-end
-      .col-5
+     .justify-content-end
+      .justify-item
        .modal-section-admin#modal-section-admin
-     .row.justify-content-around
-      .col-5
+     .justify-content-around
+      .justify-around
        .modal-section-approve#modal-section-approve
-      .col-5
+      .justify-around
        .modal-section-boss#modal-section-boss
      .modal-memo-end
