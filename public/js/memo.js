@@ -39,30 +39,29 @@ jQuery(function($) {
   }
  })
 
- console.log(users)
- console.log(departs)
-
- $(document).on('keypress','.memo-ans:focus',function(e){
+ $(document).on('keyup','.memo-ans:focus',function(e){
   let next = $(this).next()
   if ($(next).attr('class') == 'popupUserlist') {
    $(next).remove()
   }
 
-  let input = e.key
+  let input = $(this).val()
   let result = getList(input,users,departs)
+  let html = '<ol class="popupUserlist" style="z-index: '+(maxZIndex()+1)+';">'
 
-  let html = '<ol class="popupUserlist" style="z-index: '+(maxZIndex()+1)+';">\
-  <li class="popupUserlistItem">test1</li>\
-  <li class="popupUserlistItem">test2</li>\
-  <li class="popupUserlistItem">test3</li>\
-  <li class="popupUserlistItem">test4</li>\
-  <li class="popupUserlistItem">test5</li>\
-  <li class="popupUserlistItem">test6</li>\
-  <li class="popupUserlistItem">test7</li>\
-  <li class="popupUserlistItem">test8</li>\
-  <li class="popupUserlistItem">test9</li>\
-  <li class="popupUserlistItem">test10</li>\
-  </ol>'
+  if (result.length == 0) {
+   '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'
+  } else {
+   html = '<ol class="popupUserlist" style="z-index: '+(maxZIndex()+1)+';">'
+   result.forEach(item => {
+    if (item.dataid != undefined) {
+     html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.dataid+'" data-mail="'+item.mail+'">'+item.name+'</li>'
+    } else {
+     html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.ID+'" data-mail="'+item.depart_mail+'">'+item.depart_short+'</li>'
+    }
+   })
+   html += '</ol>'
+  }
   $(this).after(html)
  })
 
@@ -329,10 +328,15 @@ async function printDiv() {
 }
 
 function maxZIndex() { return Array.from(document.querySelectorAll('body *')).map(a => parseFloat(window.getComputedStyle(a).zIndex)).filter(a => !isNaN(a)).sort().pop(); }
+
 function getList(m,users,departs) {
- let ans
- users.filter(item => {
-  
+ let ans,regex = new RegExp(m,'g')
+ users = users.filter(item => {
+  return (item.mail != null && (regex.test(item.name) || regex.test(item.mail)))
  })
- return m
+ departs = departs.filter(item => {
+  return (item.depart_mail != null && (regex.test(item.depart) || regex.test(item.depart_mail)))
+ })
+ ans = [...users,...departs]
+ return ans
 }
