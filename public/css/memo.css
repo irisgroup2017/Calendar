@@ -80,6 +80,10 @@ html,body {
  position: relative;
  height: 23px;
 }
+.memo-span2 {
+ margin: 0px !important;
+ padding: 0px !important;
+}
 
 .memo-head tr td .memo-quiz {
  position: relative;
@@ -98,6 +102,7 @@ html,body {
 
 .memo-input {
  list-style: none;
+ width: 100%;
  border: 0 !important;
  outline: 0;
  box-shadow: none;
