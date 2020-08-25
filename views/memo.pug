@@ -20,7 +20,11 @@ block content
       td 
        .memo-quiz 
         .memo-quest ถึง:
-        input#memo-to.memo-ans.memo-input(contenteditable="true" type="text")
+        span.memo-span
+         ul
+          li
+          li
+           input#memo-to.memo-input.memo-ans(contenteditable="true" type="text")
       td
        .memo-quiz
         .memo-quest เลขที่เอกสาร:
@@ -33,11 +37,19 @@ block content
       td
        .memo-quiz
         .memo-quest สำเนาเรียน:
-        input#memo-cc.memo-ans(type="text")
+        span.memo-span
+         ul
+          li    
+          li
+           input#memo-cc.memo-input.memo-ans(contenteditable="true" type="text")
       td(colspan="2")
        .memo-quiz
         .memo-quest จาก:
-        input#memo-from.memo-ans(type="text")
+        span.memo-span
+         ul
+          li    
+          li
+           input#memo-from.memo-input.memo-ans(contenteditable="true" type="text")
      tr
       td(colspan="3")
        .memo-quiz

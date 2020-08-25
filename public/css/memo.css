@@ -74,9 +74,11 @@ html,body {
  border-right: 1px var(--table-border) solid;
 }
 
-.memo-input {
- display: inline;
+.memo-span {
+ width: calc(100% - 2.5cm);
+ display: inline-block;
  position: relative;
+ height: 23px;
 }
 
 .memo-head tr td .memo-quiz {
@@ -94,8 +96,14 @@ html,body {
  width: 2.5cm;
 }
 
+.memo-input {
+ list-style: none;
+ border: 0 !important;
+ outline: 0;
+ box-shadow: none;
+}
+
 .memo-quiz > .memo-quest + .memo-ans {
- border: 0px;
  width: calc(100% - 2.5cm);
 }
 
