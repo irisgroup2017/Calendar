@@ -38,39 +38,54 @@ jQuery(function($) {
    departs = data
   }
  })
+ let result = getList('',users,departs)
+ let html = '<ol class="popupUserlist hide" style="z-index: '+(maxZIndex()+1)+';">'
+ if (result.length == 0) {
+  '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'
+ } else {
+  html = '<ol class="popupUserlist hide" style="z-index: '+(maxZIndex()+1)+';">'
+  result.forEach(item => {
+   if (item.dataid != undefined) {
+    html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.dataid+'" data-mail="'+item.mail+'" data-name="'+item.name+'" data-etc="'+item.jobPos+'">'+item.name+'</li>'
+   } else {
+    html += '<li class="popupUserlistItem" data-type="depart" data-id="'+item.ID+'" data-mail="'+item.depart_mail+'" data-name="'+item.depart+'" data-etc="'+item.depart_short+'">'+item.depart+'</li>'
+   }
+  })
+  html += '</ol>'
+ }
+ $('.container').append(html)
 
  $(document).on('keyup','.memo-ans:focus',function(e){
-  let next = $(this).next()
-  if ($(next).attr('class') == 'popupUserlist') {
-   $(next).remove()
-  }
-
+  $(this).addClass('focus')
   let input = $(this).val()
-  let result = getList(input,users,departs)
-  let html = '<ol class="popupUserlist" style="z-index: '+(maxZIndex()+1)+';">'
-
-  if (result.length == 0) {
-   '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'
-  } else {
-   html = '<ol class="popupUserlist" style="z-index: '+(maxZIndex()+1)+';">'
-   result.forEach(item => {
-    if (item.dataid != undefined) {
-     html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.dataid+'" data-mail="'+item.mail+'">'+item.name+'</li>'
-    } else {
-     html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.ID+'" data-mail="'+item.depart_mail+'">'+item.depart_short+'</li>'
-    }
-   })
-   html += '</ol>'
-  }
-  $(this).after(html)
+  let regex = new RegExp(input,'g')
+  let sect = $('.popupUserlist')
+  let list = $(sect).find('.popupUserlistItem')
+  let th = Math.floor($(this).offset().top-37)
+  let tl = Math.floor($(this).offset().left)
+  let tw = Math.floor($(this).width()+22)
+  $(sect).removeClass('hide')
+  $(sect).css({top: th, left: tl , width: tw})
+  $(list).each((i,e) => {
+   let data = $(e).data()
+   if (data.mail != null && ($(e).hasClass('select') || regex.test(data.mail) || regex.test(data.name) || regex.test(data.etc))) {
+    $(e).removeClass('hide')
+   } else {
+    $(e).addClass('hide')
+   }
+  })
  })
 
+ $(document).on('click','.popupUserlistItem',function(e){
+  let target = $(e.target) 
+  let input = $('.memo-ans.focus')
+  $(input).after('<span>test</span>')
+ })
+ 
  $(document).on('focusout','.memo-ans',function() {
-  let next = $(this).next()
-  if ($(next).attr('class') == 'popupUserlist') {
-   $(next).remove()
-  }
+  //$('.popupUserlist').addClass('hide')
  })
+ 
 
  $(document).on('click','.preview-button',function() {
   let checkAns = true
@@ -330,7 +345,8 @@ async function printDiv() {
 function maxZIndex() { return Array.from(document.querySelectorAll('body *')).map(a => parseFloat(window.getComputedStyle(a).zIndex)).filter(a => !isNaN(a)).sort().pop(); }
 
 function getList(m,users,departs) {
- let ans,regex = new RegExp(m,'g')
+ let ans
+ let regex = new RegExp(m,'g')
  users = users.filter(item => {
   return (item.mail != null && (regex.test(item.name) || regex.test(item.mail)))
  })
