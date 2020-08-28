@@ -77,9 +77,14 @@ jQuery(function($) {
  })
 
  $(document).on('click','.popupUserlistItem',function(e){
+  jQuery.noConflict()
   let target = $(e.target) 
-  let input = $('.memo-ans.focus')
-  $(input).after('<span>test</span>')
+  let input = $('.memo-ans.focus').parents('ul').find('.span-select')
+  console.log(input)
+  let select = $(target).data()
+  let name = select.name
+  let source = '<span>'+name+'</span>'
+  $(input).append(source)
  })
  
  $(document).on('focusout','.memo-ans',function() {

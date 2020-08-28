@@ -1,0 +1,17 @@
+extends layout
+
+block content
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='css/'+t)
+ mixin ssrc(scr)
+  for t in scr
+   script(src="js/"+t)
+ mixin tabcreate(data)
+  each c,i in data
+   input(type="radio" name="tablist" id="tabpage"+i+"" aria-controls="tabcontent"+i+"")
+   label(for="tabpage"+i+"")="Test"+i
+ .container
+  .tablist
+   +tabcreate([{a1:"a",b1:"b",c1:"c"},{a1:"a",b1:"b",c1:"c"}])
+ +scss(["tablelayout.css"])

@@ -74,26 +74,35 @@ html,body {
  border-right: 1px var(--table-border) solid;
 }
 
+.span-select {
+ display: inline;
+}
+.span-input {
+ display: inline;
+}
+
 .memo-span {
- width: calc(100% - 2.5cm);
- display: inline-block;
+ display: inline;
  position: relative;
- height: 23px;
 }
 .memo-span2 {
+ text-align: left;
+ white-space: normal;
+ overflow: hidden;
  margin: 0px !important;
  padding: 0px !important;
 }
 
 .memo-head tr td .memo-quiz {
  position: relative;
+ display: table;
  text-align: right;
  margin-top: 0;
  margin-bottom: 0;
 }
 
 .memo-quiz > .memo-quest {
- display: inline-block;
+ display: table-cell;
  text-align: right;
  background-color: var(--group-background);
  border-right: 1px var(--table-border) dotted;
