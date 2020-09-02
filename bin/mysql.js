@@ -32,6 +32,7 @@ const getConnection = () => {
           resolve(connection.release())
         })
       }
+      connection.release()
       resolve({ query, release })
     })
   })
