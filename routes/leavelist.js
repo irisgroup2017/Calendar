@@ -134,11 +134,13 @@ router.get('/', async function(req, res) {
 })
 
 router.post('/',async function(req,res) {
-    if (req.body.state == 'delete') {
+ if (req.body.state == 'delete') {
 		var filename = await con.q('SELECT fname FROM lar_data WHERE id = ?',req.body.larid)
 		if (filename[0].fname != '') { 
 			var path = __basedir + '/bin/doc/' + req.cookies.user_name + '/' +filename[0].fname 
-			fs.unlinkSync(path)
+   if (fs.existsSync(path)) {
+    fs.unlinkSync(path)
+   }
 		}
 		await con.q('DELETE FROM lar_data WHERE id = ?',req.body.larid)
 		log.logger('info','Delete Leave Data : '+ req.cookies.user_name +' ID '+ req.body.larid)
@@ -147,13 +149,13 @@ router.post('/',async function(req,res) {
 		await con.q('UPDATE lar_data SET approve = ?,deldate = ? WHERE id = ?',[0,now/1000,req.body.larid])
 		mailsend.send('ทำการยกเลิกการ',req.cookies.user_name,req.body.larid,'boss')
 		log.logger('info','Send delete request to BOSS: '+ req.cookies.user_name +' Leave ID '+ req.body.larid)
-    }
-    if (req.body.state == 'hrprove') {
+ }
+ if (req.body.state == 'hrprove') {
 		await con.q('UPDATE lar_data SET delreq = ?,deldate = ? WHERE id = ?',[1,now/1000,req.body.larid])
 		mailsend.send('แจ้งขอยกเลิกการ',req.cookies.user_name,req.body.larid,'hr')
 		log.logger('info','Send delete request to HR: '+ req.cookies.user_name +' Leave ID '+ req.body.larid)
-    }
-    res.json(req.body)
+ }
+ res.json(req.body)
 })
 
 module.exports = router

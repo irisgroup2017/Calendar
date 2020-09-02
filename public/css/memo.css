@@ -74,23 +74,50 @@ html,body {
  border-right: 1px var(--table-border) solid;
 }
 
+.span-select {
+ display: inline;
+}
+.span-input {
+ display: inline;
+}
+
+.memo-span {
+ display: inline;
+ position: relative;
+}
+.memo-span2 {
+ text-align: left;
+ white-space: normal;
+ overflow: hidden;
+ margin: 0px !important;
+ padding: 0px !important;
+}
+
 .memo-head tr td .memo-quiz {
  position: relative;
+ display: table;
  text-align: right;
  margin-top: 0;
  margin-bottom: 0;
 }
 
 .memo-quiz > .memo-quest {
- display: inline-block;
+ display: table-cell;
  text-align: right;
  background-color: var(--group-background);
  border-right: 1px var(--table-border) dotted;
  width: 2.5cm;
 }
 
+.memo-input {
+ list-style: none;
+ width: 100%;
+ border: 0 !important;
+ outline: 0;
+ box-shadow: none;
+}
+
 .memo-quiz > .memo-quest + .memo-ans {
- border: 0px;
  width: calc(100% - 2.5cm);
 }
 
@@ -110,26 +137,45 @@ html,body {
  border: 1px solid var(--group-border-error);
 }
 
-.memo-ans + .popupUserlist {
+
+.popupUserlist {
  position: absolute;
+ text-align: right;
+ direction: ltr;
  list-style-type: none;
- border: 1px solid #EEF4FF;
- width: 100%;
+ border: 3px solid #24262b83;
+ height: auto;
+ max-height: 150px;
  overflow-y: auto;
- top: 100%;
- left: 0;
  margin: 0;
- display: table;
 }
 
-.memo-ans + .popupUserlist > .popupUserlistItem {
+.popupUserlist.hide {
+ visibility: hidden;
+}
+
+.popupUserlist > .popupUserlistItem {
+ padding-left: 2px;
  position: relative;
- display: table-row-group;
+ width: auto;
  border: 1px solid #EEF4FF;
- text-align: center;
+ text-align: left;
  background-color: white;
 }
 
+.popupUserlist > .popupUserlistItem.hide {
+ visibility: hidden;
+}
+
+.popupUserlist > .popupUserlistItem.select {
+ background-color: #cbd1dc98;
+ color: #CDD9ED;
+}
+
+.popupUserlistItem.select:hover {
+ cursor: pointer;
+ color: #ffffff;
+}
 .popupUserlistItem:hover {
  cursor: pointer;
  color: red;
