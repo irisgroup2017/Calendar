@@ -6,12 +6,30 @@ block content
    link(rel='stylesheet' , href='css/'+t)
  mixin ssrc(scr)
   for t in scr
-   script(src="js/"+t)
+   script(src="../js/"+t)
  mixin tabcreate(data)
   each c,i in data
-   input(type="radio" name="tablist" id="tabpage"+i+"" aria-controls="tabcontent"+i+"")
-   label(for="tabpage"+i+"")="Test"+i
+   if i == 0
+    input(type="radio" class="tabcheck" name="tablist" id="tabpage"+i+"" data-controls="tabcontent"+i+"")
+    label(for="tabpage"+i+"")="Test"+i
+   else
+    input(type="radio" class="tabcheck" name="tablist" id="tabpage"+i+"" data-controls="tabcontent"+i+"")
+    label(for="tabpage"+i+"")="Test"+i
+ mixin tablecreate(data)
+  each tab,i in data
+   table.tabtable(id="tabcontent"+i+"")
+    tr
+     each table,key in tab
+      if i == 0
+       th=tab[key]
+      else
+       td=tab[key]
+
  .container
   .tablist
-   +tabcreate([{a1:"a",b1:"b",c1:"c"},{a1:"a",b1:"b",c1:"c"}])
+   +tabcreate([{a1:"a",b1:"b",c1:"c"},{a1:"a",b1:"b",c1:"c"},{a1:"a",b1:"b",c1:"c"}])
+  .tablelist
+   +tablecreate([{a1:"a",b1:"b",c1:"c"},{a1:"a",b1:"b",c1:"c"},{a1:"a",b1:"b",c1:"c"}])
+   
  +scss(["tablelayout.css"])
+ +ssrc(["tablescript.js"])

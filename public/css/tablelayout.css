@@ -1,0 +1,51 @@
+.tablist .tabcheck {
+ position: absolute;
+ left: -200vw;
+}
+
+.tablist > label {
+ position: relative;
+ display: inline-block;
+ padding: 15px 15px 25px;
+ border: 1px solid transparent;
+ border-bottom: 0;
+ cursor: pointer;
+ font-weight: 600;
+ margin-bottom: 0px;
+}
+
+.tablist > label::after {
+ content: "";
+ position: absolute;
+ left: 15px;
+ bottom: 10px;
+ width: 22px;
+ height: 4px;
+ background: #8d8d8d;
+}
+
+.tablist > label:hover,
+.tablist > input:focus + label {
+ color: #06c;
+}
+
+.tablist > label:hover::after,
+.tablist > input:focus + label::after,
+.tablist > input:checked + label::after {
+ background: #06c;
+}
+
+.tablist > input:checked + label {
+ border-color: #ccc;
+ border-bottom: 1px solid #fff;
+ margin-bottom: -1px;
+}
+
+.tablelist {
+ padding: 30px 15px;
+ border: 1px solid #ccc;
+}
+
+.tablelist .tabtable {
+ display: block;
+}
