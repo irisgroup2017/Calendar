@@ -114,7 +114,7 @@ jQuery(function($) {
 
     var date = new Date(),
 	   d = date.getDate(),
-    m = date.getMonth(),
+       m = date.getMonth(),
 	   y = date.getFullYear(),
 
     events = [],
@@ -459,7 +459,7 @@ jQuery(function($) {
                 }
             })
             tddate = new Date(y,m,d,0).getTime()
-            if (copiedEventObject.start < tddate+vacation && copiedEventObject.className == 'label-warning') { 
+            if (vacation > 0 && copiedEventObject.start < tddate+vacation && copiedEventObject.className == 'label-warning') { 
                 createEvent = false 
                 alert("การลาพักร้อน กรุณาลาล่วงหน้า "+leaveExcept+" วัน");
             }
