@@ -56,9 +56,9 @@ $(document).ready(function(){
                         orderMulti: true,
                         pageLength: 50,
                         data: data,
-                        fixedColumns: {
+                        /*fixedColumns: {
                             leftColumns: 2
-                        },
+                        },*/
                         fixedHeader: {
                             header: true
                         },
