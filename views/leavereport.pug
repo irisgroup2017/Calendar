@@ -14,7 +14,6 @@ block content
  mixin listmonth(month)
   each item,index in month
    button.month-item.dropdown-item(value=index)=item
- +scss(['bootstrap-datepicker.min.css','datatable/datatables.min.css'])
  .menu-row
   .col-sm-1
    .dropdown
@@ -63,6 +62,8 @@ block content
      th สิทธิ
      th ใช้
  +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','datatables.min.js','dataTables.buttons.min.js','leavereport.js'])
+ +scss(['bootstrap-datepicker.min.css','datatable/datatables.min.css'])
+
  style.
   .menu-row { width:100%;margin-bottom:15px }
   table {width: 100% !important;margin: auto;overflow: auto;}
