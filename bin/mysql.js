@@ -6,8 +6,8 @@ const dbconfig = {
  user: process.env.DB_USER,
  password: process.env.DB_PASSWORD,
  database: process.env.DB_NAME,
- waitForConnections: false,
- connectionLimit: 10,
+ waitForConnections: true,
+ connectionLimit: 1000,
  queueLimit: 0
 }
 
@@ -32,7 +32,6 @@ const getConnection = () => {
           resolve(connection.release())
         })
       }
-      connection.release()
       resolve({ query, release })
     })
   })

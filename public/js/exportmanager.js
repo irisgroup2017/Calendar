@@ -1,146 +1,142 @@
-$(document).ready(function(){ 
-    $(window).on("load",function() {
-        var d = new Date()
-        $('.datepickera').datepicker('setDate',new Date(d.getFullYear(),d.getMonth()-1,21))
-        $('.datepickerb').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),20))
-    })
-    $('.datepicker').datepicker({
-        ignoreReadonly: true,
-        format: 'dd MM yyyy',
-        todayHighlight: true
-    })
-    $('.datepickera').datepicker().on('changeDate',function(e){
-        $('.datepickera').datepicker('hide')
-        $('.datepickerb').datepicker('show')
-    })
-    $('.datepickerb').datepicker().on('changeDate',function(e){
-        $('.datepickerb').datepicker('hide')
+$(window).on("load",function() {
+    var d = new Date()
+    $('.datepickera').datepicker('setDate',new Date(d.getFullYear(),d.getMonth()-1,21))
+    $('.datepickerb').datepicker('setDate',new Date(d.getFullYear(),d.getMonth(),20))
+})
+$('.datepicker').datepicker({
+    ignoreReadonly: true,
+    format: 'dd MM yyyy',
+    todayHighlight: true
+})
+$('.datepickera').datepicker().on('changeDate',function(e){
+    $('.datepickera').datepicker('hide')
+    $('.datepickerb').datepicker('show')
+})
+$('.datepickerb').datepicker().on('changeDate',function(e){
+    $('.datepickerb').datepicker('hide')
+})
+$(".tyear").on("click",function(){
+    $(".month-list").toggleClass("hide")
+})
+$(".dropdown dt a").on('click', function() {
+    $(".dropdown dd ul").slideToggle('fast')
+})
+$("#view").on("click",function() {
+    let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
+    let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
+    let selected = $(".multiselect span")
+    let id = $.map(selected,function(span,index) {
+        return span.className
     })
 
-    $(".tyear").on("click",function(){
-        $(".month-list").toggleClass("hide")
-    })
-
-    $(".dropdown dt a").on('click', function() {
-        $(".dropdown dd ul").slideToggle('fast')
-    })
-    $("#view").on("click",function() {
-        let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
-        let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
-        let selected = $(".multiselect span")
-        let id = $.map(selected,function(span,index) {
-            return span.className
-        })
-
-        if (!id.length) { id = "empty" }
-        $.ajax({
-            url: '/exportmanager',
-            type: "POST",
-            async: false,
-            data: {
-                "state": "view",
-                "id": id,
-                "start": datepicka,
-                "end": datepickb
-            },
-            success: function (data,res,jqXHR) {
-                let status = jqXHR.status
-                if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
-                if (status == 200) {
-                    $(".show-table").DataTable({
-                        destroy: true,
-                        scrollX: true,
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        orderMulti: true,
-                        pageLength: 50,
-                        data: data,
-                        /*fixedColumns: {
-                            leftColumns: 2
-                        },*/
-                        fixedHeader: {
-                            header: true
-                        },
-                        createdRow: function ( row, data, index ) {
-                         let a = data.insert.split("/")
-                         let b = data.start.split("/")
-                         a = new Date(a[2],a[1],a[0]).getTime()
-                         b = new Date(b[2],b[1],b[0]).getTime()
-                         c = b-a
-                         if (data.type == "ลาพักร้อน" && c < 25200000) {
-                          $('td', row).eq(2).addClass('highlight')
-                         }
-                        },
-                        //orderFixed: [0, 'asc'],
-                        /*rowGroup: {
-                            dataSrc: 'name'
-                        },*/
-                        "search": {
-                            "regex": true,
-                            "smart": true
-                        },
-                        columns:[
-                            { data: "name", title: "ชื่อ - นามสกุล" },
-                            { data: "depart", title: "สังกัดฝ่าย" },
-                            { data: "insert", title: "วันที่ยื่นขอ" },
-                            { data: "start", title: "วันเริ่มต้น" },
-                            { data: "startTime", className: "dt-body-center", title: "เวลาเริ่มต้น" },
-                            { data: "end", title: "วันสิ้นสุด" },
-                            { data: "endTime", className: "dt-body-center", title: "เวลาสิ้นสุด" },
-                            { data: "type", title: "ประเภทการลา" },
-                            { data: "title", title: "เหตุผลการลา" },
-                            { data: "swap", className: "dt-body-center", title: "วันที่สลับวันหยุด" },
-                            { data: "thisyear", className: "dt-body-center", title: "สิทธิได้รับปีนี้" },
-                            { data: "lastyear" , className: "dt-body-center" , title: "สิทธิคงเหลือปีก่อน" },
-                            { data: "totalyear" , className: "dt-body-center" , title: "สิทธิในปีนี้" },
-                            { data: "used" , className: "dt-body-center" , title: "ใช้" },
-                            { data: "remain" , className: "dt-body-center" , title: "คงเหลือ" },
-                            { data: "status", title: "สถานะ" },
-                            { data: "approver", title: "ผู้อนุมัติ" },
-                            { data: "approved", title: "วันที่อนุมัติ" }
-                        ]
-                    })
-                }
-            },
-            error: function (e) {
-                console.log("error",e)
+    if (!id.length) { id = "empty" }
+    $.ajax({
+        url: '/exportmanager',
+        type: "POST",
+        async: false,
+        data: {
+            "state": "view",
+            "id": id,
+            "start": datepicka,
+            "end": datepickb
+        },
+        success: function (data,res,jqXHR) {
+            let status = jqXHR.status
+            if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
+            if (status == 200) {
+                $(".show-table").DataTable({
+                    destroy: true,
+                    scrollX: true,
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    orderMulti: true,
+                    pageLength: 50,
+                    data: data,
+                    /*fixedColumns: {
+                        leftColumns: 2
+                    },*/
+                    fixedHeader: {
+                        header: true
+                    },
+                    createdRow: function ( row, data, index ) {
+                     let a = data.insert.split("/")
+                     let b = data.start.split("/")
+                     a = new Date(a[2],a[1],a[0]).getTime()
+                     b = new Date(b[2],b[1],b[0]).getTime()
+                     c = b-a
+                     if (data.type == "ลาพักร้อน" && c < 25200000) {
+                      $('td', row).eq(2).addClass('highlight')
+                     }
+                    },
+                    //orderFixed: [0, 'asc'],
+                    /*rowGroup: {
+                        dataSrc: 'name'
+                    },*/
+                    "search": {
+                        "regex": true,
+                        "smart": true
+                    },
+                    columns:[
+                        { data: "name", title: "ชื่อ - นามสกุล" },
+                        { data: "depart", title: "สังกัดฝ่าย" },
+                        { data: "insert", title: "วันที่ยื่นขอ" },
+                        { data: "start", title: "วันเริ่มต้น" },
+                        { data: "startTime", className: "dt-body-center", title: "เวลาเริ่มต้น" },
+                        { data: "end", title: "วันสิ้นสุด" },
+                        { data: "endTime", className: "dt-body-center", title: "เวลาสิ้นสุด" },
+                        { data: "type", title: "ประเภทการลา" },
+                        { data: "title", title: "เหตุผลการลา" },
+                        { data: "swap", className: "dt-body-center", title: "วันที่สลับวันหยุด" },
+                        { data: "thisyear", className: "dt-body-center", title: "สิทธิได้รับปีนี้" },
+                        { data: "lastyear" , className: "dt-body-center" , title: "สิทธิคงเหลือปีก่อน" },
+                        { data: "totalyear" , className: "dt-body-center" , title: "สิทธิในปีนี้" },
+                        { data: "used" , className: "dt-body-center" , title: "ใช้" },
+                        { data: "remain" , className: "dt-body-center" , title: "คงเหลือ" },
+                        { data: "status", title: "สถานะ" },
+                        { data: "approver", title: "ผู้อนุมัติ" },
+                        { data: "approved", title: "วันที่อนุมัติ" }
+                    ]
+                })
             }
-        })
-    })
-
-    $("#export").click(function() {
-        let rdo = $("input[name=option]:checked").val()
-        let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
-        let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
-        let selected = $(".multiselect span")
-        let id = $.map(selected,function(span,index) {
-            return span.className
-        })
-
-        if (!id.length) { id = "empty"}
-        $.ajax({
-            url: '/exportmanager',
-            type: "POST",
-            async: false,
-            data: {
-                "state": "export",
-                "option": rdo,
-                "id": id,
-                "start": datepicka,
-                "end": datepickb
-            },
-            success: function (data,res,jqXHR) {
-                let status = jqXHR.status
-                if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
-                if (status == 200) {
-                    window.location = data
-                }
-            },
-            error: function (e) {
+        },
+        error: function (e) {
             console.log("error",e)
+        }
+    })
+})
+
+$("#export").click(function() {
+    let rdo = $("input[name=option]:checked").val()
+    let datepicka = $('.datepickera').datepicker('getDate').getTime()/1000
+    let datepickb = $('.datepickerb').datepicker('getDate').getTime()/1000
+    let selected = $(".multiselect span")
+    let id = $.map(selected,function(span,index) {
+        return span.className
+    })
+
+    if (!id.length) { id = "empty"}
+    $.ajax({
+        url: '/exportmanager',
+        type: "POST",
+        async: false,
+        data: {
+            "state": "export",
+            "option": rdo,
+            "id": id,
+            "start": datepicka,
+            "end": datepickb
+        },
+        success: function (data,res,jqXHR) {
+            let status = jqXHR.status
+            if (status == 204) { alert('ไม่พบข้อมูลในรายการที่คุณกำหนด') }
+            if (status == 200) {
+                window.location = data
             }
-        })
+        },
+        error: function (e) {
+        console.log("error",e)
+        }
     })
 })
     

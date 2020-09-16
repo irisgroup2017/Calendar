@@ -1,15 +1,13 @@
 // Setup page
 
-$(document).ready(function(){ 
- $(window).on("load",function() {
-  $('.datepickera').datepicker('setDate',(moment().startOf('isoweek'))._d)
-  $('.datepickerb').datepicker('setDate',(moment().endOf('isoweek'))._d)
+$(window).on("load",function() {
+ $('.datepickera').datepicker('setDate',(moment().startOf('isoweek'))._d)
+ $('.datepickerb').datepicker('setDate',(moment().endOf('isoweek'))._d)
 
-  $('.datepicker').datepicker({
-   ignoreReadonly: true,
-   format: 'dd',
-   todayHighlight: true
-  })
+ $('.datepicker').datepicker({
+  ignoreReadonly: true,
+  format: 'dd MM yyyy',
+  todayHighlight: true
  })
 })
 
