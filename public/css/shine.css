@@ -1,31 +1,33 @@
-p.shine
-    {
-        font-size: 3em;
-        margin: 0 auto;
-        width: 700px;
-    }
+p.shine {
+ font-size: 3em;
+ margin: 0 auto;
+ width: 700px;
+}
 
-    .shine
-    {
-        background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;
-        -webkit-background-size: 125px;
-        
-        color: rgba(255, 255, 255, 0.1);
-        -webkit-background-clip: text;
-        
-        -webkit-animation-name: shine;
-        -webkit-animation-duration: 5s;
-        -webkit-animation-iteration-count: infinite;
-    }
+.shine {
+ background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;
+ -webkit-background-size: 125px;
+ color: rgba(255, 255, 255, 0.1);
+ -webkit-background-clip: text;
+ -webkit-animation-name: shine;
+ -webkit-animation-duration: 5s;
+ -webkit-animation-iteration-count: infinite;
+}
 
-    @-webkit-keyframes shine
-    {
-        0%
-        {
-            background-position: top left;
-        }
-        100%
-        {
-            background-position: top right;
-        }
-    }
+@-webkit-keyframes shine {
+ 0% { background-position: top left; }
+ 100% { background-position: top right; }
+}
+
+#toggle-vacation.check {
+ background-color: rgb(46, 107, 206) !important;
+}
+#toggle-vacation:after {
+ content: "เปิดเงื่อนไขการลาพักร้อน";
+}
+#toggle-vacation.check:after {
+ content: "ปิดเงื่อนไขการลาพักร้อน";
+}
+#toggle-vacation:hover{
+ border-color: rgba(242, 247, 243, 0) !important;
+}

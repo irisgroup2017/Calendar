@@ -1,4 +1,13 @@
-﻿function checkfile(sender) {
+﻿var leaveExcept
+$.ajax({
+ url: '/lar/getvacation',
+ type: 'GET',
+ async: false,
+ success: function(data) { leaveExcept = parseInt(data) }
+})
+var vacation = (leaveExcept*60*60*24*1000)
+
+function checkfile(sender) {
     var validExts = new Array(".pdf",".jpg")
     var fileExt = sender.value;
     fileExt = fileExt.substring(fileExt.lastIndexOf('.')).toLowerCase()
@@ -33,6 +42,24 @@
         return true 
     }
 }
+
+$(document).on("click","#load-data",function() {
+ window.location.replace(window.location.href +"/loaddata")
+})
+$(document).on("click","#toggle-vacation",function() {
+ $.ajax({
+  url: '/lar/togglevacation',
+  type: 'GET',
+  async: false,
+  success: function(data) { leaveExcept = parseInt(data) }
+ })
+ if (leaveExcept > 0) {
+  $(this).addClass('check')
+ } else {
+  $(this).removeClass('check')
+ }
+ vacation = (leaveExcept*60*60*24*1000)
+})
 
 $(document).on("click",".viewattach",function() {
     var thisfile = $(this).attr('id'),
@@ -96,7 +123,6 @@ jQuery(function($) {
 			revert: true,      // will cause the event to go back to its
 			revertDuration: 0  //  original position after the drag
 		})
-		
 	})
 
 	/* initialize the calendar
@@ -114,16 +140,14 @@ jQuery(function($) {
 
     var date = new Date(),
 	   d = date.getDate(),
-       m = date.getMonth(),
+    m = date.getMonth(),
 	   y = date.getFullYear(),
 
     events = [],
     mailGroup = "",
     isClicked = false,
     isDblClicked = false
-   
-    var leaveExcept = 7
-    var vacation = (leaveExcept*60*60*24*1000)
+
     var fcwend,fcwstart,fcwdow,ip
 
     $.ajax({

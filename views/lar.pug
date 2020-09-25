@@ -22,6 +22,17 @@ block content
      div.space
      div(id="calendar")
     div.col-sm-3
+     if parms.operator > 3
+      div.widget-box.transparent
+       div.widget-header
+        h4="เครื่องมือ"
+      div.widget-body
+       div.widget-main.no-padding
+        div.btn.btn-sm.btn-info#load-data อัพเดทลายนิ้วมือ
+        if parms.vacation > 0
+         div.btn.btn-sm.btn-info.check#toggle-vacation 
+        else
+         div.btn.btn-sm.btn-info#toggle-vacation 
      div.widget-box.transparent
       div.widget-header
        h4="ประเภทการลา (ลากไปวางในวันที่ต้องการลา)"

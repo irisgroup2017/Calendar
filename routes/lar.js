@@ -5,11 +5,23 @@ const con = require('../bin/mysql')
 const larstock = require('../bin/larstock')
 const log = require('../bin/logger')
 const fingerscan = require('../bin/fingerscan')
+require("dotenv").config()
 
 /* GET /lar. */
 router.get('/loaddata', async function(req, res) {
  await fingerscan.fingerToJSON()
  res.redirect('/lar')
+})
+
+router.get('/togglevacation', async function(req, res) {
+ let vacation = (process.env.VACATION === '0' ? '7' : '0')
+ process.env.VACATION = vacation
+ res.end(vacation)
+})
+
+router.get('/getvacation', async function(req, res) {
+ let vacation = process.env.VACATION
+ res.end(vacation)
 })
 
 router.get('/', async function(req, res) {
@@ -24,7 +36,8 @@ router.get('/', async function(req, res) {
 		parms = { title: 'ระบบลา', head1: 'ระบบลา' }
 		parms.lars = await ll.viewLar(userName,dataid,new Date().getTime())
 		parms.larl = parms.lars.length
-		parms.user = userName
+  parms.user = userName
+  parms.vacation = parseInt(process.env.VACATION)
   parms.operator = dataop
 	} else {
 		res.redirect('/login')
