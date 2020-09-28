@@ -3,11 +3,13 @@ const ADODB = require('node-adodb')
 const fs = require('fs')
 const path = require('path')
 const con = require('./mysql')
+require("dotenv").config()
 
 async function fingerToJSON() {
+ let scanDb = process.env.DB_SCAN
  let userlist = await con.q('SELECT dataid,emid FROM user_data WHERE status = ? AND depart <> ?',[1,'BRI'])
  ADODB.debug = true
- const mdb = ADODB.open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source='D:\\clone\\Calendar\\DB_FingerScan.mdb';",false)
+ const mdb = ADODB.open(scanDb,false)
  for (const id of userlist) {
   let ID = id.dataid
   let emid = id.emid
