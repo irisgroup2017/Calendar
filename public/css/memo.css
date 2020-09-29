@@ -87,18 +87,20 @@ html,body {
 }
 .memo-span2 {
  text-align: left;
- white-space: normal;
+ white-space: nowrap;
  overflow: hidden;
  margin: 0px !important;
  padding: 0px !important;
 }
 
 .memo-head tr td .memo-quiz {
+ width: 100%;
  position: relative;
  display: table;
  text-align: right;
  margin-top: 0;
  margin-bottom: 0;
+ overflow-wrap: inherit;
 }
 
 .memo-quiz > .memo-quest {
@@ -110,6 +112,7 @@ html,body {
 }
 
 .memo-input {
+ display: inline-block;
  list-style: none;
  width: 100%;
  border: 0 !important;
@@ -137,6 +140,9 @@ html,body {
  border: 1px solid var(--group-border-error);
 }
 
+.select-target {
+ display: inline-block;
+}
 
 .popupUserlist {
  position: absolute;

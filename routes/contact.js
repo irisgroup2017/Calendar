@@ -62,7 +62,7 @@ router.get('/',async function(req, res) {
                 }
             }
         }
-        parms.depart=depart
+        parms.depart = depart
         parms.user = userName
         parms.list = nameLst
         parms.operator = dataop
@@ -146,13 +146,13 @@ router.post('/',async function(req,res){
         con.q('UPDATE contact_data SET '+query+ ' WHERE dataid = ?',[parseInt(req.body.data.ID)])
     }
     if (req.body.state == "add") {
-        let
-        ID = await con.q('SELECT MAX(ID) ID FROM depart_row'),
-        line = await con.q('SELECT MAX(row) row FROM depart_row'),
-        depart = req.body.depart
+        let ID = await con.q('SELECT MAX(ID) ID FROM depart_row')
+        let line = await con.q('SELECT MAX(row) row FROM depart_row')
+        let depart = req.body.depart
+        let mail = req.body.mail
         ID = ID[0].ID+1
         line = line[0].row+1
-        con.q('INSERT INTO depart_row (ID,depart,row) VALUES (?,?,?)',[ID,depart,line])
+        con.q('INSERT INTO depart_row (ID,depart,row,depart_mail) VALUES (?,?,?,?)',[ID,depart,line,mail])
         req.body.ID = ID
         req.body.line = line
         res.json(req.body)
@@ -189,9 +189,10 @@ router.post('/',async function(req,res){
         }
     }
     if (req.body.state == "edit-de") {
-        let ID = req.body.ID,
-        depart = req.body.depart
-        con.q('UPDATE depart_row SET depart = ? WHERE ID = ?',[depart,ID])
+        let ID = req.body.ID
+        let depart = req.body.depart
+        let mail = req.body.mail
+        con.q('UPDATE depart_row SET depart = ?,depart_mail = ? WHERE ID = ?',[depart,mail,ID])
         res.json(req.body)
     }
     if (req.body.state == "move-li") {

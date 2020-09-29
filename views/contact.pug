@@ -4,7 +4,10 @@ block content
  mixin linfo(list,depart)
   each dep,index in list
    tr(id='head-'+depart[index].ID class="group_heading nodrag")
-    th(colspan="9")=depart[index].depart
+    if depart[index].depart_mail
+     th(colspan="9")=depart[index].depart +' ('+ depart[index].depart_mail +')'
+    else
+     th(colspan="9")=depart[index].depart
    each item in dep
     if item != undefined
      tr(id='body-'+item.ID class="boding")
@@ -39,7 +42,10 @@ block content
  mixin deadd(item)
   for t in item
    tr(ID=t.ID)
-    td=t.depart
+    if t.depart_mail
+     td=t.depart +' ('+ t.depart_mail +')'
+    else
+     td=t.depart
     td=t.row+1
     td
      a.button.edit.de-edit="แก้ไขชื่อ"

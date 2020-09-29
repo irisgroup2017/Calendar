@@ -35,62 +35,66 @@ jQuery(function($) {
    }
   },
   success: function (data) {
+   console.log(data)
    departs = data
   }
  })
  let result = getList('',users,departs)
  let html = '<ol class="popupUserlist hide" style="z-index: '+(maxZIndex()+1)+';">'
- if (result.length == 0) {
-  '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'
- } else {
-  html = '<ol class="popupUserlist hide" style="z-index: '+(maxZIndex()+1)+';">'
-  result.forEach(item => {
-   if (item.dataid != undefined) {
-    html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.dataid+'" data-mail="'+item.mail+'" data-name="'+item.name+'" data-etc="'+item.jobPos+'">'+item.name+'</li>'
-   } else {
-    html += '<li class="popupUserlistItem" data-type="depart" data-id="'+item.ID+'" data-mail="'+item.depart_mail+'" data-name="'+item.depart+'" data-etc="'+item.depart_short+'">'+item.depart+'</li>'
-   }
-  })
-  html += '</ol>'
- }
+ html += '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'
+ result.forEach(item => {
+  if (item.dataid != undefined) {
+   html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.dataid+'" data-mail="'+item.mail+'" data-name="'+item.name+'" data-etc="'+item.jobPos+'">'+item.name+'</li>'
+  } else {
+   html += '<li class="popupUserlistItem" data-type="depart" data-id="'+item.ID+'" data-mail="'+item.depart_mail+'" data-name="'+item.depart+'" data-etc="'+item.depart_short+'">'+item.depart+'</li>'
+  }
+ })
+ html += '</ol>'
  $('.container').append(html)
 
+ $(document).on('click','.memo-ans',function(e){
+  $('.memo-ans.focus').removeClass('focus')
+  $('.popupUserlist').addClass('hide')
+ })
+
  $(document).on('keyup','.memo-ans:focus',function(e){
-  $(this).addClass('focus')
-  let input = $(this).val()
-  let regex = new RegExp(input,'g')
-  let sect = $('.popupUserlist')
-  let list = $(sect).find('.popupUserlistItem')
-  let th = Math.floor($(this).offset().top-37)
-  let tl = Math.floor($(this).offset().left)
-  let tw = Math.floor($(this).width()+22)
-  $(sect).removeClass('hide')
-  $(sect).css({top: th, left: tl , width: tw})
-  $(list).each((i,e) => {
-   let data = $(e).data()
-   if (data.mail != null && ($(e).hasClass('select') || regex.test(data.mail) || regex.test(data.name) || regex.test(data.etc))) {
-    $(e).removeClass('hide')
-   } else {
-    $(e).addClass('hide')
-   }
-  })
+  if ($(this).parents('ul').find('.span-select').length > 0) {
+   $(this).addClass('focus')
+   let input = $(this).val()
+   let regex = new RegExp(input,'g')
+   let sect = $('.popupUserlist')
+   let list = $(sect).find('.popupUserlistItem')
+   let th = Math.floor($(this).offset().top-37)
+   let tl = Math.floor($(this).offset().left)
+   let tw = Math.floor($(this).width()+22)
+   $(sect).removeClass('hide')
+   $(sect).css({top: th, left: tl , width: tw})
+   $(list).each((i,e) => {
+    let data = $(e).data()
+    if (data.mail != null && ($(e).hasClass('select') || regex.test(data.mail) || regex.test(data.name) || regex.test(data.etc))) {
+     $(e).removeClass('hide')
+    } else {
+     $(e).addClass('hide')
+    }
+   })
+  }
  })
 
  $(document).on('click','.popupUserlistItem',function(e){
   jQuery.noConflict()
-  let target = $(e.target) 
+  let target = $(e.target)
   let input = $('.memo-ans.focus').parents('ul').find('.span-select')
-  console.log(input)
   let select = $(target).data()
-  let name = select.name
-  let source = '<span>'+name+'</span>'
+  let nameSplit = select.split('')
+  let source = '<span>'+ (select.type == "user" ? nameSplit[0] +' '+ nameSplit[2].substr(0,1) +'.' : select.name) +'</span>'
   $(input).append(source)
+  $('.memo-ans.focus').val("")
+  $('.popupUserlist').addClass('hide')
  })
  
  $(document).on('focusout','.memo-ans',function() {
-  //$('.popupUserlist').addClass('hide')
+
  })
- 
 
  $(document).on('click','.preview-button',function() {
   let checkAns = true

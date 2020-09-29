@@ -267,10 +267,14 @@ $(document).ready(function() {
               <div class="modal-body">\
                 <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
                 <form class="no-margin">\
-                <div class="input">\
-                    <input type="text" id="deadd" class="input-text" placeholder="ชื่อหน่วยงาน">\
-                    <label for="input" class="input-label">ชื่อหน่วยงาน</label>\
-                </div>\
+                 <div class="input">\
+                     <input type="text" id="input-dep" class="input-text" placeholder="ชื่อหน่วยงาน">\
+                     <label for="input-dep" class="input-label">ชื่อหน่วยงาน</label>\
+                 </div>\
+                 <div class="input">\
+                     <input type="text" id="input-mail" class="input-text" placeholder="อีเมลหน่วยงาน">\
+                     <label for="input-mail" class="input-label">อีเมลหน่วยงาน</label>\
+                 </div>\
                 </form>\
               </div>\
               <div class="modal-footer">\
@@ -282,21 +286,24 @@ $(document).ready(function() {
         </div>'
         var modal = $(modal).appendTo('body')
         modal.find('button[data-action=deadd]').on('click',function() {
-            var depart = $('input[class=input-text]').val()
+            var depart = $('#input-dep').val()
+            var mail = $('#input-mail').val()
             $.ajax({
                 url: '/contact',
                 type: "POST",
                 dataType: 'JSON',
                 data: {
                     'state': 'add',
-                    'depart': depart
+                    'depart': depart,
+                    'mail': mail
                     },
                 success: function(data) {
                     ID = parseInt(data.ID)
                     depart = data.depart
+                    mail = data.mail
                     line = parseInt(data.line)+1
                     code = '<tr id="'+ID+'"><td>'+depart+'</td><td>'+line+'</td><td><a class="button edit de-edit">แก้ไขชื่อ</a></td></tr>'
-                    head = '<tr id="head'+ID+'" class="group_heading nodrag"><th colspan="9">'+depart+'</th></tr>'
+                    head = '<tr id="head'+ID+'" class="group_heading nodrag"><th colspan="9">'+depart+''+ (mail ? ' ('+mail+')' : '') +'</th></tr>'
                     $('.depart_td tbody').append(code)
                     $('#contact_td tr:last').after(head)
                     $('body').removeClass('modal-open')
@@ -312,6 +319,11 @@ $(document).ready(function() {
     })
     
     $('.depart_td').on('click','.de-edit',function() {
+     let id = $(this).parents("tr").attr('id')
+     let depart = $(this).parents("tr").find('td:first-child').text().split("(")
+     let departName = depart[0]
+     let departMail = (depart[1] ? depart[1].slice(0,-1) : "")
+
         var modal = 
         '<div class="modal fade">\
           <div class="modal-dialog modal-sm">\
@@ -320,8 +332,12 @@ $(document).ready(function() {
                 <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
                 <form class="no-margin">\
                 <div class="input">\
-                    <input type="text" id="'+$(this).parents("tr").attr('id')+'" class="input-text" placeholder="ชื่อหน่วยงาน" value="'+$(this).parents("tr").find('td:first-child').text()+'">\
-                    <label for="input" class="input-label">ชื่อหน่วยงาน</label>\
+                    <input type="text" id="'+id+'" class="input-dep" placeholder="ชื่อหน่วยงาน" value="'+departName+'">\
+                    <label for="input-dep" class="input-label">ชื่อหน่วยงาน</label>\
+                </div>\
+                <div class="input">\
+                    <input type="text" class="input-mail" placeholder="อีเมลหน่วยงาน" value="'+departMail+'">\
+                    <label for="input-mail" class="input-label">อีเมลหน่วยงาน</label>\
                 </div>\
                 </form>\
               </div>\
@@ -334,8 +350,9 @@ $(document).ready(function() {
         </div>'
         var modal = $(modal).appendTo('body')
         modal.find('button[data-action=deedit]').on('click',function() {
-            var depart = $('input[class=input-text]').val(),
-            ID = $('input[class=input-text]').attr('id')
+            let depart = $('.input-dep').val()
+            let mail = $('.input-mail').val()
+            let ID = $('.input-dep').attr('id')
             $.ajax({
                 url: '/contact',
                 type: "POST",
@@ -343,11 +360,12 @@ $(document).ready(function() {
                 data: {
                     'state': 'edit-de',
                     'depart': depart,
+                    'mail': mail,
                     'ID': ID
                     },
                 success: function(data) {
                     ID = parseInt(data.ID)
-                    $('.depart_td tbody').find('tr[id='+ID+']').find('td:first-child').text(data.depart)
+                    $('.depart_td tbody').find('tr[id='+ID+']').find('td:first-child').text(data.depart +""+ (data.mail ? "("+data.mail+")" : ""))
                     $('body').removeClass('modal-open')
                     refreshDepart()
                     modal.remove()
