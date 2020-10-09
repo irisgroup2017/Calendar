@@ -26,29 +26,29 @@ router.get('/',async function(req, res) {
   parms.user = userName
   parms.operator = dataop
   result = (await con.q('SELECT * FROM privacy_data,contact_data,user_data WHERE user_data.dataid = ? AND privacy_data.dataid = ? AND contact_data.dataid = ?',[dataid,dataid,dataid]))[0]
-  if (result && result.mailGroup) {
+  if (result.mailGroup) {
    bossname = await con.q('SELECT name,lastName FROM user_data WHERE mail = ?',[result.mailGroup])
    bossname = bossname[0].name +" "+bossname[0].lastName
-   parms.objs = []
-   parms.objs.push({
-    emid: result.emid,
-    name: result.name,
-    lastname: result.lastName,
-    nickname: result.nickname,
-    depart: result.depart,
-    jobPos: result.jobPos,
-    mail: result.mail,
-    workplace: (result.wplace ? "ออฟฟิสใหญ่" : "หน้างาน"),
-    swtime: result.swtime.substring(0,5),
-    ewtime: result.ewtime.substring(0,5),
-    workphone: (result.work == "-" ? "02-196-1100" +(result.ext ? " ("+ result.ext +")" : "") : result.work),
-    privatephone: result.private,
-    cdate: dateThai(new Date(result.cdate*1000)),
-    bossname: bossname +" ("+result.mailGroup+")",
-    username: result.userName,
-    password: result.password.substring(0,3) + '*'.repeat(result.password.length-3)
-   })
   }
+  parms.objs = []
+  parms.objs.push({
+   emid: result.emid,
+   name: result.name,
+   lastname: result.lastName,
+   nickname: result.nickname,
+   depart: result.depart,
+   jobPos: result.jobPos,
+   mail: result.mail,
+   workplace: (result.wplace ? "ออฟฟิสใหญ่" : "หน้างาน"),
+   swtime: result.swtime.substring(0,5),
+   ewtime: result.ewtime.substring(0,5),
+   workphone: (result.work == "-" ? "02-196-1100" +(result.ext ? " ("+ result.ext +")" : "") : result.work),
+   privatephone: result.private,
+   cdate: dateThai(new Date(result.cdate*1000)),
+   bossname: bossname +" ("+result.mailGroup+")",
+   username: result.userName,
+   password: result.password.substring(0,3) + '*'.repeat(result.password.length-3)
+  })
   res.render('profile', parms)
  } else {
   res.redirect("/login")

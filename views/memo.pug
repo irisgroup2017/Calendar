@@ -40,7 +40,7 @@ block content
           li.span-input
            input#memo-date.memo-input.memo-ans(contenteditable="true" type="text")
      tr
-      td
+      td(colspan="2")
        .memo-quiz
         .memo-quest สำเนาเรียน:
         span.memo-span
@@ -48,7 +48,7 @@ block content
           li.span-select
           li.span-input
            input#memo-cc.memo-input.memo-ans(contenteditable="true" type="text")
-      td(colspan="2")
+      td
        .memo-quiz
         .memo-quest จาก:
         span.memo-span
@@ -64,11 +64,18 @@ block content
          ul.memo-span2
           li.span-input
            input#memo-subject.memo-input.memo-ans(contenteditable="true" type="text")
-     //tr
+     tr
       td(colspan="3")
        .memo-quiz
         .memo-quest เอกสารแนบ:
-        input#memo-attach.memo-ans(type="text")
+        ul.memo-span3
+          li.span-select
+          li.span-upload
+           form(method="POST" enctype="multipart/form-data" id="upsiwa")
+            label.file-upload-custom(for="file-upload-field") เลือกไฟล์
+             input.file-upload-field#file-upload-field(type="file" accept=".pdf,.jpg" onchange="checkfile(this)")
+            button.file-upload-custom(type="submit" style="margin-left: 5px;")
+             i.ace-icon.fa.fa-upload  อั๊พโหลดไฟล์
   .memo-sheet
    #memoeditor
   .memo-head
@@ -124,7 +131,7 @@ block content
         input#memo-approvej.memo-ans(type="text")
   .button-section
    button.testbutton.preview-button(type="button") ดูตัวอย่าง
- +ssrc(['/ckeditor/ckeditor.js','memo.js','animatemodal.min.js','html2canvas.min.js'])
+ +ssrc(['ckeditor/ckeditor.js','memo.js','animatemodal.min.js','html2canvas.min.js','jquery.form.min.js'])
  //script(src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js")
  +scss(['memo.css','animate.min.css'])
  #editorModal.animated.emp-modal(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
@@ -132,7 +139,7 @@ block content
    i.fa.fa-close.fa-3x
   .modal-memo
    .modal-page
-    img.modal-logo(src="img/logo.jpg")
+    img.modal-logo(src="../img/logo.jpg")
     .modal-memo-head
      .modal-memo-title.center บันทึกภายใน
      table
@@ -164,7 +171,7 @@ block content
          .modal-memo-cell
           .modal-memo-topic เรื่อง:
           .modal-memo-subject#modal-subject
-       //tr
+       tr
         td(colspan="3")
          .modal-memo-cell
           .modal-memo-topic เอกสารแนบ:

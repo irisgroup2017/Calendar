@@ -8,6 +8,7 @@ const mysql = require('mysql')
 const app = express()
 const router = express.Router()
 const upload = require(__basedir+'/app/config/multer.config.js')
+const memoUpload = require(__basedir+'/app/config/memomulter.config.js')
 const larstock = require("./bin/larstock")
 const epass = require("./bin/easypass")
 const schedule = require('node-schedule')
@@ -22,6 +23,7 @@ schedule.scheduleJob("0 0 0 * * *",async () => {
 	log.logger("info","Auto Update Database")
 })
 require(__basedir+'/app/routers/application.router.js')(app, router, upload)
+require(__basedir+'/app/routers/memoattach.router.js')(app, router, memoUpload)
 require('dotenv').config()
 
 function handleDisconnect() {

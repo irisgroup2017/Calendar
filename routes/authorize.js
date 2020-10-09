@@ -35,7 +35,7 @@ router.post('/', async function(req, res) {
 				authHelper.fortuneCookies(data,res)
 				log.logger('info','Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }
-				else { res.redirect('/login') }
+				else { res.redirect('/') }
 			} else { 
 				log.logger('info','wrong password: '+ username +' ['+ password +']')
 				relogin('รหัสผ่านผิด',res) 

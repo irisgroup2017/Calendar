@@ -4,6 +4,5 @@ module.exports = (app, router, upload) => {
 	router.use((req,res,next) => {
 		next()
 	})
-
 	app.post('/api/upload/application', upload.single("file"), controllers.uploadForm)
 }

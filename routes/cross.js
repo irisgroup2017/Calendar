@@ -5,8 +5,9 @@ const router = express.Router()
 require("dotenv").config()
 
 router.post('/',async function(req,res) {
- let wifi = "Wi-Fi"
- let ip = (getIp.get.Ethernet == undefined ? getIp.get[wifi][0] : getIp.get.Ethernet[0])
+ let host = getIp.get
+ let local = Object.keys(host)[0]
+ let ip = host[local][0]
  var option = {
   baseURL: 'http://' + ip + ':' + process.env.PORT_API + '' + req.body.path,
   method: 'POST',

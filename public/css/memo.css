@@ -77,8 +77,42 @@ html,body {
 .span-select {
  display: inline;
 }
+.span-select > .target-select:hover {
+ cursor: pointer;
+ color: #275EFE;
+}
+
+.span-select > .target-select:after {
+ content: ';';
+}
 .span-input {
  display: inline;
+}
+.span-upload {
+}
+.file-upload-field {
+ display: none !important;
+}
+.file-upload-custom {
+ cursor: pointer;
+ display: inline-block !important;
+ margin-bottom: 0px;
+ padding: 0 4px;
+ border: #000000 solid 1px;
+}
+.file-upload-custom:hover {
+ background-color: #9fff9f;
+}
+.attach-file {
+ display: inline-block;
+ width: fit-content;
+ padding: 0 5px;
+ border: 1px hidden #275EFE;
+ border-radius: 30px;
+}
+.attach-file:hover {
+ cursor: pointer;
+ border-style: solid;
 }
 
 .memo-span {
@@ -92,6 +126,13 @@ html,body {
  margin: 0px !important;
  padding: 0px !important;
 }
+.memo-span3 {
+ white-space: nowrap;
+ overflow: hidden;
+ margin: 0px !important;
+ padding: 0px !important;
+}
+
 
 .memo-head tr td .memo-quiz {
  width: 100%;
@@ -108,6 +149,7 @@ html,body {
  text-align: right;
  background-color: var(--group-background);
  border-right: 1px var(--table-border) dotted;
+ min-width: 2.5cm;
  width: 2.5cm;
 }
 

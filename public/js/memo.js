@@ -1,5 +1,4 @@
 jQuery(function($) {
-
  CKEDITOR.replace( 'memoeditor' )
  var users,departs
  $.ajax({
@@ -35,7 +34,6 @@ jQuery(function($) {
    }
   },
   success: function (data) {
-   console.log(data)
    departs = data
   }
  })
@@ -57,8 +55,13 @@ jQuery(function($) {
   $('.popupUserlist').addClass('hide')
  })
 
+ $(document).on('click','.target-select',function(){
+  $(this).remove()
+ })
+
  $(document).on('keyup','.memo-ans:focus',function(e){
   if ($(this).parents('ul').find('.span-select').length > 0) {
+   let have = $(this).parents('ul').find('.span-select').text()
    $(this).addClass('focus')
    let input = $(this).val()
    let regex = new RegExp(input,'g')
@@ -71,7 +74,8 @@ jQuery(function($) {
    $(sect).css({top: th, left: tl , width: tw})
    $(list).each((i,e) => {
     let data = $(e).data()
-    if (data.mail != null && ($(e).hasClass('select') || regex.test(data.mail) || regex.test(data.name) || regex.test(data.etc))) {
+    let regCheck = new RegExp(data.name,'g')
+    if (data.mail != null && (have == "" || !(regCheck.test(have))) && ($(e).hasClass('select') || regex.test(data.mail) || regex.test(data.name) || regex.test(data.etc))) {
      $(e).removeClass('hide')
     } else {
      $(e).addClass('hide')
@@ -85,9 +89,15 @@ jQuery(function($) {
   let target = $(e.target)
   let input = $('.memo-ans.focus').parents('ul').find('.span-select')
   let select = $(target).data()
-  let nameSplit = select.split('')
-  let source = '<span>'+ (select.type == "user" ? nameSplit[0] +' '+ nameSplit[2].substr(0,1) +'.' : select.name) +'</span>'
+  let source = '<span>'+ select.name +'</span>'
   $(input).append(source)
+  $(input).find('span:last-child').attr({
+   'class': 'target-select',
+   'data-type': select.type,
+   'data-id': select.id,
+   'data-mail': select.mail,
+   'data-etc': select.etc
+  })
   $('.memo-ans.focus').val("")
   $('.popupUserlist').addClass('hide')
  })
@@ -150,13 +160,13 @@ jQuery(function($) {
        </td>\
       </tr>\
       <tr>\
-       <td>\
+       <td colspan="2">\
         <div class="modal-memo-cell">\
          <div class="modal-memo-topic">สำเนาเรียน:</div>\
          <div class="modal-memo-subject" id="modal-cc"></div>\
         </div>\
        </td>\
-       <td colspan="2">\
+       <td>\
         <div class="modal-memo-cell">\
         <div class="modal-memo-topic">จาก:</div>\
         <div class="modal-memo-subject" id="modal-from"></div>\
@@ -364,4 +374,49 @@ function getList(m,users,departs) {
  })
  ans = [...users,...departs]
  return ans
+}
+
+function checkfile(sender) {
+ var validExts = new Array(".pdf",".jpg")
+ var fileExt = sender.value;
+ fileExt = fileExt.substring(fileExt.lastIndexOf('.')).toLowerCase()
+ if (validExts.indexOf(fileExt) < 0) {
+   alert("นามสกุลไฟล์ไม่ถูกต้อง สามารถแนบได้เฉพาะไฟล์: " + validExts.toString() + " เท่านั้น")
+   return false
+ }
+ else {
+  let form = $('upsiwa')[0]
+  let file = $(sender)[0].files[0]
+  let data = new FormData(form)
+  data.append('file',file)
+  data.append('ext',fileExt)
+  $.ajax({
+   url: "/attachment",
+   type: 'POST',
+   enctype: 'multipart/form-data',
+   data: data,
+   processData: false, //prevent jQuery from automatically transforming the data into a query string
+   contentType: false,
+   //cache: false,
+   success: (data) => {
+    console.log(data)
+    console.log(sessionStorage.getItem('attach') )
+    let item = sessionStorage.getItem('attach')
+    let regex = new RegExp(",")
+    item = (regex.test(item) ? JSON.parse(item) : [item])
+    let file = data.file.filename
+    if (item && item.length > 0) {
+     item.push(file)
+    } else {
+     item = [file]
+    }
+    $('.memo-span3 > .span-select').append('<div class="attach-file" data-patch="'+data.file.path+'">'+data.file.filename+'</div>')
+    sessionStorage.setItem('attach',JSON.stringify(item))
+   },
+   error: (e) => {
+    console.log(e.responseText)
+   }
+  })
+  return true 
+ }
 }

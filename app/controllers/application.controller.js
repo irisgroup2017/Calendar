@@ -1,6 +1,6 @@
 exports.uploadForm = (req, res) => {
-    var log = require(__basedir+'/bin/logger')
-	var data = {
+ let log = require(__basedir+'/bin/logger')
+	let data = {
         file: req.file,
         lartype: req.body.larType,
         username: req.body.username,

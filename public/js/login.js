@@ -14,12 +14,12 @@ var isChrome = window.chrome && (!!window.chrome.webstore || !!window.chrome.run
 var isBlink = (isChrome || isOpera) && !!window.CSS
 
 jQuery(function($) {
-  $(".toggle-password").mousedown(function() {
+  $(".toggle-password").on('mousedown',function() {
     $(this).toggleClass("fa-eye fa-eye-slash")
     var input = $($(this).attr("toggle"))
       input.attr("type", "text")
   })
-  $(".toggle-password").mouseup(function() {
+  $(".toggle-password").on('mouseup',function() {
     $(this).toggleClass("fa-eye fa-eye-slash")
     var input = $($(this).attr("toggle"))
       input.attr("type", "password")
