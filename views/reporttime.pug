@@ -1,0 +1,13 @@
+mixin scss(scss)
+ for t in scss
+  link(rel='stylesheet' , href='css/'+t)
+mixin ssrc(scr)
+ for t in scr
+  script(src="js/"+t)
+html
+ head
+ title=parms.title
+ meta(charset='utf-8')
+ meta(http-equiv="X-UA-Compatible" , content="IE=edge,chrome=1")
+ meta(name="description" , content="with draggable and editable events")
+ meta(name="viewport" , content="width=device-width, initial-scale=1.0, maximum-scale=1.0")

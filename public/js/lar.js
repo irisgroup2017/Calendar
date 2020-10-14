@@ -176,9 +176,22 @@ jQuery(function($) {
         },
 		buttonHtml: {
 			prev: '<i class="ace-icon fa fa-chevron-left"></i>',
-			next: '<i class="ace-icon fa fa-chevron-right"></i>'
+   next: '<i class="ace-icon fa fa-chevron-right"></i>',
+   reportrange: '<div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%"><i class="fa fa-calendar"></i>&nbsp;<span></span> <i class="fa fa-caret-down"></i></div>'
 		},
         customButtons: {
+         reportrange: {
+          text: "null"
+         },
+         report: {
+          text: 'ดูรายงาน',
+          click: function() {
+           let reportrange = $('.fc-reportrange-button').data('daterangepicker')
+           let startDate = moment(reportrange.startDate).format('YYYY-MM-DD')
+           let endDate = moment(reportrange.endDate).format('YYYY-MM-DD')
+           window.open('/reporttime?start='+ startDate +'&end='+ endDate,'_blank','location=no,menubar=no,toolbar=no')
+          }
+         },
             year: {
                 text: 'ปี',
                 click: function() {
@@ -193,20 +206,20 @@ jQuery(function($) {
             }
         },
 		header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'year,month,agendaDay'
-        },
-        longPressDelay: 1000, 
-        nowIndicator: true, // place timeline in day mode
-        now: date, // assign time to calendar
-		editable: true, // allows to edit event
-		droppable: true, // this allows things to be dropped onto the calendar !!!
-        navLinks: true, // allows navigate to day mode when click number of day
-        displayEventEnd: true,
-        timeFormat: 'H:mm',
-        selectable: true,
-        eventLimit: true,
+    left: 'prev,next today reportrange,report',
+    center: 'title',
+    right: 'year,month,agendaDay'
+   },
+   longPressDelay: 1000, 
+   nowIndicator: true, // place timeline in day mode
+   now: date, // assign time to calendar
+   editable: true, // allows to edit event
+   droppable: true, // this allows things to be dropped onto the calendar !!!
+   navLinks: true, // allows navigate to day mode when click number of day
+   displayEventEnd: true,
+   timeFormat: 'H:mm',
+   selectable: true,
+   eventLimit: true,
         viewRender: function(view,element) {
             /*
             //if this month is current month send information last day with current time
@@ -272,6 +285,7 @@ jQuery(function($) {
                 let scandate = fs[item]
                 let row = dayrender[item].r
                 let col = dayrender[item].c
+                console.log(scandate)
                 let stime = (scandate.timestart != "00:00:00" ? scandate.timestart.substring(0,5) : "ไม่มีข้อมูล" )
                 let etime = (scandate.timeend != "00:00:00" ? scandate.timeend.substring(0,5) : "ไม่มีข้อมูล" )
                 $('.fc-row:nth-child('+row+') .fc-content-skeleton thead td:nth-child('+col+')').append('<br> <div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> '+stime+'</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> '+etime+'</div>')
@@ -376,8 +390,8 @@ jQuery(function($) {
             })
             if (view.type == "month" || view.type == "agendaDay" || view.type == "basic") {
                 $('#calendar').fullCalendar( 'removeEvents', function(e){ return !e.isUserCreated})
-                start = view.start._i/1000
-                end = view.end._i/1000
+                let start = view.start._i/1000
+                let end = view.end._i/1000
                 $.ajax({
                     url: '/proc',
                     type: "POST",
@@ -1203,4 +1217,22 @@ jQuery(function($) {
             }
         }
     })
+
+ var start = moment().subtract(1, 'month').set('date',21);
+ var end = moment().set('date',20);
+ function cb(start, end) {
+     $('.fc-reportrange-button').html(start.format('DD MMM YYYY') + ' ถึง ' + end.format('DD MMM YYYY'));
+ }
+ $('.fc-reportrange-button').daterangepicker({
+     startDate: start,
+     endDate: end,
+     ranges: {
+        'รอบเดือนนี้': [moment().subtract(1, 'month').set('date',21), moment().set('date',20)],
+        'รอบเดือนที่แล้ว': [moment().subtract(2, 'month').set('date',21), moment().subtract(1, 'month').set('date',20)]
+     },
+     locale: {
+      "customRangeLabel": "เลือกช่วงเวลาเอง",
+    }
+ }, cb);
+ cb(start, end);
 })

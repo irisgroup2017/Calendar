@@ -33,7 +33,7 @@ router.post('/fingerscan',async function(req, res) {
  let table = "em" + id.toString()
  let tableexist = await con.q('SHOW TABLES FROM calendar LIKE ?',[table])
  if (tableexist.length != 0) { 
-  let result = await con.q('SELECT DATE_FORMAT(date,"%Y-%m-%d") AS date,timestart,timeend FROM '+table+' WHERE (date BETWEEN ? AND ?)',[req.body.start,req.body.end])
+  let result = await con.q('SELECT DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.timestart,u.timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM '+table+' AS u JOIN machine_data AS ms on u.MachCodeStart = ms.MachCode JOIN machine_data AS me on u.MachCodeEnd = me.MachCode WHERE (date BETWEEN ? AND ?)',[req.body.start,req.body.end])
   result = result.reduce((acc,it) => (acc[it.date] = it,acc),{})
   res.json(result)
  }
