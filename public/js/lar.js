@@ -288,7 +288,9 @@ jQuery(function($) {
                 console.log(scandate)
                 let stime = (scandate.timestart != "00:00:00" ? scandate.timestart.substring(0,5) : "ไม่มีข้อมูล" )
                 let etime = (scandate.timeend != "00:00:00" ? scandate.timeend.substring(0,5) : "ไม่มีข้อมูล" )
-                $('.fc-row:nth-child('+row+') .fc-content-skeleton thead td:nth-child('+col+')').append('<br> <div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> '+stime+'</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> '+etime+'</div>')
+                let splace = (stime != 'ไม่มีข้อมูล' ? '<div class="location-scan">'+scandate.mstart+'</div>' : '')
+                let eplace = (etime != 'ไม่มีข้อมูล' ? '<div class="location-scan">'+scandate.mend+'</div>' : '')
+                $('.fc-row:nth-child('+row+') .fc-content-skeleton thead td:nth-child('+col+')').append('<br> <div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> '+stime+' '+splace+'</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> '+etime+' '+eplace+'</div>')
                }
               }
              }
