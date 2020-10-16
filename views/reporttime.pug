@@ -4,6 +4,26 @@ mixin scss(scss)
 mixin ssrc(scr)
  for t in scr
   script(src="js/"+t)
+mixin insertline(range,list,show,lar)
+ each day,i in range
+  tr
+   if list[day]
+    td(colspan="1")
+    td(colspan="1")=show[i]
+    td(colspan="10")
+    td(colspan="2")=list[day].timestart.substring(0,5)
+    td(colspan="2")=list[day].mstart
+    td(colspan="2")=list[day].timeend.substring(0,5)
+    td(colspan="2")=list[day].mend
+    if lar[day]
+     td=lar[day].lartype
+   else
+    td(colspan="1")
+    td(colspan="1")=show[i]
+    td(colspan="10")
+    td(colspan="8")
+    if lar[day]
+     td=lar[day].lartype
 html
  head
   title=parms.title
@@ -19,35 +39,24 @@ html
     tr
      td.title-top(colspan="24") รายงานแสดงเวลาของพนักงาน
     tr
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
-     td
+     td.date-top(colspan="24")=parms.datestart +" ถึง "+parms.dateend
     tr
+     td(colspan="1")
+     td(colspan="7")="ชื่อ-สกุล: " +parms.username
      td(colspan="11")
-     td(colspan="3")=parms.datestart
-     td ถึง
-     td(colspan="3")=parms.dateend
-   tbody.user-desc
+     td(colspan="5")="รหัสพนักงาน: "+parms.emid
     tr
+     td.head-title(colspan="24")
+    tr
+     td(colspan="1")
+     td(colspan="1") วันที่
+     td(colspan="10")
+     td(colspan="2") เวลาเข้า
+     td(colspan="2") สถานที่
+     td(colspan="2") เวลาออก
+     td(colspan="2") สถานที่
+    tr
+     td.tail-title(colspan="24")
+   tbody.user-desc
+    +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype)
   
