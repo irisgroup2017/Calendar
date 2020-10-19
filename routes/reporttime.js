@@ -47,7 +47,7 @@ router.get('/', async function(req, res, next) {
    let lartype = {}
    larlist.map((it) => {
     lartype[dateconvert.changeformat(it.start)] = {
-     lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.thformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
+     lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.unixthformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
     }
     if (it.end) {
      let dur = Math.floor(dateconvert.durationdays(it.end-it.start)*1000)
@@ -55,7 +55,7 @@ router.get('/', async function(req, res, next) {
       let i=1
       while (i<dur) {
        lartype[dateconvert.adddaychangeformat(it.start,i++)] = {
-        lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.thformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
+        lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.unixthformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
        }
       }
      }
@@ -89,6 +89,9 @@ let dateconvert = {
  },
  thformat: function(date) {
   return moment(date,"YYYY-MM-DD").locale("th").format('DD MMM YYYY')
+ },
+ unixthformat: function(date) {
+  return moment.unix(date,"YYYY-MM-DD").locale("th").format('DD MMM YYYY')
  },
  changeformat: function(date) {
   return moment.unix(date).format('YYYY-MM-DD')
