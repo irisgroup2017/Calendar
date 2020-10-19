@@ -23,7 +23,6 @@ router.get('/', async function(req, res, next) {
    let vacationquery = 'SELECT dtitle,'+(wplace == 1 ? "doffice" : "dsite")+' AS time FROM vacation_list WHERE '+(wplace == 1 ? "doffice" : "dsite")+' BETWEEN ? AND ?'
    let vacationlist = await con.q(vacationquery,[vacationstart,vacationend])
    vacationlist = vacationlist.reduce((acc,it) => (acc[dateconvert.changeformat(it.time/1000)] = it,acc),{})
-   console.log(vacationlist)
    let larlist = await con.q('SELECT d.title,d.className,t.lartype,d.start,d.end,d.swapDate,d.allDay FROM lar_data AS d JOIN lar_type AS t ON d.className = t.classname WHERE dataid = ? AND ((d.start BETWEEN ? AND ?) OR (d.end BETWEEN ? AND ?))',[dataid,larstart,larend,larstart,larend])
    let datelist = datetodate(timeStart,timeEnd)
    let result = (await con.q('SELECT emid,depart FROM user_data WHERE dataid = ?',[dataid]))[0]
@@ -45,7 +44,6 @@ router.get('/', async function(req, res, next) {
    result = result.reduce((acc,it) => (acc[it.date] = it,acc),{})
    parms.fingerscan = result
    parms.vacation = vacationlist
-   console.log(larlist)
    parms.lartype = larlist.reduce((acc,it) => (
     acc[dateconvert.changeformat(it.start)] = {
      lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.thformat(it.swapDate)+" ": "") +""+ (it.allDay ? "ทั้งวัน" : " "+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง")
