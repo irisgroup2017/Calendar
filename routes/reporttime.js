@@ -53,8 +53,8 @@ router.get('/', async function(req, res, next) {
     if (it.end) {
      let dur = dateconvert.durationdays(it.end-it.start)*1000
      if (dur > 1) {
-      let i=2
-      while (i<=dur) {
+      let i=1
+      while (i<dur) {
        lartype[dateconvert.adddaychangeformat(it.start,i++)] = {
         lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.thformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
        }
@@ -101,6 +101,6 @@ let dateconvert = {
   return moment.duration(date).asDays()
  },
  adddaychangeformat: function(date,day) {
-  return moment.unix(date).add(day-1,"days").format('YYYY-MM-DD')
+  return moment.unix(date).add(day,"days").format('YYYY-MM-DD')
  }
 }
