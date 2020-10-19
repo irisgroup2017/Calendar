@@ -44,7 +44,6 @@ router.get('/', async function(req, res, next) {
    result = result.reduce((acc,it) => (acc[it.date] = it,acc),{})
    parms.fingerscan = result
    parms.vacation = vacationlist
-   //console.log(larlist)
    let lartype = {}
    larlist.map((it) => {
     lartype[dateconvert.changeformat(it.start)] = {
@@ -55,7 +54,6 @@ router.get('/', async function(req, res, next) {
      if (dur > 1) {
       let i=1
       while (i<dur) {
-       console.log(dateconvert.adddaychangeformat(it.start,i))
        lartype[dateconvert.adddaychangeformat(it.start,i++)] = {
         lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.thformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
        }
