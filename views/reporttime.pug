@@ -4,26 +4,32 @@ mixin scss(scss)
 mixin ssrc(scr)
  for t in scr
   script(src="js/"+t)
-mixin insertline(range,list,show,lar)
+mixin insertline(range,list,show,lar,vacation)
  each day,i in range
   tr
    if list[day]
-    td(colspan="1")
-    td(colspan="1")=show[i]
-    td(colspan="10")
-    td(colspan="2")=list[day].timestart.substring(0,5)
-    td(colspan="2")=list[day].mstart
-    td(colspan="2")=list[day].timeend.substring(0,5)
-    td(colspan="2")=list[day].mend
+    td.dotted-underline(colspan="1")
+    td.dotted-underline(colspan="1")=show[i]
+    td.dotted-underline(colspan="10")
+    td.dotted-underline(colspan="2")=list[day].timestart.substring(0,5)
+    td.dotted-underline(colspan="2")=list[day].mstart
+    td.dotted-underline(colspan="2")=list[day].timeend.substring(0,5)
+    td.dotted-underline(colspan="2")=list[day].mend
     if lar[day]
-     td=lar[day].lartype
+     td.dotted-underline=lar[day].lartype
+    else
+     td.dotted-underline
    else
-    td(colspan="1")
-    td(colspan="1")=show[i]
-    td(colspan="10")
-    td(colspan="8")
+    td.dotted-underline(colspan="1")
+    td.dotted-underline(colspan="1")=show[i]
+    td.dotted-underline(colspan="10")
     if lar[day]
-     td=lar[day].lartype
+     td.dotted-underline(colspan="12")=lar[day].lartype
+    else
+     if vacation[day]
+      td.dotted-underline(colspan="12")=vacation[day].dtitle
+     else
+      td.dotted-underline(colspan="12")
 html
  head
   title=parms.title
@@ -58,5 +64,5 @@ html
     tr
      td.tail-title(colspan="24")
    tbody.user-desc
-    +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype)
+    +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype,parms.vacation)
   
