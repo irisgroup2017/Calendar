@@ -50,7 +50,14 @@ td {
  justify-content: center;
 }
 
+.print-btn {
+ margin-top: 20px;
+ text-align: center;
+ justify-content: center;
+}
+
 @media print {
  .container { margin: 0mm 0mm; }
  a[href]:after { content: none !important; }
+ .print-btn { display: none; }
 }
