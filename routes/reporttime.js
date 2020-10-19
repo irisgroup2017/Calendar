@@ -55,6 +55,7 @@ router.get('/', async function(req, res, next) {
      if (dur > 1) {
       let i=1
       while (i<dur) {
+       console.log(dateconvert.adddaychangeformat(it.start,i))
        lartype[dateconvert.adddaychangeformat(it.start,i++)] = {
         lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.thformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
        }
@@ -89,7 +90,7 @@ let dateconvert = {
   return moment(date,"YYYY-MM-DD").add(7,'hours').valueOf()
  },
  thformat: function(date) {
-  return moment(date,"YYYY-MM-DD").locale("th").format('DD MMMM YYYY')
+  return moment(date,"YYYY-MM-DD").locale("th").format('DD MMM YYYY')
  },
  changeformat: function(date) {
   return moment.unix(date).format('YYYY-MM-DD')
