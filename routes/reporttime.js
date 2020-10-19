@@ -50,7 +50,7 @@ router.get('/', async function(req, res, next) {
      lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.thformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
     }
     if (it.end) {
-     let dur = dateconvert.durationdays(it.end-it.start)*1000
+     let dur = Math.floor(dateconvert.durationdays(it.end-it.start)*1000)
      if (dur > 1) {
       let i=1
       while (i<dur) {
