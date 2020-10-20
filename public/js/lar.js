@@ -269,6 +269,7 @@ jQuery(function($) {
               // Time Scan
            let dayrender = JSON.parse(sessionStorage.fingerscan)
            if (view.type == 'month' || view.type == 'basic') {
+            console.log(moment(view.end).format("YYYY-MM-DD"))
             $.ajax({
              url: '/proc/fingerscan',
              type: "POST",
@@ -280,12 +281,12 @@ jQuery(function($) {
               end: moment(view.end).format("YYYY-MM-DD")
              },
              success: function (fs) {
+              console.log(fs)
               for (const item in dayrender) {
                if (fs[item]) {
                 let scandate = fs[item]
                 let row = dayrender[item].r
                 let col = dayrender[item].c
-                console.log(scandate)
                 let stime = (scandate.timestart != "00:00:00" ? scandate.timestart.substring(0,5) : "ไม่มีข้อมูล" )
                 let etime = (scandate.timeend != "00:00:00" ? scandate.timeend.substring(0,5) : "ไม่มีข้อมูล" )
                 let splace = (stime != 'ไม่มีข้อมูล' ? '<div class="location-scan">'+scandate.mstart+'</div>' : '')

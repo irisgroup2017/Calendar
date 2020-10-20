@@ -6,7 +6,7 @@ $(window).on("load",function() {
 
  $('.datepicker').datepicker({
   ignoreReadonly: true,
-  format: 'dd MM yyyy',
+  format: 'DD MM YYYY',
   todayHighlight: true
  })
 })

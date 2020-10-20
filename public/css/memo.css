@@ -76,12 +76,12 @@ html,body {
 
 .span-select {
  display: inline;
+ text-align: left;
 }
 .span-select > .target-select:hover {
  cursor: pointer;
  color: #275EFE;
 }
-
 .span-select > .target-select:after {
  content: ';';
 }
@@ -103,16 +103,79 @@ html,body {
 .file-upload-custom:hover {
  background-color: #9fff9f;
 }
-.attach-file {
+
+.btn--corners {
+ position: relative;
  display: inline-block;
- width: fit-content;
- padding: 0 5px;
- border: 1px hidden #275EFE;
- border-radius: 30px;
+ margin: 0;
+ font-size: 18px;
+ text-align: center;
+ font-weight: 400;
+ border: 2px solid #962d3e;
 }
-.attach-file:hover {
- cursor: pointer;
- border-style: solid;
+
+.btn--corners:not(:last-child) {
+ margin-right: 2px;
+}
+
+.btn--corners::before,
+.btn--corners::after {
+ content: "";
+ position: absolute;
+ background-color: #343642;
+ z-index: 0;
+ transition: 200ms ease-in;
+ transform-origin: center center;
+}
+
+.span-select:target .btn--corners::before,
+.span-select:target .btn--corners::after {
+ background-color: rgba(0, 0, 0, 0.6);
+ transition-duration: 600ms;
+}
+
+.btn--corners::before {
+ width: calc(100% + 2px * 2 - 10px);
+ height: calc(100% + 2px * 2);
+ top: -2px;
+ left: 50%;
+ transform: translateX(-50%);
+}
+
+.btn--corners::after {
+ height: calc(100% + 2px * 2 - 10px);
+ width: calc(100% + 2px * 2);
+ left: -2px;
+ top: 50%;
+ transform: translateY(-50%);
+}
+
+.btn--corners:hover::before {
+ width: 0;
+}
+
+.btn--corners:hover::after {
+ height: 0;
+}
+
+.btn--corners a {
+ position: relative;
+ display: inline-block;
+ color: #979c9c;
+ text-transform: uppercase;
+ text-decoration: none;
+ line-height: 1em;
+ font-size: 0.7em;
+ padding: 2px;
+ margin: 0 2px;
+ z-index: 1;
+}
+
+.btn--corners a::after {
+ content: attr(data-number);
+ display: block;
+ font-family: Lora;
+ font-style: italic;
 }
 
 .memo-span {
