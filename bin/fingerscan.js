@@ -86,6 +86,13 @@ async function fingerToJSON() {
      log.logger("info","Updated: scan time ID "+ID+" have "+index+" record")
     }
    }
+   if (start || end) {
+    con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end,pstart,pend])
+    start = false
+    end = false
+    pstart = false
+    pend = false
+   }
   }
  }
  console.log("Complete add finger scan")

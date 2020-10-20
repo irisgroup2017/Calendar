@@ -13,13 +13,13 @@ var storage = multer.diskStorage({
         var path = __basedir + '/public/memo/'
         if (file.mimetype == "application/pdf") { ext = '.pdf' }
         else { ext = '.jpg' }
-        path = path+'test'+(ext=='.jpg'?'.pdf':'.jpg')
+        path = path+''+file.originalname
         if (!fs.existsSync(path)){
-            cb(null, file+''+ext)
+            cb(null, file.originalname)
         }
         else {
             fs.unlinkSync(path)
-            cb(null, file+''+ext) 
+            cb(null, file.originalname) 
         }
     }
 })

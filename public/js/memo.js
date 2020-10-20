@@ -1,4 +1,5 @@
 jQuery(function($) {
+ sessionStorage.removeItem('attach')
  CKEDITOR.replace( 'memoeditor' )
  var users,departs
  $.ajax({
@@ -399,19 +400,18 @@ function checkfile(sender) {
    contentType: false,
    //cache: false,
    success: (data) => {
-    console.log(data)
-    console.log(sessionStorage.getItem('attach') )
     let item = sessionStorage.getItem('attach')
     let regex = new RegExp(",")
-    item = (regex.test(item) ? JSON.parse(item) : [item])
-    let file = data.file.filename
+    item = (regex.test(item) ? JSON.parse(item) : "")
+    let file = data.file.originalname
     if (item && item.length > 0) {
      item.push(file)
     } else {
      item = [file]
     }
-    $('.memo-span3 > .span-select').append('<div class="attach-file" data-patch="'+data.file.path+'">'+data.file.filename+'</div>')
+    $('.memo-span3 > .span-select').append('<div class="attach-file" data-patch="'+data.file.path+'">'+data.file.originalname+'</div>')
     sessionStorage.setItem('attach',JSON.stringify(item))
+    console.log(sessionStorage.getItem('attach') )
    },
    error: (e) => {
     console.log(e.responseText)
