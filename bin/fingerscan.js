@@ -87,7 +87,7 @@ async function fingerToJSON() {
     }
    }
    if (start || end) {
-    con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end,pstart,pend])
+    con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[obj,start,end,pstart,pend])
     start = false
     end = false
     pstart = false
