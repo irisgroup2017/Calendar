@@ -9,10 +9,8 @@ var storage = multer.diskStorage({
         cb(null, path)
     },
     filename: function (req, file, cb) {
-        var ext
         var path = __basedir + '/public/memo/'
-        if (file.mimetype == "application/pdf") { ext = '.pdf' }
-        else { ext = '.jpg' }
+        //if (file.mimetype == "application/pdf") { ext = '.pdf' } else { ext = '.jpg' }
         path = path+''+file.originalname
         if (!fs.existsSync(path)){
             cb(null, file.originalname)

@@ -281,7 +281,6 @@ jQuery(function($) {
               end: moment(view.end).format("YYYY-MM-DD")
              },
              success: function (fs) {
-              console.log(fs)
               for (const item in dayrender) {
                if (fs[item]) {
                 let scandate = fs[item]

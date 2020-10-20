@@ -3,6 +3,7 @@ const ADODB = require('node-adodb')
 const fs = require('fs')
 const path = require('path')
 const con = require('./mysql')
+const moment = require('moment')
 require("dotenv").config()
 
 async function fingerToJSON() {
@@ -85,13 +86,6 @@ async function fingerToJSON() {
      con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end,pstart,pend])
      log.logger("info","Updated: scan time ID "+ID+" have "+index+" record")
     }
-   }
-   if (start || end) {
-    con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[obj,start,end,pstart,pend])
-    start = false
-    end = false
-    pstart = false
-    pend = false
    }
   }
  }

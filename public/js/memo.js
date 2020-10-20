@@ -60,6 +60,18 @@ jQuery(function($) {
   $(this).remove()
  })
 
+ $(document).on('click','.remove-file',function(){
+  let item = $(this).next()
+  let path = $(item).data('path')
+  let filename = $(item).text()
+  let filelist = JSON.parse(sessionStorage.getItem('attachm'))
+  console.log(filelist)
+  let newFileList = filelist.splice(filelist.indexOf(filename),0)
+  console.log(newFileList)
+  //$(ajax)({  })
+
+ })
+
  $(document).on('keyup','.memo-ans:focus',function(e){
   if ($(this).parents('ul').find('.span-select').length > 0) {
    let have = $(this).parents('ul').find('.span-select').text()
@@ -255,9 +267,9 @@ jQuery(function($) {
    })
 
    $(document).on('click','.close-button',function() {
-    $('.close-editorModal').click()
+    $('.close-editorModal').trigger('click')
    })
-   
+
    $("#editorModal").animatedModal({
     modalTarget:'editorModal',
     animatedIn:'bounceInUp',
@@ -404,7 +416,7 @@ function checkfile(sender) {
     item = (item ? JSON.parse(item) : new Array())
     let file = data.file.originalname
     item.push(file)
-    $('.memo-span3 > .span-select').append('<div class="btn--corners"><a data-patch="'+data.file.path+'">'+data.file.originalname+'</a></div>')
+    $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="'+data.file.path+'">'+data.file.originalname+'</a></div>')
     sessionStorage.setItem('attachm',JSON.stringify(item))
    },
    error: (e) => {

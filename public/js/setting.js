@@ -113,7 +113,7 @@ jQuery(function ($) {
     })
 })
 
-$(document).ready(function(){
+ jQuery(function($) {
     $(document).on("click",".active-status", function(){
         $(this).children("span").toggleClass("active not-active")
         let status = $(this).children("span").hasClass("active")

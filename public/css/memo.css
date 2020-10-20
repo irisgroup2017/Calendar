@@ -104,14 +104,32 @@ html,body {
  background-color: #9fff9f;
 }
 
+.remove-file:before{
+ content: "x";
+ z-index: 1;
+ cursor: pointer;
+ font-size: 12px;
+ top: -5px;
+ color: red;
+ padding-right: 8px;
+ position: absolute;
+}
+
+.btn--corners .remove-file {
+ visibility: hidden;
+}
+.btn--corners:hover .remove-file {
+ visibility: visible;
+}
+
 .btn--corners {
  position: relative;
  display: inline-block;
- margin: 0;
+ margin: 2px;
  font-size: 18px;
  text-align: center;
  font-weight: 400;
- border: 2px solid #962d3e;
+ border: 2px solid #81bfdbec;
 }
 
 .btn--corners:not(:last-child) {
@@ -122,7 +140,7 @@ html,body {
 .btn--corners::after {
  content: "";
  position: absolute;
- background-color: #343642;
+ background-color: #f7f7f8;
  z-index: 0;
  transition: 200ms ease-in;
  transform-origin: center center;
@@ -196,12 +214,10 @@ html,body {
  padding: 0px !important;
 }
 
-
 .memo-head tr td .memo-quiz {
  width: 100%;
  position: relative;
  display: table;
- text-align: right;
  margin-top: 0;
  margin-bottom: 0;
  overflow-wrap: inherit;
