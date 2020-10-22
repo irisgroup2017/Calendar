@@ -1,4 +1,4 @@
-jQuery(function($) {
+jQuery(document).ready(function($){
  sessionStorage.removeItem('attachm')
  CKEDITOR.replace( 'memoeditor' )
  var users,departs
@@ -51,8 +51,8 @@ jQuery(function($) {
  html += '</ol>'
  $('.container').append(html)
 
- $(document).on('click','.memo-ans',function(e){
-  $('.memo-ans.focus').removeClass('focus')
+ $(document).on('click','.memo-input',function(e){
+  $('.memo-input.focus').removeClass('focus')
   $('.popupUserlist').addClass('hide')
  })
 
@@ -62,17 +62,27 @@ jQuery(function($) {
 
  $(document).on('click','.remove-file',function(){
   let item = $(this).next()
+  let target = $(this).parent('.btn--corners')
   let path = $(item).data('path')
   let filename = $(item).text()
   let filelist = JSON.parse(sessionStorage.getItem('attachm'))
-  console.log(filelist)
-  let newFileList = filelist.splice(filelist.indexOf(filename),0)
-  console.log(newFileList)
-  //$(ajax)({  })
-
+  let index = filelist.indexOf(filename)
+  filelist.splice(index,1)
+  $.ajax({
+  url: '/memo/attachdel',
+  type: "POST",
+  async: false,
+  data: {
+   path: path
+  },
+  success: function () {
+   $(target).remove()
+   sessionStorage.setItem('attachm',JSON.stringify(filelist))
+   }
+  })
  })
 
- $(document).on('keyup','.memo-ans:focus',function(e){
+ $(document).on('keyup','.memo-input:focus',function(e){
   if ($(this).parents('ul').find('.span-select').length > 0) {
    let have = $(this).parents('ul').find('.span-select').text()
    $(this).addClass('focus')
@@ -100,7 +110,7 @@ jQuery(function($) {
  $(document).on('click','.popupUserlistItem',function(e){
   jQuery.noConflict()
   let target = $(e.target)
-  let input = $('.memo-ans.focus').parents('ul').find('.span-select')
+  let input = $('.memo-input.focus').parents('ul').find('.span-select')
   let select = $(target).data()
   let source = '<span>'+ select.name +'</span>'
   $(input).append(source)
@@ -111,7 +121,7 @@ jQuery(function($) {
    'data-mail': select.mail,
    'data-etc': select.etc
   })
-  $('.memo-ans.focus').val("")
+  $('.memo-input.focus').val("")
   $('.popupUserlist').addClass('hide')
  })
  
@@ -120,21 +130,56 @@ jQuery(function($) {
  })
 
  $(document).on('click','.preview-button',function() {
+  let val,target,id
   let checkAns = true
   let data = {}
   $('.memo-ans').each(function(index,item) {
-   let val = $(item).val()
-   let id = $(item).attr("id")
-   if (val == "") {
-    if (id != 'memo-boss' && id != 'memo-bossj' && id != 'memo-approve' && id != 'memo-approvej') {
-     $(item).addClass("memo-error")
+   if ($(item).hasClass('memo-input')) {
+    val = $(item).val()
+    target = $(item)
+   } else {
+    target = $(item).next().find('.memo-input')
+    //val = []
+    if ($(item).hasClass('span-select')) {
+     val = $(item).html()
+     /*
+     $(item).find('.target-select').each(function(i,e){
+      let group = {
+       type: $(e).data('type'),
+       id: $(e).data('id'),
+       mail: $(e).data('mail'),
+       etc: $(e).data('etc')
+      }
+      val.push(group)
+     })
+     */
+    } else {
+     val = $(item).html()
+     /*
+     $(item).find('.btn--corners a').each(function(i,e){
+      let group = {
+       path: $(e).data('path'),
+       filename: $(e).text()
+      }
+      val.push(group)
+     })
+     */
+    }
+    console.log(val)
+   }
+   id = $(item).attr("id")
+   let check = ["",[],undefined,null]
+   if (check.indexOf(val)) {
+    if (id != 'memo-boss' && id != 'memo-approve' && id != 'memo-file') {
+     $(target).addClass("memo-error")
      checkAns = false
     }
    } else {
     data[id] = val
-    $(item).removeClass("memo-error")
+    $(target).removeClass("memo-error")
    }
   })
+  console.log(data)
 
   if (checkAns) {
    let content = CKEDITOR.instances.memoeditor.getData()
@@ -287,8 +332,13 @@ jQuery(function($) {
      addClassNextChild()
      
      for (let key in data) {
+      let check = ["meme-no","memo-date","memo-subject"]
       let modalKey = key.replace("memo","modal")
-      $("#"+modalKey).text(data[key])
+      if (check.indexOf(key)) {
+       $("#"+modalKey).text(data[key])
+      } else {
+       $("#"+modalKey).html(data[key])
+      }
      }
     }
    })
@@ -345,6 +395,49 @@ jQuery(function($) {
    }
   }
  }
+ function checkfile(sender) {
+  let filename = sender.value.split(/.*[\/|\\]/)[1];
+  var validExts = new Array(".pdf",".jpg")
+  var fileExt = sender.value;
+  let filelist = sessionStorage.getItem("attachm")
+  fileExt = fileExt.substring(fileExt.lastIndexOf('.')).toLowerCase()
+  if (validExts.indexOf(fileExt) < 0) {
+    alert("นามสกุลไฟล์ไม่ถูกต้อง สามารถแนบได้เฉพาะไฟล์: " + validExts.toString() + " เท่านั้น")
+    return false
+  } else if (filelist != null && filelist.indexOf(filename) != -1) {
+   alert("มีไฟล์ชื่อนี้อยู่ในรายการแล้ว: " + filename)
+   return false
+  }
+  else {
+   let form = $('upsiwa')[0]
+   let file = $(sender)[0].files[0]
+   let data = new FormData(form)
+   data.append('file',file)
+   data.append('ext',fileExt)
+   $.ajax({
+    url: "/attachment",
+    type: 'POST',
+    enctype: 'multipart/form-data',
+    data: data,
+    processData: false, //prevent jQuery from automatically transforming the data into a query string
+    contentType: false,
+    //cache: false,
+    success: (data) => {
+     let item = sessionStorage.getItem('attachm')
+     item = (item ? JSON.parse(item) : new Array())
+     let file = data.file.originalname
+     item.push(file)
+     $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="'+data.file.path+'">'+data.file.originalname+'</a></div>')
+     sessionStorage.setItem('attachm',JSON.stringify(item))
+    },
+    error: (e) => {
+     console.log(e.responseText)
+    }
+   })
+   return true 
+  }
+ }
+ window.checkfile = checkfile
 })
 
 async function printDiv() {
@@ -387,42 +480,4 @@ function getList(m,users,departs) {
  })
  ans = [...users,...departs]
  return ans
-}
-
-function checkfile(sender) {
- var validExts = new Array(".pdf",".jpg")
- var fileExt = sender.value;
- fileExt = fileExt.substring(fileExt.lastIndexOf('.')).toLowerCase()
- if (validExts.indexOf(fileExt) < 0) {
-   alert("นามสกุลไฟล์ไม่ถูกต้อง สามารถแนบได้เฉพาะไฟล์: " + validExts.toString() + " เท่านั้น")
-   return false
- }
- else {
-  let form = $('upsiwa')[0]
-  let file = $(sender)[0].files[0]
-  let data = new FormData(form)
-  data.append('file',file)
-  data.append('ext',fileExt)
-  $.ajax({
-   url: "/attachment",
-   type: 'POST',
-   enctype: 'multipart/form-data',
-   data: data,
-   processData: false, //prevent jQuery from automatically transforming the data into a query string
-   contentType: false,
-   //cache: false,
-   success: (data) => {
-    let item = sessionStorage.getItem('attachm')
-    item = (item ? JSON.parse(item) : new Array())
-    let file = data.file.originalname
-    item.push(file)
-    $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="'+data.file.path+'">'+data.file.originalname+'</a></div>')
-    sessionStorage.setItem('attachm',JSON.stringify(item))
-   },
-   error: (e) => {
-    console.log(e.responseText)
-   }
-  })
-  return true 
- }
 }

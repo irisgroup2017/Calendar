@@ -3,6 +3,7 @@ const router = express.Router()
 const con = require('../bin/mysql')
 const memo = require('../bin/memo')
 const api = require('../bin/getapi')
+const fs = require('fs')
 
 router.get('/', async function(req, res) {
  var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -23,18 +24,12 @@ router.get('/', async function(req, res) {
 	}
 })
 
-router.post('/create', async function(req, res) {
- /*
- let depart = { 
-  attributes: ["ID","depart"] 
+router.post('/attachdel',async function(req,res){
+ let path = req.body.path
+ if (fs.existsSync(path)) {
+  fs.unlinkSync(path)
  }
- //let test = await api.getAll('/depart/find/all')
- let test = await api.get('/depart/find/field',depart)
- */
-})
-
-router.get('/app', async function(req,res) {
- 
+ res.send('ok')
 })
 
 module.exports = router

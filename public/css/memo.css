@@ -253,12 +253,12 @@ html,body {
  border-color: var(--group-border-focus);
 }
 
-.memo-quiz > .memo-quest + .memo-ans.memo-error {
+.memo-error {
  padding: 0px !important;
  padding-left: 3px !important;
- color: var(--group-color-error);
- background: var(--group-background-error);
- border: 1px solid var(--group-border-error);
+ color: var(--group-color-error) !important;
+ background: var(--group-background-error) !important;
+ border: 1px solid var(--group-border-error) !important;
 }
 
 .select-target {
