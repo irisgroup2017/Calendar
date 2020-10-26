@@ -56,11 +56,11 @@ jQuery(document).ready(function($){
   $('.popupUserlist').addClass('hide')
  })
 
- $(document).on('click','.target-select',function(){
+ $(document).on('click','.memo-head .target-select',function(){
   $(this).remove()
  })
 
- $(document).on('click','.remove-file',function(){
+ $(document).on('click','.memo-head .remove-file',function(){
   let item = $(this).next()
   let target = $(this).parent('.btn--corners')
   let path = $(item).data('path')
@@ -107,6 +107,15 @@ jQuery(document).ready(function($){
   }
  })
 
+ $(document).on('keydown', function(e) {
+  if((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80) ){
+   e.cancelBubble = true;
+   e.preventDefault();
+   e.stopImmediatePropagation();
+   printDiv()
+  }
+});
+
  $(document).on('click','.popupUserlistItem',function(e){
   jQuery.noConflict()
   let target = $(e.target)
@@ -133,12 +142,12 @@ jQuery(document).ready(function($){
   let val,target,id
   let checkAns = true
   let data = {}
+  let check = ["",[],undefined,null]
   $('.memo-ans').each(function(index,item) {
+   target = $(item).parents('.memo-span2')
    if ($(item).hasClass('memo-input')) {
     val = $(item).val()
-    target = $(item)
    } else {
-    target = $(item).next().find('.memo-input')
     //val = []
     if ($(item).hasClass('span-select')) {
      val = $(item).html()
@@ -165,21 +174,16 @@ jQuery(document).ready(function($){
      })
      */
     }
-    console.log(val)
    }
    id = $(item).attr("id")
-   let check = ["",[],undefined,null]
-   if (check.indexOf(val)) {
-    if (id != 'memo-boss' && id != 'memo-approve' && id != 'memo-file') {
-     $(target).addClass("memo-error")
-     checkAns = false
-    }
+   if (check.indexOf(val) > -1 && (id != 'memo-boss' && id != 'memo-approve' && id != 'memo-file')) {
+    $(target).addClass("memo-error")
+    checkAns = false
    } else {
     data[id] = val
     $(target).removeClass("memo-error")
    }
   })
-  console.log(data)
 
   if (checkAns) {
    let content = CKEDITOR.instances.memoeditor.getData()
@@ -192,7 +196,7 @@ jQuery(document).ready(function($){
   $('.modal-memo').not(':first').remove()
   $('.modal-memo').html('\
   <div class="modal-page">\
-   <img class="modal-logo" src="img/logo.jpg">\
+   <img class="modal-logo" src="/img/logo.jpg">\
    <div class="modal-memo-head">\
     <div class="modal-memo-title center">บันทึกภายใน</div>\
     <table>\
@@ -212,7 +216,7 @@ jQuery(document).ready(function($){
        </td>\
        <td>\
         <div class="modal-memo-cell">\
-         <div class="modal-memo-topic">วันที่:</div>\
+         <div class="modal-memo-topics">วันที่:</div>\
          <div class="modal-memo-subject" id="modal-date"></div>\
         </div>\
        </td>\
@@ -226,7 +230,7 @@ jQuery(document).ready(function($){
        </td>\
        <td>\
         <div class="modal-memo-cell">\
-        <div class="modal-memo-topic">จาก:</div>\
+        <div class="modal-memo-topics">จาก:</div>\
         <div class="modal-memo-subject" id="modal-from"></div>\
         </div>\
        </td>\
@@ -243,7 +247,7 @@ jQuery(document).ready(function($){
        <td colspan="3">\
         <div class="modal-memo-cell">\
          <div class="modal-memo-topic">เอกสารแนบ:</div>\
-         <div class="modal-memo-subject" id="modal-attach"></div>\
+         <div class="modal-memo-subject" id="modal-file"></div>\
         </div>\
        </td>\
       </tr>\
@@ -268,18 +272,21 @@ jQuery(document).ready(function($){
    </div>\
   </div>')
   $('.modal-memo-content:first').html(content)
+  if (data["memo-file"] != "") {
+   let filelist = data["memo-file"]
+  }
 
    if (data["memo-admin"] != undefined) {
     let name = data["memo-admin"]
-    let job = (data["memo-adminj"] != undefined ? data["memo-adminj"] : "......................................")
+    let job = ($(name).data("type") == "user" ? $(name).data("etc") : "")
     let code = '<div class="memo-admin-name">('+name+')</div>\
                 <div class="memo-admin-job">'+job+'</div>'
     $('#modal-section-admin').html(code)             
    }
 
-   if (data["memo-boss"] != undefined) {
+   if (data["memo-boss"] != "") {
     let name = data["memo-boss"]
-    let job = (data["memo-bossj"] != undefined ? data["memo-bossj"] : "......................................")
+    let job = ($(name).data("type") == "user" ? $(name).data("etc") : "")
     let code = '<div class="modal-section-seperate memo-approve-comment">ความคิดเห็น\
                 <br><br></div>\
                  <div class="memo-comment-underline"></div><br>\
@@ -292,9 +299,9 @@ jQuery(document).ready(function($){
     $('#modal-section-boss').html("")
    }
 
-   if (data["memo-approve"] != undefined) {
+   if (data["memo-approve"] != "") {
     let name = data["memo-approve"]
-    let job = (data["memo-approvej"] != undefined ? data["memo-approvej"] : "......................................")
+    let job = ($(name).data("type") == "user" ? $(name).data("etc") : "")
     let code = '<div class="modal-section-seperate memo-approve-comment">ความคิดเห็น\
                 <br><br></div>\
                  <div class="memo-comment-underline"></div><br>\
@@ -313,6 +320,14 @@ jQuery(document).ready(function($){
 
    $(document).on('click','.close-button',function() {
     $('.close-editorModal').trigger('click')
+   })
+
+   $(document).on('click','.save-button',function() {
+    
+   })
+
+   $(document).on('click','.print-button',function() {
+    printDiv()
    })
 
    $("#editorModal").animatedModal({
@@ -334,7 +349,7 @@ jQuery(document).ready(function($){
      for (let key in data) {
       let check = ["meme-no","memo-date","memo-subject"]
       let modalKey = key.replace("memo","modal")
-      if (check.indexOf(key)) {
+      if (check.indexOf(key) > -1) {
        $("#"+modalKey).text(data[key])
       } else {
        $("#"+modalKey).html(data[key])
@@ -347,14 +362,14 @@ jQuery(document).ready(function($){
  
  var max_pages = 30;
  var page_count = 0;
- var pagesize = 20*0.2645833333
  function snipMe() {
   page_count++;
   if (page_count > max_pages) {
     return;
   }
   var content = $(this).find('.modal-page .modal-memo-head')
-  var long = ($(this)[0].scrollHeight) - Math.ceil($(this).height());
+  var page = $(this).find('.modal-page')
+  var long = ($(page)[0].scrollHeight) - Math.ceil($(this).height());
   var children = $(content).children().toArray();
   var removed = [];
   while (long > 0 && children.length > 0) {
@@ -366,17 +381,17 @@ jQuery(document).ready(function($){
       child = childcontent.pop()
       removed.unshift('<div class="modal-memo-content">'+child.outerHTML+'</div>')
       $(child).detach()
-      long = ($(this)[0].scrollHeight) - Math.ceil($(this).height());
+      long = ($(page)[0].scrollHeight) - Math.ceil($(this).height());
      }
     } else {
      removed.unshift(child)
      $(child).detach()
-     long = ($(this)[0].scrollHeight) - Math.ceil($(this).height());
+     long = ($(page)[0].scrollHeight) - Math.ceil($(this).height());
     }
   }
   if (removed.length > 0) {
     var a4 = $('.modal-memo:last')
-    $(a4).after('<div class="modal-memo"><div class="modal-page" style="page-break-before: always;"><div class="modal-memo-head"></div></div></div>')
+    $(a4).after('<div class="modal-memo page-break"><div class="modal-page"><div class="modal-memo-head"></div></div></div>')
     content = $('.modal-memo:last .modal-page .modal-memo-head')
     content.append(removed)
     $(this).after(a4)
@@ -389,8 +404,9 @@ jQuery(document).ready(function($){
    if ($('.print-button').length == 0) {
     $(a4).after('\
     <div class="button-section" style="position:relative; top:-20px;">\
-     <button class="btn btn-secondary testbutton close-button" type="button">Close</button>\
-     <button class="btn btn-success testbutton print-button" type="button" onclick="printDiv()">Print</button>\
+     <button class="btn btn-secondary close-button" type="button">ย้อนกลับ</button>\
+     <button class="btn btn-success save-button" type="button">บันทึก</button>\
+     <button class="btn btn-info print-button" type="button">บันทึกและสั่งพิมพ์</button>\
     </div>')
    }
   }
@@ -437,35 +453,36 @@ jQuery(document).ready(function($){
    return true 
   }
  }
- window.checkfile = checkfile
-})
-
-async function printDiv() {
- printElement = $('.modal-memo')
- var mywindow = window.open('', 'PRINT');
- var cssList = ['../css/ace.min.css','../css/memo.css','../css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
- var loadCount = cssList.length
-
- mywindow.document.write('<html><head><title>' + document.title  + '</title>');
- for (css in cssList) {
-  var link = mywindow.document.createElement('link');
-  link.setAttribute("rel", "stylesheet");
-  link.setAttribute("type", "text/css");
-  link.onload = function(){
-   if (--loadCount == 0) {
-    mywindow.print();
-    mywindow.close();
+ async function printDiv() {
+  printElement = $('.modal-memo')
+  var mywindow = window.open('', 'PRINT');
+  var cssList = ['../css/ace.min.css','../css/memo.css','../css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
+  var loadCount = cssList.length
+ 
+  mywindow.document.write('<html><head><title>' + document.title  + ' test</title>');
+  for (css in cssList) {
+   var link = mywindow.document.createElement('link');
+   link.setAttribute("rel", "stylesheet");
+   if (cssList[css].split('.').pop() == 'css') { link.setAttribute("type", "text/css"); }
+   link.onload = function(){
+    if (--loadCount == 0) {
+     mywindow.print();
+     mywindow.close();
+    }
    }
+   link.setAttribute("href", cssList[css]);
+   mywindow.document.getElementsByTagName("head")[0].appendChild(link);
   }
-  link.setAttribute("href", cssList[css]);
-  mywindow.document.getElementsByTagName("head")[0].appendChild(link);
+
+  mywindow.document.write('</head><body>');
+  for (item of printElement) {
+   mywindow.document.write(item.innerHTML);
+  }
+  mywindow.document.write('</body></html>');
  }
- mywindow.document.write('</head><body >');
- for (item of printElement) {
-  mywindow.document.write(item.innerHTML);
- }
- mywindow.document.write('</body></html>');
-}
+ window.checkfile = checkfile
+ window.printDiv = printDiv
+})
 
 function maxZIndex() { return Array.from(document.querySelectorAll('body *')).map(a => parseFloat(window.getComputedStyle(a).zIndex)).filter(a => !isNaN(a)).sort().pop(); }
 
