@@ -84,6 +84,7 @@ jQuery(document).ready(function($){
   async: false,
   data: {
    path: '/cross/getdocumentcode',
+   option: 'getcode'
   },
   success: function (data) {}
  })

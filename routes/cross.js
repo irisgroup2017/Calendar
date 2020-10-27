@@ -11,7 +11,7 @@ router.post('/',async function(req,res) {
  var option = {
   baseURL: 'http://' + ip + ':' + process.env.PORT_API + '' + req.body.path,
   method: 'POST',
-  data: req.body.option
+  data: (req.body.option == 'getcode' ? req.cookies : req.body.option)
  }
  const request = await axios(option)
  res.json(request.data)

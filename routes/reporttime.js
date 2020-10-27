@@ -25,7 +25,7 @@ router.get('/', async function(req, res, next) {
    vacationlist = vacationlist.reduce((acc,it) => (acc[dateconvert.changeformat(it.time/1000)] = it,acc),{})
    let larlist = await con.q('SELECT d.title,d.className,t.lartype,d.start,d.end,d.swapDate,d.allDay FROM lar_data AS d JOIN lar_type AS t ON d.className = t.classname WHERE dataid = ? AND ((d.start BETWEEN ? AND ?) OR (d.end BETWEEN ? AND ?))',[dataid,larstart,larend,larstart,larend])
    let datelist = datetodate(timeStart,timeEnd)
-   let result = (await con.q('SELECT emid,depart FROM user_data WHERE dataid = ?',[dataid]))[0]
+   let result = (await con.q('SELECT emid,depart,jobPos FROM user_data WHERE dataid = ?',[dataid]))[0]
    parms = {
     title: 'รายงานแสดงเวลาของพนักงาน',
     username: userName,
@@ -34,6 +34,7 @@ router.get('/', async function(req, res, next) {
     mail: mail,
     emid: result.emid,
     depart: result.depart,
+    job: result.jobPos,
     datestart: dateconvert.thformat(timeStart),
     dateend: dateconvert.thformat(timeEnd),
     datelist: datetodate(timeStart,timeEnd),
