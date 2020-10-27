@@ -1,4 +1,43 @@
 jQuery(document).ready(function($){
+ let start = moment();
+ function cb(start, end, label) {
+  $('#memo-date').html(start)
+ }
+ $('#memo-date').daterangepicker({
+   singleDatePicker: true,
+   showDropdowns: true,
+   autoApply: true,
+   minYear: 2013,
+   maxYear: parseInt(moment().format('YYYY'),10),
+   locale: {
+    format: 'DD/MM/YYYY',
+    daysOfWeek: [
+     "อา.",
+     "จ.",
+     "อ.",
+     "พ.",
+     "พฤ.",
+     "ศ.",
+     "ส."
+ ],
+ monthNames: [
+     "มกราคม",
+     "กุมภาพันธ์",
+     "มีนาคม",
+     "เมษายน",
+     "พฤษภาคม",
+     "มิถุนายน",
+     "กรกฏาคม",
+     "สิงหาคม",
+     "กันยายน",
+     "ตุลาคม",
+     "พฤศจิกายน",
+     "ธันวาคม"
+ ],
+   }
+ }, cb);
+ cb(start)
+
  sessionStorage.removeItem('attachm')
  CKEDITOR.replace( 'memoeditor' )
  var users,departs
@@ -38,6 +77,17 @@ jQuery(document).ready(function($){
    departs = data
   }
  })
+
+ $.ajax({
+  url: '/cross',
+  type: 'POST',
+  async: false,
+  data: {
+   path: '/cross/getdocumentcode',
+  },
+  success: function (data) {}
+ })
+
  let result = getList('',users,departs)
  let html = '<ol class="popupUserlist hide" style="z-index: '+(maxZIndex()+1)+';">'
  html += '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'

@@ -269,7 +269,6 @@ jQuery(function($) {
               // Time Scan
            let dayrender = JSON.parse(sessionStorage.fingerscan)
            if (view.type == 'month' || view.type == 'basic') {
-            console.log(moment(view.end).format("YYYY-MM-DD"))
             $.ajax({
              url: '/proc/fingerscan',
              type: "POST",
