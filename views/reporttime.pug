@@ -4,7 +4,7 @@ mixin scss(scss)
 mixin ssrc(scr)
  for t in scr
   script(src="js/"+t)
-mixin insertline(range,list,show,lar,vacation)
+mixin insertline(range,list,show,lar,vacation,dateday)
  each day,i in range
   tr
    if list[day]
@@ -29,7 +29,10 @@ mixin insertline(range,list,show,lar,vacation)
      if vacation[day]
       td.dotted-underline(colspan="12")=vacation[day].dtitle
      else
-      td.dotted-underline(colspan="12")
+      if dateday[day]
+       td.dotted-underline(colspan="12")=dateday[day]
+      else
+       td.dotted-underline(colspan="12")
 html
  head
   title=parms.title
@@ -69,7 +72,7 @@ html
     tr
      td.tail-title(colspan="24")
    tbody.user-desc
-    +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype,parms.vacation)
+    +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype,parms.vacation,parms.dateday)
   .print-btn
    button(type="submit" onclick="window.print()") Print
   
