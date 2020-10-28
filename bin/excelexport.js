@@ -18,12 +18,12 @@ String.prototype.allReplace = function(obj) {
 async function xlCreate(tstart,tend,res) {
     const workbook = new xlsx.Workbook()
     tstart = parseInt(tstart)
-    tend = parseInt(tend)
-    let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?) AND approve > 1) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
+    tend = parseInt(tend)+25200
+    let result = await con.q('SELECT * FROM lar_data WHERE ((start >= ? AND start <= ? OR end >= ? AND end <= ?)) ORDER BY userName ASC , start ASC , end ASC',[tstart,tend,tstart,tend]),
     ws = workbook.addWorksheet('report') , userName , k=1,l=0,
     starttime = moment(tstart*1000).add(543,'years').format("DD/MM/YYYY"),
     endtime = moment(tend*1000).add(543,'years').format("DD/MM/YYYY")
-    ws.cell(k,1,k,5,true).string('สรุปข้อมูลการลาระหว่างวันที่ '+starttime+' ถึง '+endtime+' ').style({ alignment:{horizontal:'center'} , font: {underline: true} })
+    ws.cell(k,1,k,7,true).string('สรุปข้อมูลการลาระหว่างวันที่ '+starttime+' ถึง '+endtime+' ').style({ alignment:{horizontal:'center'} , font: {underline: true} })
     k=k+2
     ws.cell(k,1).string('ชื่อ').style({alignment:{horizontal:'center'}})
     ws.cell(k,2).string('รหัสอ้างอิง').style({alignment:{horizontal:'center'}})
@@ -31,6 +31,7 @@ async function xlCreate(tstart,tend,res) {
     ws.cell(k,4).string('ประเภทลา').style({alignment:{horizontal:'center'}})
     ws.cell(k,5).string('รายละเอียดการลา').style({alignment:{horizontal:'center'}})
     ws.cell(k,6).string('จำนวนวันลา').style({alignment:{horizontal:'center'}})
+    ws.cell(k,7).string('หมายเหตุ').style({alignment:{horizontal:'center'}})
     k++
     for (i = 0;i<result.length;i++) {
         if (userName != result[i].userName) {
@@ -59,7 +60,8 @@ async function xlCreate(tstart,tend,res) {
             ws.cell(k,3).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
             ws.cell(k,4).string(larType)
             ws.cell(k,5).string(title)  
-            ws.cell(k,6).string('1 วัน').style({alignment:{horizontal:'center'}}) 
+            ws.cell(k,6).string('1 วัน').style({alignment:{horizontal:'center'}})
+            ws.cell(k,7).string(approveNote(result[i].approve,result[i].delreq)).style({alignment:{horizontal:'center'}})
             k++
         } 
         else {
@@ -81,7 +83,8 @@ async function xlCreate(tstart,tend,res) {
                         ws.cell(k,3).date(moment(startShow).add(j,'d')).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
                         ws.cell(k,4).string(larType)
                         ws.cell(k,5).string(title)  
-                        ws.cell(k,6).string('1 วัน').style({alignment:{horizontal:'center'}}) 
+                        ws.cell(k,6).string('1 วัน').style({alignment:{horizontal:'center'}})
+                        ws.cell(k,7).string(approveNote(result[i].approve,result[i].delreq)).style({alignment:{horizontal:'center'}})
                         k++
                     }
                 }
@@ -92,12 +95,13 @@ async function xlCreate(tstart,tend,res) {
                 ws.cell(k,3).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
                 ws.cell(k,4).string(larType)
                 ws.cell(k,5).string(title)  
-                ws.cell(k,6).string(duration).style({alignment:{horizontal:'center'}}) 
+                ws.cell(k,6).string(duration).style({alignment:{horizontal:'center'}})
+                ws.cell(k,7).string(approveNote(result[i].approve,result[i].delreq)).style({alignment:{horizontal:'center'}})
                 k++
             }
-        }
+        } 
     }
-    ws.cell(3,1,k-1,6).style({ 
+    ws.cell(3,1,k-1,7).style({ 
         border: {
             left: { style: 'thin' },
             right: { style: 'thin' },
@@ -178,7 +182,7 @@ async function hrExport(tstart,tend,res) {
             }
         }
     }
-    ws.cell(2,1,k-1,7).style({
+    ws.cell(2,1,k,7).style({
         alignment: {
             horizontal: ['center']
         },
@@ -190,6 +194,17 @@ async function hrExport(tstart,tend,res) {
         } 
     })
     workbook.write(exportName +'.xlsx',res)
+}
+
+function approveNote (app,req) {
+ let v
+ if (req == 1) return "แจ้งยกเลิก"
+ if (app == 0) { v = "ยกเลิก" }
+ else if (app == 1) { v = "ไม่อนุมัติ" }
+ else if (app == 2) { v = "รออนุมัติ" }
+ else if (app == 3) { v = "หัวหน้าอนุมัติ" }
+ else { v = "HR รับทราบ" }
+ return v
 }
 
 function durtdata(obj) {

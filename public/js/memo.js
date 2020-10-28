@@ -86,7 +86,9 @@ jQuery(document).ready(function($){
    path: '/cross/getdocumentcode',
    option: 'getcode'
   },
-  success: function (data) {}
+  success: function (data) {
+   console.log(data)
+  }
  })
 
  let result = getList('',users,departs)
