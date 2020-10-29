@@ -248,6 +248,15 @@ html,body {
  width: 2.5cm;
 }
 
+.memo-quiz > .memo-quest2 {
+ display: table-cell;
+ text-align: right;
+ background-color: var(--group-background);
+ border-right: 1px var(--table-border) dotted;
+ min-width: 1.5cm;
+ width: 1.5cm;
+}
+
 .memo-input {
  display: inline-block;
  list-style: none;

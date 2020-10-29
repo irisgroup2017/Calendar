@@ -40,7 +40,7 @@ jQuery(document).ready(function($){
 
  sessionStorage.removeItem('attachm')
  CKEDITOR.replace( 'memoeditor' )
- var users,departs
+ var users,departs,documents
  $.ajax({
   url: '/cross',
   type: "POST",
@@ -87,7 +87,12 @@ jQuery(document).ready(function($){
    option: 'getcode'
   },
   success: function (data) {
-   console.log(data)
+   let count = data[0].memo_counts[0].count.toString()
+   count = "0".repeat(4-count.length) + count
+   let depart = data[0].memo_counts[0].depart_row.departShort
+   let year = (data[0].memo_counts[0].year+543).toString().substring(2,5)
+   documents = "FM-" +depart+ "-" +year+ "-" +count
+   $('#memo-no').val(documents)
   }
  })
 
