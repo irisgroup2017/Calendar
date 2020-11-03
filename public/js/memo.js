@@ -37,8 +37,21 @@ jQuery(document).ready(function($){
    }
  }, cb);
  cb(start)
-
- sessionStorage.removeItem('attachm')
+ let fileStroage = JSON.parse(sessionStorage.getItem('attachm'))
+ if (fileStroage) {
+  sessionStorage.removeItem('attachm')
+  $.ajax({
+   url: '/',
+   type: 'post',
+   async: false,
+   data: {
+    file: fileStroage
+   },
+   success: function(data) {
+    sessionStorage.removeItem('attachm')
+   }
+  })
+ }
  CKEDITOR.replace( 'memoeditor' )
  var users,departs,documents
  $.ajax({
