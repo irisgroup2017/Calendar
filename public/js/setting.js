@@ -455,14 +455,14 @@ jQuery(function ($) {
             var emid,name,lastName,jobPos,depart,mail,mailGroup,userName
 			input.each(function(){
                 $(this).parent("td").html($(this).val())
-                if ($(this).attr('id') === 'emid') { emid = $(this).val() }
-                if ($(this).attr('id') === 'name') { name = $(this).val() }
-                if ($(this).attr('id') === 'lastName') { lastName = $(this).val() }
-                if ($(this).attr('id') === 'jobPos') { jobPos = $(this).val() }
-                if ($(this).attr('id') === 'depart') { depart = $(this).val() }
-                if ($(this).attr('id') === 'mail') { mail = $(this).val() }
-                if ($(this).attr('id') === 'mailGroup') { mailGroup = $(this).val() }
-                if ($(this).attr('id') === 'userName') { userName = $(this).val() }
+                if ($(this).attr('id') === 'emid') { emid = $(this).val().trim() }
+                if ($(this).attr('id') === 'name') { name = $(this).val().trim() }
+                if ($(this).attr('id') === 'lastName') { lastName = $(this).val().trim() }
+                if ($(this).attr('id') === 'jobPos') { jobPos = $(this).val().trim() }
+                if ($(this).attr('id') === 'depart') { depart = $(this).val().trim() }
+                if ($(this).attr('id') === 'mail') { mail = $(this).val().trim() }
+                if ($(this).attr('id') === 'mailGroup') { mailGroup = $(this).val().trim() }
+                if ($(this).attr('id') === 'userName') { userName = $(this).val().trim() }
             })
             $.ajax({
                 url: '/setting',

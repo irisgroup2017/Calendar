@@ -83,7 +83,7 @@ jQuery(document).ready(function($){
   type: 'POST',
   async: false,
   data: {
-   path: '/cross/getdocumentcode',
+   path: '/memo/getdocumentcode',
    option: 'getcode'
   },
   success: function (data) {
@@ -381,7 +381,19 @@ jQuery(document).ready(function($){
    })
 
    $(document).on('click','.save-button',function() {
-    
+    let list = $('.modal-memo-subject')
+    let data = []
+    let admin = ($('.memo-admin-name') ? $('.memo-admin-name').find('.target-select') : "")
+    let boss = ($('.memo-boss-name') ? $('.memo-boss-name').find('.target-select') : "")
+    let approve = ($('.memo-approve-name') ? $('.memo-approve-name').find('.target-select') : "")
+    let content = $('.modal-memo-content')
+    let memoHead = $(list).each(item => {
+     let source = ($(item).attr('id') == 'modal-file' ? $(item).find('.btn--corners') : $(item).find('.target-select'))
+     data[$(item).attr('id')] = source
+    })
+    console.log(source)
+    console.log(admin,boss,approve)
+    console.log(content)
    })
 
    $(document).on('click','.print-button',function() {
