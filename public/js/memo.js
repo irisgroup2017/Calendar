@@ -100,8 +100,9 @@ $(function($) {
    option: 'getcode'
   },
   success: function (data) {
+   console.log(data)
    let doccount = data[0].memo_counts[0].count
-   let count = (doccount == 0 ? 1 : doccount).toString()
+   let count = (doccount == 0 ? 1 : doccount+1).toString()
    count = "0".repeat(4-count.length) + count
    let depart = data[0].memo_counts[0].depart_row.departShort
    let departId = data[0].memo_counts[0].depart_row.ID
