@@ -1,5 +1,6 @@
-jQuery(document).ready(function($){
+$(function($) {
  let start = moment();
+ var clicked = true
  function cb(start, end, label) {
   $('#memo-date').html(start)
  }
@@ -39,15 +40,14 @@ jQuery(document).ready(function($){
  cb(start)
  let fileStroage = JSON.parse(sessionStorage.getItem('attachm'))
  if (fileStroage) {
-  sessionStorage.removeItem('attachm')
   $.ajax({
-   url: '/',
+   url: '/memo/attachmultidel',
    type: 'post',
    async: false,
    data: {
     file: fileStroage
    },
-   success: function(data) {
+   success: function() {
     sessionStorage.removeItem('attachm')
    }
   })
@@ -100,12 +100,15 @@ jQuery(document).ready(function($){
    option: 'getcode'
   },
   success: function (data) {
-   let count = data[0].memo_counts[0].count.toString()
+   let doccount = data[0].memo_counts[0].count
+   let count = (doccount == 0 ? 1 : doccount).toString()
    count = "0".repeat(4-count.length) + count
    let depart = data[0].memo_counts[0].depart_row.departShort
-   let year = (data[0].memo_counts[0].year+543).toString().substring(2,5)
+   let departId = data[0].memo_counts[0].depart_row.ID
+   let memoyear = data[0].memo_counts[0].year
+   let year = (memoyear+543).toString().substring(2,5)
    documents = "FM-" +depart+ "-" +year+ "-" +count
-   $('#memo-no').val(documents)
+   $('#memo-no').data("number",{ docid: documents, count: parseInt(count), depart: departId,year: memoyear }).val(documents)
   }
  })
 
@@ -128,16 +131,21 @@ jQuery(document).ready(function($){
  })
 
  $(document).on('click','.memo-head .target-select',function(){
+  let inputField = $(this).parents('ul').find('.memo-input')
+  if ($(inputField).hasClass('single-input')) {
+   $(inputField).prop('disabled',false)
+  }
   $(this).remove()
  })
 
  $(document).on('click','.memo-head .remove-file',function(){
   let item = $(this).next()
   let target = $(this).parent('.btn--corners')
-  let path = $(item).data('path')
   let filename = $(item).text()
   let filelist = JSON.parse(sessionStorage.getItem('attachm'))
-  let index = filelist.indexOf(filename)
+  let match = filelist.find(e => e.originalname == filename)
+  let path = match.path
+  let index = filelist.indexOf(match)
   filelist.splice(index,1)
   $.ajax({
   url: '/memo/attachdel',
@@ -185,12 +193,13 @@ jQuery(document).ready(function($){
    e.stopImmediatePropagation();
    printDiv()
   }
-});
+ });
 
  $(document).on('click','.popupUserlistItem',function(e){
   jQuery.noConflict()
   let target = $(e.target)
-  let input = $('.memo-input.focus').parents('ul').find('.span-select')
+  let inputField = $('.memo-input.focus')
+  let input = $(inputField).parents('ul').find('.span-select')
   let select = $(target).data()
   let source = '<span>'+ select.name +'</span>'
   $(input).append(source)
@@ -201,7 +210,10 @@ jQuery(document).ready(function($){
    'data-mail': select.mail,
    'data-etc': select.etc
   })
-  $('.memo-input.focus').val("")
+  $(inputField).val("")
+  if ($(inputField).hasClass('single-input')) {
+   $(inputField).prop('disabled', true)
+  }
   $('.popupUserlist').addClass('hide')
  })
  
@@ -219,35 +231,14 @@ jQuery(document).ready(function($){
    if ($(item).hasClass('memo-input')) {
     val = $(item).val()
    } else {
-    //val = []
     if ($(item).hasClass('span-select')) {
      val = $(item).html()
-     /*
-     $(item).find('.target-select').each(function(i,e){
-      let group = {
-       type: $(e).data('type'),
-       id: $(e).data('id'),
-       mail: $(e).data('mail'),
-       etc: $(e).data('etc')
-      }
-      val.push(group)
-     })
-     */
     } else {
      val = $(item).html()
-     /*
-     $(item).find('.btn--corners a').each(function(i,e){
-      let group = {
-       path: $(e).data('path'),
-       filename: $(e).text()
-      }
-      val.push(group)
-     })
-     */
     }
    }
    id = $(item).attr("id")
-   if (check.indexOf(val) > -1 && (id != 'memo-boss' && id != 'memo-approve' && id != 'memo-file')) {
+   if (check.indexOf(val) > -1 && (id != 'memo-boss' && id != 'memo-approve' && id != 'memo-cc' && id != 'memo-file')) {
     $(target).addClass("memo-error")
     checkAns = false
    } else {
@@ -394,23 +385,20 @@ jQuery(document).ready(function($){
    })
 
    $(document).on('click','.save-button',function() {
-    let list = $('.modal-memo-subject')
-    let data = []
-    let admin = ($('.memo-admin-name') ? $('.memo-admin-name').find('.target-select') : "")
-    let boss = ($('.memo-boss-name') ? $('.memo-boss-name').find('.target-select') : "")
-    let approve = ($('.memo-approve-name') ? $('.memo-approve-name').find('.target-select') : "")
-    let content = $('.modal-memo-content')
-    let memoHead = $(list).each(item => {
-     let source = ($(item).attr('id') == 'modal-file' ? $(item).find('.btn--corners') : $(item).find('.target-select'))
-     data[$(item).attr('id')] = source
-    })
-    console.log(source)
-    console.log(admin,boss,approve)
-    console.log(content)
+    if (clicked) {
+     clicked = false
+     saveDiv()
+    }
+    clicked = true
    })
 
    $(document).on('click','.print-button',function() {
-    printDiv()
+    if (clicked) {
+     clicked = false
+     saveDiv()
+     printDiv()
+    }
+    clicked = true
    })
 
    $("#editorModal").animatedModal({
@@ -498,13 +486,13 @@ jQuery(document).ready(function($){
   let filename = sender.value.split(/.*[\/|\\]/)[1];
   var validExts = new Array(".pdf",".jpg")
   var fileExt = sender.value;
-  let filelist = sessionStorage.getItem("attachm")
+  let filelist = JSON.parse(sessionStorage.getItem("attachm"))
   fileExt = fileExt.substring(fileExt.lastIndexOf('.')).toLowerCase()
   if (validExts.indexOf(fileExt) < 0) {
     alert("นามสกุลไฟล์ไม่ถูกต้อง สามารถแนบได้เฉพาะไฟล์: " + validExts.toString() + " เท่านั้น")
     return false
-  } else if (filelist != null && filelist.indexOf(filename) != -1) {
-   alert("มีไฟล์ชื่อนี้อยู่ในรายการแล้ว: " + filename)
+  } else if (filelist != null && filelist.find(e => e.originalname == filename)) {
+   alert("มีไฟล์นี้อยู่ในรายการแล้ว: " + filename)
    return false
   }
   else {
@@ -524,7 +512,12 @@ jQuery(document).ready(function($){
     success: (data) => {
      let item = sessionStorage.getItem('attachm')
      item = (item ? JSON.parse(item) : new Array())
-     let file = data.file.originalname
+     let file = { 
+      destination: data.file.originalname,
+      filename: data.file.filename,
+      originalname: data.file.originalname,
+      path: data.file.path
+     }
      item.push(file)
      $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="'+data.file.path+'">'+data.file.originalname+'</a></div>')
      sessionStorage.setItem('attachm',JSON.stringify(item))
@@ -536,7 +529,65 @@ jQuery(document).ready(function($){
    return true 
   }
  }
- async function printDiv() {
+
+ function saveDiv() {
+  let list = $('.modal-memo-subject')
+  let data = {}
+  let admin = $('.memo-admin-name').find('.target-select').data()
+  let boss = ($('.memo-boss-name') ? $('.memo-boss-name').find('.target-select').data() : "")
+  let approve = ($('.memo-approve-name') ? $('.memo-approve-name').find('.target-select').data() : "")
+  let doc = $('#memo-no').data("number")
+  let content = $('.modal-memo .modal-memo-content').html()
+  $(list).each((index,item) => {
+   let source = returnDiv(item)
+   let key = replaceKey($(item).attr('id'))
+   data[key] = source
+  })
+  data.doc = doc
+  data.memoContent = content
+  data.memoAdmin = admin.id
+  data.memoBoss = (boss ? boss.id : "")
+  data.memoApprover = (approve ? approve.id : "")
+  $.ajax({
+   url: '/cross',
+   type: 'post',
+   async: false,
+   data: {
+    path: '/memo/updateorcreate',
+    option: data
+   },
+   success: function() {
+    sessionStorage.removeItem('attachm')
+   }
+  })
+ }
+
+ function returnDiv(item) {
+  let id = $(item).attr('id')
+  switch(id) {
+   case "modal-cc": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
+   case "modal-date": return $(item).text()
+   case "modal-file": return ($(item).find('.btn--corners a').map((i,e) => $(e).data("path")).get()).toString()
+   case "modal-from": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
+   case "modal-no": return $(item).text()
+   case "modal-subject": return $(item).text()
+   case "modal-to": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
+  }
+ }
+
+ function replaceKey(key) {
+  switch(key) {
+   case 'modal-to': return 'memoTo'
+   case 'modal-no': return 'memoCode'
+   case 'modal-date': return 'memoDate'
+   case 'modal-cc': return 'memoCc'
+   case 'modal-from': return 'memoFrom'
+   case 'modal-subject': return 'memoSubject'
+   case 'modal-file': return 'memoFile'
+  }
+ }
+
+ function printDiv() {
   printElement = $('.modal-memo')
   var mywindow = window.open('', 'PRINT');
   var cssList = ['../css/ace.min.css','../css/memo.css','../css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']

@@ -7,7 +7,6 @@ const fs = require('fs')
 
 router.get('/', async function(req, res) {
  var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
-	const now = new Date()
 	if (userName) {
 		data = {
 			'username': userName,
@@ -29,6 +28,17 @@ router.post('/attachdel',async function(req,res){
  if (fs.existsSync(path)) {
   fs.unlinkSync(path)
  }
+ res.send('ok')
+})
+
+router.post('/attachmultidel',async function(req,res){
+ let list = req.body.file
+ list.map(function(e) {
+  let path = e.path
+  if (fs.existsSync(path)) {
+   fs.unlinkSync(path)
+  }
+ })
  res.send('ok')
 })
 
