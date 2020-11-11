@@ -15,7 +15,9 @@ block content
     td=parms.objs[i].larstatus
     td=parms.objs[i++].approver
     td
-     a.delete.fa.fa-trash.hvr-pulse(title="Delete" data-toggle="confirmation" data-placement="left" style="padding-left: 10px")
+     a.delete.fa.fa-trash.hvr-pulse(title="หากหัวหน้ายังไม่ได้อนุมัติจะลบการลานี้ออกจากรายการ\nหากหัวหน้าอนุมัติแล้วจะทำเครื่องหมายยกเลิกการลาแต่ยังคงเก็บข้อมูลไว้ในระบบต่อไป" data-toggle="confirmation" data-placement="left" style="padding-left: 10px")
+    td.center
+     a.resend-mail.fa.fa-repeat.hvr-pulse(title="ส่งอีเมลให้หัวหน้าอีกครั้ง\nใช้ในกรณีที่เปลี่ยนแปลงผู้บังคับบัญชาหรือผู้บังคับบัญชาค้นหาอีเมลไม่พบ")
  mixin ddl(namel)
   -var i = 0
    while i < namel
@@ -51,6 +53,7 @@ block content
     th='สถานะการลา'
     th='ผู้ดำเนินการ'
     th='แจ้งลบ'
+    th='ส่งเมลอีกครั้ง'
   tbody
    if parms.lengthPlus
     +tbl(parms.tbl)
@@ -58,7 +61,21 @@ block content
     h4.center='ไม่มีข้อมูล'
  script.
   jQuery(function($) {
-    var larid = '',status = ''
+    let larid = '',status = ''
+    $(document).on("click", ".resend-mail", function(){
+     larid = $(this).parents('tr').attr('id')
+     $.ajax({
+      url: '/leavelist/resend',
+      type: "POST",
+      async: false,
+      data: { 
+       'larid': larid
+      },
+      success: function(data) {
+       alert('ส่งอีเมลให้ผู้บังคับบัญชาเรียบร้อยแล้ว')
+      }
+     })
+    })
     $(document).on("click", ".delete", function(){
         larid = $(this).parents('tr').attr('id')
         status = ($(this).parents('tr').find('td:nth-child(8)').text().indexOf(':') > 0 ? $(this).parents('tr').find('td:nth-child(8)').text().split(':') : $(this).parents('tr').find('td:nth-child(8)').text())

@@ -7,12 +7,32 @@ input.error {
 }
 
 table.dataTable tbody tr.user-disable {
- background-color: #fdeeee !important;
+ background-color: #f8cbcbf1 !important;
 }
 
 table.dataTable tbody tr.user-disable .sorting_1 {
- background-color: #fdeeee !important;
+ background-color: #f8cbcbf1 !important;
 }
+
+.toggle-employee.active::before {
+ content: "แสดง";
+}
+.toggle-employee::before {
+ content: "ไม่แสดง";
+}
+
+.timepicker1 {
+ text-align: center;
+ padding: 0 5px;
+ overflow: hidden;
+}
+
+.timepicker2 {
+ text-align: center;
+ padding: 0 5px;
+ overflow: hidden;
+}
+
 
 .emp-modal{
  padding: 3% 10%;

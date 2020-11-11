@@ -1,0 +1,26 @@
+extends layout
+
+mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='css/'+t)
+mixin ssrc(scr)
+ for t in scr
+  script(src="js/"+t)
+
+block script
+ link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
+ +scss(['datatable/datatables.min.css','datatable/buttons.dataTables.min.css','jquery-confirm.min.css','animate.min.css'])
+ +ssrc(['moment.min.js','transition.js','collapse.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])
+
+block content
+ table.display.cell-border.nowrap#display-table(style="width:100%")
+  thead
+   tr
+    th เลขที่เอกสาร
+    th เรื่อง
+    th จาก
+    th ถึง
+    th สถานะเอกสาร
+    th เมนูเพิ่มเติม
+  tbody#manage
+   +tbl(parms.objs)

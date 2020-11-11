@@ -3,6 +3,7 @@ const router = express.Router()
 const con = require('../bin/mysql')
 const memo = require('../bin/memo')
 const api = require('../bin/getapi')
+const core = require('./scriptscore') 
 const fs = require('fs')
 
 router.get('/', async function(req, res) {
@@ -18,6 +19,19 @@ router.get('/', async function(req, res) {
 		parms.user = userName
 		parms.operator = dataop
   res.render('memo',parms)
+	} else {
+		res.redirect('login')
+	}
+})
+
+router.get('/list', async function(req, res) {
+	if (req.cookies) {
+  parms = { title: 'MEMO', head1: 'MEMO' }
+  parms = core.objunion(parms,core.cookies(req.cookies))
+  let query = "SELECT * FROM memo AS m LEFT JOIN Encoding contact_data AS cd ON m.memo_admin = cd.emid"
+  let result = await con.q(query)
+  console.log(result)
+  res.render('memolist',parms)
 	} else {
 		res.redirect('login')
 	}

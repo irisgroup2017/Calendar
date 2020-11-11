@@ -11,20 +11,21 @@ transporter = nodemailer.createTransport({
   })
 
 async function send(status,user,larid,mail) {
-  var result = await con.q('SELECT * FROM lar_data WHERE id = ?',larid),
-  start = result[0].start,
-  userName = result[0].userName,
-  end = result[0].end,
-  allDay = result[0].allDay,
-  className = result[0].className,
-  title = result[0].title,
-  larType,
-  qlink = 'http://webapp.iris.co.th:3000/login'
-  if (mail == 'hr') { mail = process.env.DB_MAILHR }
-  else if (mail == 'user') { mail = await con.q('SELECT mail FROM user_data WHERE dataid = ?',result[0].dataid) , mail = mail[0].mail }
-  else if (mail == 'boss') { mail = result[0].mailGroup }
-  timec = ll.getDayTime(start,end,allDay)
-  if (className == 'label-grey') { larType = 'ลาป่วย' }
+ let result = await con.q('SELECT * FROM lar_data WHERE id = ?',larid)
+ let start = result[0].start
+ let userName = result[0].userName
+ let end = result[0].end
+ let allDay = result[0].allDay
+ let className = result[0].className
+ let title = result[0].title
+ let larType
+ let qlink = 'http://webapp.iris.co.th:3000/login'
+ if (mail == 'hr') { mail = process.env.DB_MAILHR }
+ else if (mail == 'user') { mail = await con.q('SELECT mail FROM user_data WHERE dataid = ?',result[0].dataid) , mail = mail[0].mail }
+ else if (mail == 'boss') { mail = result[0].mailGroup }
+ timec = ll.getDayTime(start,end,allDay)
+ if (className == 'label-grey') { larType = 'ลาป่วย' }
+ else if (className == 'label-dark') { larType = 'ลากิจไม่รับค่าจ้าง' }
 	else if (className == 'label-success') { larType = 'ลากิจ' }
 	else if (className == 'label-warning') {	larType = 'ลาพักร้อน' }
 	else if (className == 'label-yellow') {	larType = 'ลาสลับวันหยุด' }

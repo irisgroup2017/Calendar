@@ -55,6 +55,36 @@ $(document).ready(function(){
        }
       })
      }
+   },
+   {
+    text: 'พนักงานเก่า',
+    className: 'btn btn-success toggle-employee',
+    attr: {
+     "data-retire": 'user-disable'
+    },
+    init: function() {
+     $("#display-table").dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
+      let myRowClasses = oSettings.aoData[iDataIndex].nTr.className.split(" ")
+      let retire = $('.toggle-employee').data('retire')
+      return myRowClasses.indexOf(retire) == -1
+     })
+     $("#display-table").DataTable().draw()
+    },
+    action: function ( e, dt, node, config ) {
+     if ($(node).hasClass('active')) {
+      $(node).removeClass('active')
+      $(node).data('retire','user-disable')
+     } else {
+      $(node).addClass('active')
+      $(node).data('retire','')
+     }
+     $("#display-table").dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
+      let myRowClasses = oSettings.aoData[iDataIndex].nTr.className.split(" ")
+      let retire = $('.toggle-employee').data('retire')
+      return myRowClasses.indexOf(retire) == -1
+     })
+     $("#display-table").DataTable().draw()
+    }
    }
   ],
   columnDefs: [
@@ -67,7 +97,6 @@ $(document).ready(function(){
      //<div class="col-sm-3 datatable-option del-profile"><i class="fa fa-trash profile-del"></i><span>ลบ</span></div>\
    }
  ]
-
  })
 
  $('.datepicker').datepicker({

@@ -61,7 +61,7 @@ $(function($) {
   data: {
    path: '/users/find/field',
    option: {
-    attributes: ['dataid','name','lastName','mail','jobPos','depart'],
+    attributes: ['emid','name','lastName','mail','jobPos','depart'],
     where: {
     status: 1
     },
@@ -70,7 +70,7 @@ $(function($) {
   },
   success: function (data) {
    users = data.map(item => {
-    return { dataid: item.dataid, name: item.name +' '+ item.lastName, mail:item.mail , jobPos: item.jobPos }
+    return { dataid: item.emid, name: item.name +' '+ item.lastName, mail:item.mail , jobPos: item.jobPos }
    })
   }
  })
@@ -557,8 +557,9 @@ $(function($) {
     path: '/memo/updateorcreate',
     option: data
    },
-   success: function() {
+   success: function(data) {
     sessionStorage.removeItem('attachm')
+    console.log(data)
    }
   })
  }

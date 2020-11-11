@@ -158,4 +158,9 @@ router.post('/',async function(req,res) {
  res.json(req.body)
 })
 
+router.post('/resend',async function(req,res,next) {
+ mailsend.send('Resend: ขออนุญาติ',req.cookies.user_name,req.body.larid,'boss')
+ res.end('ok')
+})
+
 module.exports = router

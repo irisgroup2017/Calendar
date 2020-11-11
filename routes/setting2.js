@@ -36,7 +36,7 @@ router.get('/', async function(req, res) {
    deptitle: dep.depart.split("(")[0].replace(/\s$/,"")
   })
  }
- let bosslist = await con.q('SELECT privacy_data.userName,user_data.mail FROM privacy_data LEFT JOIN user_data ON privacy_data.dataid = user_data.dataid WHERE user_data.status = 1 AND privacy_data.boss = 1')
+ let bosslist = await con.q('SELECT privacy_data.userName,user_data.mail FROM privacy_data LEFT JOIN user_data ON privacy_data.dataid = user_data.dataid WHERE user_data.status = 1 AND (privacy_data.boss = 1 OR privacy_data.operator = 3)')
  var bossl = []
  for (const boss of bosslist) {
   bossl.push({
