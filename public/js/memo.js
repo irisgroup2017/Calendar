@@ -549,6 +549,7 @@ $(function($) {
   data.memoAdmin = admin.id
   data.memoBoss = (boss ? boss.id : "")
   data.memoApprover = (approve ? approve.id : "")
+  if (data.memoBoss)
   $.ajax({
    url: '/cross',
    type: 'post',

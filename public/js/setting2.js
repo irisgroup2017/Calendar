@@ -145,7 +145,6 @@ $(document).ready(function(){
      }
    })
   }
-  console.log(data)
  })
 
  $(document).on('click','.de-add',function() {

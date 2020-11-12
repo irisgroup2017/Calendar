@@ -1,16 +1,20 @@
 extends layout
 
-mixin scss(scss)
-  for t in scss
-   link(rel='stylesheet' , href='css/'+t)
-mixin ssrc(scr)
- for t in scr
-  script(src="js/"+t)
+mixin tbl(memo)
+ for issue in memo
+  //-var user-status = (block.status ? "user-enable" : "user-disable")
+  tr(id=issue.memo_id class="tr"+ issue.memo_status)
+   td=issue.memo_code
+   td=issue.memo_subject
+   td=issue.memo_from
+   td=issue.memo_to
+   td=issue.memo_title
+   td Option
 
 block script
  link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
- +scss(['datatable/datatables.min.css','datatable/buttons.dataTables.min.css','jquery-confirm.min.css','animate.min.css'])
- +ssrc(['moment.min.js','transition.js','collapse.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])
+ +scss(['memolist.css','datatable/datatables.min.css','datatable/buttons.dataTables.min.css','jquery-confirm.min.css','animate.min.css'])
+ +ssrc(['memolist.js','moment.min.js','transition.js','collapse.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])
 
 block content
  table.display.cell-border.nowrap#display-table(style="width:100%")

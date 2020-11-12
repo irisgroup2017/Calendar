@@ -1,0 +1,58 @@
+extends layout
+
+block script
+ link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
+ +ssrc(['moment.min.js'])
+ +scss(['memo.css','daterangepicker.css'])
+
+block content
+ .modal-memo
+  .modal-page
+   img.modal-logo(src="../img/logo.jpg")
+   .modal-memo-head
+    .modal-memo-title.center บันทึกภายใน
+    table
+     tbody
+      tr
+       td
+        .modal-memo-cell
+         .modal-memo-topic ถึง:
+         .modal-memo-subject#modal-to
+       td
+        .modal-memo-cell
+         .modal-memo-topic เลขที่เอกสาร:
+         .modal-memo-subject#modal-no
+       td
+        .modal-memo-cell
+         .modal-memo-topic วันที่:
+         .modal-memo-subject#modal-date
+      tr
+       td
+        .modal-memo-cell
+         .modal-memo-topic สำเนาเรียน:
+         .modal-memo-subject#modal-cc
+       td(colspan="2")
+        .modal-memo-cell
+         .modal-memo-topic จาก:
+         .modal-memo-subject#modal-from
+      tr
+       td(colspan="3")
+        .modal-memo-cell
+         .modal-memo-topic เรื่อง:
+         .modal-memo-subject#modal-subject
+      tr
+       td(colspan="3")
+        .modal-memo-cell
+         .modal-memo-topic เอกสารแนบ:
+         .modal-memo-subject#modal-attach
+    .modal-memo-content
+    .modal-section-signature
+    .justify-content-end
+     .justify-item
+      .modal-section-admin#modal-section-admin
+    .justify-content-around
+     .justify-around
+      .modal-section-approve#modal-section-approve
+     .justify-around
+      .modal-section-boss#modal-section-boss
+    .modal-memo-end

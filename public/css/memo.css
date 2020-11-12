@@ -541,10 +541,20 @@ table + .modal-memo-content {
 /* Print */
 
 @media print {
- body { visibility: hidden; }
+ body { 
+  visibility: hidden; 
+ }
  div { float: none !important; overflow: visible !important; }
  .modal-memo { margin: 0mm 0mm; }
- .modal-page { visibility: visible; }
+ .modal-page { 
+  visibility: visible; 
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+ }
+ table {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+ }
  a { text-decoration: none; pointer-events: none; }
  a[href]:after { content: none !important; }
  .page-break  { display:block; page-break-before: always; }

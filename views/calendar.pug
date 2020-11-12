@@ -1,12 +1,9 @@
 extends layout
 
+block script
+ +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','calendar.js']) 
+
 block content
- mixin scss(scss)
-  for t in scss
-   link(rel='stylesheet' , href='css/'+t)
- mixin ssrc(scr)
-  for t in scr
-   script(src="js/"+t)
  div.row
   div.col-xs-12
    div.row
@@ -45,5 +42,3 @@ block content
          div(class="external-event label-info" , data-class="label-info")
           i.ace-icon.fa.fa-arrows
           ="ห้องประชุมเล็ก 2 ชั้น 2"
- //script(src='js/jquery.mobile.custom.min.js')
- +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','calendar.js']) 
