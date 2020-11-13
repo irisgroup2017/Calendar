@@ -39,7 +39,7 @@ router.get('/',async function(req, res) {
    depart: result.depart,
    jobPos: result.jobPos,
    mail: result.mail,
-   workplace: (result.wplace ? "ออฟฟิสใหญ่" : "หน้างาน"),
+   workplace: (result.wplace ? "ออฟฟิศใหญ่" : "หน้างาน"),
    swtime: result.swtime.substring(0,5),
    ewtime: result.ewtime.substring(0,5),
    workphone: (result.work == "-" ? "02-196-1100" +(result.ext ? " ("+ result.ext +")" : "") : result.work),
