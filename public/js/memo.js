@@ -61,7 +61,7 @@ $(function($) {
   data: {
    path: '/users/find/field',
    option: {
-    attributes: ['emid','name','lastName','mail','jobPos','depart'],
+    attributes: ['dataid','name','lastName','mail','jobPos','depart'],
     where: {
     status: 1
     },
@@ -70,7 +70,7 @@ $(function($) {
   },
   success: function (data) {
    users = data.map(item => {
-    return { dataid: item.emid, name: item.name +' '+ item.lastName, mail:item.mail , jobPos: item.jobPos }
+    return { dataid: item.dataid, name: item.name +' '+ item.lastName, mail:item.mail , jobPos: item.jobPos }
    })
   }
  })
@@ -100,7 +100,6 @@ $(function($) {
    option: 'getcode'
   },
   success: function (data) {
-   console.log(data)
    let doccount = data[0].memo_counts[0].count
    let count = (doccount == 0 ? 1 : doccount+1).toString()
    count = "0".repeat(4-count.length) + count
@@ -542,14 +541,18 @@ $(function($) {
   $(list).each((index,item) => {
    let source = returnDiv(item)
    let key = replaceKey($(item).attr('id'))
-   data[key] = source
+   data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : source)
   })
   data.doc = doc
   data.memoContent = content
   data.memoAdmin = admin.id
   data.memoBoss = (boss ? boss.id : "")
   data.memoApprover = (approve ? approve.id : "")
-  if (data.memoBoss)
+  if (data.memoApprover || data.memoBoss) {
+   data.memoStatus = 1
+  } else {
+   data.memoStatus = 7
+  }
   $.ajax({
    url: '/cross',
    type: 'post',
@@ -560,7 +563,6 @@ $(function($) {
    },
    success: function(data) {
     sessionStorage.removeItem('attachm')
-    console.log(data)
    }
   })
  }
