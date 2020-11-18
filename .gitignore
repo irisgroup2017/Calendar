@@ -1,9 +1,8 @@
-/logs/*
 /logs
-/node_modules/*
-/public/doc/*
-/public/memo/*
-/bin/fingerscan/*
+/node_modules
+/public/doc
+/public/memo
+/bin/fingerscan
 .env
 DB_FingerScan.mdb
 *.xlsx
