@@ -7,12 +7,8 @@
 .env
 DB_FingerScan.mdb
 *.xlsx
-
-bin/daemon/hririsgroup.err.log
-bin/daemon/hririsgroup.exe
-bin/daemon/hririsgroup.exe.config
-bin/daemon/hririsgroup.out.log
-bin/daemon/hririsgroup.wrapper.log
-bin/daemon/hririsgroup.xml
+/sql
+bin/daemon
 report_easypass.xlsx
 bin/fingerscan.js
+bin/daemon/hririsgroup.0.out.log
