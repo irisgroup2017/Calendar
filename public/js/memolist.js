@@ -3,7 +3,7 @@ jQuery(function ($) {
   dom: 'Bfrtip',
   scrollX: true,
   paging: true,
-  pageLength: 30,
+  pageLength: 10,
   searching: true,
   ordering: true,
   orderMulti: true,
@@ -21,6 +21,26 @@ jQuery(function ($) {
      action: function ( e, dt, node, config ) {
       window.open(window.location.origin +"/memo")
      }
+   },
+   {
+    text: 'เอกสารเข้า',
+    className: 'btn btn-success',
+    attr: {
+     "data-retire": 'user-disable'
+    },
+    action: function ( e, dt, node, config ) {
+     $("#display-table").DataTable().columns(3).search($('.data-search').data('find'),true,false).draw()
+    }
+   },
+   {
+    text: 'เอกสารออก',
+    className: 'btn btn-success',
+    attr: {
+     "data-retire": 'user-disable'
+    },
+    action: function ( e, dt, node, config ) {
+     $("#display-table").DataTable().column(2).search($('.data-search').data('find'),true,false).draw()
+    }
    }
   ],
   columnDefs: [

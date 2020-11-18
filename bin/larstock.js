@@ -19,13 +19,13 @@ async function setLar(userName,dataid,state,now) {
     7.ลาอุปสมบท อายุงาน 2 ปี 15 วัน และ อายุงาน 3 ปี ขึ้นไป 30 วัน 1 ครั้ง
     8.ลารับราชการทหาร 60 วัน 1 ครั้ง
     */
-    var si=30,pe=0,va=0,tr=30,st=1,ma=90,re=0,mi=60,vap=null,vaq=null
-    var depart = (await con.q('SELECT depart FROM user_data WHERE dataid = ?',dataid))[0].depart
-    var swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',dataid)
-    var x = gd(new Date(swdate[0].cdate*1000)),
+    let si=30,pe=0,va=0,tr=30,st=1,ma=90,re=0,mi=60,vap=null,vaq=null
+    let depart = (await con.q('SELECT depart FROM user_data WHERE dataid = ?',dataid))[0].depart
+    let swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',dataid)
+    let x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),
     w = y[2]-x[2]
-    var ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
+    let ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (!ov[0]) {
         if (w < 1) { vap = '000000' }
         else if (w == 1) { vap = '0'+ Math.floor((12-(x[1]+1)/2)) +'0000' }
@@ -150,15 +150,15 @@ async function updateEnt(dataid) {
 }
 
 async function updateLar(userName,dataid,now) {
-    var a = new Date(now),
+    let a = new Date(now)
     now = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),(a.getMonth()==0 ? 11 : a.getMonth()),(a.getMonth()==0 ? 31 :a.getDate()),7).getTime()
-    var checkdate = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,new Date(now).getFullYear()])
+    let checkdate = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,new Date(now).getFullYear()])
     if (checkdate == '') { await setLar(userName,dataid,'insert',now) }
     else { await setLar(userName,dataid,'update',now) }
 }
 
 async function dhmtonum(ov) {
-    var lov = ov.length,iov = 0,dov,hov,mov,rov
+    let lov = ov.length,iov = 0,dov,hov,mov,rov
     if (lov == 1 || lov == 3 || lov == 5) { iov = 1 }
     if (lov+iov == 6) {
         dov = parseInt(ov.substring(0,2-iov),10)
@@ -179,7 +179,7 @@ async function dhmtonum(ov) {
 }
 
 function plusdhm(a,b) {
-    ov = [a,b],aov=[]
+   let ov = [a,b],aov=[]
     for (i=0;i<2;i++) {
         iov=0
         lov = ov[i].length
@@ -227,8 +227,7 @@ function plusdhm(a,b) {
 }
 
 function gd(a) {
-    ans = [a.getDate(),a.getMonth(),a.getFullYear()]
-    return ans
+ return [a.getDate(),a.getMonth(),a.getFullYear()]
 }
 exports.setLar = setLar
 exports.updateLar = updateLar

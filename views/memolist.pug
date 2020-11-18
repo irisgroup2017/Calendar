@@ -4,11 +4,11 @@ mixin tbl(memo)
  for issue in memo
   //-var user-status = (block.status ? "user-enable" : "user-disable")
   tr(id=issue.memo_id class="tr"+ issue.memo_status)
-   td=issue.memo_code
-   td=issue.memo_subject
-   td=issue.memo_from
-   td=issue.memo_to
-   td=issue.memo_title
+   td.doc-no=issue.memo_code
+   td.m-subject=issue.memo_subject
+   td.m-from=issue.memo_from
+   td.m-to=issue.memo_to
+   td.m-status=issue.memo_title
    td Option
 
 block script
@@ -18,7 +18,7 @@ block script
 
 block content
  table.display.cell-border.nowrap#display-table(style="width:100%")
-  thead
+  thead.data-search(data-find=parms.depart+"|"+parms.user)
    tr
     th เลขที่เอกสาร
     th เรื่อง

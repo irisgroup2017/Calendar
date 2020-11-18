@@ -1,14 +1,18 @@
-extends layout
-
 block script
+ mixin ssrc(scr)
+  for t in scr
+   script(src="/public/js/"+t)
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='/public/css/'+t)
  link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
- +ssrc(['moment.min.js'])
- +scss(['memo.css','daterangepicker.css'])
+ +ssrc(['jquery.min.js','moment.min.js','memoview.js'])
+ +scss(['ace.min.css','bootstrap.min.css','memo.css'])
 
 block content
  .modal-memo
   .modal-page
-   img.modal-logo(src="../img/logo.jpg")
+   img.modal-logo(src="/public/img/logo.jpg")
    .modal-memo-head
     .modal-memo-title.center บันทึกภายใน
     table
@@ -18,41 +22,79 @@ block content
         .modal-memo-cell
          .modal-memo-topic ถึง:
          .modal-memo-subject#modal-to
+          if parms.objs.memo_to
+           =parms.objs.memo_to.toString()
        td
         .modal-memo-cell
          .modal-memo-topic เลขที่เอกสาร:
-         .modal-memo-subject#modal-no
+         .modal-memo-subject#modal-no=parms.objs.memo_code
        td
         .modal-memo-cell
-         .modal-memo-topic วันที่:
-         .modal-memo-subject#modal-date
+         .modal-memo-topics วันที่:
+         .modal-memo-subject#modal-date=parms.objs.memo_date
       tr
-       td
+       td(colspan="2")
         .modal-memo-cell
          .modal-memo-topic สำเนาเรียน:
          .modal-memo-subject#modal-cc
-       td(colspan="2")
+          if parms.objs.memo_cc
+           =parms.objs.memo_cc.toString()
+       td
         .modal-memo-cell
-         .modal-memo-topic จาก:
-         .modal-memo-subject#modal-from
+         .modal-memo-topics จาก:
+         .modal-memo-subject#modal-from=parms.objs.memo_from
       tr
        td(colspan="3")
         .modal-memo-cell
          .modal-memo-topic เรื่อง:
-         .modal-memo-subject#modal-subject
+         .modal-memo-subject#modal-subject=parms.objs.memo_subject
       tr
        td(colspan="3")
         .modal-memo-cell
          .modal-memo-topic เอกสารแนบ:
          .modal-memo-subject#modal-attach
-    .modal-memo-content
+          if parms.objs.memo_file
+           =parms.objs.memo_file.toString()
+    .modal-memo-content=parms.objs.memo_content.toString()
     .modal-section-signature
     .justify-content-end
      .justify-item
       .modal-section-admin#modal-section-admin
+       if parms.objs.memo_admin
+        .memo-admin-name 
+         ="("
+         span.target-select=parms.objs.memo_admin
+         =")"
+        .memo-admin-job=parms.objs.memo_admind
     .justify-content-around
      .justify-around
       .modal-section-approve#modal-section-approve
+       if parms.objs.memo_approver
+        .modal-section-seperate.memo-approve-comment ความคิดเห็น
+         br
+         br
+        .memo-comment-underline
+        br
+        .memo-comment-underline
+        .memo-comment-approve ผู้อนุมัติ
+        .memo-approve-name
+         ="("
+         span.target-select=parms.objs.memo_approver
+         =")"
+        .memo-approve-job=parms.objs.memo_approverd
      .justify-around
       .modal-section-boss#modal-section-boss
+       if parms.objs.memo_boss
+        .modal-section-seperate.memo-approve-comment ความคิดเห็น
+         br
+         br
+        .memo-comment-underline
+        br
+        .memo-comment-underline
+        .memo-comment-approve ผู้อนุมัติ
+        .memo-boss-name
+         ="("
+         span.target-select=parms.objs.memo_boss
+         =")"
+        .memo-boss-job=parms.objs.memo_bossd
     .modal-memo-end

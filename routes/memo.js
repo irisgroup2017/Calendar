@@ -3,7 +3,8 @@ const router = express.Router()
 const con = require('../bin/mysql')
 const memo = require('../bin/memo')
 const api = require('../bin/getapi')
-const core = require('./scriptscore') 
+const core = require('./scriptscore')
+const moment = require('moment')
 const fs = require('fs')
 
 router.get('/', async function(req, res) {
@@ -30,8 +31,8 @@ router.get('/view/:memoId', async function(req, res) {
   parms = { title: 'MEMO View', head1: 'MEMO View' }
   parms = core.objunion(parms,core.cookies(req.cookies))
   let checkKey = ['memo_from','memo_to','memo_cc','memo_admin','memo_boss','memo_approver']
-  let memo = await con.q("SELECT memo_id,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_content,memo_admin,memo_boss,memo_approver,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE memo_id = ?",[memoId])
-  let contact = (await con.q("SELECT emid,name FROM contact_data")).reduce((acc,it) => (acc[it.emid] = it,acc),{})
+  let memo = await con.q('SELECT memo_id,memo_code,DATE_FORMAT(memo_date,"%d/%m/%Y") memo_date,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_content,memo_admin,memo_boss,memo_approver,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE memo_id = ?',[memoId])
+  let contact = (await con.q("SELECT dataid,name,job FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
   let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc,it) => (acc[it.ID] = it,acc),{})
   let objs = memo.map(content => {
     return Object.keys(content).reduce((acc,it) => {
@@ -41,6 +42,9 @@ router.get('/view/:memoId', async function(req, res) {
       info = null
      } else if (typeof obj == 'number') {
       info = (contact[obj] != undefined ? contact[obj].name : depart[obj].depart)
+      if (checkKey.indexOf(it) > 2) {
+       acc[it+'d'] = contact[obj].job
+      }
      }
      else {
       let users = obj.split(',')
@@ -53,8 +57,7 @@ router.get('/view/:memoId', async function(req, res) {
     return acc
    },{})
   })
-  console.log(objs)
-  parms.objs = objs
+  parms.objs = objs[0]
   res.render('memoview',parms)
  } else {
 		res.redirect('login')
@@ -67,11 +70,14 @@ router.get('/list', async function(req, res) {
   parms = { title: 'MEMO', head1: 'MEMO' }
   parms = core.objunion(parms,core.cookies(req.cookies))
   let checkKey = ['memo_from','memo_to','memo_cc','memo_admin','memo_boss','memo_approver']
-  let memo = await con.q("SELECT memo_id,memo_code,memo_subject,memo_from,memo_to,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) >= ?",[year])
-  let contact = (await con.q("SELECT emid,name FROM contact_data")).reduce((acc,it) => (acc[it.emid] = it,acc),{})
+  let memo = await con.q("SELECT memo_create,memo_id,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) >= ?",[year])
+  let contact = (await con.q("SELECT dataid,name,level FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
   let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc,it) => (acc[it.ID] = it,acc),{})
-  let objs = memo.map(content => {
-    return Object.keys(content).reduce((acc,it) => {
+  let dataid = parms.dataid
+  let departid = contact[dataid].level
+  let objs = memo.filter(check => core.persist(dataid,departid,[check.memo_from,check.memo_to,check.memo_cc]))
+  .map(content => {
+   return Object.keys(content).reduce((acc,it) => {
     let obj = content[it],info
     if (checkKey.indexOf(it) > -1) {
      if (obj == null) {
@@ -91,6 +97,8 @@ router.get('/list', async function(req, res) {
    },{})
   })
   parms.objs = objs
+  parms.depart = depart[departid].depart
+  console.log(parms)
   res.render('memolist',parms)
 	} else {
 		res.redirect('login')

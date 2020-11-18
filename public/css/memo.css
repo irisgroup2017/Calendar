@@ -359,6 +359,7 @@ table + .modal-memo-content {
  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
  align-content: center;
  overflow-y: auto;
+ overflow-x: hidden;
 }
 
 .overflow-hidden {
@@ -399,7 +400,9 @@ table + .modal-memo-content {
 .modal-memo-head tr td:not(:last-child) {
  border-right: 1px var(--modal-table-border) solid;
 }
-
+table tbody .modal-memo-cell {
+ font-size: 14px;
+}
 .modal-memo-cell > .modal-memo-topic {
  display: inline-block;
  padding-left: 2px;
