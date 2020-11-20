@@ -29,7 +29,9 @@ jQuery(function ($) {
      "data-retire": 'user-disable'
     },
     action: function ( e, dt, node, config ) {
-     $("#display-table").DataTable().columns(3).search($('.data-search').data('find'),true,false).draw()
+     let table = $("#display-table").DataTable()
+     table.columns().search('').draw()
+     table.column(3).search($('.data-search').data('find'),true,false).draw()
     }
    },
    {
@@ -39,7 +41,9 @@ jQuery(function ($) {
      "data-retire": 'user-disable'
     },
     action: function ( e, dt, node, config ) {
-     $("#display-table").DataTable().column(2).search($('.data-search').data('find'),true,false).draw()
+     let table = $("#display-table").DataTable()
+     table.columns().search('').draw()
+     table.column(2).search($('.data-search').data('find'),true,false).draw()
     }
    }
   ],

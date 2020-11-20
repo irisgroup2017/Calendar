@@ -70,11 +70,12 @@ router.get('/list', async function(req, res) {
   parms = { title: 'MEMO', head1: 'MEMO' }
   parms = core.objunion(parms,core.cookies(req.cookies))
   let checkKey = ['memo_from','memo_to','memo_cc','memo_admin','memo_boss','memo_approver']
-  let memo = await con.q("SELECT memo_create,memo_id,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) >= ?",[year])
+  let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) >= ?",[year])
   let contact = (await con.q("SELECT dataid,name,level FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
   let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc,it) => (acc[it.ID] = it,acc),{})
   let dataid = parms.dataid
   let departid = contact[dataid].level
+  parms.depart = depart[departid].depart
   let objs = memo.filter(check => core.persist(dataid,departid,[check.memo_from,check.memo_to,check.memo_cc]))
   .map(content => {
    return Object.keys(content).reduce((acc,it) => {
@@ -97,8 +98,6 @@ router.get('/list', async function(req, res) {
    },{})
   })
   parms.objs = objs
-  parms.depart = depart[departid].depart
-  console.log(parms)
   res.render('memolist',parms)
 	} else {
 		res.redirect('login')
