@@ -23,7 +23,7 @@ router.get('/', async function(req, res, next) {
    let vacationquery = 'SELECT dtitle,'+(wplace == 1 ? "doffice" : "dsite")+' AS time FROM vacation_list WHERE '+(wplace == 1 ? "doffice" : "dsite")+' BETWEEN ? AND ?'
    let vacationlist = await con.q(vacationquery,[vacationstart,vacationend])
    vacationlist = vacationlist.reduce((acc,it) => (acc[dateconvert.changeformat(it.time/1000)] = it,acc),{})
-   let larlist = await con.q('SELECT d.title,d.className,t.lartype,d.start,d.end,d.swapDate,d.allDay FROM lar_data AS d JOIN lar_type AS t ON d.className = t.classname WHERE dataid = ? AND ((d.start BETWEEN ? AND ?) OR (d.end BETWEEN ? AND ?))',[dataid,larstart,larend,larstart,larend])
+   let larlist = await con.q('SELECT d.title,d.className,t.lartype,d.start,d.end,d.swapDate,d.allDay FROM lar_data AS d JOIN lar_type AS t ON d.className = t.classname WHERE dataid = ? AND d.approve > 2 AND ((d.start BETWEEN ? AND ?) OR (d.end BETWEEN ? AND ?))',[dataid,larstart,larend,larstart,larend])
    let datelist = datetodate(timeStart,timeEnd)
    let result = (await con.q('SELECT emid,depart,jobPos FROM user_data WHERE dataid = ?',[dataid]))[0]
    let inc = ['0','6']
@@ -49,8 +49,7 @@ router.get('/', async function(req, res, next) {
    parms.vacation = vacationlist
    let lartype = {}
    larlist.map((it) => {
-    console.log(dateconvert.changeformat(it.start))
-    lartype[dateconvert.changeformat(it.start)] = {
+    lartype[dateconvert.changeformatsubtract(it.start)] = {
      lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.unixthformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
     }
     if (it.end) {
@@ -58,7 +57,7 @@ router.get('/', async function(req, res, next) {
      if (dur > 1) {
       let i=1
       while (i<dur) {
-       lartype[dateconvert.adddaychangeformat(it.start,i++)] = {
+       lartype[dateconvert.adddaychangeformatsubtract(it.start,i++)] = {
         lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.unixthformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
        }
       }
@@ -97,8 +96,11 @@ let dateconvert = {
  unixthformat: function(date) {
   return moment.unix(date,"YYYY-MM-DD").locale("th").format('DD MMM YYYY')
  },
- changeformat: function(date) {
+ changeformatsubtract: function(date) {
   return moment.unix(date).subtract(7,'hours').format('YYYY-MM-DD')
+ },
+ changeformat: function(date) {
+  return moment.unix(date).format('YYYY-MM-DD')
  },
  durationhours: function(date) {
   return moment.duration(date).asHours()
