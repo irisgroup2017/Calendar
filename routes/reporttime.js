@@ -49,6 +49,7 @@ router.get('/', async function(req, res, next) {
    parms.vacation = vacationlist
    let lartype = {}
    larlist.map((it) => {
+    console.log(dateconvert.changeformat(it.start))
     lartype[dateconvert.changeformat(it.start)] = {
      lartype: (it.lartype == "ลาอื่นๆ" ? it.title : it.lartype) +""+(it.lartype == "ลาสลับวันหยุด" ? "กับวันที่ "+ dateconvert.unixthformat(it.swapDate)+" ": "") +""+ (it.allDay ? " (ทั้งวัน)" : " ("+dateconvert.durationhours((it.end-it.start)*1000)+" ชั่วโมง)")
     }
@@ -97,7 +98,7 @@ let dateconvert = {
   return moment.unix(date,"YYYY-MM-DD").locale("th").format('DD MMM YYYY')
  },
  changeformat: function(date) {
-  return moment.unix(date).format('YYYY-MM-DD')
+  return moment.unix(date).subtract(7,'hours').format('YYYY-MM-DD')
  },
  durationhours: function(date) {
   return moment.duration(date).asHours()
