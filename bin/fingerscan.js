@@ -38,8 +38,7 @@ async function fingerToJSON() {
    await con.q('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time,MachCodeStart tinyint(3),MachCodeEnd tinyint(3))',[])
    datesearch = "#2000/01/01#"
   } else {
-   datesearch = (await con.q('SELECT DATE_FORMAT(MAX(date), "#%Y/%m/%d#") AS date FROM '+table))[0]
-   datesearch = (datesearch.date != undefined ? datesearch.date : "#2000/01/01#")
+   datesearch = moment().subtract(1,"months").format("#YYYY/MM/DD#")
   }
   let timelist = await mdb.query("SELECT TimeInout,MachCode FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND TimeInout > "+datesearch+" ORDER BY TimeInout ASC")
   let max = timelist.length
