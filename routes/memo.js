@@ -63,7 +63,7 @@ router.get('/list', async function(req, res) {
 
 router.get('/decision',async function(req,res) {
  parms = { title: 'เมโมที่ต้องพิจารณา', head1: 'MEMO' }
-
+ 
 })
 
 router.post('/attachdel',async function(req,res) {
