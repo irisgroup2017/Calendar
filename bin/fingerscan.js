@@ -15,7 +15,7 @@ async function fingerToJSON() {
   let ID = id.dataid
   let emid = id.emid
   let table = "em"+ ID.toString()
-  let datesearch
+  let datesearch,dateend,datediff
 
   let tableexist = await con.q("SHOW TABLES FROM calendar LIKE 'machine_data'")
   if (tableexist.length == 0) {
@@ -38,7 +38,10 @@ async function fingerToJSON() {
    await con.q('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time,MachCodeStart tinyint(3),MachCodeEnd tinyint(3))',[])
    datesearch = "#2000/01/01#"
   } else {
-   datesearch = moment().subtract(1,"months").format("#YYYY/MM/DD#")
+   dateend = ((await con.q('SELECT DATE_FORMAT(MAX(date), "#%Y/%m/%d#") AS date FROM '+table))[0]).date
+   datesearch = moment().subtract(1,"months").format("#YYYY/MM/20#")
+   datediff = moment.duration(moment(datesearch,"#YYYY/MM/DD#").diff(moment(dateend,"#YYYY/MM/DD#")))
+   datesearch = (datediff.asMinutes() > 0 ? dateend : datesearch)
   }
   let timelist = await mdb.query("SELECT TimeInout,MachCode FROM FCT_TimeFinger WHERE PersonCardID = '"+emid+"' AND TimeInout > "+datesearch+" ORDER BY TimeInout ASC")
   let max = timelist.length
