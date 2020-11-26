@@ -4772,7 +4772,7 @@ a.label:focus {
 	background-color: #c9302c;
 }
 .label-dark {
-	background-color: #160f0f;
+	background-color: #160f0f !important;
 }
 .label-dark[href]:hover,
 .label-dark[href]:focus {
