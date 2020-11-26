@@ -1,0 +1,27 @@
+extends layout
+
+block script
+ +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','saleactive.js','bootstrap-datepicker.min.js','th.js'])
+ +scss(['animate.min.css','bootstrap-datepicker.min.css'])
+ link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
+
+block content
+ .row
+  .col-xs-12
+   .row
+    .col-sm-9
+     .space
+     #calendar
+    .col-sm-3
+     .widget-box.transparent
+      .widget-header
+       h4 สีของโครงการ
+      .widget-body
+       .widget-main.no-padding
+        #external-events
+         .external-event.label-primary.center ICOPENH
+         .external-event.label-success.center IRIS PARK
+         .external-event.label-warning.center IRIS WESTGATE
+         .external-event.label-dark.center IDEN KP
+         .external-event.label-danger.center IDEN 101
+         
