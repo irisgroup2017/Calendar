@@ -5,6 +5,7 @@ jQuery(function ($) {
    prev: '<i class="ace-icon fa fa-chevron-left"></i>',
    next: '<i class="ace-icon fa fa-chevron-right"></i>'
   },
+  html: true,
   customButtons: {
    year: {
     text: 'ปี',
@@ -70,7 +71,14 @@ jQuery(function ($) {
     })
    }
   },
-  
+  eventRender: function(info) {
+ },
+  eventAfterRender: function(event, element) {
+   $(element).tooltip({
+       title: event.description,
+       container: "body"
+   });
+},
   eventAfterAllRender: function (view) {
    var listday = JSON.parse(sessionStorage.date)
    if (view.type == 'basic') {

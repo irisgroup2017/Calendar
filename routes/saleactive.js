@@ -23,14 +23,11 @@ router.post('/load',async function(req,res) {
  let objs = []
  let rcount = 0
  for (tableid of dataFinger) {
-  query = 'SELECT DATE_FORMAT(date,"%Y-%m-%d") AS date,timestart,timeend,MachCodeStart AS mstart,MachCodeEnd AS mend FROM '+tableid+' AS u WHERE MachCodeStart <> 5 AND MachCodeEnd <> 5 AND (date BETWEEN ? AND ?)'
+  query = 'SELECT DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.timestart,u.timeend,ms.MachShort AS min,me.MachShort AS mout,u.MachCodeStart AS mstart,u.MachCodeEnd AS mend FROM '+tableid+' AS u JOIN machine_data AS ms on u.MachCodeStart = ms.MachCode JOIN machine_data AS me on u.MachCodeEnd = me.MachCode WHERE (date BETWEEN ? AND ?)'
   result = (await con.q(query,[start,end])).map(person => {
    let day = moment(person.date,'YYYY-MM-DD')
    let stime = person.timestart.split(':')
    let etime = person.timeend.split(':')
-   if (person.mstart && person.mend) {
-    console.log(person.mstart,person.end)
-   }
    return {
     day: person.date,
     date: moment(person.date,'YYYY-MM-DD').add(7,'hours').valueOf(),
@@ -38,7 +35,10 @@ router.post('/load',async function(req,res) {
     end: moment(day).set({ hour: etime[0], minute: etime[1] }).add(7,'hours').valueOf(),
     title: dataPerson[rcount],
     user: dataPerson[rcount],
-    className: site[person.mstart] || site[person.mend]
+    className: site[person.mstart] || site[person.mend],
+    description: 'เข้า: ' +(person.min == null ? "ไม่ได้แสกน" : person.min)+'\n ออก: '+(person.mout == null ? "ไม่ได้แสกน" : person.mout),
+    placein: person.min,
+    placeout: person.mout
    }
   },[])
   objs.push(result)
