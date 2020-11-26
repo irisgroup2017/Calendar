@@ -46,7 +46,6 @@ router.post('/load',async function(req,res) {
  }
  objs = objs.reduce((prev, cur) => prev.concat(cur), [])
  res.json(objs)
- //title:text start:unixtimestamp allday:boolean
 })
 
 module.exports = router
