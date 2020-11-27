@@ -23,7 +23,7 @@ router.get('/', async function(req, res, next) {
    let vacationquery = 'SELECT dtitle,'+(wplace == 1 ? "doffice" : "dsite")+' AS time FROM vacation_list WHERE '+(wplace == 1 ? "doffice" : "dsite")+' BETWEEN ? AND ?'
    let vacationlist = await con.q(vacationquery,[vacationstart,vacationend])
    vacationlist = vacationlist.reduce((acc,it) => (acc[dateconvert.changeformat(it.time/1000)] = it,acc),{})
-   let larlist = await con.q('SELECT d.title,d.className,t.type_title,d.start,d.end,d.swapDate,d.allDay FROM lar_data AS d JOIN lar_type AS t ON d.className = t.type_class WHERE dataid = ? AND d.approve > 2 AND ((d.start BETWEEN ? AND ?) OR (d.end BETWEEN ? AND ?))',[dataid,larstart,larend,larstart,larend])
+   let larlist = await con.q('SELECT d.title,d.className,t.type_title lartype,d.start,d.end,d.swapDate,d.allDay FROM lar_data AS d JOIN lar_type AS t ON d.className = t.type_class WHERE dataid = ? AND d.approve > 2 AND ((d.start BETWEEN ? AND ?) OR (d.end BETWEEN ? AND ?))',[dataid,larstart,larend,larstart,larend])
    let datelist = datetodate(timeStart,timeEnd)
    let result = (await con.q('SELECT emid,depart,jobPos FROM user_data WHERE dataid = ?',[dataid]))[0]
    let inc = ['0','6']
