@@ -63,7 +63,6 @@ jQuery(function ($) {
       end: end
      },
      success: function (data) {
-      console.log(data)
       $.each(data, function (i, item) {
        $('#calendar').fullCalendar('renderEvent', item)
       })

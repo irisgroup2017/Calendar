@@ -29,10 +29,10 @@ router.post('/load',async function(req,res) {
     date: stime,
     start: stime,
     end: etime,
-    title: item.userName,
+    title: item.userName + " " +(item.approve == 2 ? "(รออนุมัติ)" : ""),
     user: item.userName,
     allDay: (item.allDay ? true : false),
-    className: (item.approve == 2 ? "" : item.className),
+    className: (item.approve == 2 ? "label-white" : item.className),
     description: item.title,
    }
   },[])
