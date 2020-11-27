@@ -111,6 +111,9 @@ let dateconvert = {
  adddaychangeformat: function(date,day) {
   return moment.unix(date).add(day,"days").format('YYYY-MM-DD')
  },
+ adddaychangeformatsubtract: function(date,day) {
+  return moment.unix(date).add(day,"days").subtract(7,'hours').format('YYYY-MM-DD')
+ },
  thday: function(date) {
   return moment(date,"YYYY-MM-DD").locale("th").format('dddd')
  }
