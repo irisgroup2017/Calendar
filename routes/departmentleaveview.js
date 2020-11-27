@@ -14,11 +14,12 @@ router.get('/', async function(req, res) {
 })
 
 router.post('/load',async function(req,res) {
+ let email = req.cookies.user_mail
  let dataid = req.cookies.user_dataid
  let start = req.body.start
  let end = req.body.end
- let query = "SELECT dataid FROM user_data WHERE status = 1 AND depart = (SELECT depart FROM user_data WHERE dataid = ?)"
- let result = (await con.q(query,[dataid])).map(it => it.dataid)
+ let query = "SELECT dataid FROM user_data WHERE (status = 1 AND depart = (SELECT depart FROM user_data WHERE dataid = ?)) OR mailGroup = ?"
+ let result = (await con.q(query,[dataid,email])).map(it => it.dataid)
  let objs = []
  for (id of result) {
   query = 'SELECT dataid,title,start,end,swapDate,allDay,className,userName,approve FROM lar_data WHERE dataid = ? AND approve > 1 AND (start BETWEEN ? AND ?)'
