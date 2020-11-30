@@ -1,5 +1,4 @@
-﻿import moment from 'moment';
-var leaveExcept
+﻿var leaveExcept
 $.ajax({
  url: '/lar/getvacation',
  type: 'GET',
