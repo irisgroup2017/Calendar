@@ -553,6 +553,7 @@ $(function($) {
   } else {
    data.memoStatus = 7
   }
+  console.log(data)
   $.ajax({
    url: '/cross',
    type: 'post',

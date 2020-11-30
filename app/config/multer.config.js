@@ -2,7 +2,7 @@ var multer  = require('multer')
 var fs = require('fs')
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        var path = __basedir + '/public/doc/' +req.body.username+ '/'
+        var path = __basedir + '\\public\\doc\\' +req.body.username+ '\\'
         if (!fs.existsSync(path)){
             fs.mkdirSync(path)
         }
@@ -10,7 +10,7 @@ var storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         var ext
-        var path = __basedir + '/public/doc/' +req.body.username+ '/'
+        var path = __basedir + '\\public\\doc\\' +req.body.username+ '\\'
         if (file.mimetype == "application/pdf") { ext = '.pdf' }
         else { ext = '.jpg' }
         var file = req.body.start

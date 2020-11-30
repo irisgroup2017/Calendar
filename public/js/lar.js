@@ -1,4 +1,5 @@
-﻿var leaveExcept
+﻿import moment from 'moment';
+var leaveExcept
 $.ajax({
  url: '/lar/getvacation',
  type: 'GET',
@@ -455,6 +456,13 @@ jQuery(function ($) {
    }
    sessionStorage.setItem('date', thisdate)
   },
+  dateClick: function(info) {
+   alert('Clicked on: ' + info.dateStr);
+   alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+   alert('Current view: ' + info.view.type);
+   // change the day's background color just for fun
+   info.dayEl.style.backgroundColor = 'red';
+ },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
    if (sessionStorage.attach) {
     alert("กรุณาทำการลาครั้งละ 1 รายการ");

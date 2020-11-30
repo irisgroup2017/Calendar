@@ -38,7 +38,7 @@ $('#search').on('click',function() {
    opt2 = $('.datepickerb').datepicker('getDate').getTime()
   }
   if (opt1 && (opt2 || opt2 == null)) {
-   var ip
+   var host
    $.ajax({
     url: '/getip',
     type: "post",
@@ -47,10 +47,8 @@ $('#search').on('click',function() {
      ip = data
     }
    })
-   var ipc = ip.ip.split('.')
-   if (ipc[0] == 192 && ipc[1] == 168 && ipc[2] == 40) {
     $.ajax({
-     url: ip.protocal +''+ ip.ip +':69/leavereport/get',
+     url: host + '/leavereport/get',
      type: "post",
      dataType: "json",
      async: false,
@@ -110,9 +108,6 @@ $('#search').on('click',function() {
      }
     })
    } else {
-    alert('สามารถเรียกดูข้อมูลภายในเครือข่ายสำนักงานใหญ่เท่านั้น')
-   }
-  } else {
    alert('กรุณาเลือกรายละเอียดสำหรับการเรียกข้อมูลรายงาน')
   }
  } else {
