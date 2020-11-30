@@ -38,7 +38,7 @@ $('#search').on('click',function() {
    opt2 = $('.datepickerb').datepicker('getDate').getTime()
   }
   if (opt1 && (opt2 || opt2 == null)) {
-   var host
+   var ip
    $.ajax({
     url: '/getip',
     type: "post",
@@ -48,7 +48,7 @@ $('#search').on('click',function() {
     }
    })
     $.ajax({
-     url: host + '/leavereport/get',
+     url: ip + '/leavereport/get',
      type: "post",
      dataType: "json",
      async: false,
