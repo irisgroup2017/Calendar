@@ -1,24 +1,14 @@
 // Setup page
 
 $(window).on("load",function() {
- $('.datepickera').datepicker('setDate',(moment().startOf('isoweek'))._d)
- $('.datepickerb').datepicker('setDate',(moment().endOf('isoweek'))._d)
-
  $('.datepicker').datepicker({
   ignoreReadonly: true,
-  format: 'DD/MM/YYYY',
+  format: 'dd MM YYYY',
   todayHighlight: true
  })
- $('.datepickera').datepicker({
-  ignoreReadonly: true,
-  format: 'DD/MM/YYYY',
-  todayHighlight: true
- })
- $('.datepickerb').datepicker({
-  ignoreReadonly: true,
-  format: 'DD/MM/YYYY',
-  todayHighlight: true
- })
+
+ $('.datepickera').datepicker('setDate',moment().startOf('isoweek').format())
+ $('.datepickerb').datepicker('setDate',moment().endOf('isoweek').format())
 })
 
 // Search Click
@@ -74,6 +64,7 @@ $('#search').on('click',function() {
          header: true
         },
         createdRow: function ( row, data, index ) {
+         console.log(data)
          $('td', row).eq(1).text(data.swtime.substring(0, 5)+" - "+data.ewtime.substring(0, 5))
          $('td', row).eq(2).text((data.late > 0 ? data.late : "-"))
          $('td', row).eq(3).text((data.hurry > 0 ? data.hurry : "-"))

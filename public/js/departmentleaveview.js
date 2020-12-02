@@ -88,7 +88,9 @@ jQuery(function ($) {
       $('.fc-day-top[data-date="' + datewrite + '"]').addClass('fc-other-month')
      }
     }
-  /*
+    sessionStorage.removeItem('date')
+    sessionStorage.removeItem('fingerscan')
+   }
     $.ajax({
      url: '/lar',
      type: "POST",
@@ -112,10 +114,6 @@ jQuery(function ($) {
       }
      }
     })
-    */
-    //sessionStorage.removeItem('date')
-    //sessionStorage.removeItem('fingerscan')
-   }
   },
 
  })

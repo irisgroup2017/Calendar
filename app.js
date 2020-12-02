@@ -65,6 +65,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use('/public', express.static('public'))
 app.use(express.static(path.join(__dirname, '/public')))
+app.use('/module', express.static('node_modules'))
+app.use(express.static(path.join(__dirname, '/node_modules')))
 
 const approve = require('./routes/approve')
 const authorize = require('./routes/authorize')

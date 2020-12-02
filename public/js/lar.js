@@ -145,10 +145,10 @@ jQuery(function ($) {
  }
  var idGen = new Generator()
 
- var date = new Date(),
-  d = date.getDate(),
-  m = date.getMonth(),
-  y = date.getFullYear(),
+ var date = moment().format(),
+  d = moment(date).format('DD'),
+  m = moment(date).format('MM'),
+  y = moment(date).format('YYYY'),
 
   events = [],
   mailGroup = "",
@@ -227,137 +227,40 @@ jQuery(function ($) {
   timeFormat: 'H:mm',
   selectable: true,
   eventLimit: true,
-  eventAfterAllRender: function (view) {
-   var listday = JSON.parse(sessionStorage.date)
-   if (view.type == 'basic') {
-    for (var i = 0; i < listday.length; i++) {
-     thisday = new Date(listday[i])
-     if (thisday.getFullYear() != view.title) {
-      datewrite = thisday.getFullYear() + '-' + ("0" + (thisday.getMonth() + 1)).slice(-2) + '-' + ("0" + thisday.getDate()).slice(-2)
-      $('.fc-day-top[data-date="' + datewrite + '"]').addClass('fc-other-month')
-     }
+  dayRender: function (date, el, view) {
+   let row = $(el[0]).parents('.fc-row').index() + 1
+   let col = el[0].cellIndex + 1
+   let day = el[0].dataset.date
+   let fingerscan = {}
+   if (sessionStorage.fingerscan) {
+    fingerscan = JSON.parse(sessionStorage.fingerscan)
+    fingerscan[day] = {
+     c: col,
+     r: row
     }
+    fingerscan = JSON.stringify(fingerscan)
+   } else {
+    fingerscan[day] = {
+     c: col,
+     r: row
+    }
+    fingerscan = JSON.stringify(fingerscan)
    }
-   if (view.type == 'agendaDay') {
-    $.ajax({
-     url: '/lar/swaptime',
-     type: "POST",
-     dataType: "json",
-     async: false,
-     data: {
-      time: (view.start._i / 1000) - 25200
-     },
-     success: function (fs) {
-      for (const item of fs) {
-       let swaptitle = item.title
-       if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
-        let swaptime = swaptitle.match(/\d\d/g)
-        let swaptop = (swaptime[0] * 40) + ((swaptime[1] / 30) * 20)
-        let swapbottom = (-(swaptime[2] * 40) + ((swaptime[3] / 30) * 20))
-        swaptime = swaptitle.match(/\d\d:\d\d/g)
-        let swapre = swaptime[0] + ":" + swaptime[1]
-        swaptime = swaptime[0] + "-" + swaptime[1]
-        swaptitle = swaptitle.replace(swapre, "")
-        let swapdate = moment((item.start - 25200) * 1000).format('DD/MM/YY')
-        let starttime = moment((item.start - 25200) * 1000).format('HH:mm')
-        let endtime = moment((item.end - 25200) * 1000).format('HH:mm')
-        let content = '<div class="fc-bgevent" style="top: ' + swaptop + 'px; bottom: ' + swapbottom + 'px; background-color: #ffff80;">' + swaptime + ' ' + swaptitle + ' ใช้ลาในวัน ' + swapdate + ' เวลา ' + starttime + '-' + endtime + '</div>'
-        $('.fc-content-col .fc-bgevent-container').append(content)
-       }
-      }
-     }
-    })
+   sessionStorage.setItem('fingerscan', fingerscan)
+
+   var thisdate = []
+   if (sessionStorage.date) {
+    thisdate = JSON.parse(sessionStorage.date)
+    thisdate.push(date._d.getTime())
+    thisdate = JSON.stringify(thisdate)
+   } else {
+    thisdate.push(date._d.getTime())
+    thisdate = JSON.stringify(thisdate)
    }
-   // Time Scan
-   let dayrender = JSON.parse(sessionStorage.fingerscan)
-   if (view.type == 'month' || view.type == 'basic') {
-    $.ajax({
-     url: '/proc/fingerscan',
-     type: "POST",
-     dataType: "json",
-     async: false,
-     data: {
-      user: $('#username').text(),
-      start: moment(view.start).format("YYYY-MM-DD"),
-      end: moment(view.end).format("YYYY-MM-DD")
-     },
-     success: function (fs) {
-      for (const item in dayrender) {
-       if (fs[item]) {
-        let scandate = fs[item]
-        let row = dayrender[item].r
-        let col = dayrender[item].c
-        let stime = (scandate.timestart != "00:00:00" ? scandate.timestart.substring(0, 5) : "ไม่มีข้อมูล")
-        let etime = (scandate.timeend != "00:00:00" ? scandate.timeend.substring(0, 5) : "ไม่มีข้อมูล")
-        let splace = (stime != 'ไม่มีข้อมูล' ? '<div class="location-scan">' + scandate.mstart + '</div>' : '')
-        let eplace = (etime != 'ไม่มีข้อมูล' ? '<div class="location-scan">' + scandate.mend + '</div>' : '')
-        $('.fc-row:nth-child(' + row + ') .fc-content-skeleton tbody td:nth-child(' + col + ')').append('<div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> ' + stime + ' ' + splace + '</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> ' + etime + ' ' + eplace + '</div>')
-       }
-      }
-     }
-    })
-    $.ajax({
-     url: '/lar',
-     type: "POST",
-     dataType: "json",
-     async: false,
-     data: {
-      'state': 'getvacation',
-      'start': view.start._i,
-      'end': view.end._i
-     },
-     success: async function (data) {
-      var len1 = data.mydata.length,
-       len2 = data.myswap.length,
-       len3 = data.myattach.length,
-       mylen = Math.max(len1, len2, len3)
-      for (var i = 0; i < mylen; i++) {
-       if (data.myswap[i]) {
-        thisswapdate = data.myswap[i].swapDate * 1000
-        swapfrom = data.myswap[i].start * 1000
-        swaptitle = data.myswap[i].title
-        if (listday.indexOf(thisswapdate)) {
-         datewrite = new Date(thisswapdate).getFullYear() + '-' + ("0" + (new Date(thisswapdate).getMonth() + 1)).slice(-2) + '-' + ("0" + new Date(thisswapdate).getDate()).slice(-2)
-         dateread = ("0" + new Date(swapfrom).getDate()).slice(-2) + '/' + ("0" + (new Date(swapfrom).getMonth() + 1)).slice(-2) + '/' + new Date(swapfrom).getFullYear()
-         $('.fc-bg td[data-date="' + datewrite + '"').append('<div class="swapdate"></div>')
-         if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
-          let swaptime = swaptitle.match(/\d\d:\d\d/g)
-          let swapre = swaptime[0] + ":" + swaptime[1]
-          swaptime = swaptime[0] + "-" + swaptime[1]
-          swaptitle = swaptitle.replace(swapre, "")
-          $('.fc-day-top[data-date="' + datewrite + '"').append('<div class="fc-ltr">' + swaptime + ' ' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
-         } else {
-          $('.fc-day-top[data-date="' + datewrite + '"').append('<div class="fc-ltr">' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
-         }
-        }
-       }
-       if (data.mydata[i]) {
-        thisvacation = data.mydata[i][data.wplace]
-        if (listday.indexOf(thisvacation)) {
-         datewrite = new Date(thisvacation).getFullYear() + '-' + ("0" + (new Date(thisvacation).getMonth() + 1)).slice(-2) + '-' + ("0" + new Date(thisvacation).getDate()).slice(-2)
-         $('.fc-bg td[data-date="' + datewrite + '"').append('<div class="vdate">' + data.mydata[i].dtitle + '</div>')
-        }
-       }
-       if (data.myattach[i]) {
-        thisattach = data.myattach[i].start * 1000
-        if (listday.indexOf(thisattach) && data.myattach[i].fname) {
-         datewrite = new Date(thisattach).getFullYear() + '-' + ("0" + (new Date(thisattach).getMonth() + 1)).slice(-2) + '-' + ("0" + new Date(thisattach).getDate()).slice(-2)
-         $('.fc-content-skeleton td[data-date="' + datewrite + '"').prepend('<a class="viewattach" style="float:left; padding: 2px;" id="' + data.myattach[i].fname + '" name="' + data.thisname + '" >เอกสารแนบ</a>')
-        }
-       }
-      }
-     }
-    })
-    //sessionStorage.removeItem('date')
-    //sessionStorage.removeItem('fingerscan')
-   }
+   sessionStorage.setItem('date', thisdate)
   },
   viewRender: function (view, element) {
    let endtime = view.end._i
-   /*
-   //if this month is current month send information last day with current time
-   if ($('.fc-today-button').is(':disabled')) { var endtime = new Date().getTime() } else { var endtime = view.end._i }
-   */
    if (sessionStorage.attach) {
     $.ajax({
      url: '/proc',
@@ -423,45 +326,148 @@ jQuery(function ($) {
     })
    }
   },
-  dayRender: function (date, el, view) {
-   let row = $(el[0]).parents('.fc-row').index() + 1
-   let col = el[0].cellIndex + 1
-   let day = el[0].dataset.date
-   let fingerscan = {}
-   if (sessionStorage.fingerscan) {
-    fingerscan = JSON.parse(sessionStorage.fingerscan)
-    fingerscan[day] = {
-     c: col,
-     r: row
+  eventAfterAllRender: function (view) {
+   var listday = JSON.parse(sessionStorage.date)
+   if (view.type == 'basic') {
+    for (var i = 0; i < listday.length; i++) {
+     thisday = new Date(listday[i])
+     if (thisday.getFullYear() != view.title) {
+      datewrite = thisday.getFullYear() + '-' + ("0" + (thisday.getMonth() + 1)).slice(-2) + '-' + ("0" + thisday.getDate()).slice(-2)
+      $('.fc-day-top[data-date="' + datewrite + '"]').addClass('fc-other-month')
+     }
     }
-    fingerscan = JSON.stringify(fingerscan)
-   } else {
-    fingerscan[day] = {
-     c: col,
-     r: row
-    }
-    fingerscan = JSON.stringify(fingerscan)
    }
-   sessionStorage.setItem('fingerscan', fingerscan)
+   if (view.type == 'agendaDay') {
+    $.ajax({
+     url: '/lar/swaptime',
+     type: "POST",
+     dataType: "json",
+     async: false,
+     data: {
+      time: (view.start._i / 1000) - 25200
+     },
+     success: function (fs) {
+      for (const item of fs) {
+       let swaptitle = item.title
+       if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
+        let swaptime = swaptitle.match(/\d\d/g)
+        let swaptop = (swaptime[0] * 40) + ((swaptime[1] / 30) * 20)
+        let swapbottom = (-(swaptime[2] * 40) + ((swaptime[3] / 30) * 20))
+        swaptime = swaptitle.match(/\d\d:\d\d/g)
+        let swapre = swaptime[0] + ":" + swaptime[1]
+        swaptime = swaptime[0] + "-" + swaptime[1]
+        swaptitle = swaptitle.replace(swapre, "")
+        let swapdate = moment((item.start - 25200) * 1000).format('DD/MM/YY')
+        let starttime = moment((item.start - 25200) * 1000).format('HH:mm')
+        let endtime = moment((item.end - 25200) * 1000).format('HH:mm')
+        let content = '<div class="fc-bgevent" style="top: ' + swaptop + 'px; bottom: ' + swapbottom + 'px; background-color: #ffff80;">' + swaptime + ' ' + swaptitle + ' ใช้ลาในวัน ' + swapdate + ' เวลา ' + starttime + '-' + endtime + '</div>'
+        $('.fc-content-col .fc-bgevent-container').append(content)
+       }
+      }
+     }
+    })
+   }
 
-   var thisdate = []
-   if (sessionStorage.date) {
-    thisdate = JSON.parse(sessionStorage.date)
-    thisdate.push(date._d.getTime())
-    thisdate = JSON.stringify(thisdate)
-   } else {
-    thisdate.push(date._d.getTime())
-    thisdate = JSON.stringify(thisdate)
-   }
-   sessionStorage.setItem('date', thisdate)
+   // Time Scan
+   let dayrender = JSON.parse(sessionStorage.fingerscan)
+   if (view.type == 'month' || view.type == 'basic') {
+    $.ajax({
+     url: '/proc/fingerscan',
+     type: "POST",
+     dataType: "json",
+     async: false,
+     data: {
+      user: $('#username').text(),
+      start: moment(view.start).format("YYYY-MM-DD"),
+      end: moment(view.end).format("YYYY-MM-DD")
+     },
+     success: function (fs) {
+      for (const item in dayrender) {
+       if (fs[item]) {
+        let scandate = fs[item]
+        let row = dayrender[item].r
+        let col = dayrender[item].c
+        let stime = (scandate.timestart != "00:00:00" ? scandate.timestart.substring(0, 5) : "ไม่มีข้อมูล")
+        let etime = (scandate.timeend != "00:00:00" ? scandate.timeend.substring(0, 5) : "ไม่มีข้อมูล")
+        let splace = (stime != 'ไม่มีข้อมูล' ? '<div class="location-scan">' + scandate.mstart + '</div>' : '')
+        let eplace = (etime != 'ไม่มีข้อมูล' ? '<div class="location-scan">' + scandate.mend + '</div>' : '')
+        if ($('.fc-row:nth-child(' + row + ') .fc-content-skeleton tbody tr td:nth-child(' + col + ') .fc-ltr').length == 0) {
+         $('.fc-row:nth-child(' + row + ') .fc-content-skeleton tbody tr td:nth-child(' + col + ')').append('<div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> ' + stime + ' ' + splace + '</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> ' + etime + ' ' + eplace + '</div>')
+        }
+       }
+      }
+     }
+    })
+
+    $.ajax({
+     url: '/lar',
+     type: "POST",
+     dataType: "json",
+     async: false,
+     data: {
+      'state': 'getvacation',
+      'start': view.start._i,
+      'end': view.end._i
+     },
+     success: async function (data) {
+      var len1 = data.mydata.length,
+       len2 = data.myswap.length,
+       len3 = data.myattach.length,
+       mylen = Math.max(len1, len2, len3)
+      for (var i = 0; i < mylen; i++) {
+       if (data.myswap[i]) {
+        thisswapdate = data.myswap[i].swapDate * 1000
+        swapfrom = data.myswap[i].start * 1000
+        swaptitle = data.myswap[i].title
+        if (listday.indexOf(thisswapdate)) {
+         datewrite = new Date(thisswapdate).getFullYear() + '-' + ("0" + (new Date(thisswapdate).getMonth() + 1)).slice(-2) + '-' + ("0" + new Date(thisswapdate).getDate()).slice(-2)
+         dateread = ("0" + new Date(swapfrom).getDate()).slice(-2) + '/' + ("0" + (new Date(swapfrom).getMonth() + 1)).slice(-2) + '/' + new Date(swapfrom).getFullYear()
+         if ($('.fc-bg td[data-date="' + datewrite + '"] .fc-ltr').length == 0) {
+          $('.fc-bg td[data-date="' + datewrite + '"').append('<div class="swapdate"></div>')
+
+         if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
+          let swaptime = swaptitle.match(/\d\d:\d\d/g)
+          let swapre = swaptime[0] + ":" + swaptime[1]
+          swaptime = swaptime[0] + "-" + swaptime[1]
+          swaptitle = swaptitle.replace(swapre, "")
+          $('.fc-bg td[data-date="' + datewrite + '"] .swapdate').append('<div class="fc-ltr">' + swaptime + ' ' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
+         } else {
+          $('.fc-bg td[data-date="' + datewrite + '"] .swapdate').append('<div class="fc-ltr">' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
+         }
+        }
+       }
+       }
+       if (data.mydata[i]) {
+        thisvacation = data.mydata[i][data.wplace]
+        if (listday.indexOf(thisvacation)) {
+         datewrite = new Date(thisvacation).getFullYear() + '-' + ("0" + (new Date(thisvacation).getMonth() + 1)).slice(-2) + '-' + ("0" + new Date(thisvacation).getDate()).slice(-2)
+         if ($('.fc-bg td[data-date="' + datewrite + '"] .vdate').length == 0) {
+          $('.fc-bg td[data-date="' + datewrite + '"]').append('<div class="vdate">' + data.mydata[i].dtitle + '</div>')
+         }
+        }
+       }
+       if (data.myattach[i]) {
+        thisattach = data.myattach[i].start * 1000
+        if (listday.indexOf(thisattach) && data.myattach[i].fname) {
+         datewrite = new Date(thisattach).getFullYear() + '-' + ("0" + (new Date(thisattach).getMonth() + 1)).slice(-2) + '-' + ("0" + new Date(thisattach).getDate()).slice(-2)
+         if ($('.fc-content-skeleton td[data-date="' + datewrite + '"] .viewattach').length == 0) {
+          $('.fc-content-skeleton td[data-date="' + datewrite + '"]').prepend('<a class="viewattach" style="float:left; padding: 2px;" id="' + data.myattach[i].fname + '" name="' + data.thisname + '" >เอกสารแนบ</a>')
+         }
+        }
+       }
+      }
+     }
+    })
+  }
   },
-  dateClick: function(info) {
-   alert('Clicked on: ' + info.dateStr);
-   alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-   alert('Current view: ' + info.view.type);
-   // change the day's background color just for fun
-   info.dayEl.style.backgroundColor = 'red';
- },
+  dayClick: function (date, jsEvent, view) {
+   console.log(jsEvent)
+   if (!jsEvent) {
+    console.log(mement(date).format('DD-MM-YY'))
+   } else {
+
+   }
+  },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
    if (sessionStorage.attach) {
     alert("กรุณาทำการลาครั้งละ 1 รายการ");

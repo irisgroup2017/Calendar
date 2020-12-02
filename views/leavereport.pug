@@ -1,19 +1,17 @@
 extends layout
+mixin listyear(year)
+ -var n = 2018
+ while (n <= year)
+  button.year-item.dropdown-item(value=n)=n++
+mixin listmonth(month)
+ each item,index in month
+  button.month-item.dropdown-item(value=index)=item
+
+block script
+ +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','datatables.min.js','dataTables.buttons.min.js','leavereport.js'])
+ +scss(['bootstrap-datepicker.min.css','datatable/datatables.min.css'])
 
 block content
- mixin ssrc(scr)
-  for t in scr
-   script(src="js/"+t)
- mixin scss(scss)
-  for t in scss
-   link(rel='stylesheet' , href='css/'+t)
- mixin listyear(year)
-  -var n = 2018
-  while (n <= year)
-   button.year-item.dropdown-item(value=n)=n++
- mixin listmonth(month)
-  each item,index in month
-   button.month-item.dropdown-item(value=index)=item
  .menu-row
   .col-sm-1
    .dropdown
@@ -62,8 +60,6 @@ block content
      th สิทธิ
      th ใช้
  +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','datatables.min.js','dataTables.buttons.min.js','leavereport.js'])
- +scss(['bootstrap-datepicker.min.css','datatable/datatables.min.css'])
-
  style.
   .menu-row { width:100%;margin-bottom:15px }
   table {width: 100% !important;margin: auto;overflow: auto;}
