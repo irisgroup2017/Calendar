@@ -425,17 +425,17 @@ jQuery(function ($) {
          if ($('.fc-bg td[data-date="' + datewrite + '"] .fc-ltr').length == 0) {
           $('.fc-bg td[data-date="' + datewrite + '"').append('<div class="swapdate"></div>')
 
-         if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
-          let swaptime = swaptitle.match(/\d\d:\d\d/g)
-          let swapre = swaptime[0] + ":" + swaptime[1]
-          swaptime = swaptime[0] + "-" + swaptime[1]
-          swaptitle = swaptitle.replace(swapre, "")
-          $('.fc-bg td[data-date="' + datewrite + '"] .swapdate').append('<div class="fc-ltr">' + swaptime + ' ' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
-         } else {
-          $('.fc-bg td[data-date="' + datewrite + '"] .swapdate').append('<div class="fc-ltr">' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
+          if (swaptitle.match(/\d\d:\d\d:\d\d:\d\d/)) {
+           let swaptime = swaptitle.match(/\d\d:\d\d/g)
+           let swapre = swaptime[0] + ":" + swaptime[1]
+           swaptime = swaptime[0] + "-" + swaptime[1]
+           swaptitle = swaptitle.replace(swapre, "")
+           $('.fc-bg td[data-date="' + datewrite + '"] .swapdate').append('<div class="fc-ltr">' + swaptime + ' ' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
+          } else {
+           $('.fc-bg td[data-date="' + datewrite + '"] .swapdate').append('<div class="fc-ltr">' + swaptitle + ' ใช้สิทธิลาวันที่ ' + dateread)
+          }
          }
         }
-       }
        }
        if (data.mydata[i]) {
         thisvacation = data.mydata[i][data.wplace]
@@ -458,15 +458,63 @@ jQuery(function ($) {
       }
      }
     })
-  }
+   }
   },
   dayClick: function (date, jsEvent, view) {
    console.log(jsEvent)
-   if (!jsEvent) {
-    console.log(mement(date).format('DD-MM-YY'))
-   } else {
-
-   }
+   console.log(moment(date).format('DD-MM-YY'))
+   console.log(view)
+   let html = '<div class="modal fade">\
+         <div class="modal-dialog">\
+          <div class="modal-content">\
+           <div class="modal-header">\
+            <h5 class="modal-title">' + larType + '</h5>\
+           </div>\
+           <div class="modal-body">\
+            <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+            <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+             <div class="hidethis"><input type="text" id="dataid" name="dataid" value="' + data.dataid + '"/></div>\
+             <div class="hidethis"><input type="text" id="username" name="username" value="' + data.username + '"/></div>\
+             <div class="hidethis"><input type="text" id="start" name="start" value="' + data.start + '"/></div>\
+             <label>แก้หัวข้อ &nbsp;</label>\
+             <div class="row">\
+              <div class="col-md-6">\
+               <select class="form-control" id="larType" name="larType" data-action="change">\
+                <option>ลาฝึกอบรม</option>\
+                <option>ลาทำหมัน</option>\
+                <option>ลาคลอด</option>\
+                <option>ลาอุปสมบท</option>\
+                <option>ลารับราชการทหาร</option>\
+               </select>\
+              </div>\
+              <div class="col-md-6">\
+               <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
+              </div>\
+             </div>\
+             <div class="wrapper">\
+              <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+              <div class="file-upload">\
+                  <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                  <i class="fa fa-arrow-up"></i>\
+              </div>\
+              <div ' + (datah == 1 ? 'class="delfile"' : 'class="delfile hidethis"') + '' + (datah == 1 ? ' id="' + sessionStorage.attach + '"' : '') + '>\
+                  <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                  <i class="fa fa-close delthis"></i></p>\
+              </div>\
+             </div>\
+             <p class="lartype">วันคงเหลือ: ' + $('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text() + '</p>\
+             <p>ต้องการลา: ' + duration(calEvent) + '</p>\
+             </span>\
+            </form>\
+           </div>\
+           <div class="modal-footer">\
+               <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+               <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+               <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+           </div>\
+          </div>\
+         </div>\
+        </div>'
   },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
    if (sessionStorage.attach) {
@@ -875,54 +923,56 @@ jQuery(function ($) {
 
       var modal =
        '<div class="modal fade">\
-                    <div class="modal-dialog">\
-                    <div class="modal-content">\
-                        <div class="modal-header">\
-                        <h5 class="modal-title">' + larType + '</h5>\
-                        </div>\
-                        <div class="modal-body">\
-                        <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                        <form method="POST" enctype="multipart/form-data" id="upsiwa">\
-                            <div class="hidethis"><input type="text" id="dataid" name="dataid" value="' + data.dataid + '"/></div>\
-                            <div class="hidethis"><input type="text" id="username" name="username" value="' + data.username + '"/></div>\
-                            <div class="hidethis"><input type="text" id="start" name="start" value="' + data.start + '"/></div>\
-                            <label>แก้หัวข้อ &nbsp;</label>\
-                            <div class="row">\
-                                <div class="col-md-6">\
-                                <select class="form-control" id="larType" name="larType" data-action="change">\
-                                    <option>ลาฝึกอบรม</option>\
-                                    <option>ลาทำหมัน</option>\
-                                    <option>ลาคลอด</option>\
-                                    <option>ลาอุปสมบท</option>\
-                                    <option>ลารับราชการทหาร</option>\
-                                </select>\
-                                </div>\
-                                <div class="col-md-6">\<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button></div>\
-                                </div>\
-                                <div class="wrapper">\
-                                <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
-                                <div class="file-upload">\
-                                    <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
-                                    <i class="fa fa-arrow-up"></i>\
-                                </div>\
-                                <div ' + (datah == 1 ? 'class="delfile"' : 'class="delfile hidethis"') + '' + (datah == 1 ? ' id="' + sessionStorage.attach + '"' : '') + '>\
-                                    <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
-                                    <i class="fa fa-close delthis"></i></p>\
-                                </div>\
-                                </div>\
-                                <p class="lartype">วันคงเหลือ: ' + $('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text() + '</p>\
-                                <p>ต้องการลา: ' + duration(calEvent) + '</p>\
-                            </span>\
-                        </form>\
-                        </div>\
-                        <div class="modal-footer">\
-                            <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
-                            <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-                        </div>\
-                    </div>\
-                    </div>\
-                    </div>'
+         <div class="modal-dialog">\
+          <div class="modal-content">\
+           <div class="modal-header">\
+            <h5 class="modal-title">' + larType + '</h5>\
+           </div>\
+           <div class="modal-body">\
+            <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+            <form method="POST" enctype="multipart/form-data" id="upsiwa">\
+             <div class="hidethis"><input type="text" id="dataid" name="dataid" value="' + data.dataid + '"/></div>\
+             <div class="hidethis"><input type="text" id="username" name="username" value="' + data.username + '"/></div>\
+             <div class="hidethis"><input type="text" id="start" name="start" value="' + data.start + '"/></div>\
+             <label>แก้หัวข้อ &nbsp;</label>\
+             <div class="row">\
+              <div class="col-md-6">\
+               <select class="form-control" id="larType" name="larType" data-action="change">\
+                <option>ลาฝึกอบรม</option>\
+                <option>ลาทำหมัน</option>\
+                <option>ลาคลอด</option>\
+                <option>ลาอุปสมบท</option>\
+                <option>ลารับราชการทหาร</option>\
+               </select>\
+              </div>\
+              <div class="col-md-6">\
+               <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
+              </div>\
+             </div>\
+             <div class="wrapper">\
+              <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
+              <div class="file-upload">\
+                  <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
+                  <i class="fa fa-arrow-up"></i>\
+              </div>\
+              <div ' + (datah == 1 ? 'class="delfile"' : 'class="delfile hidethis"') + '' + (datah == 1 ? ' id="' + sessionStorage.attach + '"' : '') + '>\
+                  <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
+                  <i class="fa fa-close delthis"></i></p>\
+              </div>\
+             </div>\
+             <p class="lartype">วันคงเหลือ: ' + $('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text() + '</p>\
+             <p>ต้องการลา: ' + duration(calEvent) + '</p>\
+             </span>\
+            </form>\
+           </div>\
+           <div class="modal-footer">\
+               <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+               <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+               <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+           </div>\
+          </div>\
+         </div>\
+        </div>'
      } else if (larType == "ลาสลับวันหยุด") {
       var modal =
        '<div class="modal fade">\

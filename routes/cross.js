@@ -5,7 +5,7 @@ require("dotenv").config()
 
 router.post('/',async function(req,res) {
  var option = {
-  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API + process.env.PORT_API + '' + req.body.path,
+  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' + req.body.path,
   method: 'POST',
   data: (req.body.option == 'getcode' ? req.cookies : req.body.option)
  }

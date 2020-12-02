@@ -67,6 +67,8 @@ app.use('/public', express.static('public'))
 app.use(express.static(path.join(__dirname, '/public')))
 app.use('/module', express.static('node_modules'))
 app.use(express.static(path.join(__dirname, '/node_modules')))
+app.use('/memo/public', express.static('public'))
+app.use(express.static(path.join(__dirname, '/public')))
 
 const approve = require('./routes/approve')
 const authorize = require('./routes/authorize')
