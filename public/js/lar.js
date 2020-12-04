@@ -466,25 +466,25 @@ jQuery(function ($) {
      <div class="modal-dialog">\
       <div class="modal-content">\
        <div class="modal-header">\
-        <h5 class="modal-title">บันทึกเวลาเพิ่มเติม</h5>\
-        <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+         <h5 class="modal-title">บันทึกเวลาเพิ่มเติม</h5>\
+         <button type="button" class="justify-content-end" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
        </div>\
        <div class="modal-body">\
         <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานนอกสถานที่</label>\
         <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานวันหยุด</label>\
        </div>\
        <div class="modal-footer">\
-           <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
-           <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-           <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
        </div>\
       </div>\
      </div>\
     </div>'
    modalAddDay = $(modalAddDay).appendTo('body')
    //$('#extraModal').toggle()
-   $('#test').on('show.bs.modal', function (e) {
+   modalAddDay.on('show.bs.modal', function (e) {
     console.log(e)
+   })
+   modalAddDay.modal('show').on('hidden.bs.modal', function () {
+    modalAddDay.remove()
    })
   },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
@@ -963,8 +963,8 @@ jQuery(function ($) {
                                 <div class="col-md-6">\
                                 <div class="input-group date">\
                                 <input class="form-control datepicker" type="text" readonly placeholder="สลับวันหยุดกับวันที่">\
-                                <div class="input-group-addon pickday">\
-                                <span class="fa fa-calendar-check-o"></span>\
+                                <div class="input-group-addon pickday align-self-center">\
+                                <span class="fa fa-calendar-check-o fa-2x"></span>\
                                 </div>\
                                 </div>\
                                 <input class="middle" style="margin-top: 5px;" autocomplete="off" type="text" id="larDetail" placeholder="สาเหตุที่ต้องทำงานในวันหยุด"/>\
