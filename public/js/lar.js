@@ -7,7 +7,7 @@ $.ajax({
   leaveExcept = parseInt(data)
  }
 })
-var vacation = (leaveExcept * 60 * 60 * 24 * 1000)
+var vacation = moment().add(leaveExcept,'days').subtract(7,'hours').valueOf()
 
 function checkfile(sender) {
  var validExts = new Array(".pdf", ".jpg")
@@ -61,7 +61,7 @@ $(document).on("click", "#toggle-vacation", function () {
  } else {
   $(this).removeClass('check')
  }
- vacation = (leaveExcept * 60 * 60 * 24 * 1000)
+ vacation = moment().add(leaveExcept,'days').subtract(7,'hours').valueOf()
 })
 
 $(document).on("click", ".viewattach", function () {
@@ -464,48 +464,17 @@ jQuery(function ($) {
    console.log(jsEvent)
    console.log(moment(date).format('DD-MM-YY'))
    console.log(view)
-   let html = '<div class="modal fade">\
+   let modalAddDay = '\
+        <div class="modal fade">\
          <div class="modal-dialog">\
           <div class="modal-content">\
            <div class="modal-header">\
-            <h5 class="modal-title">' + larType + '</h5>\
+            <h5 class="modal-title">บันทึกเวลาเพิ่มเติม</h5>\
+            <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
            </div>\
            <div class="modal-body">\
-            <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-            <form method="POST" enctype="multipart/form-data" id="upsiwa">\
-             <div class="hidethis"><input type="text" id="dataid" name="dataid" value="' + data.dataid + '"/></div>\
-             <div class="hidethis"><input type="text" id="username" name="username" value="' + data.username + '"/></div>\
-             <div class="hidethis"><input type="text" id="start" name="start" value="' + data.start + '"/></div>\
-             <label>แก้หัวข้อ &nbsp;</label>\
-             <div class="row">\
-              <div class="col-md-6">\
-               <select class="form-control" id="larType" name="larType" data-action="change">\
-                <option>ลาฝึกอบรม</option>\
-                <option>ลาทำหมัน</option>\
-                <option>ลาคลอด</option>\
-                <option>ลาอุปสมบท</option>\
-                <option>ลารับราชการทหาร</option>\
-               </select>\
-              </div>\
-              <div class="col-md-6">\
-               <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
-              </div>\
-             </div>\
-             <div class="wrapper">\
-              <p style="padding: 10px 5px 0px 0px;">แนบเอกสาร (เฉพาะไฟล์ .pdf หรือ .jpg 1 ไฟล์ ):</p>\
-              <div class="file-upload">\
-                  <input type="file" name="file" id="file" accept=".pdf,.jpg" onchange="checkfile(this)" />\
-                  <i class="fa fa-arrow-up"></i>\
-              </div>\
-              <div ' + (datah == 1 ? 'class="delfile"' : 'class="delfile hidethis"') + '' + (datah == 1 ? ' id="' + sessionStorage.attach + '"' : '') + '>\
-                  <p style="padding: 10px 5px 0px 10px;">ลบไฟล์แนบ\
-                  <i class="fa fa-close delthis"></i></p>\
-              </div>\
-             </div>\
-             <p class="lartype">วันคงเหลือ: ' + $('td:contains(ลาฝึกอบรม)').parents('tr').find('.dur').text() + '</p>\
-             <p>ต้องการลา: ' + duration(calEvent) + '</p>\
-             </span>\
-            </form>\
+            <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานนอกสถานที่</label>\
+            <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานวันหยุด</label>\
            </div>\
            <div class="modal-footer">\
                <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
@@ -515,6 +484,10 @@ jQuery(function ($) {
           </div>\
          </div>\
         </div>'
+        modalAddDay = $(modalAddDay).appendTo('body');
+        $(modalAddDay).on('show.bs.modal', function (e) {
+         console.log(e)
+        })
   },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
    if (sessionStorage.attach) {
@@ -587,7 +560,7 @@ jQuery(function ($) {
     }
    })
    tddate = new Date(y, m, d, 0).getTime()
-   if (vacation > 0 && copiedEventObject.start < tddate + vacation && copiedEventObject.className == 'label-warning') {
+   if (vacation > 0 && copiedEventObject.start < vacation && copiedEventObject.className == 'label-warning') {
     createEvent = false
     alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
    }
@@ -700,7 +673,7 @@ jQuery(function ($) {
     }
    })
    tddate = new Date(y, m, d, 0).getTime()
-   if (event.start < tddate + vacation && event.className == 'label-warning') {
+   if (event.start < vacation && event.className == 'label-warning') {
     createEvent = false
     alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
    }
@@ -794,7 +767,7 @@ jQuery(function ($) {
     }
    })
    tddate = new Date(y, m, d, 0).getTime()
-   if (event.start < tddate + vacation && event.className == 'label-warning') {
+   if (event.start < vacation && event.className == 'label-warning') {
     createEvent = false
     alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
    }
