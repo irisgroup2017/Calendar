@@ -102,6 +102,7 @@
     }
   }
   .responsive-table caption {
+   caption-side: inherit !important;
     margin-bottom: 1em;
     font-size: 1em;
     font-weight: bold;

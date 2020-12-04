@@ -482,7 +482,7 @@ jQuery(function ($) {
      </div>\
     </div>'
    modalAddDay = $(modalAddDay).appendTo('body')
-   $('#extraModal').toggle()
+   //$('#extraModal').toggle()
    $('#test').on('show.bs.modal', function (e) {
     console.log(e)
    })
