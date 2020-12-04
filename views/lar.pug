@@ -11,9 +11,9 @@ block content
      td=parms.lars[i].a
      td.center=parms.lars[i].c
      if parms.lars[i].e 
-      td.bg-danger.dur.center='ใช้เกิน '+parms.lars[i++].d
+      td.dur.center.text-white='ใช้เกิน '+parms.lars[i++].d
      else
-      td.bg-success.dur.center=parms.lars[i++].d
+      td.dur.center.text-white=parms.lars[i++].d
 
  div.row
   div.col-xs-12
@@ -25,7 +25,7 @@ block content
      if parms.operator > 3
       div.widget-box.transparent
        div.widget-header
-        h4="เครื่องมือ"
+        h4 เครื่องมือ
       div.widget-body
        div.widget-main.no-padding
         div.btn.btn-sm.btn-info#load-data อัพเดทลายนิ้วมือ
@@ -78,7 +78,7 @@ block content
      .col-12
       .showfile
     
- +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','lar.js','bootstrap-datepicker.min.js','th.js','jquery.form.min.js','animatemodal.min.js','daterangepicker.min.js'])
+ +ssrc(['jquery-ui.custom.min.js','jquery.ui.touch-punch.min.js','popper.min.js','moment.min.js','bootbox.min.js','fullcalendar.min.js','lar.js','bootstrap-datepicker.min.js','th.js','jquery.form.min.js','animatemodal.min.js','daterangepicker.min.js'])
  link(rel='stylesheet' , href='css/animate.min.css')
  link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
  link(rel='stylesheet' , href='css/fileupload.css')

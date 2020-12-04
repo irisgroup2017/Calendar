@@ -7,6 +7,7 @@ $(document).ready(function(){
   searching: true,
   ordering: true,
   orderMulti: true,
+  order: [0,'desc'],
   fixedHeader: {
       header: true,
       footer: false
@@ -92,6 +93,7 @@ $(document).ready(function(){
      "data": null,
      "defaultContent": '<div class="row center">\
      <div class="col-sm-4 datatable-option edit-profile"><i class="fa fa-pencil-square-o profile-edit"></i><span>ดู/แก้ไข</span></div>\
+     <div class="col-sm-3 datatable-option del-profile"><i class="fa fa-trash profile-del"></i><span>ลบ</span></div>\
      </div>',
      "targets": -1
      //<div class="col-sm-3 datatable-option del-profile"><i class="fa fa-trash profile-del"></i><span>ลบ</span></div>\

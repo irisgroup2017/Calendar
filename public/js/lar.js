@@ -294,9 +294,9 @@ jQuery(function ($) {
       $('tr[class=' + editlar.a + ']').find('td:nth-child(2)').text(editlar.c)
       $('tr[class=' + editlar.a + ']').find('td:nth-child(3)').text((editlar.e ? "ใช้เกิน " : '') + editlar.d)
       if (editlar.e) {
-       $('tr[class=' + editlar.a + ']').find('td:nth-child(3)').removeClass('bg-success').addClass('bg-danger')
+       $('tr[class=' + editlar.a + ']').find('td:nth-child(3)').removeClass('label-success').addClass('label-danger')
       } else {
-       $('tr[class=' + editlar.a + ']').find('td:nth-child(3)').addClass('bg-success').removeClass('bg-danger')
+       $('tr[class=' + editlar.a + ']').find('td:nth-child(3)').addClass('label-success').removeClass('label-danger')
       }
      })
     }
@@ -461,33 +461,31 @@ jQuery(function ($) {
    }
   },
   dayClick: function (date, jsEvent, view) {
-   console.log(jsEvent)
-   console.log(moment(date).format('DD-MM-YY'))
-   console.log(view)
    let modalAddDay = '\
-        <div class="modal fade">\
-         <div class="modal-dialog">\
-          <div class="modal-content">\
-           <div class="modal-header">\
-            <h5 class="modal-title">บันทึกเวลาเพิ่มเติม</h5>\
-            <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-           </div>\
-           <div class="modal-body">\
-            <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานนอกสถานที่</label>\
-            <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานวันหยุด</label>\
-           </div>\
-           <div class="modal-footer">\
-               <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
-               <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-               <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-           </div>\
-          </div>\
-         </div>\
-        </div>'
-        modalAddDay = $(modalAddDay).appendTo('body');
-        $(modalAddDay).on('show.bs.modal', function (e) {
-         console.log(e)
-        })
+    <div class="modal fade" id="extraModal">\
+     <div class="modal-dialog">\
+      <div class="modal-content">\
+       <div class="modal-header">\
+        <h5 class="modal-title">บันทึกเวลาเพิ่มเติม</h5>\
+        <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+       </div>\
+       <div class="modal-body">\
+        <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานนอกสถานที่</label>\
+        <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานวันหยุด</label>\
+       </div>\
+       <div class="modal-footer">\
+           <div class="btn btn-sm btn-info">เมื่อบันทึกแล้วจะไม่สามารถแก้ไขได้</div>\
+           <button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+           <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+       </div>\
+      </div>\
+     </div>\
+    </div>'
+   modalAddDay = $(modalAddDay).appendTo('body')
+   $('#extraModal').toggle()
+   $('#test').on('show.bs.modal', function (e) {
+    console.log(e)
+   })
   },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
    if (sessionStorage.attach) {
@@ -1260,9 +1258,9 @@ jQuery(function ($) {
            $('tr[class=' + data[i].a + ']').find('td:nth-child(2)').text(data[i].c)
            $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').text(data[i].d)
            if (data[i].e) {
-            $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').removeClass("bg-success").addClass("bg-danger")
+            $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').removeClass("label-success").addClass("label-danger")
            } else {
-            $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').removeClass("bg-danger").addClass("bg-success")
+            $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').removeClass("label-danger").addClass("label-success")
            }
           }
           if (data.swapDate) {

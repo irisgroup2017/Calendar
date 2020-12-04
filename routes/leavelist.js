@@ -81,17 +81,17 @@ router.get('/', async function (req, res) {
    approver = (result[i].hrapprover === "ธนกร จริยเพียรพันธุ์" ? "Admin" : result[i].hrapprover)
   }
   if (result[i].delreq == 1) {
-   larstatus = 'แจ้งยกเลิก: ' + approvedate, classn = 'bg-warning'
+   larstatus = 'แจ้งยกเลิก: ' + approvedate, classn = 'text-warning'
   } else if (result[i].approve == 0) {
-   larstatus = 'ยกเลิก: ' + approvedate, classn = 'strikeout'
+   larstatus = 'ยกเลิก: ' + approvedate, classn = 'text-black-50'
   } else if (result[i].approve == 1) {
-   larstatus = 'ไม่อนุมัติ: ' + approvedate, classn = 'bg-danger'
+   larstatus = 'ไม่อนุมัติ: ' + approvedate, classn = 'text-danger'
   } else if (result[i].approve == 2) {
    larstatus = 'รออนุมัติ', classn = ''
   } else if (result[i].approve == 3) {
-   larstatus = 'อนุมัติ: ' + approvedate, classn = 'bg-success'
+   larstatus = 'อนุมัติ: ' + approvedate, classn = 'text-success'
   } else if (result[i].approve == 4) {
-   larstatus = 'HR อนุมัติ: ' + approvedate, classn = 'bg-info'
+   larstatus = 'HR อนุมัติ: ' + approvedate, classn = 'text-info'
   }
 
   if (result[i].className == 'label-grey') {
@@ -122,6 +122,7 @@ router.get('/', async function (req, res) {
   cTime = t.dy + ', ' + t.da + ' ' + t.mo + ' ' + t.y + ' (' + t.h + ':' + t.mi + ')'
   parms.objs.push({
    id: result[i].id,
+   dataTime: result[i].cTime,
    lartype: larType,
    title: result[i].title,
    dateStart: timeKeep.dateStart,

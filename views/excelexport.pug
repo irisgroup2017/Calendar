@@ -7,24 +7,25 @@ block content
 
  link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
- .col-sm-2
-  h4.text-info(align="center")=""
- .col-md-3
-  .form-group
-   .input-group.input-daterange.datepicker(data-provide="datepicker")
-     input.form-control.datepickera(type='text')
-     .input-group-addon='to'
-     input.form-control.datepickerb(type='text')
+ .row
+  .col-2
+   h4.text-info(align="center")=""
+  .col-3
+   .form-group
+    .input-group.input-daterange.datepicker(data-provide="datepicker")
+      input.form-control.datepickera(type='text')
+      span.align-self-center.px-2 -
+      input.form-control.datepickerb(type='text')
 
- button(type="button" id="export" class="btn btn-sm btn-success")
-  i.ace-icon.fa.fa-file=' Export'
+  button(type="button" id="export" class="btn btn-sm btn-success")
+   i.ace-icon.fa.fa-file=' Export'
  +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js'])
  link(rel='stylesheet' , href='css/bootstrap-datepicker.min.css')
  script.
   $(document).ready(function(){
     $('.datepicker').datepicker({
         ignoreReadonly: true,
-        format: 'dd/MM/yyyy',
+        format: 'dd MM yyyy',
         todayHighlight: true
     })
     $('.datepickera').datepicker().on('changeDate',function(e){

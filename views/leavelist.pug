@@ -5,7 +5,7 @@ block content
   -var i = 0
   while i < line
    tr(id=parms.objs[i].id class=parms.objs[i].aclass)
-    td=parms.objs[i].cTime
+    td(data-sort=parms.objs[i].dataTime)=parms.objs[i].cTime
     td=parms.objs[i].lartype
     td=parms.objs[i].title
     td=parms.objs[i].dateStart
@@ -14,10 +14,7 @@ block content
     td=parms.objs[i].daylength
     td=parms.objs[i].larstatus
     td=parms.objs[i++].approver
-    td
-     a.delete.fa.fa-trash.hvr-pulse(title="หากหัวหน้ายังไม่ได้อนุมัติจะลบการลานี้ออกจากรายการ\nหากหัวหน้าอนุมัติแล้วจะทำเครื่องหมายยกเลิกการลาแต่ยังคงเก็บข้อมูลไว้ในระบบต่อไป" data-toggle="confirmation" data-placement="left" style="padding-left: 10px")
-    td.center
-     a.resend-mail.fa.fa-repeat.hvr-pulse(title="ส่งอีเมลให้หัวหน้าอีกครั้ง\nใช้ในกรณีที่เปลี่ยนแปลงผู้บังคับบัญชาหรือผู้บังคับบัญชาค้นหาอีเมลไม่พบ")
+    td option
  mixin ddl(namel)
   -var i = 0
    while i < namel
@@ -35,12 +32,10 @@ block content
 
  link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
- link(rel='stylesheet' , href='css/setting.css')
- link(rel='stylesheet' , href='css/hover.css')
- link(rel='stylesheet' , href='css/jquery-confirm.min.css')
- +ssrc(['popper.min.js','moment.min.js','transition.js','collapse.js','jquery-confirm.min.js'])
+ +scss(['datatable/datatables.min.css','setting.css','hover.css','jquery-confirm.min.css'])
+ +ssrc(['datatables.min.js','dataTables.buttons.min.js','popper.min.js','moment.min.js','transition.js','collapse.js','jquery-confirm.min.js'])
 
- table.table
+ table.table.display.cell-border.nowrap#display-table(style="width:100%")
   thead.thead-info
    tr
     th='วันที่ลา'
@@ -52,8 +47,7 @@ block content
     th='จำนวน'
     th='สถานะการลา'
     th='ผู้ดำเนินการ'
-    th='แจ้งลบ'
-    th='ส่งเมลอีกครั้ง'
+    th='เครื่องมือ'
   tbody
    if parms.lengthPlus
     +tbl(parms.tbl)
@@ -61,6 +55,31 @@ block content
     h4.center='ไม่มีข้อมูล'
  script.
   jQuery(function($) {
+   $("#display-table").DataTable({
+    scrollX: true,
+    paging: false,
+    searching: true,
+    ordering: true,
+    orderMulti: true,
+    fixedHeader: {
+        header: true,
+        footer: false
+    },
+    "search": {
+        "regex": true,
+        "smart": true
+    },
+    columnDefs: [
+     {
+       "data": null,
+       "defaultContent": '<div class="row center">\
+       <a class="delete fa fa-trash hvr-pulse" title="หากหัวหน้ายังไม่ได้อนุมัติจะลบการลานี้ออกจากรายการ\nหากหัวหน้าอนุมัติแล้วจะทำเครื่องหมายยกเลิกการลาแต่ยังคงเก็บข้อมูลไว้ในระบบต่อไป" data-toggle="confirmation" data-placement="left" style="padding-left: 10px">\
+       <a class="resend-mail fa fa-repeat hvr-pulse" title="ส่งอีเมลให้หัวหน้าอีกครั้ง\nใช้ในกรณีที่เปลี่ยนแปลงผู้บังคับบัญชาหรือผู้บังคับบัญชาค้นหาอีเมลไม่พบ">\
+       </div>',
+       "targets": -1
+     }
+    ]
+   })
     let larid = '',status = ''
     $(document).on("click", ".resend-mail", function(){
      larid = $(this).parents('tr').attr('id')
@@ -113,7 +132,7 @@ block content
                                 'larid': larid
                             },
                             success: function(data) {
-                                $('tr[id='+data.larid+']').attr('class','strikeout')
+                                $('tr[id='+data.larid+']').attr('class','text-black-50')
                             }
                         })
                     }
@@ -128,7 +147,7 @@ block content
                                 'larid': larid
                             },
                             success: function(data) {
-                                $('tr[id='+data.larid+']').attr('class','bg-warning')
+                                $('tr[id='+data.larid+']').attr('class','text-warning')
                             }
                         })
                     }

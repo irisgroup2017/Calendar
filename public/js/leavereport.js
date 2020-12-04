@@ -95,7 +95,7 @@ $('#search').on('click',function() {
         ]
        })
       }
-      $('.table-row').removeClass('hide')
+      $('.table-row').removeClass('d-none')
      }
     })
    } else {
@@ -110,20 +110,20 @@ $('#search').on('click',function() {
 
 $('.masterplan .dropdown-item').on('click',function() {
  let mode = $(this).attr('id')
- $('.masterplan a').removeClass('active')
- $('.action-pane > div').addClass('hide')
+ $('.masterplan a').removeClass('d-block')
+ $('.action-pane > div').addClass('d-none')
 
  if (mode == "select-year") {
-  $('.select-year').removeClass('hide')
+  $('.select-year').removeClass('d-none')
  } else if (mode == "select-month") {
-  $('.select-year').removeClass('hide')
-  $('.select-month').removeClass('hide')
+  $('.select-year').removeClass('d-none')
+  $('.select-month').removeClass('d-none')
  } else {
-  $('.date-range').removeClass('hide')
+  $('.date-range').removeClass('d-none')
  }
  $('#dropdownMenuButton').text($(this).text())
 
- $(this).addClass('active')
+ $(this).addClass('d-block')
 })
 
 // Year Type Select

@@ -8,7 +8,7 @@ block content
    -var i=0
    while i<tbl
     tr#editline(class=i+1)
-     td=i+1
+     th(scope="row")=i+1
      td=parms.vlist[i].dtitle
      td=parms.vlist[i].doffice
      td=parms.vlist[i++].dsite
@@ -20,27 +20,28 @@ block content
   h2(style="margin:0 0 15px 15px")='ตั้งค่าวันหยุดประจำปี'
    select.tyear(style="margin-left: 35px; font-size: 16px")
     +ddl(parms.yearlist)
-  span.col.col-lg-2
-   input.ava(type="text" placeholder="Title...")
-   span.addBtn='เพิ่ม'
-   .input-group.date
-    input.form-control.datepickera(type='text' readonly placeholder="วันหยุดออฟฟิศ...")
-    .input-group-addon.picka
-     span.fa.fa-building
-   .input-group.date
-    input.form-control.datepickerb(type='text' readonly placeholder="วันหยุดหน้างาน...")
-    .input-group-addon.pickb
-     span.fa.fa-home
-  span.col.col-lg-10
-   table.table
-    thead
-     tr
-      td.col.col-sm-1="ลำดับ"
-      td.col.col-sm-3="วันสำคัญ"
-      td.col.col-sm-3="วันหยุดออฟฟิศ"
-      td.col.col-sm-3="วันหยุดหน้างาน"
-      td.col.col-sm-1
-    +tbody(parms.tbl)
+  .row
+   .col-3
+    input.ava(type="text" placeholder="Title...")
+    span.addBtn='เพิ่ม'
+    .input-group.date
+     input.form-control.datepickera(type='text' readonly placeholder="วันหยุดออฟฟิศ...")
+     .input-group-addon.picka.align-self-center
+      span.fa.fa-building.fa-2x
+    .input-group.date
+     input.form-control.datepickerb(type='text' readonly placeholder="วันหยุดหน้างาน...")
+     .input-group-addon.pickb.align-self-center
+      span.fa.fa-home.fa-2x
+   .col-9
+    table.table
+     thead
+      tr
+       th(scope="col")="ลำดับ"
+       th(scope="col")="วันสำคัญ"
+       th(scope="col")="วันหยุดออฟฟิศ"
+       th(scope="col")="วันหยุดหน้างาน"
+       th(scope="col")
+     +tbody(parms.tbl)
  style.
   .ava {
     margin: 0 0 5px 0; 

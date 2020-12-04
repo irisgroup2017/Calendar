@@ -12,7 +12,7 @@ block script
  +scss(['bootstrap-datepicker.min.css','datatable/datatables.min.css'])
 
 block content
- .menu-row
+ .row
   .col-sm-1
    .dropdown
     button(class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") เลือกรูปแบบ
@@ -21,23 +21,23 @@ block content
      a.dropdown-item#select-month(value="month" href="#") รอบเงินเดือน
      a.dropdown-item#date-range(value="range" href="#") ช่วงเวลา
   .action-pane.col-md-3
-   .date-range.hide
+   .date-range.d-none
     .form-group
      .input-group.input-daterange.datepicker(data-provide="datepicker")
       input.form-control.datepickera(type='text')
-      .input-group-addon='to'
+      .align-self-center.px-2 -
       input.form-control.datepickerb(type='text')
-   .select-year.hide(style="display:inline;")
+   .select-year.d-none(style="display:inline;")
     button(class="btn btn-sm btn-success dropdown-toggle" type="button" id="dropdownyear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") เลือกปี
     .dropdown-menu.item-year( aria-labelledby="dropdownyear")
      +listyear(parms.year)
-   .select-month.hide(style="display:inline;")
+   .select-month.d-none(style="display:inline;")
     button(class="btn btn-sm btn-success dropdown-toggle" type="button" id="dropdownmonth" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") เลือกเดือน
     .dropdown-menu.item-month( aria-labelledby="dropdownmonth")
      +listmonth(parms.month)
   button(type="button" id="search" class="btn btn-sm btn-success")
    i.ace-icon.fa.fa-search  Search
- .table-row.hide
+ .table-row.d-none
   table.show-table.display.cell-border.nowrap
    thead
     tr
