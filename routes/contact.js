@@ -22,6 +22,16 @@ Generator.prototype.getId = function() {
 return this.rand++
 }
 
+router.get('/updatemail',async function(req, res) {
+ let query = "SELECT dataid FROM contact_data"
+ let result = await con.q(query)
+ for (user of result) {
+  let query = "UPDATE contact_data SET email = (SELECT mail FROM user_data WHERE dataid = ?) WHERE dataid = ?"
+  let result = await con.q(query,[user.dataid,user.dataid])
+ }
+ res.end('ok')
+})
+
 /* GET home page. */
 router.get('/',async function(req, res) {
     var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
