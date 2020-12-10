@@ -51,15 +51,15 @@ async function getLar(userName, dataid, thisday) {
   }
  }
  LAR.sickr = minusDuration(resultr[lle[0]], LAR.sickd)
- console.log(resultr[lle[1]])
- console.log(LAR.personald)
  LAR.personalr = minusDuration(resultr[lle[1]], LAR.personald)
- console.log(LAR.personalr)
  LAR.vacationr = minusDuration(resultr[lle[2]], LAR.vacationd)
  LAR.trainingr = minusDuration(resultr[lle[3]], LAR.trainingd)
  LAR.sterilyr = minusDuration(resultr[lle[4]], LAR.sterilyd)
  LAR.maternityr = minusDuration(resultr[lle[5]], LAR.maternityd)
  LAR.religiousr = minusDuration(resultr[lle[6]], LAR.religiousd)
+ console.log(resultr[lle[6]])
+ console.log(LAR.religiousd)
+ console.log(LAR.religiousr)
  LAR.militaryr = minusDuration(resultr[lle[7]], LAR.militaryd)
  if (!LAR.vacation && (resultr.vacationq != null)) {
   LAR.vacationq = await dhmtoarray(resultr.vacationq.toString())
@@ -305,7 +305,7 @@ function minusDuration(remain, duration) {
   if (duration[chk[i]] == undefined || isNaN(duration[chk[i]])) {
    duration[chk[i]] = 0
   }
-  if (remain.d == 0 && remain.h == 0 && remain.m == 0) {
+  if ((remain.d == 0 && remain.h == 0 && remain.m == 0) && (duration.d > 0 || duration.h > 0 || duration.m > 0)) {
    Ans.o = true
    Ans.d = duration.d
    Ans.h = duration.h
