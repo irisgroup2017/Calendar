@@ -14,15 +14,15 @@ $(window).on("load",function() {
 // Search Click
 
 $('#search').on('click',function() {
- let state = $('.masterplan .active').attr('id')
+ let state = $('.masterplan .d-block').attr('id')
  let opt1,opt2
  if (state != undefined) {
   if (state == "select-year") {
-   opt1 = $('.item-year .active').val()
+   opt1 = $('.item-year .d-block').val()
    opt2 = null
   } else if (state == "select-month") {
-   opt1 = $('.item-year .active').val()
-   opt2 = $('.item-month .active').val()
+   opt1 = $('.item-year .d-block').val()
+   opt2 = $('.item-month .d-block').val()
   } else {
    opt1 = $('.datepickera').datepicker('getDate').getTime()
    opt2 = $('.datepickerb').datepicker('getDate').getTime()
@@ -130,18 +130,18 @@ $('.masterplan .dropdown-item').on('click',function() {
 
 $('.item-year .year-item').on('click',function() {
  let year = $(this).val()
- $('.year-item').removeClass('active')
+ $('.year-item').removeClass('d-block')
  $('#dropdownyear').text($(this).text())
- $(this).addClass('active')
+ $(this).addClass('d-block')
 })
 
 // Month Type Select
 
 $('.item-month .month-item').on('click',function() {
  let month = $(this).val()
- $('.month-item').removeClass('active')
+ $('.month-item').removeClass('d-block')
  $('#dropdownmonth').text($(this).text())
- $(this).addClass('active')
+ $(this).addClass('d-block')
 })
 
 // DateRange Type Select
