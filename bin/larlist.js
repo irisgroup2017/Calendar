@@ -57,9 +57,6 @@ async function getLar(userName, dataid, thisday) {
  LAR.sterilyr = minusDuration(resultr[lle[4]], LAR.sterilyd)
  LAR.maternityr = minusDuration(resultr[lle[5]], LAR.maternityd)
  LAR.religiousr = minusDuration(resultr[lle[6]], LAR.religiousd)
- console.log(resultr[lle[6]])
- console.log(LAR.religiousd)
- console.log(LAR.religiousr)
  LAR.militaryr = minusDuration(resultr[lle[7]], LAR.militaryd)
  if (!LAR.vacation && (resultr.vacationq != null)) {
   LAR.vacationq = await dhmtoarray(resultr.vacationq.toString())
