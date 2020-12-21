@@ -16,7 +16,7 @@ const log = require('./bin/logger')
 const favicon = require('serve-favicon')
 const fingerscan = require('./bin/fingerscan')
 
-schedule.scheduleJob("0 0 0 * * *",async () => {
+schedule.scheduleJob({ hour: [0,12],minute: 0,second: 0 },async () => {
  larstock.updateAll()
  await epass.get()
  fingerscan.fingerToJSON()
