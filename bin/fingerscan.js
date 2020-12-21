@@ -64,7 +64,7 @@ async function fingerToJSON() {
     }
     if (objold != obj) {
      if (start || end) {
-      con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end,pstart,pend])
+      con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend),MachCodeStart=(MachCodeStart),MachCodeEnd(MachCodeEnd)',[objold,start,end,pstart,pend])
       start = false
       end = false
       pstart = false
@@ -85,7 +85,7 @@ async function fingerToJSON() {
     }
     objold = obj
     if (max == index) {
-     con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend)',[objold,start,end,pstart,pend])
+     con.q('INSERT INTO '+table+' VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE timestart=VALUES(timestart),timeend=VALUES(timeend),MachCodeStart=(MachCodeStart),MachCodeEnd(MachCodeEnd)',[objold,start,end,pstart,pend])
      log.logger("info","Updated: scan time ID "+ID+" have "+index+" record")
     }
    }
