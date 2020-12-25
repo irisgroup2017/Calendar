@@ -53,7 +53,8 @@ async function setLar(userName,dataid,state,now) {
         ovr = ov[0].vacationr
         ovp = ov[0].vacationp
         ovq = ov[0].vacationq
-        if (w % 2 || depart == "RCM" || depart == "BRI" || y[2] < 2021) {
+        // 2 Years reset
+        //if (w % 2 || depart == "RCM" || depart == "BRI" || y[2] < 2021) {
          if (ovr) {
           ovb = await dhmtonum(ovr.toString())
           if (ovb >= 6) { ovr = '060000' }
@@ -89,10 +90,11 @@ async function setLar(userName,dataid,state,now) {
            con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovm,dataid,y[2]])
           }
          }
-       } else {
+       // 2 Years reset
+       /*} else {
         vap = "000000"
         con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,vap,dataid,y[2]])
-       }
+       }*/
     }
 
     if ((w >= 2) || (w == 1)) {
