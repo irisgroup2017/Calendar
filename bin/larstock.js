@@ -153,7 +153,7 @@ async function updateEnt(dataid) {
 
 async function updateLar(userName,dataid,now) {
     let a = new Date(now)
-    now = new Date((a.getMonth()==0 ? a.getFullYear()-1 : a.getFullYear()),(a.getMonth()==0 ? 11 : a.getMonth()),(a.getMonth()==0 ? 31 :a.getDate()),7).getTime()
+    now = new Date(a.getFullYear(), a.getMonth(), a.getDate(),7).getTime()
     let checkdate = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,new Date(now).getFullYear()])
     if (checkdate == '') { await setLar(userName,dataid,'insert',now) }
     else { await setLar(userName,dataid,'update',now) }

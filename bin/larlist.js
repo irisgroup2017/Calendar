@@ -9,8 +9,8 @@ const llt = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อ�
 async function getLar(userName, dataid, thisday) {
  a = new Date(thisday),
   LAR = [],
-  start = new Date((a.getMonth() == 0 ? a.getFullYear() - 1 : a.getFullYear()), 0, 1, 7).getTime() / 1000,
-  end = new Date((a.getMonth() == 0 ? a.getFullYear() - 1 : a.getFullYear()), (a.getMonth() == 0 ? 11 : a.getMonth()), (a.getMonth() == 0 ? 31 : a.getDate()), 7).getTime() / 1000,
+  start = new Date(a.getFullYear(), 0, 1, 7).getTime() / 1000,
+  end = new Date(a.getFullYear(), a.getMonth(), a.getDate(), 7).getTime() / 1000,
   result = await con.q('SELECT * FROM lar_data WHERE userName = ? AND approve > 1 AND start BETWEEN ? AND ?', [userName, start, end]),
   resultr = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?', [dataid, a.getFullYear()])
  resultr = resultr[0]
@@ -50,6 +50,7 @@ async function getLar(userName, dataid, thisday) {
    }
   }
  }
+ console.log(resultr)
  LAR.sickr = minusDuration(resultr[lle[0]], LAR.sickd)
  LAR.personalr = minusDuration(resultr[lle[1]], LAR.personald)
  LAR.vacationr = minusDuration(resultr[lle[2]], LAR.vacationd)
@@ -86,8 +87,7 @@ async function getLar(userName, dataid, thisday) {
  return LAR
 }
 async function viewLar(userName, dataid, thisday) {
- thisday = new Date(thisday)
- var a = new Date((thisday.getMonth() == 0 ? thisday.getFullYear() - 1 : thisday.getFullYear()), (thisday.getMonth() == 0 ? 11 : thisday.getMonth()), (thisday.getMonth() == 0 ? 31 : thisday.getDate()), 7),
+ var a = new Date(thisday)
   LAR = await getLar(userName, dataid, a)
  LARS = [], saveLAR = []
  for (i = 0; i < llt.length; i++) {

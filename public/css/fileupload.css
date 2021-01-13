@@ -56,3 +56,28 @@
 .delfile .delthis {
   cursor: pointer;
 }
+
+#dateModal {
+ position: relative;
+ width: 150px; height: 20px;
+ color: white;
+}
+
+#dateModal:before {
+ position: absolute;
+ left: 3px;
+ content: attr(data-date);
+ display: inline-block;
+ color: black;
+}
+
+#dateModal::-webkit-datetime-edit, #dateModal::-webkit-inner-spin-button, #dateModal::-webkit-clear-button {
+ display: none;
+}
+
+#dateModal::-webkit-calendar-picker-indicator {
+ position: absolute;
+ right: 0;
+ color: black;
+ opacity: 1;
+}

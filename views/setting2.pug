@@ -1,10 +1,4 @@
 extends layout
-mixin scss(scss)
- for t in scss
-  link(rel='stylesheet' , href='css/'+t)
-mixin ssrc(scr)
- for t in scr
-  script(src="js/"+t)
 mixin ddl(year)
  for t in year
   option(value=t selected=(parms.thisyear == t ? true : false))=t
@@ -191,66 +185,66 @@ block footer
       input.profile-btn.edit-user(name="editProfile" value="Edit Profile")
       input.profile-btn.del-user(name="deleteProfile" value="Delete Profile")
     .row
-     .col-md-4
+     .col-4
       .row
-       .col-sm-1
+       .col-sm-2
         i.fa.fa-id-card-o
-       .col-sm-5
+       .col-sm-10
         span#edit-emid Employee ID
       .row
-       .col-sm-1
+       .col-sm-2
         i.fa.fa-building-o 
-       .col-sm-5
+       .col-sm-10
         span#edit-wplace สถานที่ทำงาน
       .row
-       .col-sm-1
+       .col-sm-2
         i.fa.fa-briefcase
-       .col-sm-5
+       .col-sm-10
         span#edit-stime 00:00
         span  - 
         span#edit-etime 00:00
       .row
-       .col-sm-1
+       .col-sm-2
         i.fa.fa-phone
-       .col-sm-5
+       .col-sm-10
         span#edit-phone 02-196-1100-1 (ext)
       .row
-       .col-sm-1
+       .col-sm-2
         i.fa.fa-mobile
-       .col-sm-5 
+       .col-sm-10 
         span#edit-mobile Phone number
       .row
-       .col-sm-1
+       .col-sm-2
         i.fa.fa-envelope-o
-       .col-sm-5
+       .col-sm-10
         span#edit-email Email
-     .col-md-6
+     .col-6
       .row
-       .col-md-3
-        p วันที่เริ่มงาน
        .col-md-5
+        p วันที่เริ่มงาน
+       .col-md-7
         p#edit-sdate DD/MM/YYYY
       .row
-       .col-md-3
-        p ผู้บังคับบัญชา
        .col-md-5
+        p ผู้บังคับบัญชา
+       .col-md-7
         p#edit-boss ชื่อ-สกุล (Email)
       .row
-       .col-md-3
-        p username
        .col-md-5
+        p username
+       .col-md-7
         p#edit-username userName
       .row
-       .col-md-3
-        p password
        .col-md-5
+        p password
+       .col-md-7
         i#edit-password Reset Password
       .row
-       .col-md-3
-        p กำหนดวันลาออก (show if value)
        .col-md-5
+        p กำหนดวันลาออก (show if value)
+       .col-md-7
         p.retirement#edit-password DD/MM/YYYY
-     .col-md-2
+     .col-2
     
 
  +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','clockpicker.min.js','setting2.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])

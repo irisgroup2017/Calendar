@@ -1,4 +1,5 @@
 $(function($) {
+ var clicked = true
  let source = $('.modal-memo-content').text()
  $('.modal-memo-content').text("").html(source)
  $('.modal-memo').each(function() {
@@ -49,12 +50,80 @@ $(function($) {
    if ($('.print-button').length == 0) {
     $(a4).after('\
     <div class="button-section" style="position:relative; top:-20px;">\
+     <button class="btn btn-secondary print-button" type="button">พิมพ์</button>\
      <button class="btn btn-secondary close-button" type="button">ปิด</button>\
     </div>')
    }
   }
  }
+ $(document).on('click','.print-button',function() {
+  if (clicked) {
+   clicked = false
+   printDiv()
+  }
+  clicked = true
+ })
  $(document).on('click','.close-button',function(){
   window.close()
+ })
+
+ function printDiv() {
+  printElement = $('.modal-memo')
+  var mywindow = window.open('', 'PRINT');
+  var cssList = ['../public/css/ace.min.css','../public/css/memo.css','../public/css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
+  var loadCount = cssList.length
+ 
+  mywindow.document.write('<html><head><title>' + document.title  + ' test</title>');
+  for (css in cssList) {
+   var link = mywindow.document.createElement('link');
+   link.setAttribute("rel", "stylesheet");
+   if (cssList[css].split('.').pop() == 'css') { link.setAttribute("type", "text/css"); }
+   link.onload = function(){
+    if (--loadCount == 0) {
+     mywindow.print();
+     mywindow.close();
+    }
+   }
+   link.setAttribute("href", cssList[css]);
+   mywindow.document.getElementsByTagName("head")[0].appendChild(link);
+  }
+
+  mywindow.document.write('</head><body>');
+  for (item of printElement) {
+   mywindow.document.write(item.innerHTML);
+  }
+  mywindow.document.write('</body></html>');
+ }
+ window.printDiv = printDiv
+
+ $(document).on('click','.modal-attach-file',function() {
+  let data = window.location.origin +''+ $(this).data('path')
+  $("#animatedModal").animatedModal({
+   modalTarget: 'animatedModal',
+   animatedIn: 'bounceInUp',
+   animatedOut: 'bounceOutDown',
+   color: '#FFFFFF',
+   animationDuration: '.5s',
+   beforeOpen: function () {
+    var children = $(".thumb")
+    var index = 0
+    function addClassNextChild() {
+     if (index == children.length) return;
+     children.eq(index++).show().velocity("transition.slideUpIn", {
+      opacity: 1,
+      stagger: 450,
+      defaultDuration: 100
+     })
+     window.setTimeout(addClassNextChild, 100)
+    }
+    addClassNextChild()
+   },
+   afterClose: function () {
+    $(".thumb").hide()
+    $('.showfile').empty()
+   }
+  })
+  fileExt = data.substring(data.lastIndexOf('.')).toLowerCase()
+  $('.showfile').append('<' + (fileExt == '.jpg' ? 'img' : 'iframe') + ' src="' + data + '" style="height: 100vh; width:100vh;"></iframe>')
  })
 })

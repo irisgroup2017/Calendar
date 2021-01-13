@@ -1,0 +1,186 @@
+extends layout
+
+block script
+ link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
+
+block content
+ .container
+  .memo-head
+   .memo-title.center บันทึกภายใน
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ถึง:
+        span.memo-span
+         ul.memo-span2
+          li.span-select.memo-ans.memo-to#memo-to
+           if parms.objs.memo_to
+            =parms.objs.memo_to
+          li.span-input
+           input.memo-input.single-input(contenteditable="true" type="text")
+      td
+       .memo-quiz
+        .memo-quest เลขที่เอกสาร:
+        span.memo-span
+         ul.memo-span2
+          li.span-input
+           if parms.objs.memo_code
+             input#memo-no.memo-input.memo-ans(disabled type="text" value=parms.objs.memo_code)
+      td
+       .memo-quiz
+        .memo-quest2 วันที่:
+        span.memo-span
+         ul.memo-span2
+          li.span-input
+           if parms.objs.memo_date
+            input#memo-date.memo-input.memo-ans(contenteditable="true" type="text" value=parms.objs.memo_date)
+     tr
+      td(colspan="2")
+       .memo-quiz
+        .memo-quest สำเนาเรียน:
+        span.memo-span
+         ul.memo-span2
+          li.span-select.memo-ans.memo-cc#memo-cc
+           if parms.objs.memo_cc
+            =parms.objs.memo_cc
+          li.span-input
+           input.memo-input(contenteditable="true" type="text")
+      td
+       .memo-quiz
+        .memo-quest2 จาก:
+        span.memo-span
+         ul.memo-span2
+          li.span-select.memo-ans.memo-from#memo-from
+           if parms.objs.memo_from
+            =parms.objs.memo_from
+          li.span-input
+           input.memo-input.single-input(contenteditable="true" type="text")
+     tr
+      td(colspan="3")
+       .memo-quiz
+        .memo-quest เรื่อง:
+        span.memo-span
+         ul.memo-span2
+          li.span-input
+           if parms.objs.memo_subject
+            input#memo-subject.memo-input.memo-ans(contenteditable="true" type="text" value=parms.objs.memo_subject)
+     tr
+      td(colspan="3")
+       .memo-quiz
+        .memo-quest เอกสารแนบ:
+        ul.memo-span3
+          li.span-select.memo-ans#memo-file
+           if parms.objs.memo_file
+            =parms.objs.memo_file
+          li.span-upload
+           form(method="POST" enctype="multipart/form-data" id="upsiwa")
+            label.file-upload-custom(for="file-upload-field") เลือกไฟล์
+             input.file-upload-field#file-upload-field(type="file" accept=".pdf,.jpg" onchange="checkfile(this)")
+            //button.file-upload-custom(type="submit" style="margin-left: 5px;")
+             i.ace-icon.fa.fa-upload  อั๊พโหลดไฟล์
+  .memo-sheet
+   .test(style="display:none;")
+    if parms.objs.memo_content
+     =parms.objs.memo_content
+   #memoeditor
+  .memo-head
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ผู้ออกเอกสาร:
+        span.memo-span
+         ul.memo-span2
+          li.span-select.memo-ans.memo-admin#memo-admin
+           if parms.objs.memo_admin
+            =parms.objs.memo_admin
+          li.span-input
+           input.memo-input.single-input(contenteditable="true" type="text")
+  .memo-head
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ผู้ตรวจสอบ:
+        span.memo-span
+         ul.memo-span2
+          li.span-select.memo-ans.memo-boss#memo-boss
+           if parms.objs.memo_boss
+            =parms.objs.memo_boss
+          li.span-input
+           input.memo-input.single-input(type="text")
+  .memo-head
+   table
+    tbody
+     tr
+      td 
+       .memo-quiz 
+        .memo-quest ผู้อนุมัติ:
+        span.memo-span
+         ul.memo-span2
+          li.span-select.memo-ans.memo-approve#memo-approve
+           if parms.objs.memo_approver
+            =parms.objs.memo_approver
+          li.span-input
+           input.memo-input.single-input(contenteditable="true" type="text")
+  .button-section
+   button.testbutton.preview-button(type="button") ดูตัวอย่าง
+ +ssrc(['ckeditor/ckeditor.js','moment.min.js','memoedit.js','animatemodal.min.js','jquery.form.min.js','daterangepicker.min.js'])
+ +scss(['memo.css','daterangepicker.css','animate.min.css'])
+ #editorModal.animated.emp-modal(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+  .close-editorModal
+   i.fa.fa-close.fa-3x
+  .modal-memo
+   .modal-page
+    img.modal-logo(src="/public/img/logo.jpg")
+    .modal-memo-head
+     .modal-memo-title.center บันทึกภายใน
+     table
+      tbody
+       tr
+        td
+         .modal-memo-cell
+          .modal-memo-topic ถึง:
+          .modal-memo-subject#modal-to
+        td
+         .modal-memo-cell
+          .modal-memo-topic เลขที่เอกสาร:
+          .modal-memo-subject#modal-no
+        td
+         .modal-memo-cell
+          .modal-memo-topic วันที่:
+          .modal-memo-subject#modal-date
+       tr
+        td
+         .modal-memo-cell
+          .modal-memo-topic สำเนาเรียน:
+          .modal-memo-subject#modal-cc
+        td(colspan="2")
+         .modal-memo-cell
+          .modal-memo-topic จาก:
+          .modal-memo-subject#modal-from
+       tr
+        td(colspan="3")
+         .modal-memo-cell
+          .modal-memo-topic เรื่อง:
+          .modal-memo-subject#modal-subject
+       tr
+        td(colspan="3")
+         .modal-memo-cell
+          .modal-memo-topic เอกสารแนบ:
+          .modal-memo-subject#modal-attach
+     .modal-memo-content
+     .modal-section-signature
+     .justify-content-end
+      .justify-item
+       .modal-section-admin#modal-section-admin
+     .justify-content-around
+      .justify-around
+       .modal-section-approve#modal-section-approve
+      .justify-around
+       .modal-section-boss#modal-section-boss
+     .modal-memo-end

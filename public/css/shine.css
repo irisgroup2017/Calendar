@@ -23,10 +23,10 @@ p.shine {
  background-color: rgb(46, 107, 206) !important;
 }
 #toggle-vacation:after {
- content: "เปิดเงื่อนไขการลาพักร้อน";
+ content: "ตรวจสอบเงื่อนไขการลาพักร้อน: ปิด";
 }
 #toggle-vacation.check:after {
- content: "ปิดเงื่อนไขการลาพักร้อน";
+ content: "ตรวจสอบเงื่อนไขการลาพักร้อน: เปิด";
 }
 #toggle-vacation:hover{
  border-color: rgba(242, 247, 243, 0) !important;

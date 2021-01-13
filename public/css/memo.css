@@ -64,6 +64,56 @@ html,body {
  font-size: 20px;
 }
 
+.modal-attach {
+ padding: 1rem 2rem 2rem 2rem;
+ position: absolute;
+ top: 7rem;
+ left: 3rem;
+}
+
+.modal-attch-title {
+ font-size: 18px;
+}
+
+.modal-attach-file {
+ cursor: pointer;
+ padding:5px;
+}
+
+.modal-attach-file:hover {
+ text-decoration: underline;
+ animation: blur .75s ease-out infinite;
+ text-shadow: 0px 0px 1px #484849, 0px 0px 2px #626264;
+}
+
+.modal-attach-file:active {
+ text-decoration: none;
+ user-select: none;
+ transform: scale(1.1,1.1);
+}
+
+.close-animate {
+ text-decoration: none;
+ padding-left: 15px;
+ font-size: 24px;
+}
+
+@keyframes blur {
+ from {
+   text-shadow:0px 0px 1px #484849,
+     0px 0px 1px #484849, 
+     0px 0px 1px #484849,
+     0px 0px 1px #484849,
+     0px 0px 1px #484849,
+     0px 1px 1px #484849,
+     0px 1px 1px #626264,
+     0px -1px 1px #626264,
+     0px -1px 1px #626264,
+     0px -1px 1px #626264,
+     0px -1px 1px #626264;
+ }
+}
+
 .memo-head .memo-title {
  font-size: 20px;
  width: 21cm;
@@ -316,7 +366,7 @@ html,body {
 }
 
 .popupUserlist > .popupUserlistItem.hide {
- visibility: hidden;
+ display: none;
 }
 
 .popupUserlist > .popupUserlistItem.select {

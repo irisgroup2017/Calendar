@@ -1,19 +1,19 @@
 const express = require('express'),
- router = express.Router(),
- con = require('../bin/mysql'),
- ll = require('../bin/larlist'),
- fs = require('fs')
-var now = new Date(),
- sTime = new Date(now.getFullYear(), 0, 1, 7).getTime() / 1000,
- eTime = new Date(now.getFullYear(), 11, 31, 7).getTime() / 1000,
- mailsend = require('../bin/mailsend'),
- log = require('../bin/logger')
+router = express.Router(),
+con = require('../bin/mysql'),
+ll = require('../bin/larlist'),
+fs = require('fs'),
+mailsend = require('../bin/mailsend'),
+log = require('../bin/logger')
 
-router.get('/', async function (req, res) {
+async function leavelist(req,res) {
  var userName = req.cookies.user_name,
-  dataid = req.cookies.user_dataid,
-  dataop = req.cookies.user_op,
-  mail = req.cookies.user_mail
+ dataid = req.cookies.user_dataid,
+ dataop = req.cookies.user_op,
+ mail = req.cookies.user_mail,
+ year = (req.params.year ? req.params.year : (new Date()).getFullYear())
+ sTime = new Date(year, 0, 1, 7).getTime() / 1000,
+ eTime = new Date(year, 11, 31, 7).getTime() / 1000,
  parms = {
   title: 'รายงานการลา',
   head1: "Detail List"
@@ -156,6 +156,13 @@ router.get('/', async function (req, res) {
  }
  parms.tbl = parms.objs.length
  res.render('leavelist', parms)
+}
+
+router.get('/', async function (req, res) {
+ leavelist(req,res)
+})
+router.get('/:year', async function (req, res) {
+ leavelist(req,res)
 })
 
 router.post('/', async function (req, res) {

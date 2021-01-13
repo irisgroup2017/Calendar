@@ -3,7 +3,7 @@ extends layout
 mixin tbl(memo)
  for issue in memo
   //-var user-status = (block.status ? "user-enable" : "user-disable")
-  tr(id=issue.memo_id class="tr"+ issue.memo_status)
+  tr(id=issue.memo_id data-status=issue.memo_status data-admin=issue.memo_admin data-boss=issue.memo_boss data-approver=issue.memo_approver class=issue.setClass)
    td.doc-no=issue.memo_code
    td.m-subject=issue.memo_subject
    td.m-from=issue.memo_from
@@ -17,7 +17,7 @@ mixin tbl(memo)
 block script
  link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
  +scss(['memolist.css','datatable/datatables.min.css','datatable/buttons.dataTables.min.css','jquery-confirm.min.css','animate.min.css'])
- +ssrc(['memolist.js','moment.min.js','transition.js','collapse.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])
+ +ssrc(['memolist.js','moment.min.js','transition.js','collapse.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js','jquery-confirm.min.js'])
 
 block content
  table.display.cell-border.nowrap#display-table(style="width:100%")

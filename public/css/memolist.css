@@ -1,4 +1,21 @@
-a.memo-view:hover {
+.datatable-option a:hover {
  text-decoration: none;
  cursor: pointer;
+}
+
+.edit-memo,.return-memo,.approve-memo,.reject-memo {
+ display: none;
+}
+
+tr.edit .edit-memo {
+ display: inline;
+}
+tr.return .return-memo {
+ display: inline;
+}
+tr.approve .approve-memo {
+ display: inline;
+}
+tr.reject .reject-memo {
+ display: inline;
 }

@@ -33,11 +33,12 @@ async function get(url,data) {
 
 async function post(url,data) {
  url = host +''+ url
- axios.post(url,data)
+ let response = axios.post(url,data)
  .then(function (response) {
   console.log(response);
  })
  .catch(function (error) {
    console.log(error);
  })
+ return response.data
 }

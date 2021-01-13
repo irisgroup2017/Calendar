@@ -5,6 +5,43 @@ module.exports = {
  objUnion: function(x,y) {
   return {...x,...y}
  },
+ classAssign: function(arr,id) {
+  let approve = "return approve reject"
+  let edit = "edit"
+  if (arr.length) {
+   let objs = arr.map(item => {
+    let status = item.memo_status
+    switch (status) {
+     case 1:
+      if (item.memo_boss == id) {
+       item.setClass = approve
+      }
+      return item
+     case 2:
+      if (item.memo_admin == id) {
+       item.setClass = edit
+      }
+      return item
+     case 3:
+      if (item.memo_approver == id) {
+       item.setClass = approve
+      }
+      return item
+     case 4:
+      if (item.memo_admin == id) {
+       item.setClass = edit
+      }
+      return item
+     default:
+      item.setClass = ""
+      return item
+    }
+   })
+   return objs
+  } else {
+   return arr
+  }
+ },
  persist: function(a,b,c) {
   return c.map(d => {
    if (d == null) {

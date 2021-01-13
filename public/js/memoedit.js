@@ -91,27 +91,8 @@ $(function($) {
   }
  })
 
- $.ajax({
-  url: '/cross',
-  type: 'POST',
-  async: false,
-  data: {
-   path: '/memo/getdocumentcode',
-   option: 'getcode'
-  },
-  success: function (data) {
-   let doccount = data[0].memo_counts[0].count
-   let count = (doccount == 0 ? 1 : doccount+1).toString()
-   count = "0".repeat(4-count.length) + count
-   let depart = data[0].memo_counts[0].depart_row.departShort
-   let departId = data[0].memo_counts[0].depart_row.ID
-   let memoyear = data[0].memo_counts[0].year
-   let year = (memoyear+543).toString().substring(2,5)
-   documents = "FM-" +depart+ "-" +year+ "-" +count
-   $('#memo-no').data("number",{ docid: documents, count: parseInt(count), depart: departId,year: memoyear }).val(documents)
-  }
- })
-
+ let content = $('.test').text()
+ CKEDITOR.instances.memoeditor.setData(content)
  let result = getList('',users,departs)
  let html = '<ol class="popupUserlist hide" style="z-index: '+(maxZIndex()+1)+';">'
  html += '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'
@@ -646,4 +627,13 @@ function getList(m,users,departs) {
  })
  ans = [...users,...departs]
  return ans
+}
+
+function getDetail(id) {
+ let match = $('.popupUserlist data-id['+id+']')
+ return match
+}
+
+function nameHtml(show,type,id,mail,etc) {
+ return '<span class="target-select" data-type="'+type+'" data-id="'+id+'" data-mail="'+mail+'" data-etc="'+etc+'">'+show+'</span>'
 }

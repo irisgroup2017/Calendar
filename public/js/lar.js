@@ -260,7 +260,21 @@ jQuery(function ($) {
    sessionStorage.setItem('date', thisdate)
   },
   viewRender: function (view, element) {
-   let endtime = view.end._i
+   let dateSend = function (type,time) {
+    let ftime = new Date(time)
+    switch (type) {
+     case 'basic':
+      return moment(view.end._i).subtract(1,'years').valueOf()
+     case 'month':
+      if (ftime.getMonth() == 0) {
+       let lastDate = moment(view.end._i).subtract(1,'months').daysInMonth()
+       return moment(view.end._i).subtract(1,'months').set('date',lastDate).valueOf()
+      }
+     default:
+      return time
+    }
+   }
+   let endtime = dateSend(view.type,view.end._i) 
    if (sessionStorage.attach) {
     $.ajax({
      url: '/proc',
@@ -461,30 +475,169 @@ jQuery(function ($) {
    }
   },
   dayClick: function (date, jsEvent, view) {
-   let modalAddDay = '\
-    <div class="modal fade" id="extraModal">\
+   var modalAddDay = '\
+    <div class="modal fade" id="extraModal" >\
      <div class="modal-dialog">\
       <div class="modal-content">\
        <div class="modal-header">\
-         <h5 class="modal-title">บันทึกเวลาเพิ่มเติม</h5>\
+         <h5 class="modal-title">ขออนุมัติบันทึกเวลาเพิ่มเติม</h5>\
          <button type="button" class="justify-content-end" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
        </div>\
        <div class="modal-body">\
-        <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานนอกสถานที่</label>\
-        <label class="radio-inline"><input type="radio" name="optradio" checked>ทำงานวันหยุด</label>\
-       </div>\
-       <div class="modal-footer">\
+        <form>\
+         <fieldset class="form-group">\
+          <div class="row align-items-center">\
+           <label class="col-sm-2 col-form-label">วันที่</label>\
+           <div class="col-sm-10">\
+            <input type="date" id="dateModal" data-date="'+moment(date).format("DD MMM YYYY")+'" data-date-format="DD MMM YYYY" value="'+moment(date).format("YYYY-MM-DD")+'">\
+           </div>\
+          </div>\
+          <hr/>\
+          <div class="row align-items-center">\
+           <label class="col-sm-2 col-form-label">ประเภท</label>\
+           <div class="col-sm-10">\
+            <div class="custom-control custom-radio">\
+             <input type="radio" id="optradio1" name="optradio" class="custom-control-input" value="out" checked>\
+             <label class="custom-control-label" for="optradio1">ทำงานนอกสถานที่</label>\
+            </div>\
+            <div class="custom-control custom-radio">\
+             <input type="radio" id="optradio2" name="optradio" class="custom-control-input" value="extra">\
+             <label class="custom-control-label" for="optradio2">ทำงานวันหยุด</label>\
+            </div>\
+           </div>\
+          </div>\
+          <hr/>\
+          <div class="row align-items-center">\
+           <label class="col-sm-2 col-form-label">ช่วงเวลา</label>\
+           <div class="col-sm-10">\
+            <div class="custom-control custom-checkbox">\
+             <div class="row">\
+              <div class="col-sm-3">\
+               <input type="checkbox" class="custom-control-input" id="customCheck1">\
+               <label class="custom-control-label" for="customCheck1">เข้างาน</label>\
+              </div>\
+              <div class="col-sm-9">\
+               <input type="time" class="center" id="timepicker1" value="">\
+               <select id="place1">\
+                <option value="">สถานที่</option>\
+                <option value="5">HO</option>\
+                <option value="6">IBY</option>\
+                <option value="8">IPC</option>\
+                <option value="11">IDEN101</option>\
+                <option value="12">IDEN KP</option>\
+                <option value="13">ICOPENH</option>\
+               </select>\
+              </div>\
+             </div>\
+            </div>\
+            <div class="custom-control custom-checkbox">\
+             <div class="row">\
+              <div class="col-sm-3">\
+               <input type="checkbox" class="custom-control-input" id="customCheck2">\
+               <label class="custom-control-label" for="customCheck2">ออกงาน</label>\
+              </div>\
+               <div class="col-sm-9">\
+                <input type="time" class="center" id="timepicker2" value="">\
+                <select id="place2">\
+                 <option value="">สถานที่</option>\
+                 <option value="5">HO</option>\
+                 <option value="6">IBY</option>\
+                 <option value="8">IPC</option>\
+                 <option value="11">IDEN101</option>\
+                 <option value="12">IDEN KP</option>\
+                 <option value="13">ICOPENH</option>\
+                </select>\
+               </div>\
+              </div>\
+             </div>\
+            </div>\
+           </div>\
+          </div>\
+          <input id="extraComment" placeholder="โปรดระบุรายละเอียดการทำงาน" maxlength="255" type="text" required>\
+         </fieldset>\
+        </form>\
+        <div class="modal-footer">\
+         <button type="submit" id="saveExtraDate" class="btn btn-success btn-sm mr-1">บันทึก</button>\
+         <button type="button" id="cancelExtraDate" class="btn btn-danger btn-sm">ยกเลิก</button>\
+        </div>\
        </div>\
       </div>\
      </div>\
     </div>'
    modalAddDay = $(modalAddDay).appendTo('body')
-   //$('#extraModal').toggle()
+
    modalAddDay.on('show.bs.modal', function (e) {
-    console.log(e)
+    modalAddDay.find('#timepicker1').prop('disabled',true)
+    modalAddDay.find('#timepicker2').prop('disabled',true)
+    modalAddDay.find('#place1').prop('disabled',true)
+    modalAddDay.find('#place2').prop('disabled',true)
    })
-   modalAddDay.modal('show').on('hidden.bs.modal', function () {
-    modalAddDay.remove()
+   modalAddDay.on('click','#customCheck1',function(){
+    let toggle = !$(this).prop("checked")
+    modalAddDay.find('#timepicker1').prop('disabled',toggle)
+    modalAddDay.find('#place1').prop('disabled',toggle)
+   })
+   modalAddDay.on('click','#customCheck2',function(){
+    let toggle = !$(this).prop("checked")
+    modalAddDay.find('#timepicker2').prop('disabled',toggle)
+    modalAddDay.find('#place2').prop('disabled',toggle)
+   })
+   modalAddDay.on('change','#dateModal',function(){
+     this.setAttribute("data-date",moment(this.value, "YYYY-MM-DD").format(this.getAttribute("data-date-format")))
+    }).trigger("change")
+   $('#timepicker1').chungTimePicker({
+    viewType: 0
+   })
+   $('#timepicker2').chungTimePicker({
+    viewType: 0
+   })
+   modalAddDay.on('click','#saveExtraDate',function() {
+    let date = modalAddDay.find('#dateModal').val()
+    let type = modalAddDay.find('input[name=optradio]:checked').val()
+    let sChk = modalAddDay.find('#customCheck1').prop("checked")
+    let eChk = modalAddDay.find('#customCheck2').prop("checked")
+    let sIn = (sChk ? modalAddDay.find("#timepicker1").val() : null)
+    let sOut = (eChk ? modalAddDay.find("#timepicker2").val() : null)
+    let pIn = (sChk ? modalAddDay.find('#place1').val() : null)
+    let pOut = (eChk ? modalAddDay.find('#place2').val() : null)
+    let comment = modalAddDay.find('#extraComment').val()
+    if ((sChk && sIn == null) || (eChk && sOut == null)) {
+     alert("โปรดระบุช่วงเวลา")
+    } else if ((sChk && pIn == "") || (eChk && pOut == "")) {
+     alert("โปรดเลือกสถานที่")
+    } else if (!sIn && !sOut) {
+     alert("กรุณาเลือกบันทึกเวลาเข้า/ออกงาน")
+    } else if (!comment) {
+     alert("โปรดกรอกรายละเอียดการทำงาน")
+    } else {
+     $.ajax({
+      url: '/cross/sync/iodata',
+      type: "POST",
+      dataType: "json",
+      async: false,
+      data: {
+       ioDate: date,
+       ioType: type,
+       ioSplace: (pIn ? parseInt(pIn) : null),
+       ioEplace: (pOut ? parseInt(pOut) : null),
+       ioStime: sIn,
+       ioEtime: sOut,
+       ioComment: comment,
+       ioStatus: 1
+      },
+      success: function(data) {
+       //console.log(data)
+      }
+     })
+    }
+   })
+
+   $('#extraModal').on('click','#cancelExtraDate',function() {
+    $('#extraModal').modal("hide")
+   })
+   
+   $('#extraModal').modal('show').on('hidden.bs.modal', function () {
+    this.remove()
    })
   },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
@@ -1087,8 +1240,8 @@ jQuery(function ($) {
                     </div>\
                     </div>';
      }
-     var modal = $(modal).appendTo('body');
-     $(modal).on('show.bs.modal', function (e) {
+     modal = $(modal).appendTo('body');
+     modal.on('show.bs.modal', function (e) {
       var larlist
       $.ajax({
        url: '/proc',
