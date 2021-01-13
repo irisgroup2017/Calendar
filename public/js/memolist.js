@@ -193,7 +193,9 @@ jQuery(function ($) {
  })
 
  $(document).on('click', '.memo-edit', function () {
-  
+  let id = $(this).parents('tr').attr('id')
+  let host = window.location.origin
+  window.location.href = host +"/memo/edit/" + id
  })
 
  $(document).on('click', '.memo-comment', function () {

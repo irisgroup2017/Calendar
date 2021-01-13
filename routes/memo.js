@@ -59,7 +59,7 @@ router.get('/view/:memoId', async function(req, res) {
   let time = moment(new Date()).format("YYYY-MM-DD hh:mm:ss")
   parms = { title: 'MEMO View', head1: 'MEMO View' }
   parms = core.objUnion(parms,core.cookies(req.cookies))
-  await con.q('INSERT INTO memo_read (memo_id,user_read,date_read) VALUES (?,?,?)',[memoId,id,time])
+  await con.q('INSERT INTO memo_read (memo_id,user_read,date_read) VALUES (?,?,?) WHERE NOT EXISTS ( SELECT memo_id FROM memo_read WHERE memo_id = ? AND user_read = ? ) LIMIT 1;',[memoId,id,time,memoId,id])
   let memo = await con.q('SELECT memo_id,memo_code,DATE_FORMAT(memo_date,"%d/%m/%Y") memo_date,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_path,memo_file,memo_content,memo_admin,memo_boss,memo_approver,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE memo_id = ?',[memoId])
   let contact = (await con.q("SELECT dataid,name,job FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
   let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc,it) => (acc[it.ID] = it,acc),{})
