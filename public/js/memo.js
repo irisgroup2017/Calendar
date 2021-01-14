@@ -548,7 +548,7 @@ $(function($) {
    let key = replaceKey($(item).attr('id'))
    data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : source)
   })
-  if (data.memoFile.length > -1) {
+  if (data.memoFile.length > 1) {
    data.memoPath = data.memoFile[0].match(/.*[\/\\]/).toString()
    data.memoFile = data.memoFile.map((i) => i.replace(/.*[\/\\]/,"")).toString()
   }

@@ -45,7 +45,7 @@ router.get('/edit/:memoId', async function(req, res) {
     parms.objs.memo_path = path +''+ file
    }
   }
-  console.log(parms)
+  //console.log(parms)
   res.render('memoedit',parms)
  } else {
 		res.redirect('../login')
@@ -59,7 +59,7 @@ router.get('/view/:memoId', async function(req, res) {
   let time = moment(new Date()).format("YYYY-MM-DD hh:mm:ss")
   parms = { title: 'MEMO View', head1: 'MEMO View' }
   parms = core.objUnion(parms,core.cookies(req.cookies))
-  await con.q('INSERT INTO memo_read (memo_id,user_read,date_read) VALUES (?,?,?) WHERE NOT EXISTS ( SELECT memo_id FROM memo_read WHERE memo_id = ? AND user_read = ? ) LIMIT 1;',[memoId,id,time,memoId,id])
+  let readw = await con.q('INSERT INTO memo_read (memo_id,user_read,date_read) SELECT * FROM (SELECT ?,?,?) AS tmp WHERE NOT EXISTS (SELECT memo_id,user_read FROM memo_read WHERE memo_id = ? AND user_read = ?) LIMIT 1',[memoId,id,time,memoId,id])
   let memo = await con.q('SELECT memo_id,memo_code,DATE_FORMAT(memo_date,"%d/%m/%Y") memo_date,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_path,memo_file,memo_content,memo_admin,memo_boss,memo_approver,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE memo_id = ?',[memoId])
   let contact = (await con.q("SELECT dataid,name,job FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
   let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc,it) => (acc[it.ID] = it,acc),{})
@@ -142,7 +142,7 @@ async function listMemo (req, res) {
   year = (year-400 > (new Date()).getFullYear() ? year-543 : year)
   parms = { title: 'รายการเมโมที่เกี่ยวข้อง', head1: 'MEMO' }
   parms = core.objUnion(parms,core.cookies(req.cookies))
-  let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) >= ?",[year])
+  let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) = ?",[year])
   let contact = (await con.q("SELECT dataid,name,level,job FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
   let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc,it) => (acc[it.ID] = it,acc),{})
   let dataid = parms.dataid

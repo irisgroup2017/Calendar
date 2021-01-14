@@ -121,7 +121,7 @@ jQuery(function ($) {
     table = error
    }
   })
-  console.log(table)
+
   modal = $(modal).appendTo('body')
   $('#extraModal').on('click', '#closeModal', function () {
    $('#extraModal').modal("hide")
