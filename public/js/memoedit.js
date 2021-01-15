@@ -1,41 +1,42 @@
-$(function($) {
+$(function ($) {
  let start = moment();
  var clicked = true
+
  function cb(start, end, label) {
   $('#memo-date').html(start)
  }
  $('#memo-date').daterangepicker({
-   singleDatePicker: true,
-   showDropdowns: true,
-   autoApply: true,
-   minYear: 2013,
-   maxYear: parseInt(moment().format('YYYY'),10),
-   locale: {
-    format: 'DD/MM/YYYY',
-    daysOfWeek: [
-     "อา.",
-     "จ.",
-     "อ.",
-     "พ.",
-     "พฤ.",
-     "ศ.",
-     "ส."
- ],
- monthNames: [
-     "มกราคม",
-     "กุมภาพันธ์",
-     "มีนาคม",
-     "เมษายน",
-     "พฤษภาคม",
-     "มิถุนายน",
-     "กรกฏาคม",
-     "สิงหาคม",
-     "กันยายน",
-     "ตุลาคม",
-     "พฤศจิกายน",
-     "ธันวาคม"
- ],
-   }
+  singleDatePicker: true,
+  showDropdowns: true,
+  autoApply: true,
+  minYear: 2013,
+  maxYear: parseInt(moment().format('YYYY'), 10),
+  locale: {
+   format: 'DD/MM/YYYY',
+   daysOfWeek: [
+    "อา.",
+    "จ.",
+    "อ.",
+    "พ.",
+    "พฤ.",
+    "ศ.",
+    "ส."
+   ],
+   monthNames: [
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฏาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤศจิกายน",
+    "ธันวาคม"
+   ],
+  }
  }, cb);
  cb(start)
  let fileStroage = JSON.parse(sessionStorage.getItem('attachm'))
@@ -47,13 +48,13 @@ $(function($) {
    data: {
     file: fileStroage
    },
-   success: function() {
+   success: function () {
     sessionStorage.removeItem('attachm')
    }
   })
  }
- CKEDITOR.replace( 'memoeditor' )
- var users,departs,documents
+ CKEDITOR.replace('memoeditor')
+ var users, departs, documents
  $.ajax({
   url: '/cross',
   type: "POST",
@@ -61,16 +62,21 @@ $(function($) {
   data: {
    path: '/users/find/field',
    option: {
-    attributes: ['dataid','name','lastName','mail','jobPos','depart'],
+    attributes: ['dataid', 'name', 'lastName', 'mail', 'jobPos', 'depart'],
     where: {
-    status: 1
+     status: 1
     },
     raw: true
    }
   },
   success: function (data) {
    users = data.map(item => {
-    return { dataid: item.dataid, name: item.name +' '+ item.lastName, mail:item.mail , jobPos: item.jobPos }
+    return {
+     dataid: item.dataid,
+     name: item.name + ' ' + item.lastName,
+     mail: item.mail,
+     jobPos: item.jobPos
+    }
    })
   }
  })
@@ -82,7 +88,7 @@ $(function($) {
   data: {
    path: '/depart/find/field',
    option: {
-    attributes: ['ID','depart','depart_mail','depart_short'],
+    attributes: ['ID', 'depart', 'depart_mail', 'depart_short'],
     raw: true
    }
   },
@@ -93,33 +99,34 @@ $(function($) {
 
  let content = $('.test').text()
  CKEDITOR.instances.memoeditor.setData(content)
- let result = getList('',users,departs)
- let html = '<ol class="popupUserlist hide" style="z-index: '+(maxZIndex()+1)+';">'
+
+ let result = getList('', users, departs)
+ let html = '<ol class="popupUserlist hide" style="z-index: ' + (maxZIndex() + 1) + ';">'
  html += '<li class="popupUserlistItem">ไม่พบข้อมูล</li>'
  result.forEach(item => {
   if (item.dataid != undefined) {
-   html += '<li class="popupUserlistItem" data-type="user" data-id="'+item.dataid+'" data-mail="'+item.mail+'" data-name="'+item.name+'" data-etc="'+item.jobPos+'">'+item.name+'</li>'
+   html += '<li class="popupUserlistItem" data-type="user" data-id="' + item.dataid + '" data-mail="' + item.mail + '" data-name="' + item.name + '" data-etc="' + item.jobPos + '">' + item.name + '</li>'
   } else {
-   html += '<li class="popupUserlistItem" data-type="depart" data-id="'+item.ID+'" data-mail="'+item.depart_mail+'" data-name="'+item.depart+'" data-etc="'+item.depart_short+'">'+item.depart+'</li>'
+   html += '<li class="popupUserlistItem" data-type="depart" data-id="' + item.ID + '" data-mail="' + item.depart_mail + '" data-name="' + item.depart + '" data-etc="' + item.depart_short + '">' + item.depart + '</li>'
   }
  })
  html += '</ol>'
  $('.container').append(html)
 
- $(document).on('click','.memo-input',function(e){
+ $(document).on('click', '.memo-input', function (e) {
   $('.memo-input.focus').removeClass('focus')
   $('.popupUserlist').addClass('hide')
  })
 
- $(document).on('click','.memo-head .target-select',function(){
+ $(document).on('click', '.memo-head .target-select', function () {
   let inputField = $(this).parents('ul').find('.memo-input')
   if ($(inputField).hasClass('single-input')) {
-   $(inputField).prop('disabled',false)
+   $(inputField).prop('disabled', false)
   }
   $(this).remove()
  })
 
- $(document).on('click','.memo-head .remove-file',function(){
+ $(document).on('click', '.memo-head .remove-file', function () {
   let item = $(this).next()
   let target = $(this).parent('.btn--corners')
   let filename = $(item).text()
@@ -131,38 +138,43 @@ $(function($) {
    let match = filelist.find(e => e.originalname == filename)
    path = match.path
    let index = filelist.indexOf(match)
-   filelist.splice(index,1)
+   filelist.splice(index, 1)
   }
   $.ajax({
-  url: '/memo/attachdel',
-  type: "POST",
-  async: false,
-  data: {
-   path: path
-  },
-  success: function () {
-   $(target).remove()
-   sessionStorage.setItem('attachm',JSON.stringify(filelist))
+   url: '/memo/attachdel',
+   type: "POST",
+   async: false,
+   data: {
+    id: $("#memo-no").data("memoid"),
+    path: path
+   },
+   success: function () {
+    $(target).remove()
+    sessionStorage.setItem('attachm', JSON.stringify(filelist))
    }
   })
  })
 
- $(document).on('keyup','.memo-input:focus',function(e){
+ $(document).on('keyup', '.memo-input:focus', function (e) {
   if ($(this).parents('ul').find('.span-select').length > 0) {
    let have = $(this).parents('ul').find('.span-select').text()
    $(this).addClass('focus')
    let input = $(this).val()
-   let regex = new RegExp(input,'g')
+   let regex = new RegExp(input, 'g')
    let sect = $('.popupUserlist')
    let list = $(sect).find('.popupUserlistItem')
-   let th = Math.floor($(this).offset().top-37)
+   let th = Math.floor($(this).offset().top - 37)
    let tl = Math.floor($(this).offset().left)
-   let tw = Math.floor($(this).width()+22)
+   let tw = Math.floor($(this).width() + 22)
    $(sect).removeClass('hide')
-   $(sect).css({top: th, left: tl , width: tw})
-   $(list).each((i,e) => {
+   $(sect).css({
+    top: th,
+    left: tl,
+    width: tw
+   })
+   $(list).each((i, e) => {
     let data = $(e).data()
-    let regCheck = new RegExp(data.name,'g')
+    let regCheck = new RegExp(data.name, 'g')
     if (data.mail != null && (have == "" || !(regCheck.test(have))) && ($(e).hasClass('select') || regex.test(data.mail) || regex.test(data.name) || regex.test(data.etc))) {
      $(e).removeClass('hide')
     } else {
@@ -172,8 +184,8 @@ $(function($) {
   }
  })
 
- $(document).on('keydown', function(e) {
-  if((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80) ){
+ $(document).on('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80)) {
    e.cancelBubble = true;
    e.preventDefault();
    e.stopImmediatePropagation();
@@ -181,13 +193,13 @@ $(function($) {
   }
  });
 
- $(document).on('click','.popupUserlistItem',function(e){
+ $(document).on('click', '.popupUserlistItem', function (e) {
   jQuery.noConflict()
   let target = $(e.target)
   let inputField = $('.memo-input.focus')
   let input = $(inputField).parents('ul').find('.span-select')
   let select = $(target).data()
-  let source = '<span>'+ select.name +'</span>'
+  let source = '<span>' + select.name + '</span>'
   $(input).append(source)
   $(input).find('span:last-child').attr({
    'class': 'target-select',
@@ -202,17 +214,17 @@ $(function($) {
   }
   $('.popupUserlist').addClass('hide')
  })
- 
- $(document).on('focusout','.memo-ans',function() {
+
+ $(document).on('focusout', '.memo-ans', function () {
 
  })
 
- $(document).on('click','.preview-button',function() {
-  let val,target,id
+ $(document).on('click', '.preview-button', function () {
+  let val, target, id
   let checkAns = true
   let data = {}
-  let check = ["",[],undefined,null]
-  $('.memo-ans').each(function(index,item) {
+  let check = ["", [], undefined, null]
+  $('.memo-ans').each(function (index, item) {
    target = $(item).parents('.memo-span2')
    if ($(item).hasClass('memo-input')) {
     val = $(item).val()
@@ -241,8 +253,8 @@ $(function($) {
     contentDisplay.push($(this).addClass('modal-memo-content'))
    })
    */
-  $('.modal-memo').not(':first').remove()
-  $('.modal-memo').html('\
+   $('.modal-memo').not(':first').remove()
+   $('.modal-memo').html('\
   <div class="modal-page">\
    <img class="modal-logo" src="/img/logo.jpg">\
    <div class="modal-memo-head">\
@@ -319,17 +331,17 @@ $(function($) {
     <div class="modal-memo-end"></div>\
    </div>\
   </div>')
-  $('.modal-memo-content:first').html(content)
-  if (data["memo-file"] != "") {
-   let filelist = data["memo-file"]
-  }
+   $('.modal-memo-content:first').html(content)
+   if (data["memo-file"] != "") {
+    let filelist = data["memo-file"]
+   }
 
    if (data["memo-admin"] != undefined) {
     let name = data["memo-admin"]
     let job = ($(name).data("type") == "user" ? $(name).data("etc") : "")
-    let code = '<div class="memo-admin-name">('+name+')</div>\
-                <div class="memo-admin-job">'+job+'</div>'
-    $('#modal-section-admin').html(code)             
+    let code = '<div class="memo-admin-name">(' + name + ')</div>\
+                <div class="memo-admin-job">' + job + '</div>'
+    $('#modal-section-admin').html(code)
    }
 
    if (data["memo-boss"] != "") {
@@ -340,8 +352,8 @@ $(function($) {
                  <div class="memo-comment-underline"></div><br>\
                  <div class="memo-comment-underline"></div>\
                  <div class="memo-comment-approve">ผู้ตรวจสอบ</div>\
-                <div class="memo-boss-name">('+name+')</div>\
-                <div class="memo-boss-job">'+job+'</div>'
+                <div class="memo-boss-name">(' + name + ')</div>\
+                <div class="memo-boss-job">' + job + '</div>'
     $('#modal-section-boss').html(code)
    } else {
     $('#modal-section-boss').html("")
@@ -355,22 +367,22 @@ $(function($) {
                  <div class="memo-comment-underline"></div><br>\
                  <div class="memo-comment-underline"></div>\
                  <div class="memo-comment-approve">ผู้อนุมัติ</div>\
-                <div class="memo-approve-name">('+name+')</div>\
-                <div class="memo-approve-job">'+job+'</div>'
-    $('#modal-section-approve').html(code)   
+                <div class="memo-approve-name">(' + name + ')</div>\
+                <div class="memo-approve-job">' + job + '</div>'
+    $('#modal-section-approve').html(code)
    } else {
     $('#modal-section-approve').html("")
    }
-   
-   $('.modal-memo').each(function() {
+
+   $('.modal-memo').each(function () {
     snipMe.call(this)
    })
 
-   $(document).on('click','.close-button',function() {
+   $(document).on('click', '.close-button', function () {
     $('.close-editorModal').trigger('click')
    })
 
-   $(document).on('click','.save-button',function() {
+   $(document).on('click', '.save-button', function () {
     if (clicked) {
      clicked = false
      saveDiv()
@@ -378,7 +390,7 @@ $(function($) {
     clicked = true
    })
 
-   $(document).on('click','.print-button',function() {
+   $(document).on('click', '.print-button', function () {
     if (clicked) {
      clicked = false
      saveDiv()
@@ -388,41 +400,47 @@ $(function($) {
    })
 
    $("#editorModal").animatedModal({
-    modalTarget:'editorModal',
-    animatedIn:'bounceInUp',
-    animatedOut:'bounceOutDown',
-    color:'#FFFFFF',
-    animationDuration:'.5s',
-    beforeOpen: function() {
+    modalTarget: 'editorModal',
+    animatedIn: 'bounceInUp',
+    animatedOut: 'bounceOutDown',
+    color: '#FFFFFF',
+    animationDuration: '.5s',
+    beforeOpen: function () {
      var children = $(".thumb")
      var index = 0
+
      function addClassNextChild() {
       if (index == children.length) return;
-      children.eq(index++).show().velocity("transition.slideUpIn", { opacity:1, stagger: 450,  defaultDuration: 100 })
+      children.eq(index++).show().velocity("transition.slideUpIn", {
+       opacity: 1,
+       stagger: 450,
+       defaultDuration: 100
+      })
       window.setTimeout(addClassNextChild, 100)
      }
      addClassNextChild()
-     
+
      for (let key in data) {
-      let check = ["meme-no","memo-date","memo-subject"]
-      let modalKey = key.replace("memo","modal")
+      let check = ["meme-no", "memo-date", "memo-subject"]
+      let modalKey = key.replace("memo", "modal")
       if (check.indexOf(key) > -1) {
-       $("#"+modalKey).text(data[key])
+       $("#" + modalKey).text(data[key])
       } else {
-       $("#"+modalKey).html(data[key])
+       $("#" + modalKey).html(data[key])
       }
      }
     }
    })
   }
  })
- 
+
  var max_pages = 30;
  var page_count = 0;
+
  function snipMe() {
   page_count++;
   if (page_count > max_pages) {
-    return;
+   return;
   }
   var content = $(this).find('.modal-page .modal-memo-head')
   var page = $(this).find('.modal-page')
@@ -430,31 +448,31 @@ $(function($) {
   var children = $(content).children().toArray();
   var removed = [];
   while (long > 0 && children.length > 0) {
-    var child = children.pop()
-    var cont = $(child).attr('class')
-    var childcontent = $(child).children().toArray()
-    if (cont == "modal-memo-content") {
-     while (long > 0 && childcontent.length > 0) {
-      child = childcontent.pop()
-      removed.unshift('<div class="modal-memo-content">'+child.outerHTML+'</div>')
-      $(child).detach()
-      long = ($(page)[0].scrollHeight) - Math.ceil($(this).height());
-     }
-    } else {
-     removed.unshift(child)
+   var child = children.pop()
+   var cont = $(child).attr('class')
+   var childcontent = $(child).children().toArray()
+   if (cont == "modal-memo-content") {
+    while (long > 0 && childcontent.length > 0) {
+     child = childcontent.pop()
+     removed.unshift('<div class="modal-memo-content">' + child.outerHTML + '</div>')
      $(child).detach()
      long = ($(page)[0].scrollHeight) - Math.ceil($(this).height());
     }
+   } else {
+    removed.unshift(child)
+    $(child).detach()
+    long = ($(page)[0].scrollHeight) - Math.ceil($(this).height());
+   }
   }
   if (removed.length > 0) {
-    var a4 = $('.modal-memo:last')
-    $(a4).after('<div class="modal-memo page-break"><div class="modal-page"><div class="modal-memo-head"></div></div></div>')
-    content = $('.modal-memo:last .modal-page .modal-memo-head')
-    content.append(removed)
-    $(this).after(a4)
-    $(a4).addClass("overflow-hidden")
-    var a4new = $(".modal-memo:last")
-    snipMe.call(a4new[0])
+   var a4 = $('.modal-memo:last')
+   $(a4).after('<div class="modal-memo page-break"><div class="modal-page"><div class="modal-memo-head"></div></div></div>')
+   content = $('.modal-memo:last .modal-page .modal-memo-head')
+   content.append(removed)
+   $(this).after(a4)
+   $(a4).addClass("overflow-hidden")
+   var a4new = $(".modal-memo:last")
+   snipMe.call(a4new[0])
   } else {
    var a4 = $('.modal-memo:last')
    $(a4).addClass("overflow-hidden")
@@ -468,25 +486,25 @@ $(function($) {
    }
   }
  }
+
  function checkfile(sender) {
   let filename = sender.value.split(/.*[\/|\\]/)[1];
-  var validExts = new Array(".pdf",".jpg")
+  var validExts = new Array(".pdf", ".jpg")
   var fileExt = sender.value;
   let filelist = JSON.parse(sessionStorage.getItem("attachm"))
   fileExt = fileExt.substring(fileExt.lastIndexOf('.')).toLowerCase()
   if (validExts.indexOf(fileExt) < 0) {
-    alert("นามสกุลไฟล์ไม่ถูกต้อง สามารถแนบได้เฉพาะไฟล์: " + validExts.toString() + " เท่านั้น")
-    return false
+   alert("นามสกุลไฟล์ไม่ถูกต้อง สามารถแนบได้เฉพาะไฟล์: " + validExts.toString() + " เท่านั้น")
+   return false
   } else if (filelist != null && filelist.find(e => e.originalname == filename)) {
    alert("มีไฟล์นี้อยู่ในรายการแล้ว: " + filename)
    return false
-  }
-  else {
+  } else {
    let form = $('upsiwa')[0]
    let file = $(sender)[0].files[0]
    let data = new FormData(form)
-   data.append('file',file)
-   data.append('ext',fileExt)
+   data.append('file', file)
+   data.append('ext', fileExt)
    $.ajax({
     url: "/attachment",
     type: 'POST',
@@ -497,22 +515,23 @@ $(function($) {
     //cache: false,
     success: (data) => {
      let item = sessionStorage.getItem('attachm')
-     item = (item ? JSON.parse(item) : new Array())
-     let file = { 
+     item = (item != "null" ? JSON.parse(item) : new Array())
+     let file = {
       destination: data.file.originalname,
       filename: data.file.filename,
       originalname: data.file.originalname,
       path: data.file.path
      }
+     data.file.path = data.file.path.match(/(\\public\\).*/)[0].replace(data.file.filename,"")
      item.push(file)
-     $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="'+data.file.path+'">'+data.file.originalname+'</a></div>')
-     sessionStorage.setItem('attachm',JSON.stringify(item))
+     $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="' + data.file.path + '">' + data.file.originalname + '</a></div>')
+     sessionStorage.setItem('attachm', JSON.stringify(item))
     },
     error: (e) => {
      console.log(e.responseText)
     }
    })
-   return true 
+   return true
   }
  }
 
@@ -524,16 +543,16 @@ $(function($) {
   let approve = ($('.memo-approve-name') ? $('.memo-approve-name').find('.target-select').data() : "")
   let doc = $('#memo-no').data("number")
   let content = $('.modal-memo .modal-memo-content').html()
-  $(list).each((index,item) => {
+  $(list).each((index, item) => {
    let source = returnDiv(item)
    let key = replaceKey($(item).attr('id'))
-   data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : source)
+   data[key] = (key == "memoDate" ? moment(source, 'DD/MM/YYYY').format('YYYY-MM-DD') : source)
   })
-  if (data.memoFile.length > -1) {
+  if (data.memoFile.length > 0) {
    data.memoPath = data.memoFile[0].match(/.*[\/\\]/).toString()
-   data.memoFile = data.memoFile.map((i) => i.replace(/.*[\/\\]/,"")).toString()
+   data.memoFile = data.memoFile.map((i) => i.replace(/.*[\/\\]/, "")).toString()
   }
-  data.doc = doc
+  data.depart = doc
   data.memoContent = content
   data.memoAdmin = admin.id
   data.memoBoss = (boss ? boss.id : "")
@@ -543,7 +562,6 @@ $(function($) {
   } else {
    data.memoStatus = 7
   }
-
   $.ajax({
    url: '/cross',
    type: 'post',
@@ -552,49 +570,26 @@ $(function($) {
     path: '/memo/updateorcreate',
     option: data
    },
-   success: function(data) {
+   success: function (data) {
     sessionStorage.removeItem('attachm')
    }
   })
  }
 
- function returnDiv(item) {
-  let id = $(item).attr('id')
-  switch(id) {
-   case "modal-cc": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
-   case "modal-date": return $(item).text()
-   case "modal-file": return ($(item).find('.btn--corners a').map((i,e) => $(e).data("path")).get())
-   case "modal-from": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
-   case "modal-no": return $(item).text()
-   case "modal-subject": return $(item).text()
-   case "modal-to": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
-  }
- }
-
- function replaceKey(key) {
-  switch(key) {
-   case 'modal-to': return 'memoTo'
-   case 'modal-no': return 'memoCode'
-   case 'modal-date': return 'memoDate'
-   case 'modal-cc': return 'memoCc'
-   case 'modal-from': return 'memoFrom'
-   case 'modal-subject': return 'memoSubject'
-   case 'modal-file': return 'memoFile'
-  }
- }
-
  function printDiv() {
   printElement = $('.modal-memo')
   var mywindow = window.open('', 'PRINT');
-  var cssList = ['../public/css/ace.min.css','../public/css/memo.css','../public/css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
+  var cssList = ['../public/css/ace.min.css', '../public/css/memo.css', '../public/css/bootstrap.min.css', 'https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
   var loadCount = cssList.length
- 
-  mywindow.document.write('<html><head><title>' + document.title  + ' test</title>');
+
+  mywindow.document.write('<html><head><title>' + document.title + ' test</title>');
   for (css in cssList) {
    var link = mywindow.document.createElement('link');
    link.setAttribute("rel", "stylesheet");
-   if (cssList[css].split('.').pop() == 'css') { link.setAttribute("type", "text/css"); }
-   link.onload = function(){
+   if (cssList[css].split('.').pop() == 'css') {
+    link.setAttribute("type", "text/css");
+   }
+   link.onload = function () {
     if (--loadCount == 0) {
      mywindow.print();
      mywindow.close();
@@ -610,30 +605,128 @@ $(function($) {
   }
   mywindow.document.write('</body></html>');
  }
+
+ function maxZIndex() {
+  return Array.from(document.querySelectorAll('body *')).map(a => parseFloat(window.getComputedStyle(a).zIndex)).filter(a => !isNaN(a)).sort().pop();
+ }
+
+ function returnDiv(item) {
+  let id = $(item).attr('id')
+  switch (id) {
+   case "modal-cc":
+    return ($(item).find('.target-select').map((i, e) => $(e).data("id")).get()).toString()
+   case "modal-date":
+    return $(item).text()
+   case "modal-file":
+    return ($(item).find('.btn--corners a').map((i, e) => $(e).data("path")).get())
+   case "modal-from":
+    return ($(item).find('.target-select').map((i, e) => $(e).data("id")).get()).toString()
+   case "modal-no":
+    return $(item).text()
+   case "modal-subject":
+    return $(item).text()
+   case "modal-to":
+    return ($(item).find('.target-select').map((i, e) => $(e).data("id")).get()).toString()
+  }
+ }
+
+ function replaceKey(key) {
+  switch (key) {
+   case 'modal-to':
+    return 'memoTo'
+   case 'modal-no':
+    return 'memoCode'
+   case 'modal-date':
+    return 'memoDate'
+   case 'modal-cc':
+    return 'memoCc'
+   case 'modal-from':
+    return 'memoFrom'
+   case 'modal-subject':
+    return 'memoSubject'
+   case 'modal-file':
+    return 'memoFile'
+  }
+ }
+
+ function replaceName(key, id) {
+  switch (key) {
+   case 'memo-to':
+    return parseId(id)
+   case 'memo-cc':
+    return parseId(id)
+   case 'memo-file':
+    return parseFile(id)
+   case 'memo-from':
+    return parseId(id)
+   case 'memo-admin':
+    return parseId(id)
+   case 'memo-boss':
+    return parseId(id)
+   case 'memo-approve':
+    return parseId(id)
+  }
+ }
+
+ function getList(m, users, departs) {
+  let ans
+  let regex = new RegExp(m, 'g')
+  users = users.filter(item => {
+   return (item.mail != null && (regex.test(item.name) || regex.test(item.mail)))
+  })
+  departs = departs.filter(item => {
+   return (item.depart_mail != null && (regex.test(item.depart) || regex.test(item.depart_mail)))
+  })
+  ans = [...users, ...departs]
+  return ans
+ }
+
+ function editContent() {
+  let list = ["memo-to", "memo-cc","memo-from", "memo-admin", "memo-boss", "memo-approve"]
+  for (const elem of list) {
+   let text = $("#" + elem).text()
+   if (text) {
+    //$("#"+elem).text("")
+    $("#" + elem).html(replaceName(elem, text))
+   }
+  }
+ }
+
+ function parseId(text) {
+  text = (typeof text == "string" ? text.split(",") : text)
+  let ans
+  if (text.length > 0) {
+   ans = []
+   for (const id of text) {
+    ans.push(getDetail(id))
+   }
+  } else {
+   ans = getDetail(text)
+  }
+  return ans
+ }
+
+ function getDetail(id) {
+  let match = $('.popupUserlistItem[data-id=' + id + ']')
+  match = {
+   show: $(match).data("name"),
+   type: $(match).data("type"),
+   id: $(match).data("id"),
+   mail: $(match).data("mail"),
+   etc: $(match).data("etc")
+  }
+  return nameHtml(match)
+ }
+
+ function nameHtml(data) {
+  return '<span class="target-select" data-type="' + data.type + '" data-id="' + data.id + '" data-mail="' + data.mail + '" data-etc="' + data.etc + '">' + data.show + '</span>'
+ }
+
+ function fileHtml(data) {
+  return '<div class="btn--corners"><div class="remove-file"></div><a data-path="' + data.filepath + '">' + data.filename + '</a></div>'
+ }
+
  window.checkfile = checkfile
  window.printDiv = printDiv
+ editContent()
 })
-
-function maxZIndex() { return Array.from(document.querySelectorAll('body *')).map(a => parseFloat(window.getComputedStyle(a).zIndex)).filter(a => !isNaN(a)).sort().pop(); }
-
-function getList(m,users,departs) {
- let ans
- let regex = new RegExp(m,'g')
- users = users.filter(item => {
-  return (item.mail != null && (regex.test(item.name) || regex.test(item.mail)))
- })
- departs = departs.filter(item => {
-  return (item.depart_mail != null && (regex.test(item.depart) || regex.test(item.depart_mail)))
- })
- ans = [...users,...departs]
- return ans
-}
-
-function getDetail(id) {
- let match = $('.popupUserlist data-id['+id+']')
- return match
-}
-
-function nameHtml(show,type,id,mail,etc) {
- return '<span class="target-select" data-type="'+type+'" data-id="'+id+'" data-mail="'+mail+'" data-etc="'+etc+'">'+show+'</span>'
-}

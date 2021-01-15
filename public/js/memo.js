@@ -108,7 +108,7 @@ $(function($) {
    let memoyear = data[0].memo_counts[0].year
    let year = (memoyear+543).toString().substring(2,5)
    documents = "FM-" +depart+ "-" +year+ "-" +count
-   $('#memo-no').data("number",{ docid: documents, count: parseInt(count), depart: departId,year: memoyear }).val(documents)
+   $('#memo-no').data({ docid: documents, count: parseInt(count), depart: departId,year: memoyear }).val(documents)
   }
  })
 
@@ -523,6 +523,7 @@ $(function($) {
       originalname: data.file.originalname,
       path: data.file.path
      }
+     data.file.path = data.file.path.match(/(\\public\\).*/)[0].replace(data.file.filename,"")
      item.push(file)
      $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="'+data.file.path+'">'+data.file.originalname+'</a></div>')
      sessionStorage.setItem('attachm',JSON.stringify(item))
@@ -541,17 +542,17 @@ $(function($) {
   let admin = $('.memo-admin-name').find('.target-select').data()
   let boss = ($('.memo-boss-name') ? $('.memo-boss-name').find('.target-select').data() : "")
   let approve = ($('.memo-approve-name') ? $('.memo-approve-name').find('.target-select').data() : "")
-  let doc = $('#memo-no').data("number")
+  let doc = $('#memo-no').data()
   let content = $('.modal-memo .modal-memo-content').html()
   $(list).each((index,item) => {
    let source = returnDiv(item)
    let key = replaceKey($(item).attr('id'))
    data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : source)
   })
-  if (data.memoFile.length > 1) {
-   data.memoPath = data.memoFile[0].match(/.*[\/\\]/).toString()
-   data.memoFile = data.memoFile.map((i) => i.replace(/.*[\/\\]/,"")).toString()
-  }
+  //if (data.memoFile.length > 0) {
+   //data.memoFile[0].match(/.*[\/\\]/).toString()
+   //data.memoFile.map((i) => i.replace(/.*[\/\\]/,"")).toString()
+  //}
   data.doc = doc
   data.memoContent = content
   data.memoAdmin = admin.id
@@ -582,7 +583,8 @@ $(function($) {
   switch(id) {
    case "modal-cc": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
    case "modal-date": return $(item).text()
-   case "modal-file": return ($(item).find('.btn--corners a').map((i,e) => $(e).data("path")).get())
+   case "modal-path": return ($(item).find('.btn--corners a').map((i,e) => $(e).data("path")).get()).toString()
+   case "modal-file": return ($(item).find('.btn--corners a').map((i,e) => $(e).text()).get()).toString()
    case "modal-from": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
    case "modal-no": return $(item).text()
    case "modal-subject": return $(item).text()

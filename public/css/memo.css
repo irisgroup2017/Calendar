@@ -587,6 +587,10 @@ table tbody .modal-memo-cell {
  text-indent: 0mm;
 }
 
+.modal-memo-content > table p,.modal-memo-content > table ul {
+ margin-bottom: 0 !important;
+}
+
 .modal-memo-content > table td,th {
  padding: 0px 2px !important;
 }

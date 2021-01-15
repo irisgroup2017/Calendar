@@ -4,6 +4,11 @@ block script
  link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
 
 block content
+ mixin addfile(list)
+  each f,i in list
+   .btn--corners
+    .remove-file
+    a(data-path=parms.objs.memo_path[i])=parms.objs.memo_file[i]
  .container
   .memo-head
    .memo-title.center บันทึกภายใน
@@ -27,7 +32,7 @@ block content
          ul.memo-span2
           li.span-input
            if parms.objs.memo_code
-             input#memo-no.memo-input.memo-ans(disabled type="text" value=parms.objs.memo_code)
+            input#memo-no.memo-input.memo-ans(disabled type="text" data-memoid=parms.objs.memo_id value=parms.objs.memo_code)
       td
        .memo-quiz
         .memo-quest2 วันที่:
@@ -72,8 +77,13 @@ block content
         .memo-quest เอกสารแนบ:
         ul.memo-span3
           li.span-select.memo-ans#memo-file
-           if parms.objs.memo_file
-            =parms.objs.memo_file
+           if parms.objs.memo_file 
+            if parms.objs.memo_file.includes(",") > 1
+             +addfile(parms.objs.memo_file)
+            else
+             .btn--corners
+              .remove-file
+              a(data-path=parms.objs.memo_path)=parms.objs.memo_file
           li.span-upload
            form(method="POST" enctype="multipart/form-data" id="upsiwa")
             label.file-upload-custom(for="file-upload-field") เลือกไฟล์

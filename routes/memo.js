@@ -45,7 +45,6 @@ router.get('/edit/:memoId', async function(req, res) {
     parms.objs.memo_path = path +''+ file
    }
   }
-  //console.log(parms)
   res.render('memoedit',parms)
  } else {
 		res.redirect('../login')
@@ -66,7 +65,7 @@ router.get('/view/:memoId', async function(req, res) {
   let objs = core.relation(memo,contact,depart)
   parms.objs = objs[0]
   if (parms.objs.memo_path) {
-   let path = parms.objs.memo_path.match(/(\\public\\).*/)[0]
+   let path = parms.objs.memo_path
    if (parms.objs.memo_file.match(',') && parms.objs.memo_file.match(',').length > -1) {
     let file = parms.objs.memo_file.split(',')
     parms.objs.memo_file = file.map(f => f.replace(/\.(.+)(?=[?#])|(\.)(?:[\w]+)$/gmi,""))
@@ -118,7 +117,23 @@ router.post('/action',async function(req,res) {
 })
 
 router.post('/attachdel',async function(req,res) {
- let path = req.body.path
+ let id = req.body.id
+ let file = req.body.path.replace(/.*[\/\\]/,"")
+ let filename = (await con.q("SELECT memo_file FROM memo WHERE memo_id = ?",[id]))[0].memo_file
+ if (filename) {
+  console.log(filename)
+  if (filename.includes(",")) {
+   filename = filename.split(",").filter(i => i!=file).toString()
+  } else {
+   filename = filename.replace(file,"")
+  }
+  if (filename == "") {
+   con.q("UPDATE memo SET memo_file = ?,memo_path = ? WHERE memo_id = ?",[filename,"",id])
+  } else {
+   con.q("UPDATE memo SET memo_file = ? WHERE memo_id = ?",[filename,id])
+  }
+ }
+ let path = __basedir +""+ req.body.path
  if (fs.existsSync(path)) {
   fs.unlinkSync(path)
  }
