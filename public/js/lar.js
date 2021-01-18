@@ -711,7 +711,7 @@ jQuery(function ($) {
     }
    })
    tddate = new Date(y, m, d, 0).getTime()
-   if (vacation > 0 && copiedEventObject.start < vacation && copiedEventObject.className == 'label-warning') {
+   if (leaveExcept > 0 && vacation > 0 && copiedEventObject.start < vacation && copiedEventObject.className == 'label-warning') {
     createEvent = false
     alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
    }
