@@ -199,9 +199,28 @@ jQuery(function ($) {
  })
 
  $(document).on('click', '.memo-comment', function () {
-  let id = $(this).parents('tr').attr('id')
+  let maxChar = 250
+  let memoId = $(this).parents('tr').attr('id')
   let memoNo = $(this).parents('tr').find('td:nth-child(1)').text()
   let memoTopic = $(this).parents('tr').find('td:nth-child(2)').text()
+  let oldComment
+  $.ajax({
+   url: '/cross',
+   type: "GET",
+   dataType: "json",
+   async: false,
+   data: {
+    path: "/memo/getcomment",
+    method: "get",
+    option: {
+     memoId: memoId
+    }
+   },
+   success: function (data) {
+    oldComment = data.text
+    console.log(data)
+   }
+  })
   var modal = '\
   <div class="modal fade" id="extraModal" >\
    <div class="modal-dialog">\
@@ -215,8 +234,8 @@ jQuery(function ($) {
        <div class="row align-items-center">\
         <label class="col-sm-4 col-form-label">เพิ่มความคิดเห็น</label>\
         <div class="col-sm-8">\
-         <textarea rows="3" id="modal-comment" style="min-width: 100%" maxlength="250" data-id="' + id + '"></textarea>\
-         <label id="maxLength" class="d-flex justify-content-end">0/250</label>\
+         <textarea rows="3" id="modal-comment" style="min-width: 100%" maxlength="'+maxChar+'" data-id="' + memoId + '">'+(oldComment ? oldComment : "")+'</textarea>\
+         <label id="maxLength" class="d-flex justify-content-end">'+(oldComment ? oldComment.length : 0)+'/'+maxChar+'</label>\
         </div>\
        </div>\
       </form>\
@@ -256,11 +275,11 @@ jQuery(function ($) {
 
   $('#extraModal').on('keypress', '#modal-comment', function (e) {
    let count = $(this).val().length
-   $('#extraModal').find('#maxLength').text(count + "/250")
+   $('#extraModal').find('#maxLength').text(count + "/"+maxChar)
   })
   $('#extraModal').on('keyup', '#modal-comment', function (e) {
    let count = $(this).val().length
-   $('#extraModal').find('#maxLength').text(count + "/250")
+   $('#extraModal').find('#maxLength').text(count + "/"+maxChar)
   })
 
   $('#extraModal').on('click', '#cancelExtraDate', function () {

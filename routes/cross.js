@@ -6,6 +6,7 @@ require("dotenv").config()
 
 router.get('/',async function(req,res) {
  let param = req.query
+ param.option.cookies = req.cookies
  var option = {
   baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' +param.path,
   method: param.method,

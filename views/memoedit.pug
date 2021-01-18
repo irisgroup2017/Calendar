@@ -78,12 +78,12 @@ block content
         ul.memo-span3
           li.span-select.memo-ans#memo-file
            if parms.objs.memo_file 
-            if parms.objs.memo_file.includes(",") > 1
+            if typeof parms.objs.memo_file == "object"
              +addfile(parms.objs.memo_file)
             else
              .btn--corners
               .remove-file
-              a(data-path=parms.objs.memo_path)=parms.objs.memo_file
+              a(data-path=parms.objs.memo_path)=parms.objs.memo_singlefile
           li.span-upload
            form(method="POST" enctype="multipart/form-data" id="upsiwa")
             label.file-upload-custom(for="file-upload-field") เลือกไฟล์
