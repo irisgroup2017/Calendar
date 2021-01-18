@@ -526,6 +526,7 @@ jQuery(function ($) {
                 <option value="11">IDEN101</option>\
                 <option value="12">IDEN KP</option>\
                 <option value="13">ICOPENH</option>\
+                <option value="0">OUTSIDE</option>\
                </select>\
               </div>\
              </div>\
@@ -546,6 +547,7 @@ jQuery(function ($) {
                  <option value="11">IDEN101</option>\
                  <option value="12">IDEN KP</option>\
                  <option value="13">ICOPENH</option>\
+                 <option value="0">OUTSIDE</option>\
                 </select>\
                </div>\
               </div>\
