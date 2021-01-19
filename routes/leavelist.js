@@ -166,6 +166,7 @@ router.get('/:year', async function (req, res) {
 })
 
 router.post('/', async function (req, res) {
+ let now = (new Date()).getTime()
  if (req.body.state == 'delete') {
   var filename = await con.q('SELECT fname FROM lar_data WHERE id = ?', req.body.larid)
   if (filename[0].fname != '') {
