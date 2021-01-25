@@ -11,9 +11,53 @@ mixin ssrc(scr)
 mixin scss(scss)
  for t in scss
   link(rel='stylesheet' , href='/public/css/'+t)
+mixin timeline(timeline)
+ for date in timeline
+  for time in date
+   case time.status
+    when 0
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p ยกเลิกเอกสาร
+    when 1
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p สร้างเอกสาร
+    when 2
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p ผู้ตรวจสอบส่งกลับเอกสารเพื่อแก้ไข
+    when 3
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p ยืนยันการตรวจสอบเอกสาร
+    when 4
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p ผู้อนุมัติส่งกลับเอกสารเพื่อแก้ไข
+    when 5
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p อนุมัติเอกสาร
+    when 6
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p ไม่อนุมัติเอกสาร
+    when 7
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p เปิดดูเอกสาร
+    when 8
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p=time.comment
+    when 9
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p แก้ไขเอกสาร
 link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
 +ssrc(['jquery.min.js','moment.min.js','memoview.js','animatemodal.min.js'])
-+scss(['animate.min.css','ace.min.css','bootstrap.min.css','memo.css'])
++scss(['animate.min.css','ace.min.css','bootstrap.min.css','memo.css','timeline.css'])
 
 if parms.objs.memo_path
  .modal-attach
@@ -112,6 +156,13 @@ if parms.objs.memo_path
         =")"
        .memo-boss-job=parms.objs.memo_bossd
    .modal-memo-end
+.modal-comment
+ .modal-page
+  .container-timeline
+   .comment-head รายการข้อคิดเห็น
+   .comment-doc=parms.objs.memo_code +": "+parms.objs.memo_subject
+   +timeline(parms.objs.memo_timeline)
+   
 #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow: hidden; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
  .close-animatedModal
   i.close-animate Close

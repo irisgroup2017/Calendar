@@ -515,14 +515,14 @@ $(function ($) {
     //cache: false,
     success: (data) => {
      let item = sessionStorage.getItem('attachm')
-     item = (item != "null" ? JSON.parse(item) : new Array())
+     item = (item != null ? JSON.parse(item) : new Array())
      let file = {
       destination: data.file.originalname,
       filename: data.file.filename,
       originalname: data.file.originalname,
       path: data.file.path
      }
-     data.file.path = data.file.path.match(/(\\public\\).*/)[0].replace(data.file.filename,"")
+     data.file.path = data.file.path.match(/(\\public\\).*/)[0]//.replace(data.file.filename,"")
      item.push(file)
      $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="' + data.file.path + '">' + data.file.originalname + '</a></div>')
      sessionStorage.setItem('attachm', JSON.stringify(item))
@@ -541,7 +541,7 @@ $(function ($) {
   let admin = $('.memo-admin-name').find('.target-select').data()
   let boss = ($('.memo-boss-name') ? $('.memo-boss-name').find('.target-select').data() : "")
   let approve = ($('.memo-approve-name') ? $('.memo-approve-name').find('.target-select').data() : "")
-  let doc = $('#memo-no').data("number")
+  let doc = $('#memo-no').data("memoid")
   let content = $('.modal-memo .modal-memo-content').html()
   $(list).each((index, item) => {
    let source = returnDiv(item)
@@ -552,11 +552,12 @@ $(function ($) {
    data.memoPath = data.memoFile[0].match(/.*[\/\\]/).toString()
    data.memoFile = data.memoFile.map((i) => i.replace(/.*[\/\\]/, "")).toString()
   }
-  data.depart = doc
+  data.memoId = doc
   data.memoContent = content
   data.memoAdmin = admin.id
   data.memoBoss = (boss ? boss.id : "")
   data.memoApprover = (approve ? approve.id : "")
+  data.statusId = 9
   if (data.memoApprover || data.memoBoss) {
    data.memoStatus = 1
   } else {
@@ -567,7 +568,7 @@ $(function ($) {
    type: 'post',
    async: false,
    data: {
-    path: '/memo/updateorcreate',
+    path: '/memo/editmemo',
     option: data
    },
    success: function (data) {

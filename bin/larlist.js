@@ -50,7 +50,6 @@ async function getLar(userName, dataid, thisday) {
    }
   }
  }
- console.log(resultr)
  LAR.sickr = minusDuration(resultr[lle[0]], LAR.sickd)
  LAR.personalr = minusDuration(resultr[lle[1]], LAR.personald)
  LAR.vacationr = minusDuration(resultr[lle[2]], LAR.vacationd)

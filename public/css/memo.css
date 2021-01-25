@@ -608,6 +608,11 @@ table tbody .modal-memo-cell {
   font-family: 'Sarabun', sans-serif;
   font-size: 14px;
  }
+ .container-timeline { 
+  visibility: visible; 
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+ }
  table {
   font-family: 'Sarabun', sans-serif;
   font-size: 14px;

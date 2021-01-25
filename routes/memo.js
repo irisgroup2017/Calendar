@@ -55,22 +55,35 @@ router.get('/view/:memoId', async function(req, res) {
  if (req.cookies) {
   let memoId = req.params.memoId
   let id = req.cookies.user_dataid
-  let time = moment(new Date()).format("YYYY-MM-DD hh:mm:ss")
+  let time = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
   parms = { title: 'MEMO View', head1: 'MEMO View' }
   parms = core.objUnion(parms,core.cookies(req.cookies))
-  let readw = await con.q('INSERT INTO memo_read (memo_id,user_read,date_read) SELECT * FROM (SELECT ?,?,?) AS tmp WHERE NOT EXISTS (SELECT memo_id,user_read FROM memo_read WHERE memo_id = ? AND user_read = ?) LIMIT 1',[memoId,id,time,memoId,id])
-  let comment = await con.q("SELECT memo_comment,user_comment,date_comment FROM memo_comment WHERE memo_id = ?",[memoId])
+  let readw = await api('post','/memolog/recordread',{ memoId:memoId,dataId:id,statusId:7,time:time })
+  let timeline = await api('get','/memolog/getlog',{ memoId: memoId })
   let memo = await con.q('SELECT memo_id,memo_code,DATE_FORMAT(memo_date,"%d/%m/%Y") memo_date,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_path,memo_file,memo_content,memo_admin,memo_boss,memo_approver,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE memo_id = ?',[memoId])
   let contact = (await con.q("SELECT dataid,name,job FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
   let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc,it) => (acc[it.ID] = it,acc),{})
   let objs = core.relation(memo,contact,depart)
   parms.objs = objs[0]
-  if (comment && comment.length > 0) {
-   parms.objs.memo_comment = comment.reduce((acc,it) => {
-    it.user_comment = contact[it.user_comment].name
-    return it
+  
+  if (timeline && timeline.length > 0) {
+   parms.objs.memo_timeline = timeline.reduce((acc,it) => {
+    let date = moment(it.time).format("YYYYMMDD")
+    let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
+    let time = moment(it.time).format("Hmmss")
+    let user = contact[it.dataId].name
+    acc[date] = acc[date] || {}
+    acc[date][time] = acc[date][time] || {}
+    acc[date][time] = {
+       user: user,
+       status: it.statusId,
+       comment: it.comment,
+       timeshow: timeshow
+      }
+    return acc
    },{})
   }
+  
   if (parms.objs.memo_path) {
    let path = parms.objs.memo_path
    if (parms.objs.memo_file.includes(',')) {
@@ -97,21 +110,54 @@ router.get('/list/:year', async function(req, res) {
 	listMemo(req,res)
 })
 
+router.get('/getlog',async function(req,res) {
+ let memoId = req.query.memoId
+ let data
+ let timeline = await api('get','/memolog/getlog',{ memoId: memoId })
+ let contact = (await con.q("SELECT dataid,name,job FROM contact_data")).reduce((acc,it) => (acc[it.dataid] = it,acc),{})
+ if (timeline && timeline.length > 0) {
+   data = timeline.reduce((acc,it) => {
+   let date = moment(it.time).format("YYYYMMDD")
+   let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
+   let time = moment(it.time).format("Hmmss")
+   let user = contact[it.dataId].name
+   acc[date] = acc[date] || {}
+   acc[date][time] = acc[date][time] || {}
+   acc[date][time] = {
+      user: user,
+      status: it.statusId,
+      comment: it.comment,
+      timeshow: timeshow
+     }
+   return acc
+  },{})
+ }
+ res.send(data)
+})
+
 router.post('/action',async function(req,res) {
  let status = parseInt(req.body.status)
-
+ let statusId
  switch (req.body.eventId) {
   case '0':
    status++
+   statusId = 2
    break
   case '1':
    status = status+2
+   statusId = 4
    break
   case '2':
    status = 6
+   statusId = 6
    break
  }
-
+ await api('post','/memolog',{
+  memoId: req.body.memoId,
+  dataId: req.cookies.user_dataid,
+  statusId: statusId,
+  time: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+ })
  let result = await api('post','/memo/update',{
   where: {
    memoId: req.body.memoId
@@ -127,9 +173,9 @@ router.post('/action',async function(req,res) {
 router.post('/attachdel',async function(req,res) {
  let id = req.body.id
  let file = req.body.path.replace(/.*[\/\\]/,"")
- let filename = (await con.q("SELECT memo_file FROM memo WHERE memo_id = ?",[id]))[0].memo_file
- if (filename) {
-  console.log(filename)
+ let filename = await con.q("SELECT memo_file FROM memo WHERE memo_id = ?",[id])
+ if (filename.length) {
+  filename = filename[0].memo_file
   if (filename.includes(",")) {
    filename = filename.split(",").filter(i => i!=file).toString()
   } else {
@@ -150,12 +196,14 @@ router.post('/attachdel',async function(req,res) {
 
 router.post('/attachmultidel',async function(req,res) {
  let list = req.body.file
- list.map(function(e) {
-  let path = e.path
-  if (fs.existsSync(path)) {
-   fs.unlinkSync(path)
-  }
- })
+ if (typeof list == "object") {
+  list.map(function(e) {
+   let path = e.path
+   if (fs.existsSync(path)) {
+    fs.unlinkSync(path)
+   }
+  })
+ }
  res.send('ok')
 })
 

@@ -17,10 +17,12 @@ router.get('/',async function(req,res) {
 })
 
 router.post('/',async function(req,res) {
+ let parms = req.body
+ parms.option.cookies = req.cookies
  var option = {
-  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' + req.body.path,
+  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' + parms.path,
   method: 'POST',
-  data: (req.body.option == 'getcode' ? req.cookies : req.body.option)
+  data: (parms.option == 'getcode' ? req.cookies : parms.option)
  }
  const request = await axios(option)
  res.json(request.data)
@@ -39,10 +41,11 @@ router.post('/sync/:path',async function(req,res) {
 })
 
 router.post('/commentpost',async function(req,res) {
- req.body.commentDate = moment().format('YYYY-MM-DD HH:mm:ss')
- req.body.commentUser = req.cookies.user_dataid
+ req.body.time = moment().format('YYYY-MM-DD HH:mm:ss')
+ req.body.dataId = req.cookies.user_dataid
+ req.body.statusId = 8
  var option = {
-  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '/memo/commentadd',
+  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '/memolog',
   method: 'POST',
   data: req.body
  }

@@ -7,7 +7,6 @@ async function send(method,path,data) {
   method: method,
   data: data
  }
- console.log(option)
  const request = await axios(option)
  return request.data
 }

@@ -56,6 +56,7 @@ jQuery(function ($) {
       <div class="col-sm-1 datatable-option view-memo"><a class="fa fa-eye color-blue memo-view" title="ดูเอกสาร"></a></div>\
       <div class="col-sm-1 datatable-option comment-memo"><a class="fa fa-commenting-o color-teal memo-comment" title="แสดงความคิดเห็น"></a></div>\
       <div class="col-sm-1 datatable-option read-memo"><a class="fa fa-list-alt color-purple memo-read" title="รายชื่อคนเปิดดูเอกสาร"></a></div>\
+      <div class="col-sm-1 datatable-option info-memo"><a class="fa fa-info color-navy memo-info" title="รายละเอียดข้อมูลการดำเนินการเอกสาร"></a></div>\
       <div class="col-sm-1 datatable-option edit-memo"><a class="fa fa-pencil-square-o color-olive memo-edit" title="แก้ไขเอกสาร"></a></div>\
       <div class="col-sm-1 datatable-option return-memo"><a class="fa fa-undo color-fuchsia memo-return" id="memo-return" title="ส่งกลับเพื่อแก้ไข"></a></div>\
       <div class="col-sm-1 datatable-option approve-memo"><a class="fa fa-check-circle color-green memo-approve" id="memo-approve" title="อนุมัติเอกสาร"></a></div>\
@@ -90,7 +91,7 @@ jQuery(function ($) {
         <tr>\
          <th>ชื่อ-สกุล</th>\
          <th>ตำแหน่ง</th>\
-         <th>เวลาเปิด</th>\
+         <th>เปิดดูเอกสารครั้งแรก</th>\
         </tr>\
        </thead>\
       </table>\
@@ -108,7 +109,7 @@ jQuery(function ($) {
    dataType: "json",
    async: false,
    data: {
-    path: '/memoread/read',
+    path: '/memolog/findread',
     method: 'GET',
     option: {
      memoId: id
@@ -121,7 +122,6 @@ jQuery(function ($) {
     table = error
    }
   })
-
   modal = $(modal).appendTo('body')
   $('#extraModal').on('click', '#closeModal', function () {
    $('#extraModal').modal("hide")
@@ -198,6 +198,51 @@ jQuery(function ($) {
   window.location.href = host +"/memo/edit/" + id
  })
 
+ $(document).on('click','.memo-info',function(){
+  let id = $(this).parents('tr').attr('id')
+  let memoNo = $(this).parents('tr').find('td:nth-child(1)').text()
+  let memoTopic = $(this).parents('tr').find('td:nth-child(2)').text()
+  var modal = '\
+  <div class="modal fade" id="extraModal" >\
+   <div class="modal-dialog">\
+    <div class="modal-content">\
+     <div class="modal-body">\
+      <div class="container-timeline">\
+       <div class="comment-head">รายการข้อคิดเห็น</div>\
+       <div class="comment-doc">'+ memoNo +': '+ memoTopic +'</div>\
+      </div>\
+     </div>\
+     <div class="modal-footer">\
+      <button type="button" id="closeModal" class="btn btn-info btn-sm">ปิด</button>\
+     </div>\
+    </div>\
+   </div>\
+  </div>\
+  '
+
+  modal = $(modal).appendTo('body')
+
+  $.ajax({
+   type: 'get',
+   url: '/memo/getlog',
+   async: false,
+   data: {
+    memoId: id
+   },
+   success: function(data) {
+    $('.container-timeline').append(toHtml(data))
+   }
+  })
+
+  $('#extraModal').on('click', '#closeModal', function () {
+   $('#extraModal').modal("hide")
+  })
+
+  $('#extraModal').modal('show').on('hidden.bs.modal', function () {
+   this.remove()
+  })
+ })
+
  $(document).on('click', '.memo-comment', function () {
   let maxChar = 250
   let memoId = $(this).parents('tr').attr('id')
@@ -210,7 +255,7 @@ jQuery(function ($) {
    dataType: "json",
    async: false,
    data: {
-    path: "/memo/getcomment",
+    path: "/memolog/getlast",
     method: "get",
     option: {
      memoId: memoId
@@ -218,7 +263,6 @@ jQuery(function ($) {
    },
    success: function (data) {
     oldComment = data.text
-    console.log(data)
    }
   })
   var modal = '\
@@ -263,7 +307,7 @@ jQuery(function ($) {
      async: false,
      data: {
       memoId: memoId,
-      commentText: comment
+      comment: comment
      },
      success: function (data) {
 
@@ -290,5 +334,47 @@ jQuery(function ($) {
    this.remove()
   })
  })
+
+ function toHtml(data) {
+  let code = []
+  for (let day in data) {
+   for (let time in data[day]) {
+    let line = data[day][time]
+    switch (line.status) {
+     case 0:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ยกเลิกเอกสาร</p></div>')
+      break
+     case 1:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>สร้างเอกสาร</p></div>')
+      break
+     case 2:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ผู้ตรวจสอบส่งกลับเอกสารเพื่อแก้ไข</p></div>')
+      break
+     case 3:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ยืนยันการตรวจสอบเอกสาร</p></div>')
+      break
+     case 4:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ผู้อนุมัติส่งกลับเอกสารเพื่อแก้ไข</p></div>')
+      break
+     case 5:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>อนุมัติเอกสาร</p></div>')
+      break
+     case 6:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ไม่อนุมัติเอกสาร</p></div>')
+      break
+     case 7:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>เปิดดูเอกสาร</p></div>')
+      break
+     case 8:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>'+line.comment+'</p></div>')
+      break
+     case 9:
+      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>แก้ไขเอกสาร</p></div>')
+      break
+    }
+   }
+  }
+  return code
+ }
 
 })

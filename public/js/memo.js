@@ -523,7 +523,7 @@ $(function($) {
       originalname: data.file.originalname,
       path: data.file.path
      }
-     data.file.path = data.file.path.match(/(\\public\\).*/)[0].replace(data.file.filename,"")
+     data.file.path = data.file.path.match(/(\\public\\).*/)[0]//.replace(data.file.filename,"")
      item.push(file)
      $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="'+data.file.path+'">'+data.file.originalname+'</a></div>')
      sessionStorage.setItem('attachm',JSON.stringify(item))
@@ -558,6 +558,7 @@ $(function($) {
   data.memoAdmin = admin.id
   data.memoBoss = (boss ? boss.id : "")
   data.memoApprover = (approve ? approve.id : "")
+  data.statusId = 1
   if (data.memoApprover || data.memoBoss) {
    data.memoStatus = 1
   } else {
@@ -569,7 +570,7 @@ $(function($) {
    type: 'post',
    async: false,
    data: {
-    path: '/memo/updateorcreate',
+    path: '/memo/creatememo',
     option: data
    },
    success: function(data) {
@@ -601,6 +602,7 @@ $(function($) {
    case 'modal-from': return 'memoFrom'
    case 'modal-subject': return 'memoSubject'
    case 'modal-file': return 'memoFile'
+   case 'modal-path': return 'memoPath'
   }
  }
 
