@@ -559,7 +559,11 @@ $(function($) {
   data.memoBoss = (boss ? boss.id : "")
   data.memoApprover = (approve ? approve.id : "")
   data.statusId = 1
-  if (data.memoApprover || data.memoBoss) {
+  if (data.memoApprover && data.memoBoss) {
+   data.memoStatus = 1
+  } else if (data.memoApprover && !data.memoBoss) {
+   data.memoStatus = 3
+  } else if (!data.memoApprover && data.memoBoss) {
    data.memoStatus = 1
   } else {
    data.memoStatus = 7
@@ -575,6 +579,9 @@ $(function($) {
    },
    success: function(data) {
     sessionStorage.removeItem('attachm')
+   },
+   error: function(e) {
+    $.alert(e)
    }
   })
  }

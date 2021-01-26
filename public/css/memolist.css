@@ -1,3 +1,26 @@
+:root {
+ --colorcancel:  rgb(187, 59, 50);
+ --backgroundcancel: #fbd0ca;
+ --colorcreate: rgb(90, 88, 88);
+ --backgroundcreate: rgba(223, 221, 221, 0.911);
+ --colorcheckreturn: rgba(158, 199, 247, 0.986);
+ --backgroundcheckreturn: rgb(95, 94, 94);
+ --colorcheck: rgba(36, 117, 224, 0.815);
+ --backgroundcheck: rgba(186, 220, 240, 0.966);
+ --colorapprovereturn: rgba(205, 245, 211, 0.945);
+ --backgroundapprovereturn: rgb(95, 94, 94);
+ --colorapprove: rgba(28, 109, 11, 0.815);
+ --backgroundapprove: rgb(222, 241, 223);
+ --colorreject: rgba(230, 22, 22, 0.815);
+ --backgroundreject: rgb(241, 180, 180);
+ --colorread: rgba(25, 29, 27, 0.918);
+ --backgroundread: rgb(168, 243, 174);
+ --colorcomment: rgba(230, 224, 224, 0.815);
+ --backgroundcomment: rgb(95, 94, 94);
+ --coloredit: rgba(230, 224, 224, 0.815);
+ --backgroundedit: rgb(95, 94, 94);
+}
+
 .datatable-option a:hover {
  text-decoration: none;
  cursor: pointer;
@@ -18,4 +41,45 @@ tr.approve .approve-memo {
 }
 tr.reject .reject-memo {
  display: inline;
+}
+
+tr[data-status="0"] .m-status {
+ color: var(--colorcancel);
+ background-color: var(--backgroundcancel) !important;
+}
+tr[data-status="1"] .m-status {
+ color: var(--colorcreate);
+ background-color: var(--backgroundcreate) !important;
+}
+tr[data-status="2"] .m-status {
+ color: var(--colorcheckreturn);
+ background-color: var(--backgroundcheckreturn) !important;
+}
+tr[data-status="3"] .m-status {
+ color: var(--colorcheck);
+ background-color: var(--backgroundcheck) !important;
+}
+tr[data-status="4"] .m-status {
+ color: var(--colorapprovereturn);
+ background-color: var(--backgroundapprovereturn) !important;
+}
+tr[data-status="5"] .m-status {
+ color: var(--colorapprove);
+ background-color: var(--backgroundapprove) !important;
+}
+tr[data-status="6"] .m-status {
+ color: var(--colorreject);
+ background-color: var(--backgroundreject) !important;
+}
+tr[data-status="7"] .m-status {
+ color: var(--colorread);
+ background-color: var(--backgroundread) !important;
+}
+tr[data-status="8"] .m-status {
+ color: var(--colorcomment);
+ background-color: var(--backgroundcomment) !important;
+}
+tr[data-status="9"] .m-status {
+ color: var(--coloredit);
+ background-color: var(--backgroundedit) !important;
 }

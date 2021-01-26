@@ -63,8 +63,9 @@ jQuery(function ($) {
       <div class="col-sm-1 datatable-option reject-memo"><a class="fa fa-times-circle color-red memo-reject" id="memo-reject" title="ไม่อนุมัติเอกสาร"></a></div>\
      </div>',
    "targets": -1
-   //<div class="col-sm-3 datatable-option del-profile"><i class="fa fa-trash profile-del"></i><span>ลบ</span></div>\
   }]
+  //<div class="col-sm-1 datatable-option file-memo"><a class="fa fa-file-o color-black memo-file" title="แนบไฟล์ข้อมูล"></a></div>\
+  //<div class="col-sm-3 datatable-option del-profile"><i class="fa fa-trash profile-del"></i><span>ลบ</span></div>\
  })
 
  $(document).on('click', '.memo-view', function () {
