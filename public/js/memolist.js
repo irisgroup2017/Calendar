@@ -55,6 +55,7 @@ jQuery(function ($) {
      <div class="row center">\
       <div class="col-sm-1 datatable-option view-memo"><a class="fa fa-eye color-blue memo-view" title="ดูเอกสาร"></a></div>\
       <div class="col-sm-1 datatable-option comment-memo"><a class="fa fa-commenting-o color-teal memo-comment" title="แสดงความคิดเห็น"></a></div>\
+      <div class="col-sm-1 datatable-option file-memo"><a class="fa fa-file-o color-black memo-file" title="แนบไฟล์ข้อมูล"></a></div>\
       <div class="col-sm-1 datatable-option read-memo"><a class="fa fa-list-alt color-purple memo-read" title="รายชื่อคนเปิดดูเอกสาร"></a></div>\
       <div class="col-sm-1 datatable-option info-memo"><a class="fa fa-info color-navy memo-info" title="รายละเอียดข้อมูลการดำเนินการเอกสาร"></a></div>\
       <div class="col-sm-1 datatable-option edit-memo"><a class="fa fa-pencil-square-o color-olive memo-edit" title="แก้ไขเอกสาร"></a></div>\
@@ -64,7 +65,7 @@ jQuery(function ($) {
      </div>',
    "targets": -1
   }]
-  //<div class="col-sm-1 datatable-option file-memo"><a class="fa fa-file-o color-black memo-file" title="แนบไฟล์ข้อมูล"></a></div>\
+  //
   //<div class="col-sm-3 datatable-option del-profile"><i class="fa fa-trash profile-del"></i><span>ลบ</span></div>\
  })
 
@@ -196,10 +197,10 @@ jQuery(function ($) {
  $(document).on('click', '.memo-edit', function () {
   let id = $(this).parents('tr').attr('id')
   let host = window.location.origin
-  window.location.href = host +"/memo/edit/" + id
+  window.location.href = host + "/memo/edit/" + id
  })
 
- $(document).on('click','.memo-info',function(){
+ $(document).on('click', '.memo-info', function () {
   let id = $(this).parents('tr').attr('id')
   let memoNo = $(this).parents('tr').find('td:nth-child(1)').text()
   let memoTopic = $(this).parents('tr').find('td:nth-child(2)').text()
@@ -210,7 +211,7 @@ jQuery(function ($) {
      <div class="modal-body">\
       <div class="container-timeline">\
        <div class="comment-head">รายการข้อคิดเห็น</div>\
-       <div class="comment-doc">'+ memoNo +': '+ memoTopic +'</div>\
+       <div class="comment-doc">' + memoNo + ': ' + memoTopic + '</div>\
       </div>\
      </div>\
      <div class="modal-footer">\
@@ -230,7 +231,7 @@ jQuery(function ($) {
    data: {
     memoId: id
    },
-   success: function(data) {
+   success: function (data) {
     $('.container-timeline').append(toHtml(data))
    }
   })
@@ -242,6 +243,171 @@ jQuery(function ($) {
   $('#extraModal').modal('show').on('hidden.bs.modal', function () {
    this.remove()
   })
+ })
+
+ $(document).on('click', '.memo-file', function (e) {
+  let data = $(this).parents('tr').data()
+  var modal = '\
+  <div class="modal fade upload" data-id="'+data.id+'" data-status="'+data.status+'" id="uploadModal">\
+   <div class="modal-dialog upload-files">\
+    <div class="modal-content">\
+     <div class="modal-header">\
+      <div class="exp">\
+       <div class="checkbox">\
+        <form>\
+         <div>\
+          <input type="checkbox" id="approverequest" name="check" value="" />\
+          <label for="approverequest">\
+           <span></span>โปรดทำเครื่องหมายหากไฟล์นี้เป็นเอกสารลงนามอนุมัติ\
+          </label>\
+         </div>\
+        </form>\
+       </div>\
+      </div>\
+     </div>\
+     <form enctype="multipart/form-data" id="formfile" name=""filem>\
+      <div class="modal-body body" id="drop">\
+       <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>\
+       <p class="pointer-none"><b>ลากไฟล์มาวาง</b> บริเวณนี้ <br /> หรือ <a class="color-blue" href="" id="triggerFile">ค้นหาไฟล์</a> เพื่อทำการอัพโหลดเอกสาร <br />\
+       อนุญาตให้อัพโหลดไฟล์ <b>รูปภาพ</b> และ <b>เอกสาร PDF</b> เท่านั้น</p>\
+       <input type="file" name="file" id="filem" multiple="multiple" accept="image/*,.pdf"/>\
+      </div>\
+     </form>\
+     <footer>\
+      <div class="divider">\
+       <span><AR>รายการไฟล์</AR></span>\
+      </div>\
+      <div class="list-files">\
+       <!--   template   -->\
+      </div>\
+      <button class="importar">ทำต่อ</button>\
+     </footer>\
+     <div class="modal-footer">\
+      <button type="button" id="closeModal" class="btn btn-info btn-sm">ปิด</button>\
+     </div>\
+    </div>\
+   </div>\
+  </div>\
+  '
+  modal = $(modal).appendTo('body')
+  $('#uploadModal').on('click', '#closeModal', function () {
+   $('#uploadModal').modal("hide")
+  })
+
+  $('#uploadModal').modal('show').on('hidden.bs.modal', function () {
+   this.remove()
+  })
+
+  // drop events
+  var dropzone = $("#drop"),
+  input = $(dropzone).add('input[type=file]')
+  dropzone.on({
+   dragenter : dragin,
+   dragover : dragin,
+   dragleave : dragout,
+   drop: drop
+  });
+  input.on('change',drop)
+  function dragin(e) { //function for drag into element, just turns the bix X white
+   e.preventDefault();  
+   e.stopPropagation();
+   $(dropzone).addClass('active');
+  }
+  function dragout(e) { //function for dragging out of element  
+   e.preventDefault();  
+   e.stopPropagation();                       
+   $(dropzone).removeClass('active');
+  }
+  function drop(e) {
+   e.preventDefault();  
+   e.stopPropagation();
+   let status = $(this).parents('.modal').data("status")
+   let approveRequest = $("#approverequest").is(':checked')
+   var file = (e.type == "drop" ? e.originalEvent.dataTransfer.files : e.target.files);
+   $('#drop').removeClass("active")
+   // upload file
+   if ((!approveRequest) || (approveRequest && status == "3")) {
+    handleFileSelect(file);
+   } else {
+    $.alert("สามารถแนบเอกสารลงนามอนุมัติ เมื่อเอกสารอยู่ในสถานะรออนุมัติเท่านั้น")
+   }
+  }  
+
+  function handleFileSelect(files) {
+    //files template
+    let approveRequest = $("#approverequest").is(':checked')
+    let template = `${Object.keys(files).
+    map(file => `<div class="file file--${file}">
+     <div class="name"><span>${files[file].name}</span></div>
+     <progress class="progress" value="0" max="100"></progress>
+     <div class="done">
+     <a href="" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 1000 1000">
+      <g><path id="path" d="M500,10C229.4,10,10,229.4,10,500c0,270.6,219.4,490,490,490c270.6,0,490-219.4,490-490C990,229.4,770.6,10,500,10z M500,967.7C241.7,967.7,32.3,758.3,32.3,500C32.3,241.7,241.7,32.3,500,32.3c258.3,0,467.7,209.4,467.7,467.7C967.7,758.3,758.3,967.7,500,967.7z M748.4,325L448,623.1L301.6,477.9c-4.4-4.3-11.4-4.3-15.8,0c-4.4,4.3-4.4,11.3,0,15.6l151.2,150c0.5,1.3,1.4,2.6,2.5,3.7c4.4,4.3,11.4,4.3,15.8,0l308.9-306.5c4.4-4.3,4.4-11.3,0-15.6C759.8,320.7,752.7,320.7,748.4,325z"</g>
+      </svg>
+      </a>
+     </div>
+    </div>`).
+    join("")}`;
+
+    $("#drop").addClass("hidden");
+    $("footer").addClass("hasFiles");
+    $(".list-files").html(template)
+
+    Object.keys(files).forEach(file => {
+     let dat = files[file]
+     let formdata = new FormData()
+     formdata.append("file", dat)
+     formdata.append("list", file)
+     formdata.append("approve",approveRequest)
+     formdata.append("memoid", data.id)
+     $.ajax({
+      url: "/fileuploadmemo",
+      xhr: function () {
+       var xhr = new window.XMLHttpRequest();
+       xhr.upload.addEventListener('progress', function (e) {
+        if (e.lengthComputable) {
+         //console.log('Bytes Loaded: ' + e.loaded);
+         //console.log('Total Size: ' + e.total);
+         //console.log('Percentage Uploaded: ' + ((e.loaded / e.total) * 100) + '%');
+         var percent = Math.round((e.loaded / e.total) * 100);
+         $('.file--'+file).find(".progress").val(percent)
+        }
+       });
+       return xhr;
+      },
+      type: "POST",
+      enctype: 'multipart/form-data',
+      data: formdata,
+      processData: false, //prevent jQuery from automatically transforming the data into a query string
+      contentType: false,
+      cache: false,
+      success: (data) => {
+       $(".importar").addClass("active");
+       $('.file--'+data.files).find(".progress").val("100").next().addClass("anim")
+      },
+      error: (e) => {
+       console.log(e.responseText)
+      }
+     })
+    });
+  }
+
+  // trigger input
+  $("#triggerFile").on("click",function(evt) {
+    evt.preventDefault();
+    $("input[type=file]").click();
+  })
+
+  //upload more
+  $(".importar").on("click", () => {
+   $("footer").removeClass("hasFiles");
+   $(".list-files").html("")
+   $(".importar").removeClass("active");
+   setTimeout(() => {
+     $("#drop").removeClass("hidden");
+   }, 500);
+  });
  })
 
  $(document).on('click', '.memo-comment', function () {
@@ -279,8 +445,8 @@ jQuery(function ($) {
        <div class="row align-items-center">\
         <label class="col-sm-4 col-form-label">เพิ่มความคิดเห็น</label>\
         <div class="col-sm-8">\
-         <textarea rows="3" id="modal-comment" style="min-width: 100%" maxlength="'+maxChar+'" data-id="' + memoId + '">'+(oldComment ? oldComment : "")+'</textarea>\
-         <label id="maxLength" class="d-flex justify-content-end">'+(oldComment ? oldComment.length : 0)+'/'+maxChar+'</label>\
+         <textarea rows="3" id="modal-comment" style="min-width: 100%" maxlength="' + maxChar + '" data-id="' + memoId + '">' + (oldComment ? oldComment : "") + '</textarea>\
+         <label id="maxLength" class="d-flex justify-content-end">' + (oldComment ? oldComment.length : 0) + '/' + maxChar + '</label>\
         </div>\
        </div>\
       </form>\
@@ -320,11 +486,11 @@ jQuery(function ($) {
 
   $('#extraModal').on('keypress', '#modal-comment', function (e) {
    let count = $(this).val().length
-   $('#extraModal').find('#maxLength').text(count + "/"+maxChar)
+   $('#extraModal').find('#maxLength').text(count + "/" + maxChar)
   })
   $('#extraModal').on('keyup', '#modal-comment', function (e) {
    let count = $(this).val().length
-   $('#extraModal').find('#maxLength').text(count + "/"+maxChar)
+   $('#extraModal').find('#maxLength').text(count + "/" + maxChar)
   })
 
   $('#extraModal').on('click', '#cancelExtraDate', function () {
@@ -341,36 +507,40 @@ jQuery(function ($) {
   for (let day in data) {
    for (let time in data[day]) {
     let line = data[day][time]
+    console.log(line)
     switch (line.status) {
      case 0:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ยกเลิกเอกสาร</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ยกเลิกเอกสาร</p></div>')
       break
      case 1:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>สร้างเอกสาร</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>สร้างเอกสาร</p></div>')
       break
      case 2:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ผู้ตรวจสอบส่งกลับเอกสารเพื่อแก้ไข</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ผู้ตรวจสอบส่งกลับเอกสารเพื่อแก้ไข</p></div>')
       break
      case 3:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ยืนยันการตรวจสอบเอกสาร</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ยืนยันการตรวจสอบเอกสาร</p></div>')
       break
      case 4:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ผู้อนุมัติส่งกลับเอกสารเพื่อแก้ไข</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ผู้อนุมัติส่งกลับเอกสารเพื่อแก้ไข</p></div>')
       break
      case 5:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>อนุมัติเอกสาร</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>อนุมัติเอกสาร</p></div>')
       break
      case 6:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>ไม่อนุมัติเอกสาร</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ไม่อนุมัติเอกสาร</p></div>')
       break
      case 7:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>เปิดดูเอกสาร</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>เปิดดูเอกสาร</p></div>')
       break
      case 8:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>'+line.comment+'</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>' + line.comment + '</p></div>')
       break
      case 9:
-      code.push('<div class="timeline-item" date-is="'+line.timeshow+'"><h1>'+line.user+'</h1><p>แก้ไขเอกสาร</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แก้ไขเอกสาร</p></div>')
+      break
+     case 10:
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แนบไฟล์เอกสาร (รออัพเดท)</p></div>')
       break
     }
    }

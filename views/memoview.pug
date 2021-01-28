@@ -55,6 +55,10 @@ mixin timeline(timeline)
      .timeline-item(date-is=time.timeshow)
       h1=time.user
       p แก้ไขเอกสาร
+    when 10
+     .timeline-item(date-is=time.timeshow)
+      h1=time.user
+      p แนบไฟล์เอกสาร (รออัพเดท)
 link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
 +ssrc(['jquery.min.js','moment.min.js','memoview.js','animatemodal.min.js'])
 +scss(['animate.min.css','ace.min.css','bootstrap.min.css','memo.css','timeline.css'])

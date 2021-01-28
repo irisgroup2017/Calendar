@@ -27,7 +27,7 @@ router.get('/', async function (req, res) {
   parms.operator = dataop
   res.render('memo', parms)
  } else {
-  res.redirect('login')
+  res.redirect('/login')
  }
 })
 
@@ -41,7 +41,7 @@ router.get('/edit/:memoId', async function (req, res) {
   parms = core.objUnion(parms, core.cookies(req.cookies))
   let memo = await con.q('SELECT * FROM memo WHERE memo_id = ?', [memoId])
   parms.objs = memo[0]
-  console.log(parms.objs)
+
   if ((parms.objs) && (parms.objs.memo_status == 2 || parms.objs.memo_status == 4) && (req.cookies.user_dataid == parms.objs.memo_admin)) {
    parms.objs.memo_date = moment(parms.objs.memo_date).format("DD/MM/YYYY")
    if (parms.objs.memo_path) {
@@ -61,7 +61,7 @@ router.get('/edit/:memoId', async function (req, res) {
    res.render('cannotaccess', parms)
   }
  } else {
-  res.redirect('../login')
+  res.redirect('/login')
  }
 })
 
@@ -96,13 +96,17 @@ router.get('/view/:memoId', async function (req, res) {
     let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
     let time = moment(it.time).format("Hmmss")
     let user = contact[it.dataId].name
+    let path = (it.path ? it.path : "")
+    let oriname = (it.originalName ? it.originalName : "")
     acc[date] = acc[date] || {}
     acc[date][time] = acc[date][time] || {}
     acc[date][time] = {
      user: user,
      status: it.statusId,
      comment: it.comment,
-     timeshow: timeshow
+     timeshow: timeshow,
+     path: path,
+     originalName: oriname
     }
     return acc
    }, {})
@@ -128,10 +132,18 @@ router.get('/view/:memoId', async function (req, res) {
 })
 
 router.get('/list', async function (req, res) {
- listMemo(req, res)
+ if (req.cookies) {
+  listMemo(req, res)
+ } else {
+  res.redirect('/')
+ }
 })
 router.get('/list/:year', async function (req, res) {
- listMemo(req, res)
+ if (req.cookies) {
+  listMemo(req, res)
+ } else {
+  res.redirect('/')
+ }
 })
 
 router.get('/getlog', async function (req, res) {
@@ -147,13 +159,17 @@ router.get('/getlog', async function (req, res) {
    let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
    let time = moment(it.time).format("Hmmss")
    let user = contact[it.dataId].name
+   let path = (it.path ? it.path : "")
+   let oriname = (it.originalName ? it.originalName : "")
    acc[date] = acc[date] || {}
    acc[date][time] = acc[date][time] || {}
    acc[date][time] = {
     user: user,
     status: it.statusId,
     comment: it.comment,
-    timeshow: timeshow
+    timeshow: timeshow,
+    path: path,
+    originalName: oriname
    }
    return acc
   }, {})

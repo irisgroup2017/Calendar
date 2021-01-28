@@ -9,6 +9,7 @@ const app = express()
 const router = express.Router()
 const upload = require(__basedir+'/app/config/multer.config.js')
 const memoUpload = require(__basedir+'/app/config/memomulter.config.js')
+const memoFileUpload = require(__basedir+'/app/config/memofilemulter.config.js')
 const larstock = require("./bin/larstock")
 const epass = require("./bin/easypass")
 const schedule = require('node-schedule')
@@ -24,8 +25,9 @@ schedule.scheduleJob({ hour: [0,12],minute: 0,second: 0 },async () => {
 })
 require(__basedir+'/app/routers/application.router.js')(app, router, upload)
 require(__basedir+'/app/routers/memoattach.router.js')(app, router, memoUpload)
+require(__basedir+'/app/routers/memofile.router.js')(app, router, memoFileUpload)
 require('dotenv').config()
-
+//console.log(app._router.stack)
 function handleDisconnect() {
 	var con = mysql.createConnection({
 		host: process.env.DB_HOST,

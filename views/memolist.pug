@@ -3,7 +3,7 @@ extends layout
 mixin tbl(memo)
  for issue in memo
   //-var user-status = (block.status ? "user-enable" : "user-disable")
-  tr(id=issue.memo_id data-status=issue.memo_status data-admin=issue.memo_admin data-boss=issue.memo_boss data-approver=issue.memo_approver class=issue.setClass)
+  tr(id=issue.memo_id data-id=issue.memo_id data-status=issue.memo_status data-admin=issue.memo_admin data-boss=issue.memo_boss data-approver=issue.memo_approver class=issue.setClass)
    td.doc-no=issue.memo_code
    td.m-subject=issue.memo_subject
    td.m-from=issue.memo_from
