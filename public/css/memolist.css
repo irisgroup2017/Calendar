@@ -33,7 +33,7 @@
  display: none;
 }
 
-tr.cancel td {
+tr.cancel td:not(.m-status) {
  text-decoration: line-through;
 }
 
