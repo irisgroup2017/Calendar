@@ -8,30 +8,42 @@ module.exports = {
  classAssign: function(arr,id) {
   let approve = "return approve reject"
   let edit = "edit"
+  let del = "delete"
+  let cancel = "cancel"
   if (arr.length) {
    let objs = arr.map(item => {
     let status = item.memo_status
     switch (status) {
+     case 0:
+      item.setClass = cancel
+      return item
      case 1:
       if (item.memo_boss == id) {
        item.setClass = approve
+       return item
+      } else if (item.memo_admin == id) {
+       item.setClass = del
+       return item
       }
-      return item
+      break
      case 2:
       if (item.memo_admin == id) {
        item.setClass = edit
+       return item
       }
-      return item
+      break
      case 3:
       if (item.memo_approver == id) {
        item.setClass = approve
+       return item
       }
-      return item
+      break
      case 4:
       if (item.memo_admin == id) {
        item.setClass = edit
+       return item
       }
-      return item
+      break
      default:
       item.setClass = ""
       return item

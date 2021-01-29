@@ -199,6 +199,9 @@ router.post('/action', async function (req, res) {
    status = 6
    statusId = 6
    break
+  case '3': //delete
+   status = 0
+   statusId = 0
  }
  await api('post', '/memolog', {
   memoId: req.body.memoId,

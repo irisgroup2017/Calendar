@@ -426,6 +426,16 @@ table + .modal-memo-content {
  overflow: hidden;
 }
 
+.modal-timeline-page {
+ display: block;
+ padding: var(--padding-top) var(--padding-right) var(--padding-bottom) var(--padding-left);
+ margin-bottom: 20px;
+ width: 210mm;
+ min-height: 277mm;
+ max-height: 277mm;
+ height: 100%;
+}
+
 .modal-logo {
  width: 40mm;
 }

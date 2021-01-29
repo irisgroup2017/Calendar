@@ -62,11 +62,12 @@ jQuery(function ($) {
       <div class="col-sm-1 datatable-option return-memo"><a class="fa fa-undo color-fuchsia memo-return" id="memo-return" title="ส่งกลับเพื่อแก้ไข"></a></div>\
       <div class="col-sm-1 datatable-option approve-memo"><a class="fa fa-check-circle color-green memo-approve" id="memo-approve" title="อนุมัติเอกสาร"></a></div>\
       <div class="col-sm-1 datatable-option reject-memo"><a class="fa fa-times-circle color-red memo-reject" id="memo-reject" title="ไม่อนุมัติเอกสาร"></a></div>\
+      <div class="col-sm-1 datatable-option delete-memo"><a class="fa fa-trash color-orange memo-delete" id="memo-delete" title="ลบ"></a></div>\
      </div>',
    "targets": -1
   }]
   //
-  //<div class="col-sm-3 datatable-option del-profile"><i class="fa fa-trash profile-del"></i><span>ลบ</span></div>\
+  //
  })
 
  $(document).on('click', '.memo-view', function () {
@@ -148,16 +149,16 @@ jQuery(function ($) {
   })
  })
 
- $(document).on('click', '#memo-return,#memo-approve,#memo-reject', function (e) {
+ $(document).on('click', '#memo-return,#memo-approve,#memo-reject,#memo-delete', function (e) {
   let event = e.target.id
-  let matchEvent = ['memo-return', 'memo-approve', 'memo-reject'].indexOf(event)
+  let matchEvent = ['memo-return', 'memo-approve', 'memo-reject','memo-delete'].indexOf(event)
   let memoSubject = $(this).parents('tr').find('td:nth-child(2)').text()
   let memoId = $(this).parents('tr').attr('id')
   let status = $(this).parents('tr').data('status')
   let admin = $(this).parents('tr').data('admin')
   let boss = $(this).parents('tr').data('boss')
   let approver = $(this).parents('tr').data('approver')
-  let titleMessage = ['ตีกลับเอกสาร', 'อนุมัติเอกสาร', 'ไม่อนุมัติเอกสาร']
+  let titleMessage = ['ตีกลับเอกสาร', 'อนุมัติเอกสาร', 'ไม่อนุมัติเอกสาร','ยกเลิกเอกสาร']
   $.confirm({
    title: titleMessage[matchEvent],
    content: 'ยืนยันการ' + titleMessage[matchEvent] + ' เรื่อง' + memoSubject,

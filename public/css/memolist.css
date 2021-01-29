@@ -29,8 +29,20 @@
  cursor: pointer;
 }
 
-.edit-memo,.return-memo,.approve-memo,.reject-memo {
+.edit-memo,.return-memo,.approve-memo,.reject-memo,.delete-memo {
  display: none;
+}
+
+tr.cancel td {
+ text-decoration: line-through;
+}
+
+tr.cancel .fa {
+ display: none;
+}
+
+tr.delete .delete-memo {
+ display: inline;
 }
 
 tr.edit .edit-memo {
