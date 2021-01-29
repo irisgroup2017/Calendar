@@ -132,14 +132,14 @@ router.get('/view/:memoId', async function (req, res) {
 })
 
 router.get('/list', async function (req, res) {
- if (req.cookies) {
+ if (req.cookies.user_dataid != undefined) {
   listMemo(req, res)
  } else {
   res.redirect('/')
  }
 })
 router.get('/list/:year', async function (req, res) {
- if (req.cookies) {
+ if (req.cookies.user_dataid != undefined) {
   listMemo(req, res)
  } else {
   res.redirect('/')
@@ -259,28 +259,24 @@ router.post('/attachmultidel', async function (req, res) {
 })
 
 async function listMemo(req, res) {
- if (req.cookies) {
-  let year = (req.params.year ? req.params.year : (new Date()).getFullYear())
-  year = (year - 400 > (new Date()).getFullYear() ? year - 543 : year)
-  parms = {
-   title: 'รายการเมโมที่เกี่ยวข้อง',
-   head1: 'MEMO'
-  }
-  parms = core.objUnion(parms, core.cookies(req.cookies))
-  let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) = ?", [year])
-  let contact = (await con.q("SELECT dataid,name,level,job FROM contact_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
-  let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
-  let dataid = parms.dataid
-  let departid = contact[dataid].level
-  parms.depart = depart[departid].depart
-  let objs = memo.filter(check => core.persist(dataid, departid, [check.memo_from, check.memo_to, check.memo_cc]))
-  objs = core.classAssign(objs, dataid)
-  objs = core.relation(objs, contact, depart)
-  parms.objs = objs
-  res.render('memolist', parms)
- } else {
-  res.redirect('login')
+ let year = (req.params.year ? req.params.year : (new Date()).getFullYear())
+ year = (year - 400 > (new Date()).getFullYear() ? year - 543 : year)
+ parms = {
+  title: 'รายการเมโมที่เกี่ยวข้อง',
+  head1: 'MEMO'
  }
+ parms = core.objUnion(parms, core.cookies(req.cookies))
+ let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) = ?", [year])
+ let contact = (await con.q("SELECT dataid,name,level,job FROM contact_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
+ let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
+ let dataid = parms.dataid
+ let departid = contact[dataid].level
+ parms.depart = depart[departid].depart
+ let objs = memo.filter(check => core.persist(dataid, departid, [check.memo_from, check.memo_to, check.memo_cc]))
+ objs = core.classAssign(objs, dataid)
+ objs = core.relation(objs, contact, depart)
+ parms.objs = objs
+ res.render('memolist', parms)
 }
 
 module.exports = router

@@ -207,12 +207,19 @@ jQuery(function ($) {
   let memoTopic = $(this).parents('tr').find('td:nth-child(2)').text()
   var modal = '\
   <div class="modal fade" id="extraModal" >\
-   <div class="modal-dialog">\
+   <div class="modal-dialog" style="max-width: 50%;">\
     <div class="modal-content">\
      <div class="modal-body">\
       <div class="container-timeline">\
        <div class="comment-head">รายการข้อคิดเห็น</div>\
        <div class="comment-doc">' + memoNo + ': ' + memoTopic + '</div>\
+      </div>\
+     </div>\
+     <div class="wrapper">\
+      <div class="popup">\
+      <i class="fa fa-close fa-3x closefile" style="display:inline;"></i>\
+       <div class="showfile">\
+       </div>\
       </div>\
      </div>\
      <div class="modal-footer">\
@@ -224,7 +231,7 @@ jQuery(function ($) {
   '
 
   modal = $(modal).appendTo('body')
-
+  $(".popup").hide()
   $.ajax({
    type: 'get',
    url: '/memo/getlog',
@@ -541,7 +548,7 @@ jQuery(function ($) {
       code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แก้ไขเอกสาร</p></div>')
       break
      case 10:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แนบไฟล์เอกสาร (รออัพเดท)</p></div>')
+      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แนบไฟล์เอกสาร <i class="fa fa-paperclip modal-attach-file" title="'+line.originalName+'" data-path="'+line.path+'"> '+line.originalName+'</i></p></div>')
       break
     }
    }
@@ -549,4 +556,15 @@ jQuery(function ($) {
   return code
  }
 
+ $(document).on('click','.modal-attach-file',function() {
+  let data = window.location.origin +''+ $(this).data('path')
+  fileExt = data.substring(data.lastIndexOf('.')).toLowerCase()
+  $('.showfile').empty().append('<' + (fileExt == '.jpg' ? 'img' : 'iframe') + ' src="' + data + '" style="height: 100vh; width:100vh;"></iframe>')
+  $(".modal-body").hide('slow')
+  $(".popup").show('slow')
+ })
+ $(document).on('click','.closefile',function() {
+  $(this).parent().hide("slow");
+  $(".modal-body").show("slow");
+});
 })

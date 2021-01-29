@@ -58,6 +58,11 @@ tr.reject .reject-memo {
  display: inline;
 }
 
+.modal-attach-file {
+ color: #0080ff;
+ cursor: pointer;
+}
+
 tr[data-status="0"] .m-status {
  color: var(--colorcancel);
  background-color: var(--backgroundcancel) !important;

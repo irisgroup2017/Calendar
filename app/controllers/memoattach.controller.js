@@ -14,7 +14,7 @@ exports.uploadForm = (req, res) => {
 exports.uploadFile = (req, res) => {
  let file = req.file
  let body = req.body
- let dataId = req.headers.cookie.split(";")[2].split("=")[1]
+ let dataId = req.headers.cookie.match(/(user_dataid)(=).+?(?=;)/g)[0].split("=")[1]
  let path = file.path.match(/(\\public)(.*)/g)[0]
  let time = moment().format("YYYY-MM-DD HH:mm:ss")
  let memo = {
