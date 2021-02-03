@@ -66,7 +66,6 @@ module.exports = {
      return (parseInt(f) == a || parseInt(f) == b)
     })
    }
-   return false
   },[]).flat(1).filter(g => g).join()
  },
  relation: function(objs,contact,depart) {

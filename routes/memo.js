@@ -276,8 +276,8 @@ async function listMemo(req, res) {
  if (typeof objs == "object") {
   objs = core.classAssign(objs, dataid)
   objs = core.relation(objs, contact, depart)
-  parms.objs = objs
  }
+ parms.objs = objs
  res.render('memolist', parms)
 }
 
