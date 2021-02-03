@@ -24,26 +24,30 @@ module.exports = {
       } else if (item.memo_admin == id) {
        item.setClass = del
        return item
+      } else {
+       return item
       }
-      break
      case 2:
       if (item.memo_admin == id) {
        item.setClass = edit
        return item
+      } else {
+       return item
       }
-      break
      case 3:
       if (item.memo_approver == id) {
        item.setClass = approve
        return item
+      } else {
+       return item
       }
-      break
      case 4:
       if (item.memo_admin == id) {
        item.setClass = edit
        return item
+      } else {
+       return item
       }
-      break
      default:
       item.setClass = ""
       return item
