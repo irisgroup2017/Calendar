@@ -7,7 +7,7 @@ $.ajax({
   leaveExcept = parseInt(data)
  }
 })
-var vacation = moment().add(leaveExcept,'days').subtract(7,'hours').valueOf()
+var vacation = moment().add(leaveExcept, 'days').subtract(7, 'hours').valueOf()
 
 function checkfile(sender) {
  var validExts = new Array(".pdf", ".jpg")
@@ -61,7 +61,7 @@ $(document).on("click", "#toggle-vacation", function () {
  } else {
   $(this).removeClass('check')
  }
- vacation = moment().add(leaveExcept,'days').subtract(7,'hours').valueOf()
+ vacation = moment().add(leaveExcept, 'days').subtract(7, 'hours').valueOf()
 })
 
 $(document).on("click", ".viewattach", function () {
@@ -260,21 +260,21 @@ jQuery(function ($) {
    sessionStorage.setItem('date', thisdate)
   },
   viewRender: function (view, element) {
-   let dateSend = function (type,time) {
+   let dateSend = function (type, time) {
     let ftime = new Date(time)
     switch (type) {
      case 'basic':
-      return moment(view.end._i).subtract(1,'years').valueOf()
+      return moment(view.end._i).subtract(1, 'years').valueOf()
      case 'month':
       if (ftime.getMonth() == 0) {
-       let lastDate = moment(view.end._i).subtract(1,'months').daysInMonth()
-       return moment(view.end._i).subtract(1,'months').set('date',lastDate).valueOf()
+       let lastDate = moment(view.end._i).subtract(1, 'months').daysInMonth()
+       return moment(view.end._i).subtract(1, 'months').set('date', lastDate).valueOf()
       }
-     default:
-      return time
+      default:
+       return time
     }
    }
-   let endtime = dateSend(view.type,view.end._i) 
+   let endtime = dateSend(view.type, view.end._i)
    if (sessionStorage.attach) {
     $.ajax({
      url: '/proc',
@@ -489,7 +489,7 @@ jQuery(function ($) {
           <div class="row align-items-center">\
            <label class="col-sm-2 col-form-label">วันที่</label>\
            <div class="col-sm-10">\
-            <input type="date" id="dateModal" data-date="'+moment(date).format("DD MMM YYYY")+'" data-date-format="DD MMM YYYY" value="'+moment(date).format("YYYY-MM-DD")+'">\
+            <input type="date" id="dateModal" data-date="' + moment(date).format("DD MMM YYYY") + '" data-date-format="DD MMM BBBB" value="' + moment(date).format("YYYY-MM-DD") + '">\
            </div>\
           </div>\
           <hr/>\
@@ -569,31 +569,31 @@ jQuery(function ($) {
    modalAddDay = $(modalAddDay).appendTo('body')
 
    modalAddDay.on('show.bs.modal', function (e) {
-    modalAddDay.find('#timepicker1').prop('disabled',true)
-    modalAddDay.find('#timepicker2').prop('disabled',true)
-    modalAddDay.find('#place1').prop('disabled',true)
-    modalAddDay.find('#place2').prop('disabled',true)
+    modalAddDay.find('#timepicker1').prop('disabled', true)
+    modalAddDay.find('#timepicker2').prop('disabled', true)
+    modalAddDay.find('#place1').prop('disabled', true)
+    modalAddDay.find('#place2').prop('disabled', true)
    })
-   modalAddDay.on('click','#customCheck1',function(){
+   modalAddDay.on('click', '#customCheck1', function () {
     let toggle = !$(this).prop("checked")
-    modalAddDay.find('#timepicker1').prop('disabled',toggle)
-    modalAddDay.find('#place1').prop('disabled',toggle)
+    modalAddDay.find('#timepicker1').prop('disabled', toggle)
+    modalAddDay.find('#place1').prop('disabled', toggle)
    })
-   modalAddDay.on('click','#customCheck2',function(){
+   modalAddDay.on('click', '#customCheck2', function () {
     let toggle = !$(this).prop("checked")
-    modalAddDay.find('#timepicker2').prop('disabled',toggle)
-    modalAddDay.find('#place2').prop('disabled',toggle)
+    modalAddDay.find('#timepicker2').prop('disabled', toggle)
+    modalAddDay.find('#place2').prop('disabled', toggle)
    })
-   modalAddDay.on('change','#dateModal',function(){
-     this.setAttribute("data-date",moment(this.value, "YYYY-MM-DD").format(this.getAttribute("data-date-format")))
-    }).trigger("change")
+   modalAddDay.on('change', '#dateModal', function () {
+    this.setAttribute("data-date", moment(this.value).format(this.getAttribute("data-date-format")))
+   }).trigger("change")
    $('#timepicker1').chungTimePicker({
     viewType: 0
    })
    $('#timepicker2').chungTimePicker({
     viewType: 0
    })
-   modalAddDay.on('click','#saveExtraDate',function() {
+   modalAddDay.on('click', '#saveExtraDate', function () {
     let date = modalAddDay.find('#dateModal').val()
     let type = modalAddDay.find('input[name=optradio]:checked').val()
     let sChk = modalAddDay.find('#customCheck1').prop("checked")
@@ -627,17 +627,17 @@ jQuery(function ($) {
        ioComment: comment,
        ioStatus: 1
       },
-      success: function(data) {
+      success: function (data) {
        //console.log(data)
       }
      })
     }
    })
 
-   $('#extraModal').on('click','#cancelExtraDate',function() {
+   $('#extraModal').on('click', '#cancelExtraDate', function () {
     $('#extraModal').modal("hide")
    })
-   
+
    $('#extraModal').modal('show').on('hidden.bs.modal', function () {
     this.remove()
    })

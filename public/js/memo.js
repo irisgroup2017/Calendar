@@ -547,12 +547,11 @@ $(function($) {
   $(list).each((index,item) => {
    let source = returnDiv(item)
    let key = replaceKey($(item).attr('id'))
+   if (key == "memoFile") {
+    data.memoPath = ($("#modal-file").find('.btn--corners a')[0]).dataset.path.split("\\").slice(0,-1).join("\\") +"\\"
+   }
    data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : source)
   })
-  //if (data.memoFile.length > 0) {
-   //data.memoFile[0].match(/.*[\/\\]/).toString()
-   //data.memoFile.map((i) => i.replace(/.*[\/\\]/,"")).toString()
-  //}
   data.doc = doc
   data.memoContent = content
   data.memoAdmin = admin.id
@@ -591,7 +590,6 @@ $(function($) {
   switch(id) {
    case "modal-cc": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
    case "modal-date": return $(item).text()
-   case "modal-path": return ($(item).find('.btn--corners a').map((i,e) => $(e).data("path")).get()).toString()
    case "modal-file": return ($(item).find('.btn--corners a').map((i,e) => $(e).text()).get()).toString()
    case "modal-from": return ($(item).find('.target-select').map((i,e) => $(e).data("id")).get()).toString()
    case "modal-no": return $(item).text()

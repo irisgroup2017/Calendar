@@ -273,9 +273,11 @@ async function listMemo(req, res) {
  let departid = contact[dataid].level
  parms.depart = depart[departid].depart
  let objs = memo.filter(check => core.persist(dataid, departid, [check.memo_from, check.memo_to, check.memo_cc]))
- objs = core.classAssign(objs, dataid)
- objs = core.relation(objs, contact, depart)
- parms.objs = objs
+ if (typeof objs == "object") {
+  objs = core.classAssign(objs, dataid)
+  objs = core.relation(objs, contact, depart)
+  parms.objs = objs
+ }
  res.render('memolist', parms)
 }
 
