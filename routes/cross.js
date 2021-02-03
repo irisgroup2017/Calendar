@@ -10,7 +10,7 @@ router.get('/',async function(req,res) {
  var option = {
   baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' +param.path,
   method: param.method,
-  data: (param.option == 'getcode' ? req.cookies : param.option)
+  data: param.option
  }
  const request = await axios(option)
  res.json(request.data)

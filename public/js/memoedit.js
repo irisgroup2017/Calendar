@@ -387,7 +387,7 @@ $(function ($) {
      clicked = false
      saveDiv()
     }
-    clicked = true
+    setTimeout(() => clicked = true,1000)
    })
 
    $(document).on('click', '.print-button', function () {
@@ -396,7 +396,7 @@ $(function ($) {
      saveDiv()
      printDiv()
     }
-    clicked = true
+    setTimeout(() => clicked = true,1000)
    })
 
    $("#editorModal").animatedModal({
@@ -572,7 +572,10 @@ $(function ($) {
     option: data
    },
    success: function (data) {
+    let documents = data.memoCode
     sessionStorage.removeItem('attachm')
+    $('.close-editorModal').click()
+    alert("บันทึกข้อมูลแล้ว เอกสารเลขที่: "+ documents)
    }
   })
  }

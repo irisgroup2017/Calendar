@@ -100,9 +100,7 @@ $(function($) {
    option: 'getcode'
   },
   success: function (data) {
-   let doccount = data[0].memo_counts[0].count
-   let count = (doccount == 0 ? 1 : doccount+1).toString()
-   count = "0".repeat(4-count.length) + count
+   count = "????"
    let depart = data[0].memo_counts[0].depart_row.departShort
    let departId = data[0].memo_counts[0].depart_row.ID
    let memoyear = data[0].memo_counts[0].year
@@ -394,7 +392,8 @@ $(function($) {
      clicked = false
      saveDiv()
     }
-    clicked = true
+    setTimeout(() => clicked = true,1000)
+    
    })
 
    $(document).on('click','.print-button',function() {
@@ -403,7 +402,7 @@ $(function($) {
      saveDiv()
      printDiv()
     }
-    clicked = true
+    setTimeout(() => clicked = true,1000)
    })
 
    $("#editorModal").animatedModal({
@@ -547,8 +546,10 @@ $(function($) {
   $(list).each((index,item) => {
    let source = returnDiv(item)
    let key = replaceKey($(item).attr('id'))
-   if (key == "memoFile") {
+   if (key == "memoFile" && source) {
     data.memoPath = ($("#modal-file").find('.btn--corners a')[0]).dataset.path.split("\\").slice(0,-1).join("\\") +"\\"
+   } else {
+    data.memoPath = ""
    }
    data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : source)
   })
@@ -577,7 +578,14 @@ $(function($) {
     option: data
    },
    success: function(data) {
+    let documents = data.memoCode
+    let count = parseInt(data.memoCode.split("-").pop())
+    let depart = data.depart
+    $('#memo-no').data({ docid: documents, count: count, depart: depart }).val(documents)
+    $('#modal-no').data({ docid: documents, count: count, depart: depart }).val(documents)
     sessionStorage.removeItem('attachm')
+    $('.close-editorModal').click()
+    alert("บันทึกข้อมูลแล้ว เอกสารเลขที่: "+ documents)
    },
    error: function(e) {
     $.alert(e)
@@ -613,11 +621,12 @@ $(function($) {
 
  function printDiv() {
   printElement = $('.modal-memo')
-  var mywindow = window.open('', 'PRINT');
+  var mywindow = window.open('preview', 'PRINT');
   var cssList = ['../public/css/ace.min.css','../public/css/memo.css','../public/css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
   var loadCount = cssList.length
  
-  mywindow.document.write('<html><head><title>' + document.title  + ' test</title>');
+  mywindow.document.write('<meta http-equiv="Cache-Control" content="no-store"/><meta http-equiv="Pragma" content="no-cache"/>\
+  \<html><head><title>' + document.title  + ' test</title>');
   for (css in cssList) {
    var link = mywindow.document.createElement('link');
    link.setAttribute("rel", "stylesheet");
