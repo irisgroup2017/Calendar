@@ -518,37 +518,37 @@ jQuery(function ($) {
     console.log(line)
     switch (line.status) {
      case 0:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ยกเลิกเอกสาร</p></div>')
+      code.push('<div class="timeline-item doc-cancel" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ยกเลิกเอกสาร</p></div>')
       break
      case 1:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>สร้างเอกสาร</p></div>')
+      code.push('<div class="timeline-item doc-create" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>สร้างเอกสาร</p></div>')
       break
      case 2:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ผู้ตรวจสอบส่งกลับเอกสารเพื่อแก้ไข</p></div>')
+      code.push('<div class="timeline-item doc-return-c" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ผู้ตรวจสอบส่งกลับเอกสารเพื่อแก้ไข</p></div>')
       break
      case 3:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ยืนยันการตรวจสอบเอกสาร</p></div>')
+      code.push('<div class="timeline-item doc-check" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ยืนยันการตรวจสอบเอกสาร</p></div>')
       break
      case 4:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ผู้อนุมัติส่งกลับเอกสารเพื่อแก้ไข</p></div>')
+      code.push('<div class="timeline-item doc-return-a" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ผู้อนุมัติส่งกลับเอกสารเพื่อแก้ไข</p></div>')
       break
      case 5:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>อนุมัติเอกสาร</p></div>')
+      code.push('<div class="timeline-item doc-approve" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>อนุมัติเอกสาร</p></div>')
       break
      case 6:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ไม่อนุมัติเอกสาร</p></div>')
+      code.push('<div class="timeline-item doc-reject" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>ไม่อนุมัติเอกสาร</p></div>')
       break
      case 7:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>เปิดดูเอกสาร</p></div>')
+      code.push('<div class="timeline-item doc-read" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>เปิดดูเอกสาร</p></div>')
       break
      case 8:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>' + line.comment + '</p></div>')
+      code.push('<div class="timeline-item doc-comment" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>' + line.comment + '</p></div>')
       break
      case 9:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แก้ไขเอกสาร</p></div>')
+      code.push('<div class="timeline-item doc-edit" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แก้ไขเอกสาร</p></div>')
       break
      case 10:
-      code.push('<div class="timeline-item" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แนบไฟล์เอกสาร <i class="fa fa-paperclip modal-attach-file" title="'+line.originalName+'" data-path="'+line.path+'"> '+line.originalName+'</i></p></div>')
+      code.push('<div class="timeline-item doc-attach" date-is="' + line.timeshow + '"><h1>' + line.user + '</h1><p>แนบไฟล์เอกสาร <i class="fa fa-paperclip modal-attach-file" title="'+line.originalName+'" data-path="'+line.path+'"> '+line.originalName+'</i></p></div>')
       break
     }
    }

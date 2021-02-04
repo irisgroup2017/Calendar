@@ -16,49 +16,50 @@ mixin timeline(timeline)
   for time in date
    case time.status
     when 0
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-cancel(date-is=time.timeshow)
       h1=time.user
       p ยกเลิกเอกสาร
     when 1
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-create(date-is=time.timeshow)
       h1=time.user
       p สร้างเอกสาร
     when 2
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-return-c(date-is=time.timeshow)
       h1=time.user
       p ผู้ตรวจสอบส่งกลับเอกสารเพื่อแก้ไข
     when 3
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-check(date-is=time.timeshow)
       h1=time.user
       p ยืนยันการตรวจสอบเอกสาร
     when 4
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-return-a(date-is=time.timeshow)
       h1=time.user
       p ผู้อนุมัติส่งกลับเอกสารเพื่อแก้ไข
     when 5
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-approve(date-is=time.timeshow)
       h1=time.user
       p อนุมัติเอกสาร
     when 6
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-reject(date-is=time.timeshow)
       h1=time.user
       p ไม่อนุมัติเอกสาร
     when 7
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-read(date-is=time.timeshow)
       h1=time.user
       p เปิดดูเอกสาร
     when 8
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-comment(date-is=time.timeshow)
       h1=time.user
       p=time.comment
     when 9
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-edit(date-is=time.timeshow)
       h1=time.user
       p แก้ไขเอกสาร
     when 10
-     .timeline-item(date-is=time.timeshow)
+     .timeline-item.doc-attach(date-is=time.timeshow)
       h1=time.user
-      p แนบไฟล์เอกสาร (รออัพเดท)
+      p แนบไฟล์เอกสาร
+       i.fa.fa-paperclip.modal-attach-file(title=time.originalName data-path=time.path)=time.originalName
 link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
 +ssrc(['jquery.min.js','moment.min.js','memoview.js','animatemodal.min.js'])
 +scss(['animate.min.css','ace.min.css','bootstrap.min.css','memo.css','timeline.css'])

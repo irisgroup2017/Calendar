@@ -133,10 +133,10 @@ $(function ($) {
   let filelist = JSON.parse(sessionStorage.getItem('attachm'))
   let path
   if (filelist == null) {
-   path = $(item).data('path')
+   path = $(item).data('path') +''+ filename
   } else {
    let match = filelist.find(e => e.originalname == filename)
-   path = match.path
+   path = match.path +''+ filename
    let index = filelist.indexOf(match)
    filelist.splice(index, 1)
   }
@@ -515,14 +515,14 @@ $(function ($) {
     //cache: false,
     success: (data) => {
      let item = sessionStorage.getItem('attachm')
-     item = (item != null ? JSON.parse(item) : new Array())
+     item = (item != "null" ? JSON.parse(item) : new Array())
      let file = {
       destination: data.file.originalname,
       filename: data.file.filename,
       originalname: data.file.originalname,
       path: data.file.path
      }
-     data.file.path = data.file.path.match(/(\\public\\).*/)[0]//.replace(data.file.filename,"")
+     data.file.path = data.file.path.match(/(\\public\\).*/)[0].replace(data.file.filename,"")
      item.push(file)
      $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="' + data.file.path + '">' + data.file.originalname + '</a></div>')
      sessionStorage.setItem('attachm', JSON.stringify(item))
@@ -546,12 +546,13 @@ $(function ($) {
   $(list).each((index, item) => {
    let source = returnDiv(item)
    let key = replaceKey($(item).attr('id'))
+   if (key == "memoFile" && source) {
+    data.memoPath = ($("#modal-file").find('.btn--corners a')[0]).dataset.path.split("\\").slice(0,-1).join("\\") +"\\"
+   } else {
+    data.memoPath = ""
+   }
    data[key] = (key == "memoDate" ? moment(source, 'DD/MM/YYYY').format('YYYY-MM-DD') : source)
   })
-  if (data.memoFile.length > 0) {
-   data.memoPath = data.memoFile[0].match(/.*[\/\\]/).toString()
-   data.memoFile = data.memoFile.map((i) => i.replace(/.*[\/\\]/, "")).toString()
-  }
   data.memoId = doc
   data.memoContent = content
   data.memoAdmin = admin.id
@@ -622,7 +623,7 @@ $(function ($) {
    case "modal-date":
     return $(item).text()
    case "modal-file":
-    return ($(item).find('.btn--corners a').map((i, e) => $(e).data("path")).get())
+    return ($(item).find('.btn--corners a').map((i,e) => $(e).text()).get()).toString()
    case "modal-from":
     return ($(item).find('.target-select').map((i, e) => $(e).data("id")).get()).toString()
    case "modal-no":

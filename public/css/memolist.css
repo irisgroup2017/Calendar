@@ -37,7 +37,7 @@ tr.cancel td:not(.m-status) {
  text-decoration: line-through;
 }
 
-tr.cancel .fa {
+tr.cancel .fa:not(.memo-info) {
  display: none;
 }
 
@@ -56,11 +56,6 @@ tr.approve .approve-memo {
 }
 tr.reject .reject-memo {
  display: inline;
-}
-
-.modal-attach-file {
- color: #0080ff;
- cursor: pointer;
 }
 
 tr[data-status="0"] .m-status {
