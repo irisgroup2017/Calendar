@@ -82,7 +82,7 @@ jQuery(function ($) {
   let table
   var modal = '\
   <div class="modal fade" id="extraModal" >\
-   <div class="modal-dialog">\
+   <div class="modal-dialog modal-lg">\
     <div class="modal-content">\
      <div class="modal-header">\
        <h5 class="modal-title">รายชื่อผู้เปิดอ่านเอกสาร\n<br>' + memoNo + ': ' + memoTopic + '</h5>\
