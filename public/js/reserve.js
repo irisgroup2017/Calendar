@@ -114,7 +114,6 @@ jQuery(function ($) {
    }
   },
   dayClick: function (date, jsEvent, view) {
-   console.log(date)
    var modalAddDay = '\
     <div class="modal fade" id="extraModal" >\
      <div class="modal-dialog">\
@@ -200,11 +199,11 @@ jQuery(function ($) {
                <input type="radio" id="rangeactive" name="optrange" class="custom-control-input" value="1" checked>\
                <label class="custom-control-label" for="rangeactive">ช่วงเวลา</label>\
               </div>\
-              <input type="time" class="col-sm-3 center" id="timepicker1" value="">\
+              <div class="col-sm-3">\
+               <input type="time" class="center" id="timepicker1" value=""/>\
+              </div>\
               <div class="col-sm-1 align-self-center">ถึง</div>\
-               <div class="col-sm-3">\
-                <input type="time" class="center" id="timepicker2" value="">\
-               </div>\
+              <input type="time" class="center" id="timepicker2" value=""/>\
               </div>\
              </div>\
              <div class="custom-control custom-checkbox">\
@@ -238,10 +237,12 @@ jQuery(function ($) {
    }).trigger("change")
 
    $('#timepicker1').chungTimePicker({
-    viewType: 0
+    viewType: 1,
+    rowCount: 7
    })
    $('#timepicker2').chungTimePicker({
-    viewType: 0
+    viewType: 1,
+    rowCount: 7
    })
 
    $('#extraModal').on('click', '#cancelExtraDate', function () {

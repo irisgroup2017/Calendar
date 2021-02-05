@@ -1,0 +1,134 @@
+table caption {  
+ text-align: center;
+ caption-side: top; 
+}
+
+.reserve-timerange {
+ border: 1px rgb(223, 217, 217) solid;
+ box-shadow: 2px 3px 5px rgb(151, 150, 150);
+ width: 80%;
+}
+
+.sect-time {
+ position: relative;
+}
+
+.reserve-rangebody tr:first-child .reserve-car {
+ height: 1px;
+ border-top: rgb(223, 217, 217) 1px ridge;
+ top: 0px;
+ left: 0px;
+}
+
+.sect-time .reserve.name {
+ border-right: rgb(223, 217, 217) 1px ridge;
+ text-align: left;
+ padding-top: 10px;
+ padding-left: 20px !important;
+}
+.reserve-car {
+ border-right: rgb(223, 217, 217) 1px ridge;
+ padding: 10px 0 5px 2vh;
+}
+
+.reserve-rangebody tr:last-child {
+ padding-bottom: 10px;
+ margin-bottom: 10px;
+}
+
+.reserve-timerange .reserve {
+ padding: 0px;
+ text-align: center;
+ font-size: 12px;
+}
+
+.reserve-line {
+ position: relative;
+}
+
+.reserve-time {
+ position: relative;
+}
+
+.reserve-time-first {
+ position: relative;
+ overflow: hidden;
+}
+
+.reserve-time-last {
+ position: relative;
+ overflow: hidden;
+}
+
+.reserve-time-first .timeline-first {
+ position: absolute;
+ display: block;
+ right: 0px;
+ left: 50%;
+ margin: 0;
+ border: 0;
+ height: 6px;
+ top: 50%;
+ background: rgba(0, 0, 0, 0.1);
+ border-radius: 50px 0 0 50px;
+ box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2) inset;
+ z-index: 1;
+}
+
+.reserve-time .timeline-middle {
+ position: absolute;
+ display: block;
+ right: 0px;
+ left: 0px;
+ margin: 0;
+ border: 0;
+ height: 6px;
+ top: 50%;
+ background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2) inset;
+  z-index: 1;
+}
+
+.reserve-time-last .timeline-last {
+ position: absolute;
+ display: block;
+ right: 50%;
+ left: 0px;
+ margin: 0;
+ border: 0;
+ height: 6px;
+ top: 50%;
+ background: rgba(0, 0, 0, 0.1);
+ box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2) inset;
+ border-radius: 0 50px 50px 0;
+ z-index: 1;
+}
+
+.reserve-timeline {
+ position: absolute;
+ display: block;
+ right: 0px;
+ left: 0px;
+ height: 1px;
+ margin: 0;
+ margin-top: 0px;
+ border: 1px;
+ background: #000000;
+ z-index: 1;
+}
+
+.reserve-fulldot {
+ position: absolute;
+ display: block;
+ font-size: 8px;
+ top: 3px;
+ left: 45%;
+}
+
+.reserve-halfdot {
+ position: absolute;
+ display: block;
+ font-size: 3px;
+ top: 5.5px;
+ left: 45%;
+}
