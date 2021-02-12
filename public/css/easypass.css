@@ -1,18 +1,4 @@
-.container {
-    margin: 5% 3%;
-  }
-  @media (min-width: 48em) {
-    .container {
-      margin: 2%;
-    }
-  }
-  @media (min-width: 75em) {
-    .container {
-      margin: 2em auto;
-      max-width: 75em;
-    }
-  }
-  
+
   .responsive-table {
     width: 100%;
     margin-bottom: 1.5em;

@@ -13,6 +13,10 @@ table caption {
  position: relative;
 }
 
+#extraComment {
+ width:auto;
+}
+
 .reserve-rangebody tr:first-child .reserve-car {
  height: 1px;
  border-top: rgb(223, 217, 217) 1px ridge;
@@ -131,4 +135,9 @@ table caption {
  font-size: 3px;
  top: 5.5px;
  left: 45%;
+}
+
+.badge {
+ cursor: pointer;
+ margin:3px;
 }

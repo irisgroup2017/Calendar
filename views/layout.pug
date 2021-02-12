@@ -31,7 +31,8 @@ html
  meta(http-equiv="X-UA-Compatible" , content="IE=edge,chrome=1")
  meta(name="description" , content="with draggable and editable events")
  meta(name="viewport" , content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
- +scss(['bootstrap.min.css','jquery-ui.custom.min.css','fullcalendar.min.css','shine.css','ace-ie.min.css','font-awesome.min.css','layoutmenu.css','ace.min.css','ace-part2.min.css','color.css'])
+ link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
+ +scss(['bootstrap.min.css','jquery-ui.custom.min.css','shine.css','ace-ie.min.css','font-awesome.min.css','layoutmenu.css','color.css'])
  +ssrc(['jquery.min.js','bootstrap.min.js','ace-extra.min.js','classie.js'])
  block script
 
@@ -54,9 +55,10 @@ html
          span='ลงชื่อเข้าใช้'
   .page-content(style="padding-bottom: 15px;")
    block content
-   .footer
-    .footer-inner
-     .footer-content
    //-a(href="#" , id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse")
     //-i.ace-icon.fa.fa-angle-double-up.icon-only.bigger-110
    block footer
+    .space
+    footer.bg-light
+     .container
+      p.text-muted.center.mb-0.py-2 © 2019 IRIS GROUP All rights reserved.

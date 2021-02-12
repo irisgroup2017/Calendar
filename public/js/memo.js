@@ -551,7 +551,7 @@ $(function($) {
    } else {
     data.memoPath = ""
    }
-   data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : source)
+   data[key] = (key == "memoDate" ? moment(source,'DD/MM/YYYY').format('YYYY-MM-DD') : (source ? source : ""))
   })
   data.doc = doc
   data.memoContent = content
@@ -568,6 +568,7 @@ $(function($) {
   } else {
    data.memoStatus = 7
   }
+  console.log(data)
 
   $.ajax({
    url: '/cross',
