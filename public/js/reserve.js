@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
   locale: 'th',
   longPressDelay: 1000,
   nowIndicator: true, // place timeline in day mode
-  now: date, // assign time to calendar
+  //now: moment("2021-02-15 14:00","YYYY-MM-DD HH:mm"), // assign time to calendar
   navLinks: true, // allows navigate to day mode when click number of day
   displayEventEnd: true,
   selectable: true,
@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
    calendar.removeAllEvents()
    let start = moment(view.start).format("YYYY-MM-DD")
    let end = moment(view.end).format("YYYY-MM-DD")
-   console.log(view)
    $.ajax({
     url: '/cross',
     type: "GET",
@@ -35,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
      }
     },
     success: function (data) {
-     console.log(data)
      $.each(data, function (i, item) {
       calendar.addEvent(item)
      })
@@ -46,14 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
    let el = info.el
    let ev = info.event
    let ext = info.event.extendedProps
-   let badge = (ext.place!=null ? ext.place.map(p => '<div class="badge badge-info">'+p+'</div>') : '<div class="badge badge-dark">None</div>')
+   let badge = (ext.place!=null ? ext.place.map(p => '<div class="badge badge-light">'+p+'</div>') : '<div class="badge badge-dark">None</div>')
    var tooltip = '<p>'+ext.userId+'</p>\
      <p><em>'+ext.plate.remark+' '+ext.plate.license+'</em></p>\
      <p>'+ev.title+'</p>\
      <div class="d-flex justify-content-center flex-wrap flex-row">\
      '+(typeof badge == "object" ? badge.join().replace(/,/g,"") : badge)+'\
      </div>'
-     console.log(tooltip)
    $(el).tooltip({
     title: tooltip,
     html: true,
@@ -152,12 +149,12 @@ document.addEventListener('DOMContentLoaded', function() {
              <label class="custom-control-label" for="optradio2">March 745</label>\
             </div>\
             <div class="custom-control custom-radio">\
-             <input type="radio" id="optradio3" name="optradio" class="custom-control-input" value="6841">\
-             <label class="custom-control-label" for="optradio3">Avanza 6841</label>\
-            </div>\
-            <div class="custom-control custom-radio">\
              <input type="radio" id="optradio4" name="optradio" class="custom-control-input" value="3404">\
              <label class="custom-control-label" for="optradio4">VIOS 3404</label>\
+            </div>\
+            <div class="custom-control custom-radio">\
+             <input type="radio" id="optradio3" name="optradio" class="custom-control-input" value="6841">\
+             <label class="custom-control-label" for="optradio3">Avanza 6841</label>\
             </div>\
            </div>\
           </div>\
@@ -295,7 +292,6 @@ document.addEventListener('DOMContentLoaded', function() {
       allday: allday,
       place: site
      }
-     console.log(data)
      $.ajax({                                                                                                                                                                           
       url: '/cross',
       type: 'GET',
@@ -306,9 +302,55 @@ document.addEventListener('DOMContentLoaded', function() {
        option: data
       },
       success: function (data) {
-       console.log(data)
-       alert("บันทึกข้อมูลแล้ว")
-       $('#extraModal').modal("hide")
+       if (data.error) {
+        alert(data.error)
+       } else {
+        let event = data[0]
+        let carId = event.carId
+        let code = event.plate.code
+        let carRange,start,end
+        let carRow = $(".reserve-row[data-carid="+carId+"]")
+        if (event.allDay) {
+         carRange = [2,28]
+        } else {
+         start = moment(event.start).subtract(7,"hours").format("HH:mm").split(":")
+         end = moment(event.end).subtract(7,"hours").format("HH:mm").split(":")
+         start = ((((parseInt(start[0])*60) + parseInt(start[1]))-300)/30)
+         end = ((((parseInt(end[0]*60)) + parseInt(end[1]))-300)/30)
+         carRange = [start,(end > 28 ? 28 : end)]
+        }
+        if (moment().format("YYYY-MM-DD") == event.date) {
+         console.log(moment(date.date).format("YYYY-MM-DD"),event.date)
+         let first = carRange[0]
+         let last = carRange[1]
+         while (first <= last) {
+          let row = carRow.find("td:nth-child("+first+")")
+          let rowClass = row.attr("class")
+          if (rowClass == undefined) {
+           if (first == carRange[0]) {
+            row.addClass("reserve-time-first")
+            row.append('<div class="timeline-first" data-color="'+code+'"></div>')
+           } else if (last == carRange[0]) {
+            row.addClass("reserve-time-last")
+            row.append('<div class="timeline-last" data-color="'+code+'"></div>')
+           } else {
+            row.addClass("reserve-time")
+            row.append('<div class="timeline-middle" data-color="'+code+'"></div>')
+           }
+          } else {
+           console.log(first,last,carRange)
+           console.log(rowClass)
+           row.removeClass(rowClass)
+           row.empty().addClass("reserve-time-both")
+           row.append('<div class="timeline-last" data-color="'+code+'"></div><div class="timeline-first" data-color="'+code+'"></div>')
+          }
+          first++
+         }
+        }
+        calendar.addEvent(event)
+        alert("บันทึกข้อมูลแล้ว")
+        $('#extraModal').modal("hide")
+       }
       }
      })
     }

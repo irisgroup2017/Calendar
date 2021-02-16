@@ -1,3 +1,18 @@
+:root {
+ --text-475: white;
+ --color-475: #08b394;
+ --box-475: rgb(8,179,148,0.2);
+ --text-745: white;
+ --color-745: #2a7568;
+ --box-745: rgb(42,117,104,0.2);
+ --text-6841: white;
+ --color-6841: #000000;
+ --box-6841: rgb(0,0,0,0.2);
+ --text-3404: black;
+ --color-3404: #e0e0e0;
+ --box-3404: rgb(224,224,224,0.2);
+}
+
 table caption {  
  text-align: center;
  caption-side: top; 
@@ -27,17 +42,67 @@ table caption {
 .sect-time .reserve.name {
  border-right: rgb(223, 217, 217) 1px ridge;
  text-align: left;
- padding-top: 10px;
  padding-left: 20px !important;
 }
+
 .reserve-car {
+ position: relative;
  border-right: rgb(223, 217, 217) 1px ridge;
- padding: 10px 0 5px 2vh;
+}
+
+.reserve-car .car-color[data-color="475"] {
+ margin: 0 4px;
+ padding: 0 10px;
+ border-radius: 4px;
+ color: var(--text-475);
+ background: var(--color-475);
+ border: 4px solid var(--box-475);
+}
+.reserve-car .car-color[data-color="745"] {
+ margin: 0 4px;
+ padding: 0 10px;
+ border-radius: 4px;
+ color: var(--text-745);
+ background: var(--color-745);
+ border: 4px solid var(--box-745);
+}
+.reserve-car .car-color[data-color="3404"] {
+ margin: 0 4px;
+ padding: 0 10px;
+ border-radius: 4px;
+ color: var(--text-3404);
+ background: var(--color-3404);
+ border: 4px solid var(--box-3404);
+}
+.reserve-car .car-color[data-color="6841"] {
+ margin: 0 4px;
+ padding: 0 10px;
+ border-radius: 4px;
+ color: var(--text-6841);
+ background: var(--color-6841);
+ border: 4px solid var(--box-6841);
+}
+
+.timeline-first[data-color="475"],.timeline-last[data-color="475"],.timeline-middle[data-color="475"] {
+ background: var(--color-475);
+ box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px var(--box-475) inset;
+}
+.timeline-first[data-color="745"],.timeline-last[data-color="745"],.timeline-middle[data-color="745"] {
+ background: var(--color-745);
+ box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px var(--box-745) inset;
+}
+.timeline-first[data-color="6841"],.timeline-last[data-color="6841"],.timeline-middle[data-color="6841"] {
+ background: var(--color-6841);
+ box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px var(--box-6841) inset;
+}
+.timeline-first[data-color="3404"],.timeline-last[data-color="3404"],.timeline-middle[data-color="3404"] {
+ background: var(--color-3404);
+ box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px var(--box-3404) inset;
 }
 
 .reserve-rangebody tr:last-child {
- padding-bottom: 10px;
- margin-bottom: 10px;
+ border-collapse: separate;
+ border-spacing: 0 0 10px 0;
 }
 
 .reserve-timerange .reserve {
@@ -48,19 +113,29 @@ table caption {
 
 .reserve-line {
  position: relative;
+ min-width: 10px;
 }
 
 .reserve-time {
  position: relative;
+ min-width: 10px;
 }
 
 .reserve-time-first {
  position: relative;
+ min-width: 10px;
  overflow: hidden;
 }
 
 .reserve-time-last {
  position: relative;
+ min-width: 10px;
+ overflow: hidden;
+}
+
+.reserve-time-both {
+ position: relative;
+ min-width: 10px;
  overflow: hidden;
 }
 
@@ -72,10 +147,7 @@ table caption {
  margin: 0;
  border: 0;
  height: 6px;
- top: 50%;
- background: rgba(0, 0, 0, 0.1);
  border-radius: 50px 0 0 50px;
- box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2) inset;
  z-index: 1;
 }
 
@@ -87,10 +159,7 @@ table caption {
  margin: 0;
  border: 0;
  height: 6px;
- top: 50%;
- background: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2) inset;
-  z-index: 1;
+ z-index: 1;
 }
 
 .reserve-time-last .timeline-last {
@@ -101,9 +170,30 @@ table caption {
  margin: 0;
  border: 0;
  height: 6px;
- top: 50%;
- background: rgba(0, 0, 0, 0.1);
- box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2) inset;
+ border-radius: 0 50px 50px 0;
+ z-index: 1;
+}
+
+.reserve-time-both .timeline-first {
+ position: absolute;
+ display: block;
+ right: 0px;
+ left: 52%;
+ margin: 0;
+ border: 0;
+ height: 6px;
+ border-radius: 50px 0 0 50px;
+ z-index: 1;
+}
+
+.reserve-time-both .timeline-last {
+ position: absolute;
+ display: block;
+ right: 52%;
+ left: 0px;
+ margin: 0;
+ border: 0;
+ height: 6px;
  border-radius: 0 50px 50px 0;
  z-index: 1;
 }
@@ -125,7 +215,7 @@ table caption {
  position: absolute;
  display: block;
  font-size: 8px;
- top: 3px;
+ top: -2px;
  left: 45%;
 }
 
@@ -133,7 +223,7 @@ table caption {
  position: absolute;
  display: block;
  font-size: 3px;
- top: 5.5px;
+ top: 0;
  left: 45%;
 }
 

@@ -16,6 +16,9 @@ router.get('/', async function(req, res) {
   let data = {
    date: today
   }
+  let query = "SELECT * FROM reserve_car RC LEFT JOIN licenseplate_data LD ON RC.license = LD.license LEFT JOIN easypass_data ED on LD.unixid = ED.unixid"
+  let easypass = await con.q(query)
+  easypass = easypass.reduce((acc,it) => (acc[it.code] = it.amount,acc),{})
   let reserve = await api("get",'/reserve/gettoday',data)
   let car = {}
   reserve = reserve.reduce((acc,it) => {
@@ -33,7 +36,7 @@ router.get('/', async function(req, res) {
   },{})
   parms.car = car
   parms.reserve = reserve
-  console.log(reserve)
+  parms.easypass = easypass
   res.render('reserve',parms)
  } else {
   res.redirect("/")
