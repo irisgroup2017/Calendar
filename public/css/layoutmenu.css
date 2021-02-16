@@ -368,6 +368,7 @@ footer{
 }
 
 .menu-item:hover>a {
+ color: white;
  text-decoration: none;
 }
 
