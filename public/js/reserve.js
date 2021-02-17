@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
  let date = new Date()
  var calendarEl = document.getElementById('calendar')
- var calendar = new FullCalendar.Calendar(calendarEl,{
+ var calendar = new FullCalendar.Calendar(calendarEl, {
   timeZone: 'Asia/Thai',
   headerToolbar: {
    left: 'prevYear,prev,next,nextYear today',
@@ -40,16 +40,104 @@ document.addEventListener('DOMContentLoaded', function() {
     }
    })
   },
-  eventMouseEnter: function(info) {
+  eventClick: function (info) {
+   let modal
+   let event = info.event
+   let ext = event.extendedProps
+   let start = moment(event.start).subtract(7, 'h')
+   let end = moment(event.end).subtract(7, 'h') || ""
+   let day = start.locale("th").format("วันddddที่ D MMMM")
+   let carres = (event.allDay ? day + ": ทั้งวัน" : day + ": " + start.locale("th").format("HH:mm") + " - " + moment(end).format("HH:mm"))
+   if (info.event.extendedProps.userId == $("#username")[0].outerText) {
+    modal = '\
+    <div class="modal fade" id="extraModal" data-id="' + event.id + '">\
+     <div class="modal-dialog modal-sm">\
+      <div class="modal-content">\
+       <div class="modal-header">\
+         <h5 class="modal-title">ยกเลิกการจองรถ</h5>\
+         <button type="button" class="justify-content-end" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+       </div>\
+       <div class="modal-body">\
+        <p class="center">' + ext.plate.remark + ' ' + ext.plate.license + '</p>\
+        <p class="center">' + carres + '</p>\
+       </div>\
+       <div class="modal-footer">\
+         <button type="submit" id="submitDelete" class="btn btn-success btn-sm mr-1">ยืนยัน</button>\
+         <button type="button" id="cancelDelete" class="btn btn-danger btn-sm">ย้อนกลับ</button>\
+       </div>\
+      </div>\
+     </div>\
+    </div>\
+    '
+   }
+   /*else {
+      modal = '\
+      <div class="modal fade" id="extraModal" >\
+       <div class="modal-dialog modal-sm">\
+        <div class="modal-content">\
+         <div class="modal-header">\
+           <h5 class="modal-title"></h5>\
+           <button type="button" class="justify-content-end" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+         </div>\
+         <div class="modal-body">\
+          \
+         </div>\
+         <div class="modal-footer">\
+           <button type="submit" id="submitDelete" class="btn btn-success btn-sm mr-1">บันทึก</button>\
+           <button type="button" id="cancelDelete" class="btn btn-danger btn-sm">ยกเลิก</button>\
+         </div>\
+        </div>\
+       </div>\
+      </div>\
+      '
+     }*/
+   modal = $(modal).appendTo('body')
+   modal.on('show.bs.modal', function (e) {})
+   modal.on('click', '#submitDelete', function () {
+    let timeend = (event.end ? moment(event.end).subtract(7,'h') : moment(event.start).add(1,'days').subtract(7,'h'))
+    let timenow = moment()
+    let duration = timeend.diff(timenow)
+    if (duration > 0) {
+     id = modal.data("id")
+     $.ajax({
+      url: '/cross',
+      type: "get",
+      async: false,
+      data: {
+       path: "/reserve/" + id,
+       method: "DELETE",
+       option: {}
+      },
+      success: function (data) {
+       if (data.id) {
+        event.remove()
+       }
+       modal.modal("hide")
+       alert(data.message)
+      }
+     })
+    } else {
+     alert("ไม่สามารถลบข้อมูลการจองเก่าที่ผ่านมาแล้วได้")
+     modal.modal("hide")
+    }
+   })
+   modal.on('click', '#cancelDelete', function () {
+    modal.modal("hide")
+   })
+   modal.modal('show').on('hidden.bs.modal', function () {
+    this.remove()
+   })
+  },
+  eventMouseEnter: function (info) {
    let el = info.el
    let ev = info.event
    let ext = info.event.extendedProps
-   let badge = (ext.place!=null ? ext.place.map(p => '<div class="badge badge-light">'+p+'</div>') : '<div class="badge badge-dark">None</div>')
-   var tooltip = '<p>'+ext.userId+'</p>\
-     <p><em>'+ext.plate.remark+' '+ext.plate.license+'</em></p>\
-     <p>'+ev.title+'</p>\
+   let badge = (ext.place != null ? ext.place.map(p => '<div class="badge badge-light">' + p + '</div>') : '<div class="badge badge-dark">None</div>')
+   var tooltip = '<p>' + ext.userId + '</p>\
+     <p><em>' + ext.plate.remark + ' ' + ext.plate.license + '</em></p>\
+     <p>' + ev.title + '</p>\
      <div class="d-flex justify-content-center flex-wrap flex-row">\
-     '+(typeof badge == "object" ? badge.join().replace(/,/g,"") : badge)+'\
+     ' + (typeof badge == "object" ? badge.join().replace(/,/g, "") : badge) + '\
      </div>'
    $(el).tooltip({
     title: tooltip,
@@ -57,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
     placement: 'auto',
     trigger: 'hover',
     container: 'body'
-  })
+   })
    //$(el).addClass("tooltipextra").prepend(tooltip)
   },
   eventDidMount: function (argu) {
@@ -65,56 +153,56 @@ document.addEventListener('DOMContentLoaded', function() {
    let el = argu.el
    if (type == 0) {
     if ($(el).is(".fc-daygrid-block-event")) {
-     $(el).css('background-color','#08b394')
-    } else if ($(el).is(".fc-v-event")) { 
-     $(el).css('background-color','#08b394')
+     $(el).css('background-color', '#08b394')
+    } else if ($(el).is(".fc-v-event")) {
+     $(el).css('background-color', '#08b394')
     }
 
     if ($(el).is(".fc-daygrid-dot-event")) {
-     $(el).find(".fc-daygrid-event-dot").css('border','4px solid #08b394')
+     $(el).find(".fc-daygrid-event-dot").css('border', '4px solid #08b394')
     } else if ($(el).is(".fc-list-event")) {
-     $(el).find(".fc-list-event-dot").css('border','4px solid #08b394')
+     $(el).find(".fc-list-event-dot").css('border', '4px solid #08b394')
     }
    }
    if (type == 1) {
     if ($(el).is(".fc-daygrid-block-event")) {
-     $(el).css('background-color','#2a7568')
-    } else if ($(el).is(".fc-v-event")) { 
-     $(el).css('background-color','#2a7568')
+     $(el).css('background-color', '#2a7568')
+    } else if ($(el).is(".fc-v-event")) {
+     $(el).css('background-color', '#2a7568')
     }
 
     if ($(el).is(".fc-daygrid-dot-event")) {
-     $(el).find(".fc-daygrid-event-dot").css('border','4px solid #2a7568')
+     $(el).find(".fc-daygrid-event-dot").css('border', '4px solid #2a7568')
     } else if ($(el).is(".fc-list-event")) {
-     $(el).find(".fc-list-event-dot").css('border','4px solid #2a7568')
+     $(el).find(".fc-list-event-dot").css('border', '4px solid #2a7568')
     }
    }
    if (type == 2) {
     if ($(el).is(".fc-daygrid-block-event")) {
-     $(el).find(".fc-event-main").css('color','#000000')
-     $(el).css('background-color','#e0e0e0')
+     $(el).find(".fc-event-main").css('color', '#000000')
+     $(el).css('background-color', '#e0e0e0')
     } else if ($(el).is(".fc-v-event")) {
-     $(el).find(".fc-event-main").css('color','#000000')
-     $(el).css('background-color','#e0e0e0')
+     $(el).find(".fc-event-main").css('color', '#000000')
+     $(el).css('background-color', '#e0e0e0')
     }
 
     if ($(el).is(".fc-daygrid-dot-event")) {
-     $(el).find(".fc-daygrid-event-dot").css('border','4px solid #e0e0e0')
+     $(el).find(".fc-daygrid-event-dot").css('border', '4px solid #e0e0e0')
     } else if ($(el).is(".fc-list-event")) {
-     $(el).find(".fc-list-event-dot").css('border','4px solid #e0e0e0')
+     $(el).find(".fc-list-event-dot").css('border', '4px solid #e0e0e0')
     }
    }
    if (type == 3) {
     if ($(el).is(".fc-daygrid-block-event")) {
-     $(el).css('background-color','#000000')
+     $(el).css('background-color', '#000000')
     } else if ($(el).is(".fc-v-event")) {
-     $(el).css('background-color','#000000')
+     $(el).css('background-color', '#000000')
     }
 
     if ($(el).is(".fc-daygrid-dot-event")) {
-     $(el).find(".fc-daygrid-event-dot").css('border','4px solid #000000')
+     $(el).find(".fc-daygrid-event-dot").css('border', '4px solid #000000')
     } else if ($(el).is(".fc-list-event")) {
-     $(el).find(".fc-list-event-dot").css('border','4px solid #000000')
+     $(el).find(".fc-list-event-dot").css('border', '4px solid #000000')
     }
    }
   },
@@ -133,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="row align-items-center">\
            <label class="col-sm-2 col-form-label">วันที่</label>\
            <div class="col-sm-10">\
-            <input type="date" id="dateModal" data-date="' + moment(date.date).format("DD-MM-YYYY") + '" data-date-format="DD-MM-YYYY" value="'+ moment(date.date).format("YYYY-MM-DD") +'">\
+            <input type="date" id="dateModal" data-date="' + moment(date.date).format("DD-MM-YYYY") + '" data-date-format="DD-MM-YYYY" value="' + moment(date.date).format("YYYY-MM-DD") + '">\
            </div>\
           </div>\
           <hr/>\
@@ -233,8 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>'
 
    modalAddDay = $(modalAddDay).appendTo('body')
-   modalAddDay.on('show.bs.modal', function (e) {
-   })
+   modalAddDay.on('show.bs.modal', function (e) {})
    modalAddDay.on('change', '#dateModal', function () {
     this.setAttribute("data-date", moment(this.value, "YYYY-MM-DD").format(this.getAttribute("data-date-format")))
    }).trigger("change")
@@ -263,18 +350,27 @@ document.addEventListener('DOMContentLoaded', function() {
     let site = []
     let allday = ($("#rangeinactive").is(':checked') ? 1 : 0)
     let text = $("#extraComment").val()
-    let sms="",stime,etime
-    $("input[name=droppoint]:checked").each(function() {
+    let sms = "",
+     stime, etime
+    $("input[name=droppoint]:checked").each(function () {
      site.push($(this).val())
     })
     if (!allday) {
      stime = $("#timepicker1").val()
      etime = $("#timepicker2").val()
     }
-    if (site.length == 0) { sms += "\nกรุณาเลือกโครงการที่จะเข้า" }
-    if (!text) { sms += "\nกรุณาใส่่รายละเอียดการใช้รถ" }
-    if (stime == "") { sms += "\nกรุณาเลือกเวลาจอง" }
-    if (etime == "") { sms += "\nกรุณาเลือกเวลากลับโดยประมาณ" }
+    if (site.length == 0) {
+     sms += "\nกรุณาเลือกโครงการที่จะเข้า"
+    }
+    if (!text) {
+     sms += "\nกรุณาใส่่รายละเอียดการใช้รถ"
+    }
+    if (stime == "") {
+     sms += "\nกรุณาเลือกเวลาจอง"
+    }
+    if (etime == "") {
+     sms += "\nกรุณาเลือกเวลากลับโดยประมาณ"
+    }
     if (etime != "" && stime != "") {
      if ($("#timepicker2")[0].valueAsNumber < $("#timepicker1")[0].valueAsNumber) {
       sms += "\nกรุณาเลือกช่วงเวลาให้ถูกต้อง"
@@ -292,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
       allday: allday,
       place: site
      }
-     $.ajax({                                                                                                                                                                           
+     $.ajax({
       url: '/cross',
       type: 'GET',
       async: false,
@@ -308,41 +404,38 @@ document.addEventListener('DOMContentLoaded', function() {
         let event = data[0]
         let carId = event.carId
         let code = event.plate.code
-        let carRange,start,end
-        let carRow = $(".reserve-row[data-carid="+carId+"]")
+        let carRange, start, end
+        let carRow = $(".reserve-row[data-carid=" + carId + "]")
         if (event.allDay) {
-         carRange = [2,28]
+         carRange = [2, 28]
         } else {
-         start = moment(event.start).subtract(7,"hours").format("HH:mm").split(":")
-         end = moment(event.end).subtract(7,"hours").format("HH:mm").split(":")
-         start = ((((parseInt(start[0])*60) + parseInt(start[1]))-300)/30)
-         end = ((((parseInt(end[0]*60)) + parseInt(end[1]))-300)/30)
-         carRange = [start,(end > 28 ? 28 : end)]
+         start = moment(event.start).subtract(7, "hours").format("HH:mm").split(":")
+         end = moment(event.end).subtract(7, "hours").format("HH:mm").split(":")
+         start = ((((parseInt(start[0]) * 60) + parseInt(start[1])) - 300) / 30)
+         end = ((((parseInt(end[0] * 60)) + parseInt(end[1])) - 300) / 30)
+         carRange = [start, (end > 28 ? 28 : end)]
         }
         if (moment().format("YYYY-MM-DD") == event.date) {
-         console.log(moment(date.date).format("YYYY-MM-DD"),event.date)
          let first = carRange[0]
          let last = carRange[1]
          while (first <= last) {
-          let row = carRow.find("td:nth-child("+first+")")
+          let row = carRow.find("td:nth-child(" + first + ")")
           let rowClass = row.attr("class")
           if (rowClass == undefined) {
            if (first == carRange[0]) {
             row.addClass("reserve-time-first")
-            row.append('<div class="timeline-first" data-color="'+code+'"></div>')
+            row.append('<div class="timeline-first" data-color="' + code + '"></div>')
            } else if (last == carRange[0]) {
             row.addClass("reserve-time-last")
-            row.append('<div class="timeline-last" data-color="'+code+'"></div>')
+            row.append('<div class="timeline-last" data-color="' + code + '"></div>')
            } else {
             row.addClass("reserve-time")
-            row.append('<div class="timeline-middle" data-color="'+code+'"></div>')
+            row.append('<div class="timeline-middle" data-color="' + code + '"></div>')
            }
           } else {
-           console.log(first,last,carRange)
-           console.log(rowClass)
            row.removeClass(rowClass)
            row.empty().addClass("reserve-time-both")
-           row.append('<div class="timeline-last" data-color="'+code+'"></div><div class="timeline-first" data-color="'+code+'"></div>')
+           row.append('<div class="timeline-last" data-color="' + code + '"></div><div class="timeline-first" data-color="' + code + '"></div>')
           }
           first++
          }

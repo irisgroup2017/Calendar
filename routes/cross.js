@@ -6,7 +6,8 @@ require("dotenv").config()
 
 router.get('/', async function (req, res) {
  if (req.cookies.user_dataid) {
-  let param = req.query
+  let param = req.query || req.body
+  param.option =  param.option || {}
   param.option.cookies = req.cookies
   var option = {
    baseURL: process.env.PROTOCAL + '://' + process.env.WEB_API + ':' + process.env.PORT_API + '' + param.path,
@@ -21,15 +22,20 @@ router.get('/', async function (req, res) {
 })
 
 router.post('/', async function (req, res) {
- let parms = req.body
- parms.option.cookies = req.cookies
- var option = {
-  baseURL: process.env.PROTOCAL + '://' + process.env.WEB_API + ':' + process.env.PORT_API + '' + parms.path,
-  method: 'POST',
-  data: (parms.option == 'getcode' ? req.cookies : parms.option)
+ if (req.cookies.user_dataid) {
+  let parms = req.body
+  parms.option =  parms.option || {}
+  parms.option.cookies = req.cookies
+  var option = {
+   baseURL: process.env.PROTOCAL + '://' + process.env.WEB_API + ':' + process.env.PORT_API + '' + parms.path,
+   method: 'POST',
+   data: (parms.option == 'getcode' ? req.cookies : parms.option)
+  }
+  const request = await axios(option)
+  res.json(request.data)
+ } else {
+  res.redirect('/')
  }
- const request = await axios(option)
- res.json(request.data)
 })
 
 router.post('/sync/:path', async function (req, res) {
