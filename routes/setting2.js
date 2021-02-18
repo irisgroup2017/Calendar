@@ -6,11 +6,7 @@ const ls = require('../bin/larStock')
 const log = require('../bin/logger')
 const larstock = require('../bin/larstock')
 const fs = require("fs")
-function Generator() { }
-Generator.prototype.rand = Math.floor(Math.random() * 26) + Date.now()
-Generator.prototype.getId = function () {
-    return this.rand++
-}
+const api = require("../bin/api")
 
 router.get('/', async function(req, res) {
 	let userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -76,16 +72,14 @@ router.get('/', async function(req, res) {
 
 router.post('/add',async function(req, res) {
  let data = req.body.data
- let userCol = ["dataid","emid","name","lastName","mail","jobPos","depart","mailGroup","userName","password","status"]
- let contactCol = ["dataid","emid","level","line","name","job","nickname","ext","private","work","email"]
- let privacyCol = ["dataid","cdate","emid","userName","mailGroup","boss","operator","swtime","ewtime","wplace"]
- let idGen = new Generator()
- let user,contact,privacy
+ let wuser = ["dataid","emid","name","lastName","mail","jobPos","depart","mailGroup","userName","password","status"]
+ let wcontact = ["dataid","emid","level","line","name","job","nickname","ext","private","work","email"]
+ let wprivacy = ["dataid","cdate","emid","userName","mailGroup","boss","operator","swtime","ewtime","wplace"]
  let boss = data.power
- let dataid = idGen
+ let dataid = Generator()
  let emid = data.emid
  let name = data.name
- let lastName = data.lastName
+ let lastName = data.lastname
  let fullName = name +' '+ lastName
  let nickName = data.nickname
  let ext = data.teli
@@ -97,21 +91,65 @@ router.post('/add',async function(req, res) {
  let depart = data.departt
  let mailGroup = data.boss
  let userName = data.username
- let cdate = data.cdate
+ let cdate = data.startdate
  let password = userName +'1234'
  let status = 1
  let swtime = data.starttime
  let ewtime = data.endtime
  let wplace = data.place
  let level = data.depart
+ let company = data.company
  let line = await con.q('SELECT Max(line) line from contact_data WHERE level = ?',[level])
  if (line[0].line == null) {
   line = 0
 } else {
   line = line[0].line+1
 }
-//con.q(insert)
-res.json(data)
+wuser = {
+ dataId: dataid,
+ userId: emid,
+ userName: name,
+ userLastName: lastName,
+ userMail: mail,
+ userPosition: jobPos,
+ depart: depart,
+ userBossMail: mailGroup,
+ userUserName: userName,
+ userPassword: password,
+ userStatus: status
+}
+wcontact = {
+ dataId: dataid,
+ emid: emid,
+ level: level,
+ line: line,
+ fullname: fullName,
+ position: jobPos,
+ nickname: nickName,
+ ext: ext,
+ privatePhone: private,
+ workPhone: work,
+ email: mail
+}
+wprivacy = {
+ dataId: dataid,
+ startDate: cdate,
+ emid: emid,
+ userName: fullName,
+ bossMail: mailGroup,
+ boss: boss,
+ operator: operator,
+ startTime: swtime,
+ endTime: ewtime,
+ workPlace: wplace,
+ companyId: company
+}
+let result = await api("POST","/cross/addemp",{
+ user: wuser,
+ contact: wcontact,
+ privacy: wprivacy
+})
+res.json(result)
 })
 
 router.post('/get/:id',async function(req,res) {
@@ -152,6 +190,10 @@ function dateThai(date) {
  month = gMonth[date.getMonth()]
  year = date.getFullYear()+543
  return day+ " " +month+ " " +year
+}
+
+function Generator() { 
+ return Math.floor(Math.random() * 26) + Date.now()
 }
 
 module.exports = router

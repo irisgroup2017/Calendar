@@ -1,4 +1,4 @@
-$(document).ready(function(){
+jQuery(function() {
  //initial script
  $("#display-table").DataTable({
   dom: 'Bfrtip',
@@ -7,7 +7,7 @@ $(document).ready(function(){
   searching: true,
   ordering: true,
   orderMulti: true,
-  order: [0,'desc'],
+  order: [1,'asc'],
   fixedHeader: {
       header: true,
       footer: false
@@ -55,6 +55,8 @@ $(document).ready(function(){
        afterClose: function() {
        }
       })
+
+
      }
    },
    {
@@ -123,12 +125,14 @@ $(document).ready(function(){
   $("[id^=add-]").each(function() {
    let id = $(this).attr("id").split("-")[1]
    if (id == "startdate") {
-    data[id] = $('.datepicker').datepicker('getDate').getTime()/1000
+    data[id] = Math.floor($('.datepicker').datepicker('getDate').getTime()/1000)
    } else if (id == "company" || id == "depart" || id == "boss") {
     data[id] = $(this).children("option:selected").val()
     data[id+'t'] = $(this).children("option:selected").text()
    } else if ($(this).hasClass("radio-op") && $(this).is(':checked')) {
     data[$(this).attr('name')] = $(this).val()
+   } else if (["tel","teli","telw"].includes(id)) {
+    data[id] = ($(this).val() ? $(this).val() : "-")
    } else if (!$(this).hasClass("radio-op")) {
     data[id] = $(this).val()
    }
@@ -143,7 +147,19 @@ $(document).ready(function(){
          'data': data
          },
      success: function(data) {
-      $(".close-adderModal").click()
+      let table = $('#display-table').DataTable()
+      let user = data.user
+      table.row.add([
+       user.userId,
+       user.userName,
+       user.userLastName,
+       user.userPosition,
+       user.depart,
+       user.userMail,
+       user.userBossMail
+      ]).node().id = user.dataId
+      table.draw(false)
+      $(".close-adderModal").trigger("click")
      }
    })
   }
