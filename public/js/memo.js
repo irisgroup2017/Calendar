@@ -502,9 +502,13 @@ $(function($) {
   else {
    let form = $('upsiwa')[0]
    let file = $(sender)[0].files[0]
+   let memopath = $('#memo-no').val().split('-')
+   let pathdate = $('#memo-date').val().split('/').join('')
+   memopath = memopath.slice(0,memopath.length-1).join('') +''+ pathdate
    let data = new FormData(form)
-   data.append('file',file)
    data.append('ext',fileExt)
+   data.append('memopath',memopath)
+   data.append('file',file)
    $.ajax({
     url: "/attachment",
     type: 'POST',

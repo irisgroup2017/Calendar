@@ -70,11 +70,31 @@ router.get('/', async function(req, res) {
 	})
 })
 
+router.get('/getlist',async function(req,res) {
+ let data = {}
+ let depart = await con.q('SELECT * FROM depart_row ORDER BY row ASC,ID ASC')
+ var dept = []
+ for (const dep of depart) {
+  dept.push({
+   depid: dep.ID,
+   deptitle: dep.depart.split("(")[0].replace(/\s$/,"")
+  })
+ }
+ let bosslist = await con.q('SELECT privacy_data.userName,user_data.mail FROM privacy_data LEFT JOIN user_data ON privacy_data.dataid = user_data.dataid WHERE user_data.status = 1 AND (privacy_data.boss = 1 OR privacy_data.operator = 3)')
+ var bossl = []
+ for (const boss of bosslist) {
+  bossl.push({
+   bossname: boss.userName,
+   bossmail: boss.mail
+  })
+ }
+ data.departlist = dept
+ data.bosslist = bossl
+ res.send(data)
+})
+
 router.post('/add',async function(req, res) {
  let data = req.body.data
- let wuser = ["dataid","emid","name","lastName","mail","jobPos","depart","mailGroup","userName","password","status"]
- let wcontact = ["dataid","emid","level","line","name","job","nickname","ext","private","work","email"]
- let wprivacy = ["dataid","cdate","emid","userName","mailGroup","boss","operator","swtime","ewtime","wplace"]
  let boss = data.power
  let dataid = Generator()
  let emid = data.emid
@@ -167,11 +187,13 @@ router.post('/get/:id',async function(req,res) {
    nickname: result.nickname,
    depart: result.depart,
    jobPos: result.jobPos,
+   boss: result.boss,
    mail: result.mail,
    workplace: (result.wplace ? "ออฟฟิศใหญ่" : "หน้างาน"),
    swtime: result.swtime.substring(0,5),
    ewtime: result.ewtime.substring(0,5),
-   workphone: (result.work == "-" ? "02-196-1100" +(result.ext ? " ("+ result.ext +")" : "") : result.work),
+   officephone: result.ext,
+   workphone: result.work,
    privatephone: result.private,
    operator: result.operator,
    cdate: dateThai(new Date(result.cdate*1000)),

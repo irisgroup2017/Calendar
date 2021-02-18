@@ -502,9 +502,13 @@ $(function ($) {
   } else {
    let form = $('upsiwa')[0]
    let file = $(sender)[0].files[0]
+   let memopath = $('#memo-no').val().split('-')
+   let pathdate = $('#memo-date').val().split('/').join('')
+   memopath = memopath.slice(0,memopath.length-1).join('') +''+ pathdate
    let data = new FormData(form)
-   data.append('file', file)
-   data.append('ext', fileExt)
+   data.append('ext',fileExt)
+   data.append('memopath',memopath)
+   data.append('file',file)
    $.ajax({
     url: "/attachment",
     type: 'POST',
@@ -515,14 +519,15 @@ $(function ($) {
     //cache: false,
     success: (data) => {
      let item = sessionStorage.getItem('attachm')
-     item = (item != "null" ? JSON.parse(item) : new Array())
+     item = (item ? JSON.parse(item) : new Array())
      let file = {
       destination: data.file.originalname,
       filename: data.file.filename,
       originalname: data.file.originalname,
       path: data.file.path
      }
-     data.file.path = data.file.path.match(/(\\public\\).*/)[0].replace(data.file.filename,"")
+     console.log(item)
+     data.file.path = data.file.path.match(/(\\public\\).*/)[0]//.replace(data.file.filename,"")
      item.push(file)
      $('.memo-span3 > .span-select').append('<div class="btn--corners"><div class="remove-file"></div><a data-path="' + data.file.path + '">' + data.file.originalname + '</a></div>')
      sessionStorage.setItem('attachm', JSON.stringify(item))

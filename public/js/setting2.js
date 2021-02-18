@@ -132,7 +132,7 @@ jQuery(function() {
    } else if ($(this).hasClass("radio-op") && $(this).is(':checked')) {
     data[$(this).attr('name')] = $(this).val()
    } else if (["tel","teli","telw"].includes(id)) {
-    data[id] = ($(this).val() ? $(this).val() : "-")
+    data[id] = ($(this).val() || $(this).val() == 0 ? $(this).val() : "-")
    } else if (!$(this).hasClass("radio-op")) {
     data[id] = $(this).val()
    }
@@ -213,6 +213,57 @@ jQuery(function() {
   })  
  })
  
+ $(document).on('click','.edit-user',function() {
+  let profile = $('[id^=edit-]')
+  let detail
+  $.ajax({
+   url: '/setting2/getlist',
+   type: 'GET',
+   dataType: 'json',
+   async: false,
+   success: function(data) {
+    detail = data
+   }
+  })
+  console.log(detail)
+  profile.each(function(i,v) {
+   let id = $(this).attr('id')
+   let departlist,dploop
+   let bosslist,bloop
+   if (id == 'edit-depart') {
+    let def = $(this)[0].outerText
+    departlist = '<select id="select-edit-depart">'+detail.departlist.map(depart => '<option value="'+depart.depid+'"'+(depart.deptitle==def ? 'selected="selected"' : '')+'>'+depart.deptitle+'</option>')+'</select>'
+    $(this).html(departlist)
+   } else if (id == 'edit-boss') {
+    let def = ($(this)[0].outerText).split(" ").splice(0,2).join(" ")
+    bosslist = '<select id="select-edit-boss">'+detail.bosslist.map(boss => '<option value="'+boss.mail+'"'+(boss.bossname==def ? 'selected="selected"' : '')+'>'+boss.bossname+'</option>')+'</select>'
+    $(this).html(bosslist)
+   } else if (id == 'edit-bossstatus') {
+    let def = $(this)[0].outerText
+    let html = '<select id="select-edit-bossstatus">\
+     <option value="0"'+('พนักงาน'==def ? 'selected="selected"' : '')+'>พนักงาน</option>\
+     <option value="1"'+('หัวหน้า'==def ? 'selected="selected"' : '')+'>หัวหน้า</option>\
+     </select>'
+     $(this).html(html)
+   } else if (id == 'edit-bossstatus') {
+
+   } else if (id == 'edit-sdate') {
+
+   } else if (id == 'edit-wplace') {
+    let def = $(this)[0].outerText
+    let html = '<select id="select-edit-bossstatus">\
+     <option value="0"'+('หน้างาน'==def ? 'selected="selected"' : '')+'>หน้างาน</option>\
+     <option value="1"'+('ออฟฟิศใหญ่'==def ? 'selected="selected"' : '')+'>ออฟฟิศใหญ่</option>\
+     </select>'
+     $(this).html(html)
+   } else if (id == 'edit-retire') {
+
+   } else {
+    $(this).attr('contenteditable','true').addClass('color-edit')
+   }
+  })
+ })
+
  $(document).on("click",".edit-profile", function(){
   let id = $(this).parents('tr').attr('id')
   //init
@@ -223,13 +274,14 @@ jQuery(function() {
    async: false,
    success: function(data) {
     if (data != "N/A") {
-     
+     console.log(data)
      $('#edit-emid').text(data.emid)
      $('#edit-wplace').text(data.workplace)
      $('#edit-stime').text(data.swtime)
      $('#edit-etime').text(data.ewtime)
-     $('#edit-phone').text(data.workphone)
+     $('#edit-phone').text(data.officephone)
      $('#edit-mobile').text(data.privatephone)
+     $('#edit-workphone').text(data.workphone)
      $('#edit-email').text(data.mail)
      $('#edit-name').text(data.name)
      $('#edit-lastname').text(data.lastname)
@@ -238,8 +290,10 @@ jQuery(function() {
      $('#edit-depart').text(data.depart)
      $('#edit-sdate').text(data.cdate)
      $('#edit-boss').text(data.bossname)
+     $('#edit-bossstatus').text((data.boss == 0 ? 'พนักงาน' : 'หัวหน้า'))
      $('#edit-username').text(data.username)
      $('#edit-password').text(data.password) 
+     $('#edit-retire').text((data.reture == 0 ? data.retire : 'ไม่กำหนด')) 
 
      $("#editorModal").animatedModal({
       modalTarget:'editorModal',
