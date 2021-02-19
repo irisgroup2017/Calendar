@@ -45,7 +45,7 @@ block footer
   .close-adderModal
    i.fa.fa-close.fa-3x
   .modal-content.emp-profile
-   .container(style="width:auto;")
+   .container
     h4.center เพิ่มข้อมูลพนักงาน
     .row.profile-inner
      fieldset.row.p-2
@@ -152,7 +152,7 @@ block footer
   .close-editorModal
    i.fa.fa-close.fa-3x
   .modal-content.emp-profile
-   .container
+   .container-lg
     .row
      //.col
       #user-status
@@ -169,47 +169,47 @@ block footer
        h6#edit-job Job Position
        p.profile-depart#edit-depart Department
      .col
-      input.profile-btn.edit-user(name="editProfile" value="Edit Profile")
-      input.profile-btn.del-user(name="deleteProfile" value="Delete Profile")
+      input.profile-btn.edit-user(name="editProfile" value="แก้ไขข้อมูล")
+      input.profile-btn.del-user(name="deleteProfile" value="ลบบัญชี")
     .row
      .col
       .row
        .col-sm-2
-        i.fa.fa-id-card-o
+        i.fa.fa-id-card-o(title="รหัสพนักงาน")
        .col-sm-10
         span#edit-emid Employee ID
       .row
        .col-sm-2
-        i.fa.fa-building-o 
+        i.fa.fa-building-o(title="สถานที่ทำงาน")
        .col-sm-10
         span#edit-wplace สถานที่ทำงาน
       .row
        .col-sm-2
-        i.fa.fa-briefcase
+        i.fa.fa-briefcase(title="ช่วงเวลาทำงาน")
        .col-sm-10
         span#edit-stime 00:00
         span  - 
         span#edit-etime 00:00
       .row
        .col-sm-2
-        i.fa.fa-phone
+        i.fa.fa-phone(title="หมายเลขโทรศัพท์สำนักงาน")
        .col-sm-10
         span 02-196-1100-1 (
         span#edit-phone ext
         span )
       .row
        .col-sm-2
-        i.fa.fa-mobile
+        i.fa.fa-mobile(title="หมายเลขโทรศัพท์ส่วนตัว")
        .col-sm-10 
         span#edit-mobile Phone number
       .row 
        .col-sm-2 
-        i.fa.fa-phone-square
+        i.fa.fa-phone-square(title="หมายเลขโทรศัพท์บริษัท")
        .col-sm-10 
         span#edit-workphone Work Phone number
       .row
        .col-sm-2
-        i.fa.fa-envelope-o
+        i.fa.fa-envelope-o(title="อีเมล")
        .col-sm-10
         span#edit-email Email
      .col
@@ -230,12 +230,12 @@ block footer
         p#edit-boss ชื่อ-สกุล (Email)
       .row
        .col-md-6
-        p username
+        p ชื่อบัญชี
        .col-md-6
         p#edit-username userName
-      .row
+      .row.flex-nowrap
        .col-md-6
-        p password
+        p รหัสผ่าน
        .col-md-6
         p#edit-password Reset Password
       .row
