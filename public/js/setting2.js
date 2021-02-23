@@ -489,8 +489,8 @@ jQuery(function () {
        if (d == 'edit-emid') { row.find('td:nth-child(1)').html(data[d]) }
        if (d == 'edit-name') { row.find('td:nth-child(2)').html(data[d]) }
        if (d == 'edit-lastname') { row.find('td:nth-child(3)').html(data[d]) }
-       if (d == 'edit-job') { row.find('td:nth-child(4)').html(data[d]) }
-       if (d == 'edit-depart') { row.find('td:nth-child(5)').html(data[d]) }
+       if (d == 'edit-job') { row.find('td:nth-child(4)').html(edit[d]) }
+       if (d == 'edit-depart') { row.find('td:nth-child(5)').html(edit[d]) }
        if (d == 'edit-email') { row.find('td:nth-child(6)').html(data[d]) }
        if (d == 'edit-boss') { row.find('td:nth-child(7)').html(data[d]) }
       }

@@ -51,6 +51,7 @@ router.get('/', async function (req, res) {
  }
  parms.departlist = dept
  parms.bosslist = bossl
+ depart = depart.reduce((acc, it) => (acc[it.ID] = it, acc), {})
  sql = ['SELECT * FROM privacy_data WHERE userName = ?', 'SELECT * FROM user_data ORDER BY name ASC']
  con.q(sql, userName)
   .catch(err => {
@@ -68,7 +69,7 @@ router.get('/', async function (req, res) {
      lastName: result[i].lastName,
      mail: result[i].mail,
      jobPos: result[i].jobPos,
-     depart: result[i].depart,
+     depart: ((parseInt(result[i].depart) != NaN && depart[result[i].depart] != undefined) ? depart[result[i].depart].depart : result[i].depart),
      mailGroup: result[i].mailGroup,
      userName: result[i].userName,
      status: result[i].status
@@ -209,6 +210,8 @@ res.send(req.body.id)
 router.post('/get/:id', async function (req, res) {
  let dataid = req.params.id
  let result = (await con.q('SELECT * FROM privacy_data,contact_data,user_data WHERE user_data.dataid = ? AND privacy_data.dataid = ? AND contact_data.dataid = ?', [dataid, dataid, dataid]))[0]
+ let depart = await con.q('SELECT * FROM depart_row')
+ depart = depart.reduce((acc, it) => (acc[it.ID] = it, acc), {})
  if (result) {
   if (result.mailGroup) {
    bossname = await con.q('SELECT name,lastName FROM user_data WHERE mail = ?', [result.mailGroup])
@@ -219,7 +222,7 @@ router.post('/get/:id', async function (req, res) {
    name: result.name,
    lastname: result.lastName,
    nickname: result.nickname,
-   depart: result.depart,
+   depart: ((parseInt(result.depart) != NaN && depart[result.depart] != undefined) ? depart[result.depart].depart : result.depart),
    jobPos: result.jobPos,
    boss: result.boss,
    mail: result.mail,
