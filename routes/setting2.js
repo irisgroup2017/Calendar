@@ -102,6 +102,11 @@ router.get('/getlist', async function (req, res) {
  res.send(data)
 })
 
+router.put('/togglestatus', async function (req, res) {
+ let r = con.q('UPDATE user_data SET status = ? WHERE dataid = ?',[req.body.status,req.body.id])
+ res.send(r)
+})
+
 router.post('/add', async function (req, res) {
  let data = req.body.data
  let boss = data.power
@@ -181,6 +186,26 @@ router.post('/add', async function (req, res) {
  res.json(result)
 })
 
+router.post('/edit', async function (req, res) {
+ let data = req.body
+ let key = classify(data)
+ let block = manageKey(key,data)
+ await api('PUT','/cross/editemp',block)
+ res.json(data)
+})
+
+router.delete('/delete',async function(req,res){
+let dataid = req.body.id
+con.q('DROP TABLE IF EXISTS em'+dataid)
+con.q('DELETE FROM user_data WHERE dataid = ?',[dataid])
+con.q('DELETE FROM privacy_data WHERE dataid = ?',[dataid])
+con.q('DELETE FROM lar_data WHERE dataid = ?',[dataid])
+con.q('DELETE FROM lar_status WHERE dataid = ?',[dataid])
+con.q('DELETE FROM inoutchange_data WHERE dataid = ?',[dataid])
+con.q('DELETE FROM contact_data WHERE dataid = ?',[dataid])
+res.send(req.body.id)
+})
+
 router.post('/get/:id', async function (req, res) {
  let dataid = req.params.id
  let result = (await con.q('SELECT * FROM privacy_data,contact_data,user_data WHERE user_data.dataid = ? AND privacy_data.dataid = ? AND contact_data.dataid = ?', [dataid, dataid, dataid]))[0]
@@ -204,10 +229,11 @@ router.post('/get/:id', async function (req, res) {
    officephone: result.ext,
    workphone: result.work,
    privatephone: result.private,
-   operator: result.operator,
+   operator: operlist(result.operator),
    cdate: moment(result.cdate * 1000).locale('th').format("DD MMMM YYYY"),
    bossname: (result.mailGroup ? bossname + " (" + result.mailGroup + ")" : ""),
    username: result.userName,
+   retire: (result.retire ? moment(result.retire,'YYYY-MM-DD').locale('th').format("DD MMMM YYYY") : ''),
    password: result.password.substring(0, 3) + '*'.repeat(result.password.length - 3)
   }
   res.json(parms)
@@ -215,16 +241,136 @@ router.post('/get/:id', async function (req, res) {
  res.end("N/A")
 })
 
-function dateThai(date) {
- let day, month, year, gMonth = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม']
- day = date.getDate()
- month = gMonth[date.getMonth()]
- year = date.getFullYear() + 543
- return day + " " + month + " " + year
-}
-
 function Generator() {
  return Math.floor(Math.random() * 26) + Date.now()
+}
+
+function operlist(level) {
+ switch (level) {
+  case 0:
+   return 'ยังไม่ได้ตั้งค่า'
+  case 1:
+   return 'ผู้ใช้งาน'
+  case 2:
+   return 'หัวหน้า'
+  case 3:
+   return 'ฝ่ายบุคคล'
+  case 4:
+   return 'ผู้ดูแลระบบ'
+ }
+}
+
+function classify(data) {
+ let user = ('profileId,edit-emid,edit-name,edit-lastname,edit-email,edit-job,edit-depart,edit-boss,edit-username,edit-retire').split(',')
+ let privacy = ('profileId,edit-sdate,edit-emid,edit-name,edit-lastname,edit-boss,edit-bossstatus,edit-operator,edit-stime,edit-etime,edit-wplace').split(',')
+ let contact = ('profileId,edit-emid,edit-name,edit-lastname,edit-job,edit-nickname,edit-phone,edit-mobile,edit-workphone,edit-email').split(',')
+ return {
+  user: Object.keys(data).filter(key => user.includes(key)),
+  privacy: Object.keys(data).filter(key => privacy.includes(key)),
+  contact: Object.keys(data).filter(key => contact.includes(key))
+ }
+}
+
+function manageKey(key,data) {
+ let result = {}
+ if (key.user.length > 1) {
+  let user = ukey(key.user,data)
+  result.user = user
+ }
+ if (key.privacy.length > 1) {
+  let privacy = pkey(key.privacy,data)
+  result.privacy = privacy
+ }
+ if (key.contact.length > 1) {
+  let contact = ckey(key.contact,data)
+  result.contact = contact
+ }
+ return result
+}
+
+function ukey(key,data) {
+ let result = {}
+ key.map(u => {
+  switch (u) {
+   case 'profileId':
+    return result.dataId = data.profileId
+   case 'edit-emid':
+    return result.userId = data['edit-emid']
+   case 'edit-name':
+    return result.userName = data['edit-name']
+   case 'edit-lastname':
+    return result.userLastName = data['edit-lastname']
+   case 'edit-email':
+    return result.userMail = data['edit-email']
+   case 'edit-job':
+    return result.userPosition = data['edit-job']
+   case 'edit-depart':
+    return result.depart = data['edit-depart']
+   case 'edit-boss':
+    return result.userBossMail = data['edit-boss']
+   case 'edit-username':
+    return result.userPassword = data['edit-username']
+   case 'edit-retire':
+    return result.retire = data['edit-retire']
+  }
+ })
+ return result
+}
+
+function pkey(key,data) {
+ let result = {}
+ key.map(p => {
+  switch (p) {
+   case 'profileId':
+    return result.dataId = data.profileId
+   case 'edit-sdate':
+    return result.startDate = data['edit-sdate']
+   case 'edit-emid':
+    return result.emid = data['edit-emid']
+   case 'edit-name':
+    return result.userName = data['edit-name'] +''+ data['edit-lastname']
+   case 'edit-boss':
+    return result.bossMail = data['edit-boss']
+   case 'edit-bossstatus':
+    return result.boss = data['edit-bossstatus']
+   case 'edit-operator':
+    return result.operator = data['edit-operator']
+   case 'edit-stime':
+    return result.startTime = data['edit-stime']
+   case 'edit-etime':
+    return result.endTime = data['edit-etime']
+   case 'edit-wplace':
+    return result.workPlace = data['edit-wplace']
+  }
+ })
+ return result
+}
+
+function ckey(key,data) {
+ let result = {}
+ key.map(c => {
+  switch (c) {
+   case 'profileId':
+    return result.dataId = data.profileId
+   case 'edit-emid':
+    return result.emid = data['edit-emid']
+   case 'edit-name':
+    return result.fullname = data['edit-name'] +''+ data['edit-lastname']
+   case 'edit-job':
+    return result.position = data['edit-job']
+   case 'edit-nickname':
+    return result.nickname = data['edit-nickname']
+   case 'edit-phone':
+    return result.ext = data['edit-phone']
+   case 'edit-mobile':
+    return result.privatePhone = data['edit-mobile']
+   case 'edit-workphone': 
+    return result.workPhone = data['edit-workphone']
+   case 'edit-email':
+    return result.email = data['edit-email']
+  }
+ })
+ return result
 }
 
 module.exports = router

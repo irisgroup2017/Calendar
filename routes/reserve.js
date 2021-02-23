@@ -10,7 +10,7 @@ router.get('/', async function(req, res) {
   parms = {
    user: req.cookies.user_name,
    operator: req.cookies.user_op,
-   title: "แสดงข้อมูลเซลล์ประจำโครงการ"
+   title: "ระบบจองรถ"
   }
   let today = moment().format("YYYY-MM-DD")
   let data = {

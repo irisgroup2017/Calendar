@@ -233,13 +233,14 @@ input.radio-op {
  color: #ff0000
 }
 
-
 .datatable-option i {
- position: absolute;
- left: 18px;
- top: 3px;
+ position: relative;
+ left: 10px;
+ top: 0;
 }
 .datatable-option i + span {
+ position: absolute;
+ left: 10px;
  cursor: pointer;
  visibility: hidden;
 }

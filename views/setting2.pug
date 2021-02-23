@@ -4,7 +4,6 @@ mixin ddl(year)
   option(value=t selected=(parms.thisyear == t ? true : false))=t
 mixin tbl(namel)
  for block in namel
-  //-var user-status = (block.status ? "user-enable" : "user-disable")
   tr(id=block.dataid class=block.status ? "" : "user-disable")
    td=block.emid
    td=block.name
@@ -13,7 +12,7 @@ mixin tbl(namel)
    td=block.depart
    td=block.mail
    td=block.mailGroup
-   td Option
+   td=block.status
 mixin deplist(list)
  for dep in list
   option(value=dep.depid)=dep.deptitle
@@ -151,7 +150,7 @@ block footer
  #editorModal.animated.emp-modal(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
   .close-editorModal
    i.fa.fa-close.fa-3x
-  .modal-content.emp-profile
+  .modal-content.emp-profile.profile-id
    .container-lg
     .row
      //.col
@@ -212,6 +211,16 @@ block footer
         i.fa.fa-envelope-o(title="อีเมล")
        .col-sm-10
         span#edit-email Email
+      .row
+       .col-sm-2
+        i.fa.fa-user-circle-o(title="ชื่อบัญชี")
+       .col-sm-10
+        span#edit-username userName
+      .row
+       .col-sm-2
+         i.fa.fa-key(title="รหัสผ่าน")
+       .col-sm-10
+        span#edit-password Reset Password
      .col
       .row
        .col-md-6
@@ -225,19 +234,14 @@ block footer
         p#edit-bossstatus พนักงาน/หัวหน้า
       .row
        .col-md-6
+        p ระดับการใช้งาน
+       .col-md-6
+        p#edit-operator ระดับการใช้งาน
+      .row
+       .col-md-6
         p ผู้บังคับบัญชา
        .col-md-6
         p#edit-boss ชื่อ-สกุล (Email)
-      .row
-       .col-md-6
-        p ชื่อบัญชี
-       .col-md-6
-        p#edit-username userName
-      .row.flex-nowrap
-       .col-md-6
-        p รหัสผ่าน
-       .col-md-6
-        p#edit-password Reset Password
       .row
        .col-md-6
         p กำหนดวันลาออก

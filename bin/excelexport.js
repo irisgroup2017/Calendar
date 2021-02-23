@@ -59,11 +59,11 @@ async function xlCreate(tstart,tend,res) {
             ws.cell(k,2).number(id).style({numberFormat: '#############'})
             ws.cell(k,3).date(startShow).style({numberFormat: 'dd/mm/yyyy',alignment:{horizontal:'center'}})
             ws.cell(k,4).string(larType)
-            ws.cell(k,5).string(title)  
+            ws.cell(k,5).string(title)
             ws.cell(k,6).string('1 วัน').style({alignment:{horizontal:'center'}})
             ws.cell(k,7).string(approveNote(result[i].approve,result[i].delreq)).style({alignment:{horizontal:'center'}})
             k++
-        } 
+        }
         else {
             //1 ชม 3600 , 1 วัน 86400
             duration = (result[i].end > tend ? tend : result[i].end) - (result[i].start < tstart ? tstart : result[i].start)
