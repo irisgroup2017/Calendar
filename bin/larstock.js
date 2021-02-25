@@ -25,7 +25,7 @@ async function setLar(userName,dataid,state,now) {
     let x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),
     w = y[2]-x[2]
-    let ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
+    let ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,vacatione,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (!ov[0]) {
         if (w < 1) { vap = '000000' }
         else if (w == 1) { vap = '0'+ Math.floor((12-(x[1]+1)/2)) +'0000' }
@@ -55,13 +55,13 @@ async function setLar(userName,dataid,state,now) {
         ovq = ov[0].vacationq
         // 2 Years reset
         //if (w % 2 || depart == "RCM" || depart == "BRI" || y[2] < 2021) {
-         if (ovr) {
+         if (ovr || ovr == 0) {
           ovb = await dhmtonum(ovr.toString())
           if (ovb >= 6) { ovr = '060000' }
           if (state == 'insert') { vap = ovr } else {
            con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovr,dataid,y[2]])
           }
-         } else if (ovp) {
+         } else if (ovp || ovp == 0) {
           ovm = ov[0].vacation + "0000"
           ovp2 = await plusdhm(ovm,ovp.toString())
           ovb = await dhmtonum(ovp2.toString())
@@ -69,7 +69,7 @@ async function setLar(userName,dataid,state,now) {
           if (state == 'insert') { vap = ovp } else {
            con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovp,dataid,y[2]])
           }
-         } else if (ovq) {
+         } else if (ovq || ovq == 0) {
           if (state == 'insert') { vap = ovq } else {
            con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,ovq,dataid,y[2]])
           }
