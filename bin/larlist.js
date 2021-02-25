@@ -10,7 +10,7 @@ async function getLar(userName, dataid, thisday) {
  a = new Date(thisday),
   LAR = [],
   start = new Date(a.getFullYear(), 0, 1, 7).getTime() / 1000,
-  end = new Date(a.getFullYear(), a.getMonth(), a.getDate(), 7).getTime() / 1000,
+  end = (new Date(a.getFullYear(), a.getMonth(), a.getDate(), 7).getTime() / 1000),
   result = await con.q('SELECT * FROM lar_data WHERE userName = ? AND approve > 1 AND start BETWEEN ? AND ?', [userName, start, end]),
   resultr = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?', [dataid, a.getFullYear()])
  resultr = resultr[0]
@@ -58,7 +58,7 @@ async function getLar(userName, dataid, thisday) {
  LAR.maternityr = minusDuration(resultr[lle[5]], LAR.maternityd)
  LAR.religiousr = minusDuration(resultr[lle[6]], LAR.religiousd)
  LAR.militaryr = minusDuration(resultr[lle[7]], LAR.militaryd)
- if (!LAR.vacation && (resultr.vacationq != null)) {
+ if (LAR.vacation == undefined && (resultr.vacationq != null)) {
   LAR.vacationq = await dhmtoarray(resultr.vacationq.toString())
   LAR.vacationr = plusDuration(LAR.vacationq, {
    d: resultr[lle[2]],
@@ -66,14 +66,14 @@ async function getLar(userName, dataid, thisday) {
    m: 0
   })
  } else {
-  if (!LAR.vacation && (resultr.vacationp != null)) {
+  if (LAR.vacation == undefined && resultr.vacationp != null) {
    LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
    LAR.vacationr = plusDuration(LAR.vacationp, {
     d: resultr[lle[2]],
     h: 0,
     m: 0
    })
-  } else if (LAR.vacation && (resultr.vacationp != null)) {
+  } else if (LAR.vacation != undefined && (resultr.vacationp != null)) {
    LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
    var x = plusDuration(LAR.vacationp, {
     d: resultr[lle[2]],
@@ -474,6 +474,7 @@ function getDayTime(inTime, outTime, allDay) {
  }
 }
 
+exports.getLar = getLar
 exports.plusDuration = plusDuration
 exports.displayDuration = displayDuration
 exports.dhmtoarray = dhmtoarray
