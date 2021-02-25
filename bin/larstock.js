@@ -25,7 +25,7 @@ async function setLar(userName,dataid,state,now) {
     let x = gd(new Date(swdate[0].cdate*1000)),
     y = gd(new Date(now)),
     w = y[2]-x[2]
-    let ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,vacatione,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
+    let ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?',[dataid,y[2]-1])
     if (!ov[0]) {
         if (w < 1) { vap = '000000' }
         else if (w == 1) { vap = '0'+ Math.floor((12-(x[1]+1)/2)) +'0000' }
