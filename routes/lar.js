@@ -5,6 +5,7 @@ const con = require('../bin/mysql')
 const larstock = require('../bin/larstock')
 const log = require('../bin/logger')
 const fingerscan = require('../bin/fingerscan')
+const moment = require('moment')
 require("dotenv").config()
 
 /* GET /lar. */
@@ -73,8 +74,10 @@ router.post('/', async function(req, res) {
 	}
 	if (req.body.state == 'viewrender') {
 		if (req.cookies.user_name) {
-			await larstock.updateLar(req.cookies.user_name,req.cookies.user_dataid,parseInt(req.body.endtime))
-   updatedur = await ll.viewLar(req.cookies.user_name,req.cookies.user_dataid,parseInt(req.body.endtime))
+   let intime = moment.unix(req.body.endtime).format('M')
+   let time = (intime == 12 ? moment.unix(req.body.endtime).subtract(1,'y').endOf("year").subtract(7,'h').unix() : parseInt(req.body.endtime))
+			await larstock.updateLar(req.cookies.user_name,req.cookies.user_dataid,time)
+   updatedur = await ll.viewLar(req.cookies.user_name,req.cookies.user_dataid,time)
 		} else {
 			res.redirect('/login')
 		}

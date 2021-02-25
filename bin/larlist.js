@@ -87,7 +87,7 @@ async function getLar(userName, dataid, thisday) {
 }
 async function viewLar(userName, dataid, thisday) {
  var a = new Date(thisday)
-  LAR = await getLar(userName, dataid, a)
+ LAR = await getLar(userName, dataid, a)
  LARS = [], saveLAR = []
  for (i = 0; i < llt.length; i++) {
   if (i == 4) {
@@ -322,23 +322,23 @@ function minusDuration(remain, duration) {
    } else {
     Ans.m = remain.m
    }
- 
+
    if (duration.h > 0) {
     if (remain.h < duration.h) {
-      remain.d = remain.d - 1
-      remain.h = remain.h + 8
+     remain.d = remain.d - 1
+     remain.h = remain.h + 8
     }
     Ans.h = remain.h - duration.h
    } else {
     Ans.h = remain.h
    }
- 
+
    if (duration.d > 0) {
     Ans.d = remain.d - duration.d
    } else {
     Ans.d = remain.d
    }
- 
+
    if (Ans.d < 0) {
     Ans.o = true
     Ans.d = Math.abs(Ans.d)
@@ -346,7 +346,7 @@ function minusDuration(remain, duration) {
     Ans.o = false
    }
   }
-  
+
   return Ans
  }
 }
