@@ -8,20 +8,27 @@ block script
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
 
 block content
- table.display.cell-border.nowrap#display-table(style="width:100%")
+ table.display.cell-border#display-table(style="width:100%")
   thead
    tr
+    th
     th วันที่
     th ประเภทรถ
     th ผู้จอง
     th สถานที่
     th เวลายืม
     th เวลาคืน
+    th ระยะทาง
   tfoot
    tr
+    th
     th วันที่
     th ประเภทรถ
     th ผู้จอง
     th สถานที่
     th เวลายืม
     th เวลาคืน
+    th ระยะทาง
+
+block footer
+ +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','clockpicker.min.js','reservelist.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])

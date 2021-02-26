@@ -163,11 +163,16 @@ document.addEventListener('DOMContentLoaded', function () {
    })
    modal.on('click', '#submitDetail', function () {
     let data = {}
+    let ev = info.event
     data.mstart = $("#milestart").val()
     data.mend = $("#mileend").val()
     data.remark = $("#carremark").val()
     if (olddata.ms == "" && olddata.ms != data.mstart) {
-     data.stime = moment().format("HH:mm:ss")
+     if (olddata.me == "" && data.mend != "") {
+      data.stime = (ev.allDat ? moment().set({h:8,m:30,s:0}).format("HH:mm:ss") : moment(info.event.start).format("HH:mm:ss"))
+     } else {
+      data.stime = moment().format("HH:mm:ss")
+     }
     }
     if (olddata.me == "" && olddata.me != data.mend) {
      data.etime = moment().format("HH:mm:ss")
@@ -446,7 +451,10 @@ document.addEventListener('DOMContentLoaded', function () {
     let sms = "",
      stime, etime
     $("input[name=droppoint]:checked").each(function () {
-     site.push($(this).val())
+     let val = $(this).val()
+     if (val != 0 || (val == 0 && site.length == 0)) {
+      site.push(val)
+     }
     })
     if (!allday) {
      stime = $("#timepicker1").val()

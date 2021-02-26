@@ -11,12 +11,15 @@ router.get('/', async function(req, res) {
    operator: req.cookies.user_op,
    title: "รายงานการจองรถ"
   }
-  let result = await api('GET','/reserve/getlist',{})
-  parms.list = result
   res.render('reservelist',parms)
  } else {
   res.redirect("/")
  }
+})
+
+router.get('/table',async function(req,res) {
+ let result = await api('GET','/reserve/getlist',{})
+ res.json(result)
 })
 
  module.exports = router
