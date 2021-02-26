@@ -47,23 +47,63 @@ document.addEventListener('DOMContentLoaded', function () {
    let start = moment(event.start).subtract(7, 'h')
    let end = moment(event.end).subtract(7, 'h') || ""
    let day = start.locale("th").format("วันddddที่ D MMMM")
-   let carres = (event.allDay ? day + ": ทั้งวัน" : day + ": " + start.locale("th").format("HH:mm") + " - " + moment(end).format("HH:mm"))
+   let carres = (event.allDay ? day + " (ทั้งวัน)" : day + " (" + start.locale("th").format("HH:mm") + " - " + moment(end).format("HH:mm") +')')
    if (info.event.extendedProps.userId == $("#username")[0].outerText) {
     modal = '\
     <div class="modal fade" id="extraModal" data-id="' + event.id + '">\
-     <div class="modal-dialog modal-sm">\
+     <div class="modal-dialog modal-md">\
       <div class="modal-content">\
        <div class="modal-header">\
-         <h5 class="modal-title">ยกเลิกการจองรถ</h5>\
+         <h5 class="modal-title">' + ext.plate.remark + ' ' + ext.plate.license + '</h5>\
          <button type="button" class="justify-content-end" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
        </div>\
        <div class="modal-body">\
-        <p class="center">' + ext.plate.remark + ' ' + ext.plate.license + '</p>\
-        <p class="center">' + carres + '</p>\
+        <p>เวลาจอง: ' + carres + '</p>\
+        <hr>\
+        <div class="row">\
+         <div class="col justify-content-start">\
+          <p class>เลขไมล์เริ่มต้น: </p>\
+         </div>\
+         <div class="col">\
+          <input id="milestart" class="form-control text-right" type="number" placeholder="0"/>\
+         </div>\
+        </div>\
+        <div class="row">\
+         <div class="col justify-content-start">\
+          <p>เลขไมล์ปลายทาง: </p>\
+         </div>\
+         <div class="col">\
+          <input id="mileend" class="form-control text-right" type="number" placeholder="0"/>\
+         </div>\
+        </div>\
+        <div class="row">\
+         <div class="col justify-content-start">\
+          <p>ระยะทางที่ใช้: </p>\
+         </div>\
+         <div class="col">\
+          <input id="milecalc" class="form-control text-right" type="number" readonly/>\
+         </div>\
+        </div>\
+        <hr>\
+        <div class="row">\
+         <div class="col justify-content-start">\
+          <p>แจ้งปัญหา: </p>\
+         </div>\
+         <div class="col">\
+         <textarea id="carremark" class="form-control" rows="3"></textarea>\
+         </div>\
+        </div>\
        </div>\
        <div class="modal-footer">\
-         <button type="submit" id="submitDelete" class="btn btn-success btn-sm mr-1">ยืนยัน</button>\
-         <button type="button" id="cancelDelete" class="btn btn-danger btn-sm">ย้อนกลับ</button>\
+        <div class="col justify-content-start">\
+         <button type="submit" id="submitDelete" class="btn btn-danger btn-sm">ยกเลิกการจอง</button>\
+        </div>\
+        <div class="col justify-content-end">\
+         <div class="row">\
+          <button type="submit" id="submitDetail" class="btn btn-success btn-sm col-auto ml-auto mr-1">ยืนยัน</button>\
+          <button type="button" id="cancelDelete" class="btn btn-primary btn-sm">ย้อนกลับ</button>\
+         </div>\
+        </div>\
        </div>\
       </div>\
      </div>\
@@ -92,7 +132,60 @@ document.addEventListener('DOMContentLoaded', function () {
       '
      }*/
    modal = $(modal).appendTo('body')
-   modal.on('show.bs.modal', function (e) {})
+   var olddata = {}
+   modal.on('show.bs.modal', function (e) {
+    $.ajax({
+     url: '/cross',
+     type: "get",
+     async: false,
+     data: {
+      path: "/reserve/car/" + event.id,
+      method: "GET",
+      option: {}
+     },
+     success: function (data) {
+      let ms = (data.mstart ? data.mstart : "")
+      let me = (data.mend ? data.mend : "")
+      let rm = (data.remark ? data.remark : "")
+      let $mcal = $("#milecalc")
+      let $remark = $("#carremark")
+      olddata.ms = ms
+      olddata.me = me
+      olddata.rm = rm
+      $("#milestart").val(ms)
+      $("#mileend").val(me)
+      $remark.val(rm)
+      if (ms && me) {
+       $mcal.val(me-ms)
+      }
+     }
+    })
+   })
+   modal.on('click', '#submitDetail', function () {
+    let data = {}
+    data.mstart = $("#milestart").val()
+    data.mend = $("#mileend").val()
+    data.remark = $("#carremark").val()
+    if (olddata.ms == "" && olddata.ms != data.mstart) {
+     data.stime = moment().format("HH:mm:ss")
+    }
+    if (olddata.me == "" && olddata.me != data.mend) {
+     data.etime = moment().format("HH:mm:ss")
+    }
+    $.ajax({
+     url: '/cross',
+     type: "get",
+     async: false,
+     data: {
+      path: "/reserve/car/" + event.id,
+      method: "PUT",
+      option: data
+     },
+     success: function (data) {
+      modal.modal("hide")
+     }
+    })
+   })
    modal.on('click', '#submitDelete', function () {
     let timeend = (event.end ? moment(event.end).subtract(7,'h') : moment(event.start).add(1,'days').subtract(7,'h'))
     let timenow = moment()
