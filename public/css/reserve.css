@@ -231,3 +231,7 @@ table caption {
  cursor: pointer;
  margin:3px;
 }
+
+.myreserve {
+ box-shadow: 1px 1px 1px 1px rgba(88, 86, 86, 0.699);
+}
