@@ -342,6 +342,7 @@ html,body {
 
 .popupUserlist {
  position: absolute;
+ padding-inline-start: 0;
  text-align: right;
  direction: ltr;
  list-style-type: none;

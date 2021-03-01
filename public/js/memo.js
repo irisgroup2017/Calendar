@@ -560,8 +560,8 @@ $(function($) {
   data.doc = doc
   data.memoContent = content
   data.memoAdmin = admin.id
-  data.memoBoss = (boss ? boss.id : "")
-  data.memoApprover = (approve ? approve.id : "")
+  data.memoBoss = (boss ? boss.id : 0)
+  data.memoApprover = (approve ? approve.id : 0)
   data.statusId = 1
   if (data.memoApprover && data.memoBoss) {
    data.memoStatus = 1
@@ -572,7 +572,6 @@ $(function($) {
   } else {
    data.memoStatus = 7
   }
-  console.log(data)
 
   $.ajax({
    url: '/cross',

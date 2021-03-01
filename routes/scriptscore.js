@@ -77,7 +77,7 @@ module.exports = {
    let checkKey = ['memo_from','memo_to','memo_cc','memo_admin','memo_boss','memo_approver']
    return Object.keys(content).reduce((acc,it) => {
    let obj = content[it],info
-   if (checkKey.indexOf(it) > -1) {
+   if (checkKey.indexOf(it) > -1 && obj != 0) {
     if (obj == null) {
      info = null
     } else if (typeof obj == 'number') {
