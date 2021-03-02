@@ -393,7 +393,6 @@ $(function($) {
      saveDiv()
     }
     setTimeout(() => clicked = true,1000)
-    
    })
 
    $(document).on('click','.print-button',function() {
@@ -574,12 +573,12 @@ $(function($) {
   }
 
   $.ajax({
-   url: '/cross',
+   url: '/memo/creatememo',
    type: 'post',
    async: false,
    data: {
     path: '/memo/creatememo',
-    option: data
+    data: data
    },
    success: function(data) {
     let documents = data.memoCode
@@ -589,10 +588,10 @@ $(function($) {
     $('#modal-no').data({ docid: documents, count: count, depart: depart }).val(documents)
     sessionStorage.removeItem('attachm')
     $('.close-editorModal').click()
-    alert("บันทึกข้อมูลแล้ว เอกสารเลขที่: "+ documents)
+    $.alert("บันทึกข้อมูลแล้ว เอกสารเลขที่: "+ documents)
    },
    error: function(e) {
-    $.alert(e)
+    $.alert("มีความไม่สามารถบันทึกข้อมูลได้")
    }
   })
  }

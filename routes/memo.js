@@ -6,6 +6,7 @@ const api = require('../bin/api')
 const core = require('./scriptscore')
 const moment = require('moment')
 const fs = require('fs')
+const mailsend = require('../bin/mailsend')
 
 router.get('/', async function (req, res) {
  var userName = req.cookies.user_name,
@@ -277,6 +278,44 @@ async function listMemo(req, res) {
  objs = core.relation(objs, contact, depart)
  parms.objs = objs
  res.render('memolist', parms)
+}
+
+router.post('/creatememo', async function (req, res) {
+ let data = req.body.data
+ data.cookies = req.cookies
+ let result = await api('POST',req.body.path,data)
+ if (result && typeof result == 'object') {
+  if (result.status == 'create') {
+   let from = data.memoFrom
+   let to = data.memoTo
+   let cc = data.memoCc
+   cc = (cc.indexOf(',') ? cc.split(',') : cc)
+   let email = await getMail(from,to,cc)
+   email.subject = data.memoSubject
+   email.docId = result.memoId
+   email.docNum = result.memoCode
+   mailsend.sendm(email)
+  }
+  res.json(result)
+ } else {
+  res.end()
+ }
+})
+
+async function getMail(from,to,cc) {
+ let contact = (await con.q("SELECT dataid,email,name FROM contact_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
+ let depart = (await con.q("SELECT ID,depart,depart_mail FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
+ let mail = {}
+ mail.from = (contact[from] != undefined ? contact[from].name : depart[from].depart)
+ mail.to = (contact[to] != undefined ? contact[to].email : depart[to].depart_mail)
+ mail.cc = cc.map(id => {
+  if (contact[id] != undefined) {
+   return contact[id].email
+  } else if (depart[id] != undefined) {
+   return depart[id].depart_mail
+  }
+ },[])
+ return mail
 }
 
 module.exports = router
