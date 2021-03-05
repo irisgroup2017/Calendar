@@ -21,6 +21,7 @@ router.get('/', async function(req, res) {
   easypass = easypass.reduce((acc,it) => (acc[it.code] = it.amount,acc),{})
   let reserve = await api("get",'/reserve/gettoday',data)
   let car = {}
+  let timenow = (moment().format('HH:mm')).split(':')
   reserve = reserve.reduce((acc,it) => {
    if (it.allDay) {
     it.dayres = [2,28]
@@ -37,11 +38,16 @@ router.get('/', async function(req, res) {
   parms.car = car
   parms.reserve = reserve
   parms.easypass = easypass
+  parms.timenow = ((((parseInt(timenow[0])*60) + parseInt((timenow[1] > 30 ? 30 : 0)))-300)/30)
   res.render('reserve',parms)
  } else {
   res.redirect("/")
  }
- 
+})
+
+router.get('/getfuel',async function(req,res) {
+ let car = await api('GET','/reserve/getfuel',{ now: moment().format('YYYY-MM-DD HH:mm:ss')})
+ res.json(car)
 })
 
 module.exports = router

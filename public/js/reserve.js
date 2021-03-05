@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
+ $.ajax({
+  url: '/reserve/getfuel',
+  type: "GET",
+  async: false,
+  success: function (data) {
+   console.log(data)
+  }
+ })
+
  let date = new Date()
  var calendarEl = document.getElementById('calendar')
  var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -293,15 +302,15 @@ document.addEventListener('DOMContentLoaded', function () {
    }
    if (type == 1) {
     if ($(el).is(".fc-daygrid-block-event")) {
-     $(el).css('background-color', '#2a7568')
+     $(el).css('background-color', '#b7c6e8')
     } else if ($(el).is(".fc-v-event")) {
-     $(el).css('background-color', '#2a7568')
+     $(el).css('background-color', '#b7c6e8')
     }
 
     if ($(el).is(".fc-daygrid-dot-event")) {
-     $(el).find(".fc-daygrid-event-dot").css('border', '4px solid #2a7568')
+     $(el).find(".fc-daygrid-event-dot").css('border', '4px solid #b7c6e8')
     } else if ($(el).is(".fc-list-event")) {
-     $(el).find(".fc-list-event-dot").css('border', '4px solid #2a7568')
+     $(el).find(".fc-list-event-dot").css('border', '4px solid #b7c6e8')
     }
    }
    if (type == 2) {

@@ -42,7 +42,10 @@ jQuery(function () {
       }
      },
      {
-      data: "date"
+      data: "date",
+      render: function (data, type, row) {
+       return moment(data).locale('th').format('DD MMM YYYY')
+      }
      },
      {
       data: "license"
@@ -58,13 +61,37 @@ jQuery(function () {
       }
      },
      {
-      data: "times"
+      data: "times",
+      render: function (data, type, row) {
+       let diff = moment(row.date +' '+row.rstart,'YYYY-MM-DD HH:mm:ss').diff(moment())
+       if (diff >= 0) {
+        if (row.allday && row.timee != null) {
+         return "08:30:00"
+        } else if ((data == null || data == 0) && row.timee != null) {
+         return moment(row.rstart).format('HH:mm:ss')
+        } else {
+         return data
+        }
+       } else {
+        return ""
+       }
+      }
      },
      {
-      data: "timee"
+      data: "timee",
+      render: function (data, type, row) {
+       if (data == null) {
+        return ""
+       } else {
+        return data
+       }
+      }
      },
      {
-      data: 'miled'
+      data: 'miled',
+      render: function (data,type,row) {
+       return (row.miles > 0 && row.milee > 0 ? row.milee - row.miles +' กิโลเมตร' : 'ยังไม่บันทึกข้อมูล')
+      }
      }
     ]
    })

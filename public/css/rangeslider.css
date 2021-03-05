@@ -1,0 +1,117 @@
+:root {
+ --thumb-color: #fff;
+ --range-color: #000;
+ --range-value: 0;
+ --pos: 20;
+}
+
+input[type="range"].fuelslide { 
+ -webkit-appearance: none;
+ position: relative;
+ overflow: hidden;
+ height: 35px;
+ width: 100%;
+ background-color: #000000;
+ border: #ddd solid 2px;
+ border-radius: 0;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+ input[type=range].fuelslide::-webkit-slider-runnable-track {
+  height: 35px;
+  -webkit-appearance: none;
+  color: rgb(209, 206, 206);
+  -webkit-transition: box-shadow 0.2s ease-in-out;
+  transition: box-shadow 0.2s ease-in-out;
+ }
+ 
+
+ input[type=range].fuelslide::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor: ew-resize;
+  width: 4px; 
+  height: 35px;
+  background: #fff;
+  box-shadow: -340px 0 0 340px var(--range-color), inset 0 0 0 0 var(--range-color);
+ }
+
+ 
+ input[type=range].fuelslide::-moz-range-track {
+  height: 35px;
+  background-color: #000000;
+ }
+ 
+ input[type=range].fuelslide::-ms-thumb { 
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 35px;
+  width: 10px;
+  border-radius: 3px;
+  background: #ffffff;
+ }*/
+
+ input[type=range].fuelslide::-moz-range-thumb {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 35px;
+  width: 10px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+ }
+
+ input[type=range].fuelslide:active::-webkit-slider-thumb {
+  background: #fff;
+ }
+
+ input[type=range].fuelslide::-moz-range-progress {
+  background-color: #43e5f7;
+ }
+}
+
+input[type=range].fuelslide::-ms-fill-lower { 
+ background-color: #ff0000;
+}
+input[type=range].fuelslide::-ms-fill-upper {
+ background-color: #80ff80;
+}
+
+
+input[type=range].fuelslide::-ms-ticks-after { 
+ display: none; 
+}
+
+input[type=range].fuelslide::-ms-ticks-before { 
+ display: none; 
+}
+
+input[type=range].fuelslide::-ms-track { 
+ background: #ddd;
+ color: transparent;
+ height: 35px;
+ border: none;
+}
+
+input[type=range].fuelslide::-ms-tooltip { 
+ display: none;
+}
+
+.fuelbar {
+ position: relative;
+}
+
+.fuelbar .fuelslide + output {
+ position: absolute;
+ top: 5px;
+ left: 100px;
+ pointer-events: none;
+ z-index: 5;
+ text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+ font-family: 'Sarabun', sans-serif; 
+ font-size: 16px;
+ color: rgb(252, 246, 246);
+}
+
+.fuelbar .fuelslide + output::after {
+ content: var(--range-value);
+}

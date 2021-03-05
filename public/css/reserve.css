@@ -3,14 +3,18 @@
  --color-475: #08b394;
  --box-475: rgb(8,179,148,0.2);
  --text-745: white;
- --color-745: #2a7568;
- --box-745: rgb(42,117,104,0.2);
+ --color-745: #b7c6e8;
+ --box-745: rgba(168, 201, 240, 0.932);
  --text-6841: white;
  --color-6841: #000000;
  --box-6841: rgb(0,0,0,0.2);
  --text-3404: black;
  --color-3404: #e0e0e0;
  --box-3404: rgb(224,224,224,0.2);
+ --fuel-475: 0%;
+ --fuel-745: 0%;
+ --fuel-3404: 0%;
+ --fuel-6841: 0%;
 }
 
 table caption {  
@@ -42,7 +46,7 @@ table caption {
 .sect-time .reserve.name {
  border-right: rgb(223, 217, 217) 1px ridge;
  text-align: left;
- padding-left: 20px !important;
+ /*padding-left: 20px !important;*/
 }
 
 .reserve-car {
@@ -136,6 +140,21 @@ table caption {
 .reserve-time-both {
  position: relative;
  min-width: 10px;
+ overflow: hidden;
+}
+
+.reserve-timenow {
+ position: relative;
+ overflow: hidden;
+}
+
+.reserve-timenow .line-timenow {
+ position: absolute;
+ left: 51%;
+ top: 1px;
+ right: 0px;
+ height: 100px;
+ border-left: 2px red dotted;
  overflow: hidden;
 }
 
@@ -234,4 +253,96 @@ table caption {
 
 .myreserve {
  box-shadow: 1px 1px 1px 1px rgba(88, 86, 86, 0.699);
+}
+
+.toggle-container-inner-ticks {
+ display: flex;
+ position: relative;
+}
+.toggle-container-inner-ticks-cover {
+ position: absolute;
+ display: flex;
+ top: 0;
+ left: 0;
+ bottom: 0;
+ right: 0;
+ background-color: rgba(255, 255, 255, 0.05);
+}
+.toggle-container-inner-ticks-container {
+ display: flex;
+}
+.toggle-container-inner-ticks-container .tick {
+ color: white;
+ width: 10px;
+}
+.toggle-container-inner-ticks-container .tick::after {
+ content: " ";
+ display: block;
+ margin-left: auto;
+ margin-right: auto;
+ margin-top: 25px;
+ width: 2px;
+ height: 10px;
+ background: #8B8B8B;
+ position: absoulute;
+}
+.toggle-container-inner-ticks-container .tick.big {
+ text-align: center;
+ font-size: 12px;
+ font-weight: bold;
+}
+.toggle-container-inner-ticks-container .tick.big::after {
+ height: 15px;
+ margin-top: 0px;
+}
+.toggle-container-inner-ticks-container .tick.e {
+ color: #CB3A3A;
+}
+.toggle-container-inner-ticks-container .tick.f {
+ color: #03c703;
+}
+
+.toggle-container-inner-ticks-indicator-475 {
+ width: 10px;
+ display: block;
+ left: var(--fuel-475);
+ top: 0;
+ bottom: 0;
+ position: absolute;
+ margin-left: 0px;
+ transition: all 1.8s ease;
+ background-color: rgba(250, 22, 22, 0.3);
+}
+.toggle-container-inner-ticks-indicator-745 {
+ width: 10px;
+ display: block;
+ left: var(--fuel-745);
+ top: 0;
+ bottom: 0;
+ position: absolute;
+ margin-left: 0px;
+ transition: all 1.8s ease;
+ background-color: rgba(250, 22, 22, 0.3);
+}
+.toggle-container-inner-ticks-indicator-3404 {
+ width: 10px;
+ display: block;
+ left: var(--fuel-3404);
+ top: 0;
+ bottom: 0;
+ position: absolute;
+ margin-left: 0px;
+ transition: all 1.8s ease;
+ background-color: rgba(250, 22, 22, 0.3);
+}
+.toggle-container-inner-ticks-indicator-6841 {
+ width: 10px;
+ display: block;
+ left: var(--fuel-6841);
+ top: 0;
+ bottom: 0;
+ position: absolute;
+ margin-left: 0px;
+ transition: all 1.8s ease;
+ background-color: rgba(250, 22, 22, 0.3);
 }
