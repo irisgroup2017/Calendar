@@ -84,9 +84,20 @@ document.addEventListener('DOMContentLoaded', function () {
           <input id="milecalc" class="form-control text-right" type="number" readonly/>\
          </div>\
         </div>\
-        <hr>\
         <div class="row">\
          <div class="col justify-content-start">\
+          <p>ปริมาณน้ำมันคงเหลือ: </p>\
+         </div>\
+         <div class="col">\
+          <div class="fuelbar">\
+           <input id="remainfuel" class="fuelslide" type="range" min="0" max="100">\
+           <output></output>\
+          </div>\
+         </div>\
+        </div>\
+        <hr>\
+        <div class="row">\
+         <div class="col align-middle justify-content-start">\
           <p>แจ้งปัญหา: </p>\
          </div>\
          <div class="col">\
@@ -147,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
       let ms = (data.mstart ? data.mstart : "")
       let me = (data.mend ? data.mend : "")
       let rm = (data.remark ? data.remark : "")
+      let rf = (typeof data.fuel == 'number' ? data.fuel : 0)
       let $mcal = $("#milecalc")
       let $remark = $("#carremark")
       olddata.ms = ms
@@ -154,10 +166,25 @@ document.addEventListener('DOMContentLoaded', function () {
       olddata.rm = rm
       $("#milestart").val(ms)
       $("#mileend").val(me)
+      $("#remainfuel").val(rf)
       $remark.val(rm)
       if (ms && me) {
        $mcal.val(me-ms)
       }
+
+      let $fuel = $('#remainfuel')
+      let color = "hsl("+rf+",100%,50%)"
+      $('.fuelbar output').html(rf)
+      $fuel.get(0).style.setProperty("--range-color", color);
+      $fuel.get(0).style.setProperty("--range-value", rf);
+
+      $fuel.on('change input', function() {
+       let value = $(this).val()
+       let color = "hsl("+value+",100%,50%)"
+       $('.fuelbar output').html(value)
+       $fuel.get(0).style.setProperty("--range-color", color);
+       $fuel.get(0).style.setProperty("--range-value", value);
+    })
      }
     })
    })
@@ -167,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
     data.mstart = $("#milestart").val()
     data.mend = $("#mileend").val()
     data.remark = $("#carremark").val()
+    data.fuel = $("#remainfuel").val()
     if (olddata.ms == "" && olddata.ms != data.mstart) {
      if (olddata.me == "" && data.mend != "") {
       data.stime = (ev.allDat ? moment().set({h:8,m:30,s:0}).format("HH:mm:ss") : moment(info.event.start).format("HH:mm:ss"))
@@ -177,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (olddata.me == "" && olddata.me != data.mend) {
      data.etime = moment().format("HH:mm:ss")
     }
+    if (data.mend != "")
     $.ajax({
      url: '/cross',
      type: "get",

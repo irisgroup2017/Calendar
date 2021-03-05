@@ -61,7 +61,7 @@ jQuery(function () {
       data: "times"
      },
      {
-      data: "times"
+      data: "timee"
      },
      {
       data: 'miled'
