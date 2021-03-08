@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
     data.fuel = $("#remainfuel").val()
     if (olddata.ms == "" && olddata.ms != data.mstart) {
      if (olddata.me == "" && data.mend != "") {
-      data.stime = (ev.allDat ? moment().set({h:8,m:30,s:0}).format("HH:mm:ss") : moment(info.event.start).format("HH:mm:ss"))
+      data.stime = (ev.allDat ? moment().set({h:8,m:30,s:0}).subtract(7,'h').format("HH:mm:ss") : moment(info.event.start).subtract(7,'h').format("HH:mm:ss"))
      } else {
       data.stime = moment().format("HH:mm:ss")
      }
