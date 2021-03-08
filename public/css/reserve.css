@@ -346,3 +346,39 @@ table caption {
  transition: all 1.8s ease;
  background-color: rgba(250, 22, 22, 0.3);
 }
+
+div[class^="toggle-container-inner-ticks-indicator-"].no-comment {
+ width: 100%;
+ display: block;
+ top: 0;
+ bottom: 0;
+ position: absolute;
+ margin-left: 0px;
+ transition: all 1.8s ease;
+ background-color: rgba(250, 22, 22, 0.3);
+}
+
+.show-update-time-475 {
+ position: absolute;
+ top: 3px;
+ left: 12%;
+ font-size: 10px;
+}
+.show-update-time-745 {
+ position: absolute;
+ top: 3px;
+ left: 12%;
+ font-size: 10px;
+}
+.show-update-time-3404 {
+ position: absolute;
+ top: 3px;
+ left: 12%;
+ font-size: 10px;
+}
+.show-update-time-6841 {
+ position: absolute;
+ top: 3px;
+ left: 12%;
+ font-size: 10px;
+}

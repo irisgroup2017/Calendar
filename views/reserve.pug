@@ -121,8 +121,10 @@ mixin nulltd(car,list,data,easypass,now)
       td
 mixin carfuel(plate)
  -var plateclass = 'toggle-container-inner-ticks-indicator-'+plate
+ -var platetime = 'show-update-time-'+plate
  .toggle-container-inner-ticks
-  div(class=plateclass)
+  div(class=platetime)
+  div(class=plateclass).no-comment
   .toggle-container-inner-ticks-container
    .tick.big.e E
    .d-flex.tick.align-items-end

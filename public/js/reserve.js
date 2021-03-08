@@ -4,7 +4,20 @@ document.addEventListener('DOMContentLoaded', function () {
   type: "GET",
   async: false,
   success: function (data) {
-   console.log(data)
+   let plate = ['475','745','3404','6841']
+   data.forEach(list => {
+    let carplate = plate[list.carid]
+    let $tick = $('.toggle-container-inner-ticks-indicator-' +carplate)
+    let fuel = '--fuel-' +carplate
+    let $time = $('.show-update-time-' +carplate)
+    if (list.fuel == null) {
+     $tick.addClass('no-comment')
+    } else {
+     $tick.removeClass('no-comment')
+     document.documentElement.style.setProperty(fuel, (list.fuel-5)+'%');
+     $time.html(moment(list.lastseen).subtract(7,'h').add(543,'y').format('DD/MM/YYYY HH:mm'))
+    }
+   });
   }
  })
 
