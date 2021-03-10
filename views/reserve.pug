@@ -46,6 +46,7 @@ mixin bodyfill(car,reserve,easypass,now)
 mixin nulltd(car,list,data,easypass,now)
  -var i = 0
  -var c = 6
+ -var userid
  -var first = []
  -var last = []
  -var middle
@@ -66,7 +67,7 @@ mixin nulltd(car,list,data,easypass,now)
      td
  else
   for id in list
-   -var userid = data[id].userId
+   -userid = data[id].userId
    -first[id] = data[id].dayres[0]
    -last[id] = data[id].dayres[1]
    -plate = data[id].plate.code
