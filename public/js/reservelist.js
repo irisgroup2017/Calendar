@@ -65,9 +65,9 @@ jQuery(function () {
       render: function (data, type, row) {
        let diff = moment(row.date +' '+row.rstart,'YYYY-MM-DD HH:mm:ss').diff(moment())
        if (diff >= 0) {
-        if (row.allday && row.timee != null) {
+        if (row.allday && row.timee != null && row.timee != '00:00:00') {
          return "08:30:00"
-        } else if ((data == null || data == 0) && row.timee != null) {
+        } else if ((data == null || data == '00:00:00') && (row.timee != null && row.timee != '00:00:00')) {
          return moment(row.rstart).format('HH:mm:ss')
         } else {
          return data
@@ -80,7 +80,7 @@ jQuery(function () {
      {
       data: "timee",
       render: function (data, type, row) {
-       if (data == null) {
+       if (data == null || data == '00:00:00') {
         return ""
        } else {
         return data
