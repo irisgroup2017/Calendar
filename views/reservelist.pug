@@ -3,7 +3,9 @@ mixin ddl(year)
  for t in year
   option(value=t selected=(parms.thisyear == t ? true : false))=t
 block script
- +scss(['setting2.css','bootstrap-datepicker.min.css','datatable/datatables.min.css','datatable/buttons.dataTables.min.css','clockpicker.min.css','jquery-confirm.min.css','animate.min.css'])
+ +scss(['setting2.css','bootstrap-datepicker.min.css','clockpicker.min.css','jquery-confirm.min.css','animate.min.css'])
+ link(rel="stylesheet" href="/public/datatable/datatables.min.css")
+ script(src="/public/datatable/datatables.min.js")
  link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
 
@@ -31,4 +33,4 @@ block content
     th ระยะทาง
 
 block footer
- +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','clockpicker.min.js','reservelist.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])
+ +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','clockpicker.min.js','reservelist.js','animatemodal.min.js'])

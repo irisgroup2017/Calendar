@@ -45,7 +45,17 @@ jQuery(function () {
      {
       data: "date",
       render: function (data, type, row) {
-       return moment(data).locale('th').format('DD MMM YYYY')
+       if (type == "display") {
+        return moment(data).locale('th').format('DD MMM YYYY')
+       }
+       else if (type == "sort") {
+        return moment(data).locale('th').format('YYYY-MM-DD')
+       }
+       else if (type == "filter") {
+        return moment(data).locale('th').format('DD/MM/YYYY')
+       } else {
+        return moment(data).locale('th').format('YYYY-MM-DD')
+       }
       }
      },
      {
