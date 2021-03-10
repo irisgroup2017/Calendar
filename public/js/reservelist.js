@@ -1,12 +1,3 @@
-function format(d) {
- return '<div class="detail-content"><h5>รายละเอียดเพิ่มเติม</h5>\
- <dl class="row">\
-  <dt class="col-2">เลขไมล์</dt><dd class="col-10">'+ d.miles +' - '+ d.milee+'</dd>\
-  <dt class="col-2">รายละเอียดการใช้งาน</dt><dd class="col-10">'+ d.title +'</dd>\
-  <dt class="col-2">หมายเหตุ</dt><dd class="col-10">'+ d.remark +'</dd>\
- </dl></div>'
-}
-
 jQuery(function () {
  //initial script
  var dt
@@ -151,4 +142,12 @@ jQuery(function () {
   });
  });
 
+ function format(d) {
+  return '<div class="detail-content"><h5>รายละเอียดเพิ่มเติม</h5>\
+  <dl class="row">\
+   <dt class="col-2">เลขไมล์</dt><dd class="col-10">'+ d.miles +' - '+ d.milee+'</dd>\
+   <dt class="col-2">รายละเอียดการใช้งาน</dt><dd class="col-10">'+ d.title +'</dd>\
+   <dt class="col-2">หมายเหตุ</dt><dd class="col-10">'+ d.remark +'</dd>\
+  </dl></div>'
+ }
 })

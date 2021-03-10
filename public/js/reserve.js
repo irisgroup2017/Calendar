@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
      $tick.addClass('no-comment')
     } else {
      $tick.removeClass('no-comment')
-     document.documentElement.style.setProperty(fuel, (list.fuel-5)+'%');
+     document.documentElement.style.setProperty(fuel, (list.fuel-1)+'%');
      $time.html(moment(list.lastseen).subtract(7,'h').add(543,'y').format('DD/MM/YYYY HH:mm'))
     }
    });

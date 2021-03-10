@@ -303,7 +303,7 @@ table caption {
 }
 
 .toggle-container-inner-ticks-indicator-475 {
- width: 10px;
+ width: 3px;
  display: block;
  left: var(--fuel-475);
  top: 0;
@@ -311,10 +311,10 @@ table caption {
  position: absolute;
  margin-left: 0px;
  transition: all 1.8s ease;
- background-color: rgba(250, 22, 22, 0.3);
+ background-color: rgba(223, 25, 25, 0.486);
 }
 .toggle-container-inner-ticks-indicator-745 {
- width: 10px;
+ width: 3px;
  display: block;
  left: var(--fuel-745);
  top: 0;
@@ -322,10 +322,10 @@ table caption {
  position: absolute;
  margin-left: 0px;
  transition: all 1.8s ease;
- background-color: rgba(250, 22, 22, 0.3);
+ background-color: rgba(223, 25, 25, 0.486);
 }
 .toggle-container-inner-ticks-indicator-3404 {
- width: 10px;
+ width: 3px;
  display: block;
  left: var(--fuel-3404);
  top: 0;
@@ -333,10 +333,10 @@ table caption {
  position: absolute;
  margin-left: 0px;
  transition: all 1.8s ease;
- background-color: rgba(250, 22, 22, 0.3);
+ background-color: rgba(223, 25, 25, 0.486);
 }
 .toggle-container-inner-ticks-indicator-6841 {
- width: 10px;
+ width: 3px;
  display: block;
  left: var(--fuel-6841);
  top: 0;
@@ -344,18 +344,16 @@ table caption {
  position: absolute;
  margin-left: 0px;
  transition: all 1.8s ease;
- background-color: rgba(250, 22, 22, 0.3);
+ background-color: rgba(223, 25, 25, 0.486);
 }
 
 div[class^="toggle-container-inner-ticks-indicator-"].no-comment {
- width: 100%;
- display: block;
+ display: none;
  top: 0;
  bottom: 0;
  position: absolute;
  margin-left: 0px;
  transition: all 1.8s ease;
- background-color: rgba(250, 22, 22, 0.3);
 }
 
 .show-update-time-475 {
