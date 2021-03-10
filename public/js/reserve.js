@@ -187,6 +187,10 @@ document.addEventListener('DOMContentLoaded', function () {
       olddata.me = me
       olddata.rm = rm
       $("#milestart").val(ms)
+      if (ms == "") {
+       let estMile = (data.estMile == null ? 'ไม่ถูกบันทึก' : data.estMile)
+       $("#milestart").attr('placeholder','การบันทึกล่าสุด: '+ estMile)
+      }
       $("#mileend").val(me)
       $("#remainfuel").val(rf)
       $remark.val(rm)
