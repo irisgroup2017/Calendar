@@ -17,12 +17,13 @@ jQuery(function () {
   success: function (data) {
    dt = $("#display-table").DataTable({
     scrollX: true,
-    paging: false,
+    paging: true,
     searching: true,
     ordering: true,
     orderMulti: true,
+    pageLength: 50,
     autoWidth: true,
-    order: [1, 'asc'],
+    order: [1, 'DESC'],
     fixedHeader: {
      header: true,
      footer: false
@@ -63,8 +64,8 @@ jQuery(function () {
      {
       data: "times",
       render: function (data, type, row) {
-       console.log(data)
-       let diff = moment(row.date +' '+row.rstart,'YYYY-MM-DD HH:mm:ss').diff(moment())
+       let checkdate = (row.allday ? moment(row.date +':08:00:00','YYYY-MM-DD:HH:mm:ss') : moment(row.rstart))
+       let diff = moment().diff(moment(checkdate))
        if (diff >= 0) {
         if (row.allday && row.timee != null && row.timee != '00:00:00') {
          return "08:30:00"
