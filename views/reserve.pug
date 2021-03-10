@@ -76,7 +76,7 @@ mixin nulltd(car,list,data,easypass,now)
     td.reserve-car(colspan=2)
      .d-flex.align-items-center.flex-nowrap.justify-content-between
       +carfuel(plate)
-      span.car-color(data-color=plate aria-label=userid data-balloon-pos="up")=car
+      span.car-color(data-color=plate)=car
       .p-2=easypass[plate] +' บาท'
    else
     if first.includes(i) && last.includes(i)
