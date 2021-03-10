@@ -66,7 +66,7 @@ mixin nulltd(car,list,data,easypass,now)
      td
  else
   for id in list
-   -userid = data[id].userId
+   -var userid = data[id].userId
    -first[id] = data[id].dayres[0]
    -last[id] = data[id].dayres[1]
    -plate = data[id].plate.code
@@ -75,7 +75,7 @@ mixin nulltd(car,list,data,easypass,now)
     td.reserve-car(colspan=2)
      .d-flex.align-items-center.flex-nowrap.justify-content-between
       +carfuel(plate)
-      span.car-color(data-color=plate aria-label=user data-balloon-pos="up")=car
+      span.car-color(data-color=plate aria-label=userid data-balloon-pos="up")=car
       .p-2=easypass[plate] +' บาท'
    else
     if first.includes(i) && last.includes(i)
@@ -102,7 +102,7 @@ mixin nulltd(car,list,data,easypass,now)
      if now == i
       td.reserve-time-first.reserve-timenow
        .line-timenow
-       .timeline-first(data-color=plate aria-label=user data-balloon-pos="up")
+       .timeline-first(data-color=plate aria-label=userid data-balloon-pos="up")
      else
       td.reserve-time-first
        .timeline-first(data-color=plate)
@@ -110,10 +110,10 @@ mixin nulltd(car,list,data,easypass,now)
      if now == i
       td.reserve-time.reserve-timenow
        .line-timenow
-       .timeline-middle(data-color=plate aria-label=user data-balloon-pos="up")
+       .timeline-middle(data-color=plate aria-label=userid data-balloon-pos="up")
      else
       td.reserve-time
-       .timeline-middle(data-color=plate aria-label=user data-balloon-pos="up")
+       .timeline-middle(data-color=plate aria-label=userid data-balloon-pos="up")
     else
      if now == i
       td.reserve-timenow
