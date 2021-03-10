@@ -63,6 +63,7 @@ jQuery(function () {
      {
       data: "times",
       render: function (data, type, row) {
+       console.log(data)
        let diff = moment(row.date +' '+row.rstart,'YYYY-MM-DD HH:mm:ss').diff(moment())
        if (diff >= 0) {
         if (row.allday && row.timee != null && row.timee != '00:00:00') {
