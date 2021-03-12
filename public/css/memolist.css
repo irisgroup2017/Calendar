@@ -500,3 +500,8 @@ input[type=checkbox]:checked + label:hover span:before {
  background: var(--checkboxuncheck);
  transition: width 150ms ease 100ms;
 }
+
+.fa-rotate-90 {
+ animation-name: rotate90;
+ animation-duration: 1s;
+}

@@ -1,10 +1,11 @@
 jQuery(function ($) {
- $("#display-table").DataTable({
+ var dt = $("#display-table").DataTable({
   dom: 'Bfrtip',
   scrollX: true,
   paging: true,
-  pageLength: 10,
+  pageLength: 15,
   searching: true,
+  order: [1, 'ASC'],
   ordering: true,
   orderMulti: true,
   fixedHeader: {
@@ -22,27 +23,29 @@ jQuery(function ($) {
     }
    },
    {
-    text: 'เอกสารเข้า',
+    text: 'เอกสารทั้งหมด',
     className: 'btn btn-success',
-    attr: {
-     "data-retire": 'user-disable'
-    },
     action: function (e, dt, node, config) {
      let table = $("#display-table").DataTable()
      table.columns().search('').draw()
-     table.column(3).search($('.data-search').data('find'), true, false).draw()
+    }
+   },
+   {
+    text: 'เอกสารเข้า',
+    className: 'btn btn-success',
+    action: function (e, dt, node, config) {
+     let table = $("#display-table").DataTable()
+     table.columns().search('').draw()
+     table.column(4).search($('.data-search').data('find'), true, false).draw()
     }
    },
    {
     text: 'เอกสารออก',
     className: 'btn btn-success',
-    attr: {
-     "data-retire": 'user-disable'
-    },
     action: function (e, dt, node, config) {
      let table = $("#display-table").DataTable()
      table.columns().search('').draw()
-     table.column(2).search($('.data-search').data('find'), true, false).draw()
+     table.column(3).search($('.data-search').data('find'), true, false).draw()
     }
    }
   ],
@@ -567,4 +570,72 @@ jQuery(function ($) {
   $(this).parent().hide("slow");
   $(".modal-body").show("slow");
 });
+
+var detailRows = [];
+
+ $('#display-table tbody').on('click', 'tr td.details-control', function () {
+  var tr = $(this).closest('tr');
+  var icon = $(this).find('i.fa-arrow-right')
+  var row = dt.row(tr);
+  var idx = $.inArray(tr.attr('id'), detailRows);
+  let loaded = $(this).data('loaded')
+  let id = $(this).parents('tr').attr('id')
+
+  if (row.child.isShown()) {
+   icon.addClass('fa-rotate-0')
+   icon.removeClass('fa-rotate-90')
+   setTimeout(function() { icon.removeClass('fa-rotate-0') }, 1000)
+   tr.removeClass('details');
+   row.child.hide();
+
+   // Remove from the 'open' array
+   detailRows.splice(idx, 1);
+  } else {
+   tr.addClass('details');
+   icon.addClass('fa-rotate-90')
+   if (loaded) {
+
+   } else {
+    $.ajax({
+     method: 'POST',
+     url: '/memo/getdetail',
+     data: {
+      id:id
+     },
+     success: function(data) {
+      row.child(format(data)).show()
+     }
+    })
+   }
+   //row.child(format(row.data())).show();
+
+   // Add to the 'open' array
+   if (idx === -1) {
+    detailRows.push(tr.attr('id'));
+   }
+  }
+ });
+
+ // On each draw, loop over the `detailRows` array and show any child rows
+ dt.on('draw', function () {
+  $.each(detailRows, function (i, id) {
+   $('#' + id + ' td.details-control').trigger('click');
+  });
+ });
+
+ function format(data) {
+  let text = "สร้างเอกสาร,ตรวจสอบเอกสาร,ผู้ตรวจสอบส่งกลับเอกสาร,ตรวจสอบแล้ว,รออนุมัติ,ผู้อนุมัติส่งกลับเอกสาร,อนุมัติแล้ว,ไม่อนุมัติ,บันทึกแล้ว".split(',')
+  let progress = text.map((v,i) => {
+   let disabled = (data.disabled.indexOf(i) > -1 ? ' disabled' : '')
+   let checked = ((data.data[i] && data.data[i][0]) ? ' checked' : '')
+   let time = (data.data[i] && data.data[i][1] ? moment(data.data[i][1]).add(543,'y').format('DD/MM/YYYY HH:mm') : '')
+   return '<input type="checkbox" name="debt-amount" id="'+i+'" value="'+i+'"' +disabled+ '' +checked+ '><label data-debt-text="'+v+'"><div class="debt-time">'+time+'</div><div class="debt-amount-pos"></div>\</label>'
+  })
+  return '<div id="form-wrapper">\
+   <form>\
+    <h2 id="form-title">สถานะเอกสาร</h1>\
+    <div id="debt-amount-slider">'+progress.join("")+'</div>\
+   </form>\
+  </div>'
+ }
 })

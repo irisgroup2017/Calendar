@@ -141,7 +141,7 @@ router.get('/list', async function (req, res) {
 })
 router.get('/list/:year', async function (req, res) {
  if (req.cookies.user_dataid != undefined) {
-  listMemo(req, res)
+  listAllMemo(req, res)
  } else {
   res.redirect('/')
  }
@@ -220,6 +220,14 @@ router.post('/action', async function (req, res) {
  })
 
  res.send(result)
+})
+
+router.post('/getdetail',async function (req, res) {
+ if (req.cookies.user_dataid != undefined) {
+  res.json(await api('get','/memo/getdetail',req.body))
+ } else {
+  res.redirect('/')
+ }
 })
 
 router.post('/attachdel', async function (req, res) {
