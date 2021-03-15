@@ -145,7 +145,7 @@ jQuery(function () {
    } else if ($(this).hasClass("radio-op") && $(this).is(':checked')) {
     data[$(this).attr('name')] = $(this).val()
    } else if (["tel", "teli", "telw"].includes(id)) {
-    data[id] = (typeof $(this).val() == 'number' ? $(this).val() : 0)
+    data[id] = (typeof $(this).val() == 'number' && $(this).val() != '' ? $(this).val() : 0)
    } else if (!$(this).hasClass("radio-op")) {
     data[id] = $(this).val()
    }
