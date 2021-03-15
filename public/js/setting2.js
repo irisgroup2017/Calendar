@@ -145,11 +145,11 @@ jQuery(function () {
    } else if ($(this).hasClass("radio-op") && $(this).is(':checked')) {
     data[$(this).attr('name')] = $(this).val()
    } else if (["tel", "teli", "telw"].includes(id)) {
-    data[id] = ($(this).val() || $(this).val() == 0 ? $(this).val() : "-")
+    data[id] = (typeof $(this).val() == 'number' ? $(this).val() : 0)
    } else if (!$(this).hasClass("radio-op")) {
     data[id] = $(this).val()
    }
-   if (data[id] == "") {
+   if (data[id] == "" && !["tel", "teli", "telw"].includes(id)) {
     pass = 0;
     $(this).addClass("error")
    } else {
