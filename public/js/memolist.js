@@ -36,7 +36,7 @@ jQuery(function ($) {
     action: function (e, dt, node, config) {
      let table = $("#display-table").DataTable()
      table.columns().search('').draw()
-     table.column(4).search($('.data-search').data('find'), true, false).draw()
+     table.columns([4,5]).search($('.data-search').data('find'), true, false).draw()
     }
    },
    {
