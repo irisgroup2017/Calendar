@@ -2,7 +2,6 @@ extends layout
 
 mixin tbl(memo)
  for issue in memo
-  //-var user-status = (block.status ? "user-enable" : "user-disable")
   tr(id=issue.memo_id data-id=issue.memo_id data-status=issue.memo_status data-admin=issue.memo_admin data-boss=issue.memo_boss data-approver=issue.memo_approver class=issue.setClass)
    td.details-control
     i.fa.fa-arrow-right
@@ -10,7 +9,7 @@ mixin tbl(memo)
    td.m-subject=issue.memo_subject
    td.m-from=issue.memo_from
    if issue.memo_cc
-    td.m-to(data-search=issue.memo_cc.toString())=issue.memo_to
+    td.m-to(data-search=issue.memo_cc.toString()+','+issue.memo_to)=issue.memo_to
     td.m-cc=issue.memo_cc.toString()
    else
     td.m-to=issue.memo_to
@@ -25,7 +24,7 @@ block script
 
 block content
  table.display.cell-border.nowrap#display-table(style="width:100%")
-  thead.data-search(data-find=parms.depart+"|"+parms.user)
+  thead.data-search(data-find=parms.depart+"|"+parms.user.split(' ')[0]+"|"+parms.user.split(' ')[1])
    tr
     th
     th เลขที่เอกสาร

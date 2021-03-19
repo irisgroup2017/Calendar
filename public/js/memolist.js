@@ -1,5 +1,13 @@
 jQuery(function ($) {
  var dt = $("#display-table").DataTable({
+  oLanguage: {
+   sLengthMenu: "แสดงข้อมูล _MENU_ แถวต่อหนึ่งหน้า",
+   sZeroRecords: "ไม่เจอข้อมูลที่ค้นหา",
+   sInfo: "แสดงข้อมูลที่ _START_ ถึง _END_ จากทั้งหมด _TOTAL_ แถว",
+   sInfoEmpty: "ไม่พบข้อมูล",
+   sInfoFiltered: "(คัดกรองจากข้อมูลทั้งหมด _MAX_ แถว)",
+   sSearch: "ค้นหา :"
+  },
   dom: 'Bfrtip',
   scrollX: true,
   paging: true,
@@ -12,9 +20,9 @@ jQuery(function ($) {
    header: true,
    footer: false
   },
-  "search": {
-   "regex": true,
-   "smart": true
+  search: {
+   regex: true,
+   //smart: true
   },
   buttons: [{
     text: 'สร้างเอกสารใหม่',
@@ -35,8 +43,9 @@ jQuery(function ($) {
     className: 'btn btn-success',
     action: function (e, dt, node, config) {
      let table = $("#display-table").DataTable()
+     let search = $('.data-search').data('find')
      table.columns().search('').draw()
-     table.columns([4,5]).search($('.data-search').data('find'), true, false).draw()
+     table.column(4).search(search, true, false).draw()
     }
    },
    {
