@@ -7,7 +7,7 @@
  padding: 8px 20px 5px;
 }
 .center,.align-center{text-align:center!important}
-footer{
+footer.footer-layout {
  left: 0;
  bottom: 0;
  width:100%;
