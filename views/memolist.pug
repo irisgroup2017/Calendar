@@ -5,7 +5,7 @@ mixin tbl(memo)
   tr(id=issue.memo_id data-id=issue.memo_id data-status=issue.memo_status data-admin=issue.memo_admin data-boss=issue.memo_boss data-approver=issue.memo_approver class=issue.setClass)
    td.details-control
     i.fa.fa-arrow-right
-   td.doc-no=issue.memo_code
+   td.doc-no.dt-nowrap=issue.memo_code
    td.m-subject=issue.memo_subject
    td.m-from=issue.memo_from
    if issue.memo_cc
