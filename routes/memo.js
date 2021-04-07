@@ -182,6 +182,7 @@ router.post('/action', async function (req, res) {
  let status = parseInt(req.body.status)
  let approver = req.body.approver
  let statusId
+ let data = {}
  switch (req.body.eventId) {
   case '0': //return
    status++
@@ -191,9 +192,11 @@ router.post('/action', async function (req, res) {
    if (status == 1 && approver) {
     status = 3
     statusId = 3
+    data.memoVerifyTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
    } else {
     status = 5
     statusId = 5
+    data.memoApproveTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
    }
    break
   case '2': //reject
@@ -204,6 +207,7 @@ router.post('/action', async function (req, res) {
    status = 0
    statusId = 0
  }
+ data.memoStatus = status
  await api('post', '/memolog', {
   memoId: req.body.memoId,
   dataId: req.cookies.user_dataid,
@@ -214,9 +218,7 @@ router.post('/action', async function (req, res) {
   where: {
    memoId: req.body.memoId
   },
-  data: {
-   memoStatus: status
-  }
+  data: data
  })
 
  res.send(result)

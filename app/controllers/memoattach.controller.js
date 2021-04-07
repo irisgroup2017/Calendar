@@ -28,6 +28,14 @@ exports.uploadFile = (req, res) => {
 
  api("POST","/memolog",memo)
  if (body.approve) {
+  memo = {
+   memoId: parseInt(body.memoid),
+   dataId: parseInt(dataId),
+   statusId: 5,
+   time: time
+  }
+  api("POST","/memolog",memo)
+  
   let bodies = {
    data: {
     memoStatus: 5
