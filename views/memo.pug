@@ -6,10 +6,16 @@ block content
  .container
   .memo-head
    .memo-title.center บันทึกภายใน
+   .row.justify-content-end.mr-0
+    .modal-memo-topic เอกสารเลขที่: &nbsp;
+    span.memo-span
+     ul.memo-span2
+      li.span-input
+       input#memo-no.memo-input.memo-ans(disabled type="text")
    table
     tbody
      tr
-      td 
+      td(colspan="2")
        .memo-quiz 
         .memo-quest ถึง:
         span.memo-span
@@ -17,13 +23,6 @@ block content
           li.span-select.memo-ans.memo-to#memo-to
           li.span-input
            input.memo-input.single-input(contenteditable="true" type="text")
-      td
-       .memo-quiz
-        .memo-quest เลขที่เอกสาร:
-        span.memo-span
-         ul.memo-span2
-          li.span-input
-           input#memo-no.memo-input.memo-ans(disabled type="text")
       td
        .memo-quiz
         .memo-quest2 วันที่:
@@ -119,22 +118,20 @@ block content
     img.modal-logo(src="../img/logo.jpg")
     .modal-memo-head
      .modal-memo-title.center บันทึกภายใน
+     .row.justify-content-end.mr-0
+      .modal-memo-topic เอกสารเลขที่: &nbsp;
+      .modal-memo-subject#modal-no
      table
       tbody
        tr
-        td
+        td(colspan="2")
          .modal-memo-cell
           .modal-memo-topic ถึง:
           .modal-memo-subject#modal-to
         td
          .modal-memo-cell
-          .modal-memo-topic เลขที่เอกสาร:
-          .modal-memo-subject#modal-no
-        td
-         .modal-memo-cell
           .modal-memo-topic วันที่:
           .modal-memo-subject#modal-date
-       tr
         td
          .modal-memo-cell
           .modal-memo-topic สำเนาเรียน:

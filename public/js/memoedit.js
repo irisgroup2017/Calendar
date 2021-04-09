@@ -259,19 +259,17 @@ $(function ($) {
    <img class="modal-logo" src="/img/logo.jpg">\
    <div class="modal-memo-head">\
     <div class="modal-memo-title center">บันทึกภายใน</div>\
+    <div class="row justify-content-end mr-0">\
+     <div class="modal-memo-topic">เอกสารเลขที่: &nbsp;</div>\
+     <div class="modal-memo-subject" id="modal-no"></div>\
+    </div>\
     <table>\
      <tbody>\
       <tr>\
-       <td>\
+       <td colspan="2">\
         <div class="modal-memo-cell">\
          <div class="modal-memo-topic">ถึง:</div>\
          <div class="modal-memo-subject" id="modal-to"></div>\
-        </div>\
-       </td>\
-       <td>\
-        <div class="modal-memo-cell">\
-         <div class="modal-memo-topic">เลขที่เอกสาร:</div>\
-         <div class="modal-memo-subject" id="modal-no"></div>\
         </div>\
        </td>\
        <td>\

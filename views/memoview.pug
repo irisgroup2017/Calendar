@@ -78,19 +78,18 @@ if parms.objs.memo_path
   img.modal-logo(src="/public/img/logo.jpg")
   .modal-memo-head
    .modal-memo-title.center บันทึกภายใน
+   .row.justify-content-end.mr-0
+    .modal-memo-topic เอกสารเลขที่: &nbsp;
+    .modal-memo-subject#modal-no=parms.objs.memo_code
    table
     tbody
      tr
-      td
+      td(colspan="2")
        .modal-memo-cell
         .modal-memo-topic ถึง:
         .modal-memo-subject#modal-to
          if parms.objs.memo_to
           =parms.objs.memo_to.toString()
-      td
-       .modal-memo-cell
-        .modal-memo-topic เลขที่เอกสาร:
-        .modal-memo-subject#modal-no=parms.objs.memo_code
       td
        .modal-memo-cell
         .modal-memo-topics วันที่:

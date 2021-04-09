@@ -615,7 +615,7 @@ table tbody .modal-memo-cell {
  div { float: none !important; overflow: visible !important; }
  .modal-memo { margin: 0mm 0mm; }
  .modal-page { 
-  zoom: 100%;
+  zoom: 150%;
   visibility: visible; 
   font-family: 'Sarabun', sans-serif;
   font-size: 14px;
