@@ -396,7 +396,7 @@ $(function($) {
    $(document).on('click','.print-button',function() {
     if (clicked) {
      clicked = false
-     saveDiv()
+     await saveDiv()
      printDiv()
     }
     setTimeout(() => clicked = true,1000)
@@ -536,7 +536,7 @@ $(function($) {
   }
  }
 
- function saveDiv() {
+ async function saveDiv() {
   let list = $('.modal-memo-subject')
   let data = {}
   let admin = $('.memo-admin-name').find('.target-select').data()
