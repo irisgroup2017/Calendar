@@ -393,7 +393,7 @@ $(function($) {
     setTimeout(() => clicked = true,1000)
    })
 
-   $(document).on('click','.print-button',function() {
+   $(document).on('click','.print-button',async function() {
     if (clicked) {
      clicked = false
      await saveDiv()
