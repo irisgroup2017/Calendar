@@ -83,7 +83,7 @@ module.exports = {
     } else if (typeof obj == 'number') {
      info = (contact[obj] != undefined ? contact[obj].name : depart[obj].depart)
      if (checkKey.indexOf(it) > 2) {
-      acc[it+'d'] = contact[obj].job
+      acc[it+'d'] = (contact[obj] ? contact[obj].job : '')
      }
     }
     else {
