@@ -40,7 +40,7 @@ router.get('/', async function(req, res, next) {
     dateend: dateconvert.thformat(timeEnd),
     datelist: datelist,
     dateshow: datelist.map(x => dateconvert.thformat(x)),
-    dateday: datelist.filter(day => inc.includes(moment(day,"YYYY-MM-DD").format('d'))).reduce((acc,it) => (acc[it] = "วัน"+moment(it,"YYYY-MM-DD").locale('th').format('dddd'),acc),{})
+    dateday: datelist.filter(day => inc.includes(moment(day,"YYYY-MM-DD").format('d'))).reduce((acc,it) => (acc[it] = moment(it,"YYYY-MM-DD").locale('th').format('dddd'),acc),{})
    }
    query = 'SELECT DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.timestart,u.timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM '+table+' AS u JOIN machine_data AS ms on u.MachCodeStart = ms.MachCode JOIN machine_data AS me on u.MachCodeEnd = me.MachCode WHERE (date BETWEEN ? AND ?)'
    result = await con.q(query,[timeStart,timeEnd])
