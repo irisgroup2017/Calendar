@@ -69,6 +69,7 @@ router.get('/', async function(req, res, next) {
   }
  } else { res.redirect('/') }
 })
+
 module.exports = router
 
 function datetodate(datestart,dateend) {
