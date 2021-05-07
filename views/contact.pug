@@ -58,7 +58,7 @@ block content
     th(rowspan="2")="ชื่อเล่น"
     th(colspan="3")="เบอร์ติดต่อ"
     th(rowspan="2")="อีเมล์"
-    if parms.operator > 3
+    if parms.operator > 2
      th(rowspan="2")="เครื่องมือ"
       span
        div
@@ -73,7 +73,7 @@ block content
     th="ส่วนตัว"
   tbody.bodyt
    +linfo(parms.data,parms.depart)
- if parms.operator > 3
+ if parms.operator > 2
   fieldset(style="margin-top: 10px;")
    legend="รายชื่อที่ไม่มีข้อมูล"
    ul.ladd
