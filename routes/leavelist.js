@@ -192,6 +192,9 @@ router.post('/', async function (req, res) {
 })
 
 router.post('/resend', async function (req, res, next) {
+ let userId = req.cookies.user_dataid
+ let newBoss = (await con.q('SELECT mailGroup FROM privacy_data WHERE dataid = ?',[userId]))[0].mailGroup
+ await con.q('UPDATE lar_data SET mailGroup = ? WHERE id = ?', [newBoss, req.body.larid])
  mailsend.send('Resend: ขออนุญาติ', req.cookies.user_name, req.body.larid, 'boss')
  res.end('ok')
 })
