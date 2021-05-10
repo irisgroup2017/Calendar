@@ -81,14 +81,14 @@ module.exports = {
     if (obj == null) {
      info = null
     } else if (typeof obj == 'number') {
-     info = (contact[obj] != undefined ? contact[obj].name : (depart[obj] != undefined ? depart[obj].depart : ''))
+     info = (contact[obj] != undefined ? contact[obj].name+' '+contact[obj].lastName : (depart[obj] != undefined ? depart[obj].depart : ''))
      if (checkKey.indexOf(it) > 2) {
       acc[it+'d'] = (contact[obj] ? contact[obj].job : '')
      }
     }
     else {
      let users = obj.split(',')
-     info = users.map(user => (contact[user] != undefined ? contact[user].name : (depart[user] != undefined ? depart[user].depart: '')),[])
+     info = users.map(user => (contact[user] != undefined ? contact[obj].name+' '+contact[obj].lastName : (depart[user] != undefined ? depart[user].depart: '')),[])
     }
     acc[it] = info
    } else {
