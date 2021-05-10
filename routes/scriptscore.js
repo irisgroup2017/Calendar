@@ -81,7 +81,7 @@ module.exports = {
     if (obj == null) {
      info = null
     } else if (typeof obj == 'number') {
-     info = (contact[obj] != undefined ? contact[obj].name : depart[obj].depart)
+     info = (contact[obj] != undefined ? contact[obj].name : (depart[obj] != undefined ? depart[obj].depart : ''))
      if (checkKey.indexOf(it) > 2) {
       acc[it+'d'] = (contact[obj] ? contact[obj].job : '')
      }
