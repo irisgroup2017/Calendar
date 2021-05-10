@@ -337,10 +337,10 @@ async function getMail(from,to,cc) {
  let depart = (await con.q("SELECT ID,depart,depart_mail FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
  let mail = {}
  mail.from = (contact[from] != undefined ? contact[from].name : depart[from].depart)
- mail.to = (contact[to] != undefined ? contact[to].email : depart[to].depart_mail)
+ mail.to = (contact[to] != undefined ? contact[to].mail : depart[to].depart_mail)
  mail.cc = cc.map(id => {
   if (contact[id] != undefined) {
-   return contact[id].email
+   return contact[id].mail
   } else if (depart[id] != undefined) {
    return depart[id].depart_mail
   }
