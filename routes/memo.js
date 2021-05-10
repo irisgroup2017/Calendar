@@ -93,6 +93,7 @@ router.get('/view/:memoId', async function (req, res) {
 
   if (timeline && timeline.length > 0) {
    parms.objs.memo_timeline = timeline.reduce((acc, it) => {
+    console.log(it)
     let date = moment(it.time).format("YYYYMMDD")
     let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
     let time = moment(it.time).format("Hmmss")
