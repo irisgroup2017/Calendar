@@ -278,7 +278,7 @@ async function listAllMemo(req,res) {
  }
  parms = core.objUnion(parms, core.cookies(req.cookies))
  let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) = ?", [year])
- let contact = (await con.q("SELECT dataid,name,level,job FROM contact_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
+ let contact = (await con.q("SELECT dataid,name,lastName,jobPos FROM user_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
  let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
  let dataid = parms.dataid
  let departid = contact[dataid].level
@@ -298,7 +298,7 @@ async function listMemo(req, res) {
  }
  parms = core.objUnion(parms, core.cookies(req.cookies))
  let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) = ?", [year])
- let contact = (await con.q("SELECT dataid,name,level,job FROM contact_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
+ let contact = (await con.q("SELECT dataid,name,lastName,jobPos FROM user_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
  let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
  let dataid = parms.dataid
  let departid = contact[dataid].level
@@ -333,7 +333,7 @@ router.post('/creatememo', async function (req, res) {
 })
 
 async function getMail(from,to,cc) {
- let contact = (await con.q("SELECT dataid,email,name FROM contact_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
+ let contact = (await con.q("SELECT dataid,name,lastName,jobPos FROM user_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
  let depart = (await con.q("SELECT ID,depart,depart_mail FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
  let mail = {}
  mail.from = (contact[from] != undefined ? contact[from].name : depart[from].depart)
