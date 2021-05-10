@@ -153,13 +153,13 @@ router.get('/getlog', async function (req, res) {
  let timeline = await api('get', '/memolog/getlog', {
   memoId: memoId
  })
- let contact = (await con.q("SELECT dataid,name,job FROM contact_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
+ let contact = (await con.q("SELECT dataid,name,lastName,jobPos FROM user_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
  if (timeline && timeline.length > 0) {
   data = timeline.reduce((acc, it) => {
    let date = moment(it.time).format("YYYYMMDD")
    let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
    let time = moment(it.time).format("Hmmss")
-   let user = contact[it.dataId].name
+   let user = contact[it.dataid].name +' '+ contact[it.dataid].lastName
    let path = (it.path ? it.path : "")
    let oriname = (it.originalName ? it.originalName : "")
    acc[date] = acc[date] || {}
