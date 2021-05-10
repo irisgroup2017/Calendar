@@ -93,7 +93,6 @@ router.get('/view/:memoId', async function (req, res) {
 
   if (timeline && timeline.length > 0) {
    parms.objs.memo_timeline = timeline.reduce((acc, it) => {
-    console.log(it)
     let date = moment(it.time).format("YYYYMMDD")
     let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
     let time = moment(it.time).format("Hmmss")
@@ -279,11 +278,13 @@ async function listAllMemo(req,res) {
  }
  parms = core.objUnion(parms, core.cookies(req.cookies))
  let memo = await con.q("SELECT memo_id,memo_create,memo_code,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_file,memo_admin,memo_boss,memo_approver,memo_verifytime,memo_approvetime,memo_create,memo_edit,memo_refuse,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE year(memo_date) = ?", [year])
- let contact = (await con.q("SELECT dataid,name,lastName,jobPos FROM user_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
- let depart = (await con.q("SELECT ID,depart FROM depart_row")).reduce((acc, it) => (acc[it.ID] = it, acc), {})
+ let contact = (await con.q("SELECT dataid,name,lastName,jobPos,depart FROM user_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
+ let depart = await con.q("SELECT ID,depart FROM depart_row")
+ let departCheck = depart.reduce((acc, it) => (acc[it.depart] = it, acc), {})
+ depart = depart.reduce((acc, it) => (acc[it.ID] = it, acc), {})
  let dataid = parms.dataid
- let departid = contact[dataid].level
- parms.depart = depart[departid].depart
+ let departid = contact[dataid].depart
+ parms.depart = departCheck[departid].depart
  memo = core.classAssign(memo, dataid)
  memo = core.relation(memo, contact, depart)
  parms.objs = memo
