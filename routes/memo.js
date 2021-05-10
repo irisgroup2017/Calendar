@@ -159,7 +159,7 @@ router.get('/getlog', async function (req, res) {
    let date = moment(it.time).format("YYYYMMDD")
    let timeshow = moment(it.time).locale('th').format("DD MMMM YYYY (HH:mm:ss)")
    let time = moment(it.time).format("Hmmss")
-   let user = contact[it.dataid].name +' '+ contact[it.dataid].lastName
+   let user = contact[it.dataId].name +' '+ contact[it.dataId].lastName
    let path = (it.path ? it.path : "")
    let oriname = (it.originalName ? it.originalName : "")
    acc[date] = acc[date] || {}
