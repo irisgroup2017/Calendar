@@ -88,8 +88,7 @@ module.exports = {
     }
     else {
      let users = obj.split(',')
-     console.log(contact)
-     info = users.map(user => (contact[user] != undefined ? contact[obj].name+' '+contact[obj].lastName : (depart[user] != undefined ? depart[user].depart: '')),[])
+     info = users.map(user => (contact[user] != undefined ? contact[user].name+' '+contact[user].lastName : (depart[user] != undefined ? depart[user].depart: '')),[])
     }
     acc[it] = info
    } else {
