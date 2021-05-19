@@ -1,17 +1,36 @@
 extends layout
 
+mixin depDoc (depart)
+ for dep in depart
+  if dep.depart_short
+   option(data-id=dep.ID data-short=dep.depart_short)=dep.depart
+mixin projDoc (project)
+ for proj in project
+  option(data-id=proj.project_id data-short=proj.project_short)=proj.project_name
+
 block script
 
 block content
  .container
+  .memo-option
+   form
+    fieldset
+     .row
+      .col
+       select#dep-alt.custom-select.custom-select-sm
+        option ออกเอกสารแทน ในนามฝ่าย
+        +depDoc(parms.depart)
+      .col
+       select#proj-alt.custom-select.custom-select-sm
+        option โครงการ
+        +projDoc(parms.project)
+  hr
   .memo-head
    .memo-title.center บันทึกภายใน
    .row.justify-content-end.mr-0
     .modal-memo-topic เอกสารเลขที่: &nbsp;
     span.memo-span
-     ul.memo-span2
-      li.span-input
-       input#memo-no.memo-input.memo-ans(disabled type="text")
+     label#memo-no.memo-input.memo-ans(disabled type="text")
    table
     tbody
      tr
@@ -118,7 +137,7 @@ block content
     img.modal-logo(src="../img/logo.jpg")
     .modal-memo-head
      .modal-memo-title.center บันทึกภายใน
-     .row.justify-content-end.mr-0
+     .row.ml-0
       .modal-memo-topic เอกสารเลขที่: &nbsp;
       .modal-memo-subject#modal-no
      table

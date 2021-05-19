@@ -46,6 +46,16 @@ html,body {
  display: inline-block;
 }
 
+.memo-option {
+ margin-top: 10px;
+ margin-left: auto;
+ margin-right: auto;
+ margin-bottom: 10px;
+ width: 21cm;
+ font-family: 'Sarabun', sans-serif;
+ font-size: 14px;
+}
+
 .memo-head {
  margin-top: 10px;
  margin-left: auto;

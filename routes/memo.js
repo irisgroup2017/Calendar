@@ -24,6 +24,8 @@ router.get('/', async function (req, res) {
    title: 'MEMO',
    head1: 'MEMO'
   }
+  parms.depart = await con.q('SELECT * FROM depart_row')
+  parms.project = await con.q('SELECT * FROM project_data')
   parms.user = userName
   parms.operator = dataop
   res.render('memo', parms)

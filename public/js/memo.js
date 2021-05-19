@@ -100,13 +100,13 @@ $(function($) {
    option: 'getcode'
   },
   success: function (data) {
-   count = "????"
+   let count = "????"
    let depart = data[0].memo_counts[0].depart_row.departShort
    let departId = data[0].memo_counts[0].depart_row.ID
    let memoyear = data[0].memo_counts[0].year
    let year = (memoyear+543).toString().substring(2,5)
    documents = "FM-" +depart+ "-" +year+ "-" +count
-   $('#memo-no').data({ docid: documents, count: parseInt(count), depart: departId,year: memoyear }).val(documents)
+   $('#memo-no').data({ docid: documents, count: parseInt(count), depart: departId,year: memoyear,depAlt:'',projAlt:'' }).text(documents)
   }
  })
 
@@ -219,6 +219,8 @@ $(function($) {
   }
   $('.popupUserlist').addClass('hide')
  })
+
+ $(document).on('change','#dep-alt,#proj-alt', representDepart)
  
  $(document).on('focusout','.memo-ans',function() {
 
@@ -232,7 +234,7 @@ $(function($) {
   $('.memo-ans').each(function(index,item) {
    target = $(item).parents('.memo-span2')
    if ($(item).hasClass('memo-input')) {
-    val = $(item).val()
+    val = $(item).val() || $(item).text()
    } else {
     if ($(item).hasClass('span-select')) {
      val = $(item).html()
@@ -499,7 +501,7 @@ $(function($) {
   else {
    let form = $('upsiwa')[0]
    let file = $(sender)[0].files[0]
-   let memopath = $('#memo-no').val().split('-')
+   let memopath = $('#memo-no').text().split('-')
    let pathdate = $('#memo-date').val().split('/').join('')
    memopath = memopath.slice(0,memopath.length-1).join('') +''+ pathdate
    let data = new FormData(form)
@@ -537,6 +539,8 @@ $(function($) {
  }
 
  async function saveDiv() {
+  $('#dep-alt').prop('disabled',true)
+  $('#proj-alt').prop('disabled',true)
   let list = $('.modal-memo-subject')
   let data = {}
   let admin = $('.memo-admin-name').find('.target-select').data()
@@ -648,6 +652,42 @@ $(function($) {
   }
   mywindow.document.write('</body></html>');
  }
+
+ function representDepart() {
+  let id = $(this).attr('id')
+  let value = $(this).find('option:selected').data('short')
+  let idValue = $(this).find('option:selected').data('id')
+  let text = $('#memo-no').text().split('-')
+  const [index,opt] = checkRepresentVal(id,text,value)
+  let replace = (value == undefined ? text.splice(index,1) : text.splice(index,opt,value))
+  $('#memo-no').text(text.join('-'))
+  $('#memo-no').data(id,(value==undefined ? '' : idValue))
+ }
+ 
+ function checkRepresentVal(id,text,value) {
+  let sub = (id == 'dep-alt' ? 0 : 1)
+  let index = 2
+  let opt = 0
+  let target = (sub ? '#dep-alt' : '#proj-alt')
+  let another = ($(target).find('option:selected').data('id') == undefined ? false : true)
+  let len = text.length - 4
+  switch (len) {
+   case 0:
+    break
+   case 1:
+    index = index + (value == undefined ? 0 : sub)
+    if (!another) {
+     opt = 1
+    }
+    break
+   case 2:
+    index = index + sub
+    opt = 1
+    break
+  }
+  return [index,opt]
+ }
+
  window.checkfile = checkfile
  window.printDiv = printDiv
 })
