@@ -675,8 +675,7 @@ $(function($) {
    case 0:
     break
    case 1:
-    index = index + (value == undefined ? 0 : sub)
-    if (!another) {
+    if (sub && !another) { 
      opt = 1
     }
     break
