@@ -27,6 +27,7 @@ router.get('/', async function(req, res, next) {
    let datelist = datetodate(timeStart,timeEnd)
    let result = (await con.q('SELECT emid,depart,jobPos FROM user_data WHERE dataid = ?',[dataid]))[0]
    let inc = ['0','6']
+
    parms = {
     title: 'รายงานแสดงเวลาของพนักงาน',
     username: userName,
@@ -43,9 +44,36 @@ router.get('/', async function(req, res, next) {
     dateday: datelist.filter(day => inc.includes(moment(day,"YYYY-MM-DD").format('d'))).reduce((acc,it) => (acc[it] = moment(it,"YYYY-MM-DD").locale('th').format('dddd'),acc),{})
    }
    query = 'SELECT DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.timestart,u.timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM '+table+' AS u JOIN machine_data AS ms on u.MachCodeStart = ms.MachCode JOIN machine_data AS me on u.MachCodeEnd = me.MachCode WHERE (date BETWEEN ? AND ?)'
-   result = await con.q(query,[timeStart,timeEnd])
-   result = result.reduce((acc,it) => (acc[it.date] = it,acc),{})
-   parms.fingerscan = result
+   let manualScan = await con.q('SELECT status,comment,DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.stime AS timestart,u.etime AS timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM inoutchange_data AS u JOIN machine_data AS ms on u.placein = ms.MachCode JOIN machine_data AS me on u.placeout = me.MachCode where dataid = ? AND status = 1  AND (date BETWEEN ? AND ?)',[dataid,timeStart,timeEnd])
+   let fingerScan = await con.q(query,[timeStart,timeEnd])
+   result = [...fingerScan,...manualScan]
+   let timeScan = {}
+   result.map(it => {
+    if (it.timestart == "00:00:00") {
+     delete it.timestart
+     delete it.mstart
+     if (it.status) {
+      it.onlyStart = 1
+     }
+    } else if (it.timeend == "00:00:00") {
+     delete it.timeend
+     delete it.mend
+     if (it.status) {
+      it.onlyEnd = 1
+     }
+    }
+    if (!it.onlyStart && !it.onlyEnd && it.status) {
+     it.bothManual = 1
+    }
+    timeScan[it.date] = Object.assign(timeScan[it.date] || {
+     date: it.date,
+     timestart: '00:00:00',
+     timeend: '00:00:00',
+     mstart: 'None',
+     mend: 'None'
+    } ,it)
+   })
+   parms.fingerscan = timeScan
    parms.vacation = vacationlist
    let lartype = {}
    larlist.map((it) => {

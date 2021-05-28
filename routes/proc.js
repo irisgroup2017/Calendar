@@ -27,15 +27,59 @@ function remodule(d) {
 	return a
 }
 
+router.get('/getfinger',async function(req,res) {
+ if (!req.cookies.user_dataid) { res.redirect('/') }
+ let id = req.cookies.user_dataid
+ let result = await con.q('SELECT status,comment,DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.stime AS timestart,u.etime AS timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM inoutchange_data AS u JOIN machine_data AS ms on u.placein = ms.MachCode JOIN machine_data AS me on u.placeout = me.MachCode where dataid = ? AND (date BETWEEN ? AND ?)',[id,req.body.start,req.body.end])
+ if (result.length > 0 ) {
+  res.json(result[0])
+ }
+})
+
+router.get('/manualscan',async function(req,res) {
+ if (!req.cookies.user_dataid) { res.redirect('/') }
+ let id = req.cookies.user_dataid
+ let date = req.body.date
+ let result = await con.q('SELECT * FROM inoutchange_data WHERE dataid = ? AND date = ?',[id,date])
+ res.json(result)
+})
+
 router.post('/fingerscan',async function(req, res) {
  if (!req.cookies.user_dataid) { res.redirect('/') }
  id = req.cookies.user_dataid
  let table = "em" + id.toString()
  let tableexist = await con.q('SHOW TABLES FROM calendar LIKE ?',[table])
- if (tableexist.length != 0) { 
-  let result = await con.q('SELECT DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.timestart,u.timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM '+table+' AS u JOIN machine_data AS ms on u.MachCodeStart = ms.MachCode JOIN machine_data AS me on u.MachCodeEnd = me.MachCode WHERE (date BETWEEN ? AND ?)',[req.body.start,req.body.end])
-  result = result.reduce((acc,it) => (acc[it.date] = it,acc),{})
-  res.json(result)
+ if (tableexist.length != 0) {
+  let fingerScan = await con.q('SELECT DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.timestart,u.timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM '+table+' AS u JOIN machine_data AS ms on u.MachCodeStart = ms.MachCode JOIN machine_data AS me on u.MachCodeEnd = me.MachCode WHERE (date BETWEEN ? AND ?)',[req.body.start,req.body.end])
+  let manualScan = await con.q('SELECT status,comment,DATE_FORMAT(u.date,"%Y-%m-%d") AS date,u.stime AS timestart,u.etime AS timeend,ms.MachShort AS mstart,me.MachShort AS mend FROM inoutchange_data AS u JOIN machine_data AS ms on u.placein = ms.MachCode JOIN machine_data AS me on u.placeout = me.MachCode where dataid = ? AND status = 1 AND (date BETWEEN ? AND ?)',[id,req.body.start,req.body.end])
+  let result = [...fingerScan,...manualScan]
+  let timeScan = {}
+  result.map(it => {
+   if (it.timestart == "00:00:00") {
+    delete it.timestart
+    delete it.mstart
+    if (it.status) {
+     it.onlyStart = 1
+    }
+   } else if (it.timeend == "00:00:00") {
+    delete it.timeend
+    delete it.mend
+    if (it.status) {
+     it.onlyEnd = 1
+    }
+   }
+   if (!it.onlyStart && !it.onlyEnd && it.status) {
+    it.bothManual = 1
+   }
+   timeScan[it.date] = Object.assign(timeScan[it.date] || {
+    date: it.date,
+    timestart: '00:00:00',
+    timeend: '00:00:00',
+    mstart: 'None',
+    mend: 'None'
+   } ,it)
+  })
+  res.json(timeScan)
  }
  res.end("")
 })

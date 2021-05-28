@@ -403,10 +403,12 @@ jQuery(function ($) {
         let col = dayrender[item].c
         let stime = (scandate.timestart != "00:00:00" ? scandate.timestart.substring(0, 5) : "ไม่มีข้อมูล")
         let etime = (scandate.timeend != "00:00:00" ? scandate.timeend.substring(0, 5) : "ไม่มีข้อมูล")
+        let sinfo = (scandate.onlyEnd || scandate.bothManual ? '<i class="fa fa-info-circle" title="'+scandate.comment+'"></i>' : '')
+        let einfo = (scandate.onlyStart || scandate.bothManual ? '<i class="fa fa-info-circle" title="'+scandate.comment+'"></i>' : '')
         let splace = (stime != 'ไม่มีข้อมูล' ? '<div class="location-scan">' + scandate.mstart + '</div>' : '')
         let eplace = (etime != 'ไม่มีข้อมูล' ? '<div class="location-scan">' + scandate.mend + '</div>' : '')
         if ($('.fc-row:nth-child(' + row + ') .fc-content-skeleton tbody tr td:nth-child(' + col + ') .fc-ltr').length == 0) {
-         $('.fc-row:nth-child(' + row + ') .fc-content-skeleton tbody tr td:nth-child(' + col + ')').append('<div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> ' + stime + ' ' + splace + '</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> ' + etime + ' ' + eplace + '</div>')
+         $('.fc-row:nth-child(' + row + ') .fc-content-skeleton tbody tr td:nth-child(' + col + ')').append('<div class="fc-ltr"><i class="fa fa-arrow-right text-success"></i> ' + stime + ' ' + splace + ' '+sinfo+ '</div> <div class="fc-ltr"><i class="fa fa-arrow-left text-danger"></i> ' + etime + ' ' + eplace + ' '+einfo+ '</div>')
         }
        }
       }
@@ -475,6 +477,7 @@ jQuery(function ($) {
    }
   },
   dayClick: function (date, jsEvent, view) {
+   
    var modalAddDay = '\
     <div class="modal fade" id="extraModal" >\
      <div class="modal-dialog">\
@@ -526,6 +529,7 @@ jQuery(function ($) {
                 <option value="11">IDEN101</option>\
                 <option value="12">IDEN KP</option>\
                 <option value="13">ICOPENH</option>\
+                <option value="15">WFH</option>\
                 <option value="0">OUTSIDE</option>\
                </select>\
               </div>\
@@ -547,6 +551,7 @@ jQuery(function ($) {
                  <option value="11">IDEN101</option>\
                  <option value="12">IDEN KP</option>\
                  <option value="13">ICOPENH</option>\
+                 <option value="15">WFH</option>\
                  <option value="0">OUTSIDE</option>\
                 </select>\
                </div>\
@@ -595,9 +600,9 @@ jQuery(function ($) {
    })
    modalAddDay.on('click', '#saveExtraDate', function () {
     let date = modalAddDay.find('#dateModal').val()
-    let type = modalAddDay.find('input[name=optradio]:checked').val()
     let sChk = modalAddDay.find('#customCheck1').prop("checked")
     let eChk = modalAddDay.find('#customCheck2').prop("checked")
+    let type = (modalAddDay.find('name=[optradio:checked]').attr('id'))
     let sIn = (sChk ? modalAddDay.find("#timepicker1").val() : null)
     let sOut = (eChk ? modalAddDay.find("#timepicker2").val() : null)
     let pIn = (sChk ? modalAddDay.find('#place1').val() : null)
@@ -619,16 +624,16 @@ jQuery(function ($) {
       async: false,
       data: {
        ioDate: date,
-       ioType: type,
        ioSplace: (pIn ? parseInt(pIn) : null),
        ioEplace: (pOut ? parseInt(pOut) : null),
        ioStime: sIn,
        ioEtime: sOut,
        ioComment: comment,
-       ioStatus: 1
+       ioType: (type=='optradio1' ? 1 : 2),
+       ioStatus: 0
       },
-      success: function (data) {
-       //console.log(data)
+      success: function () {
+       modalAddDay.modal("hide")
       }
      })
     }
