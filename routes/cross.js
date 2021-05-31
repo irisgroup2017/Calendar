@@ -46,8 +46,16 @@ router.post('/sync/:path', async function (req, res) {
   method: 'POST',
   data: req.body
  }
- const request = await axios(option)
- res.json(request.data)
+
+ await axios(option)
+ .then(response => {
+  res.json(response.data)
+ })
+ .catch(err => {
+  console.log(err)
+  res.status(err.status).send(err.error)
+ })
+
 })
 
 router.post('/commentpost', async function (req, res) {

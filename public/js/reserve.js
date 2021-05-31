@@ -243,6 +243,9 @@ document.addEventListener('DOMContentLoaded', function () {
      },
      success: function (data) {
       modal.modal("hide")
+     },
+     error: (err) => {
+      alert(err)
      }
     })
    })
@@ -555,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       success: function (data) {
        if (data.error) {
-        alert(data.error)
+        $.alert(data.error)
        } else {
         let event = data[0]
         let carId = event.carId
