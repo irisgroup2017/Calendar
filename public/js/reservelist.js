@@ -65,7 +65,7 @@ jQuery(function () {
      {
       data: "times",
       render: function (data, type, row) {
-       let checkdate = (row.allday ? moment(row.date +':08:00:00','YYYY-MM-DD:HH:mm:ss') : moment(row.rstart))
+       let checkdate = (row.allday ? moment(row.date +':08:00:00','YYYY-MM-DD:HH:mm:ss') : moment(row.rstart).subtract(7,'h'))
        let diff = moment().diff(moment(checkdate))
        if (diff >= 0) {
         if (row.allday && row.timee != null && row.timee != '00:00:00') {
