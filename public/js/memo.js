@@ -662,13 +662,19 @@ $(function($) {
   let value = $(this).find('option:selected').data('short')
   let idValue = $(this).find('option:selected').data('id')
   let text = $('#memo-no').text().split('-')
-  const [index,opt] = checkRepresentVal(id,text,value)
-  let replace = (value == undefined ? text.splice(index,1) : text.splice(index,opt,value))
+  const [index,opt] = checkRepresentVal(id,text)
+  if (!value && opt) {
+   text.splice(index,1)
+  } else if (opt || value) {
+   text.splice(index,opt,value)
+  } else {
+   text.splice(index,1)
+  }
   $('#memo-no').text(text.join('-'))
   $('#memo-no').data(id,(value==undefined ? '' : idValue))
  }
  
- function checkRepresentVal(id,text,value) {
+ function checkRepresentVal(id,text) {
   let sub = (id == 'dep-alt' ? 0 : 1)
   let index = 2
   let opt = 0
@@ -679,8 +685,12 @@ $(function($) {
    case 0:
     break
    case 1:
-    if (sub && !another) { 
+    if (!another) {
      opt = 1
+    }
+    if (another) {
+     index = index + sub
+     opt = 0
     }
     break
    case 2:
