@@ -588,10 +588,10 @@ $(function($) {
    },
    success: function(data) {
     let documents = data.memoCode
-    let count = parseInt(data.memoCode.split("-").pop())
+    let count = parseInt(documents.split("-").pop())
     let depart = data.depart
-    $('#memo-no').data({ docid: documents, count: count, depart: depart }).val(documents)
-    $('#modal-no').data({ docid: documents, count: count, depart: depart }).val(documents)
+    $('#memo-no').data({ docid: documents, count: count, depart: depart }).text(documents)
+    $('#modal-no').data({ docid: documents, count: count, depart: depart }).text(documents)
     sessionStorage.removeItem('attachm')
     $('.close-editorModal').click()
     $.alert("บันทึกข้อมูลแล้ว เอกสารเลขที่: "+ documents)
