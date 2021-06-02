@@ -106,6 +106,10 @@ $(function($) {
    let memoyear = data[0].memo_counts[0].year
    let year = (memoyear+543).toString().substring(2,5)
    documents = "FM-" +depart+ "-" +year+ "-" +count
+   if (depart != 'PUR') {
+    $('#dep-alt').prop('disabled',true)
+    $('#proj-alt').prop('disabled',true)
+   }
    $('#memo-no').data({ docid: documents, count: parseInt(count), depart: departId,year: memoyear,depAlt:'',projAlt:'' }).text(documents)
   }
  })
