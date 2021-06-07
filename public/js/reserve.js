@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (ms == "") {
        let estMile = (data.estMile == null ? 'ไม่ถูกบันทึก' : data.estMile)
        $("#milestart").attr('placeholder','การบันทึกล่าสุด: '+ estMile)
+       $("#milestart").data('lastmile',estMile)
       }
       $("#mileend").val(me)
       $("#remainfuel").val(rf)
@@ -217,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
    modal.on('click', '#submitDetail', function () {
     let data = {}
     let ev = info.event
+    let lastMile = $("#milestart").data('lastmile')
     data.mstart = $("#milestart").val()
     data.mend = $("#mileend").val()
     data.remark = $("#carremark").val()
@@ -231,7 +233,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (olddata.me == "" && olddata.me != data.mend) {
      data.etime = moment().format("HH:mm:ss")
     }
-    if (data.mend != "")
+    if (data.mstart == "") { data.mstart = (typeof lastMile == "number" ? lastMile : 0) }
+    if (data.mend == "") { data.mend = 0 }
     $.ajax({
      url: '/cross',
      type: "get",

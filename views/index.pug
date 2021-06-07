@@ -1,20 +1,66 @@
 extends layout
 
 block content
- mixin table(objs)
-  -var i=0
-  while i < objs.length
-   tr
-    td.center=objs[i].className
-    td.center=objs[i].title
-    td.center=objs[i].time
-    td.center=objs[i].dayLength
-    td.center=objs[i++].userName
- mixin ssrc(scr)
-  for t in scr
-   script(src="js/"+t)
+ mixin table(objs,moment,news,read,list)
+  for line in objs
+   -var id=line.note_id
+   tr.announce(id=id class=(read(id,list) ? 'gray' : '') data-filename=line.note_file)
+    td
+     if !read(id,list)
+      .fa.fa-envelope-o.d-inline.pr-2
+     else
+      .fa.fa-envelope-open-o.d-inline.pr-2
+     if (news(line.note_create) && !read(id,list))
+      .rs.text-danger.d-inline
+    td.note_title.overflow-hidden=line.note_title
+    td.note_desc.overflow-hidden=line.note_desc
+    td.note_create=moment(line.note_create).format('DD/MM/YYYY HH:mm.ss')
+ link(rel="stylesheet" href="/public/datatable/datatables.min.css")
+ link(href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet")
+ script(src="/public/datatable/datatables.min.js")
  if parms.user
   .space
-  h3= "Login as " + parms.user
- 
-   
+  h3 ประกาศข่าว / ประชาสัมพันธ์
+ .containner 
+  table.display.cell-border#display-table(style="width:100%")
+   thead
+    tr
+     th
+     th หัวข้อข่าว
+     th รายละเอียด
+     th วันที่ประกาศ
+   tbody.notice
+    +table(parms.note,parms.moment,parms.newAnnounce,parms.read,parms.noteRead)
+   tfoot
+    tr
+     th
+     th หัวข้อข่าว
+     th รายละเอียด
+     th วันที่ประกาศ
+ +ssrc(['index.js','animatemodal.min.js','jquery.form.min.js'])
+ +scss(['index.css','animate.min.css'])
+ #adderModal.animated.notice-modal-add(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+  .close-adderModal
+   i.fa.fa-close.fa-3x
+  .modal-content.emp-profile
+   .container
+    form(style="padding: 10px 0px;" id="upsiwa")
+     .form-group.needs-validation(novalidate)
+      label(for="announceSubject") หัวข้อประชาสัมพันธ์
+      input.form-control#announceSubject(name="note_title" type="text" placeholder="หัวข้อประชาสัมพันธ์" required)
+     .form-group
+      label(for="announceDetail") รายละเอียด
+      input.form-control#announceDetail(name="note_desc" type="text" placeholder="ข้อมูลการประชาสัมพันธ์" required)
+     .form-group
+      label.form-label(for="announceFile") แนบไฟล์ประชาสัมพันธ์
+      input.form-control#announceFile(name="note_file" type="file" style="height: auto !important;")
+     button#form-submit บันทึก
+     button(type="cancel") ยกเลิก
+ #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow: hidden; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
+  .close-animatedModal
+   i.close-animate Close
+    .modal-content.d-flex.flex-row
+     .showfile
+     .pl-5.pt-5
+      .modal-title.pt-2.pr-5.text-break
+      .modal-desc.pt-3.pr-5.text-break

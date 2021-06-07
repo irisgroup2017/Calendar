@@ -1,0 +1,73 @@
+
+.notice .rs::after {
+ content: 'new!';
+}
+
+.notice .rs {
+ font-family: 'Rock Salt', cursive;
+}
+
+.announce {
+ position: relative;
+}
+
+tr.announce:hover {
+ cursor: pointer;
+ background-color: antiquewhite !important;
+}
+
+table th,table td {
+ transition: all .5s;
+ max-width: 140px !important;
+ white-space: nowrap;
+ text-overflow: ellipsis;
+ word-break: break-all;
+}
+
+.tooltip {
+ font-family: 'Sarabun', sans-serif;
+ font-size: 14px;
+ box-sizing: border-box;
+ position: absolute;
+ display: block;
+ background: #286F8A;
+ width: 50%;
+ font-size: 16px;
+ line-height: 24px;
+ cursor: text;
+ opacity: 1;
+ transform: translate3d(0, -20px, 0);
+ transition: all 0.2s ease-out;
+}
+.tooltip .note-title {
+ display: block;
+ background: #fff;
+ border: solid 1px #286F8A;
+ color: #286F8A;
+ padding: 8px 17px 10px 17px;
+ line-height: 16px;
+}
+.tooltip .note-title .fa {
+ position: relative;
+ margin-left: 10px;
+ top: 1px;
+ cursor: pointer;
+ transition: all 0.2s ease-out;
+}
+.tooltip .note-title .fa:hover {
+ transform: scale(1.15) translate3d(0, 0, 0);
+ -webkit-backface-visibility: none;
+         backface-visibility: none;
+}
+.tooltip .note-desc {
+ color: aliceblue;
+ display: block;
+ padding: 13px 17px;
+}
+
+.modal-title {
+ white-space: normal;
+}
+.modal-desc {
+ white-space: normal;
+}
