@@ -129,17 +129,23 @@ $(document).on('click','.announce',function(ev) {
   afterClose: function () {
    $(".thumb").hide()
    $('.showfile').empty()
-   window.location.href = "/"
+   //window.location.href = "/"
   }
  })
  let fileExt = data.substring(data.lastIndexOf('.')).toLowerCase()
- $('.showfile').append('<' + (fileExt == '.jpg' ? 'img' : 'iframe') + ' src="' + data + '" style="height: 100vh; width:100vh;"></iframe>')
+ let viewer = (fileExt == '.jpg' ? '<a data-gallery="photoviewer" data-title="test" data-group="a" href="' + data + '"><img src="' + data + '" style="height: 100vh; width:100vh;" alt=""></a>' : '<iframe src="' + data + '" style="height: 100vh; width:100vh;"></iframe>')
+ $('.showfile').append(viewer)
  $('.modal-title').text(title +' '+ date)
  $('.modal-desc').text(desc)
  $.ajax({
   type: "POST",
   url: "/read",
-  data: { id: e.attr('id') }
+  data: { id: e.attr('id') },
+  success: function () {
+   let content = '<div class="fa fa-envelope-open-o d-inline pr-2"></div>'
+   e.addClass('gray')
+   e.find('td:first-child').html(content)
+  }
  })
 })
 
@@ -158,4 +164,21 @@ $(document).on('mousemove',(event) => {
   "left" : evW+30,
   "top" : evH+50
  });
+});
+
+$(document).on('click','[data-gallery=photoviewer]',(e) => {
+
+ e.preventDefault();
+
+ var items = [],options
+
+ $('[data-gallery=photoviewer]').each(function () {
+   items.push({
+     src: $(this).attr('href'),
+     title: $(this).attr('data-title')
+   });
+ });
+
+ new PhotoViewer(items, options);
+
 });
