@@ -133,7 +133,7 @@ $(document).on('click','.announce',function(ev) {
   }
  })
  let fileExt = data.substring(data.lastIndexOf('.')).toLowerCase()
- let viewer = (fileExt == '.jpg' ? '<a data-gallery="photoviewer" data-title="test" data-group="a" href="' + data + '"><img src="' + data + '" style="height: 100vh; width:100vh;" alt=""></a>' : '<iframe src="' + data + '" style="height: 100vh; width:100vh;"></iframe>')
+ let viewer = (fileExt == '.jpg' ? '<a data-gallery="photoviewer" data-title="" data-group="a" href="' + data + '"><img src="' + data + '" style="height: 100vh; width:100vh;" alt=""></a>' : '<iframe src="' + data + '" style="height: 100vh; width:100vh;"></iframe>')
  $('.showfile').append(viewer)
  $('.modal-title').text(title +' '+ date)
  $('.modal-desc').text(desc)

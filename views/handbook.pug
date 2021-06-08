@@ -1,0 +1,31 @@
+extends layout
+
+block content
+ mixin handbook(list)
+  for file in list
+   li.list-file(data-filepath=file.path)=file.name
+ .row.pt-5
+  .col-3.list-field.pl-2
+   h5.pl-4 รายการคู่มือการใช้งานระบบ
+   ol.list-files
+    +handbook(parms.handbook)
+  .col-9.view-field.pr-2.min-vh-100.h-100.w-100
+   iframe(src="" width="100%" height="100%" frameborder="0")
+
+ style.
+  .list-file {
+   line-height: 1.5;
+  }
+  .list-file:hover {
+   cursor: pointer;
+   background: #e1ebec;
+  }
+
+ script.
+  $(document).on('click','.list-file',(ev) => {
+   let e = $(ev.currentTarget)
+   let filepath = window.location.origin +''+$(e).data('filepath')
+   let content = '<iframe src="'+ filepath +'" style="height: 80vh; width:100%;"></iframe>'
+   $('.view-field').html(content)
+  })
+  
