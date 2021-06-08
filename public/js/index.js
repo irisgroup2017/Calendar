@@ -129,6 +129,7 @@ $(document).on('click','.announce',function(ev) {
   afterClose: function () {
    $(".thumb").hide()
    $('.showfile').empty()
+   window.location.href = "/"
   }
  })
  let fileExt = data.substring(data.lastIndexOf('.')).toLowerCase()
