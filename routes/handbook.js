@@ -14,7 +14,8 @@ router.get('/', async function(req, res) {
  parms.handbook = fs.readdirSync(filepath,callback => result)
  .map(file => ({
    path: '/public/handbook/' +file,
-   name: path.basename(file,'.pdf')
+   name: path.basename(file),
+   ext: path.extname(file)
   })
  );
 	res.render('handbook', parms)

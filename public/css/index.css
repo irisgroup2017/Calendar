@@ -71,3 +71,44 @@ table th,table td {
 .modal-desc {
  white-space: normal;
 }
+
+#popupMenu {
+ display: none !important;
+}
+
+.popupMenu #popupMenu.show {
+ display: inline;
+ width: auto;
+}
+
+#popupMenu.show {
+ display: inline-block !important;
+ position: absolute;
+}
+
+#popupMenu.show .popup-item {
+ top: 5px;
+ display: inline;
+ box-sizing: border-box;
+ list-style: none;
+ line-height: 1.6em;
+ user-select: none;
+ text-decoration: none;
+ outline: none;
+ text-overflow: ellipsis;
+ background-color: rgba(0, 0, 0, 0.1);
+ cursor: pointer;
+ position: relative;
+ white-space: nowrap;
+ overflow: hidden;
+ padding: .5em 1em;
+ margin-right: .333em;
+ margin-bottom: .333em;
+ border-radius: 2px;
+ border: 1px solid rgba(0, 0, 0, 0.3);
+ background: linear-gradient(to bottom, rgba(230, 230, 230, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+#popupMenu.show .popup-item:hover {
+ background-color: rgba(0, 0, 0, 0.05);
+}

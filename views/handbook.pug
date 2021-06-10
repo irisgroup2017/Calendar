@@ -3,7 +3,7 @@ extends layout
 block content
  mixin handbook(list)
   for file in list
-   li.list-file(data-filepath=file.path)=file.name
+   li.list-file(data-filepath=file.path data-ext=file.ext)=file.name
  .row.pt-5
   .col-3.list-field.pl-2
    h5.pl-4 รายการคู่มือการใช้งานระบบ
@@ -25,7 +25,16 @@ block content
   $(document).on('click','.list-file',(ev) => {
    let e = $(ev.currentTarget)
    let filepath = window.location.origin +''+$(e).data('filepath')
-   let content = '<iframe src="'+ filepath +'" style="height: 80vh; width:100%;"></iframe>'
+   let ext = $(e).data('ext')
+   let content
+   if (ext == '.mp4') {
+    content = '<video style="height: 80vh; width:100%;" controls autoplay>\
+      <source src="'+ filepath +'" type="video/mp4" /><!-- Safari / iOS video    -->\
+     </video>'
+   }
+   if (ext == '.pdf') {
+    content = '<iframe src="'+ filepath +'" style="height: 80vh; width:100%;"></iframe>'
+   }
    $('.view-field').html(content)
   })
   

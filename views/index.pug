@@ -1,7 +1,10 @@
 extends layout
 
 block content
- mixin table(objs,moment,news,read,list)
+ mixin popupmenu(list)
+  for line,index in list 
+   li.popup-item.align-self-center=index
+ mixin table(objs,moment,news,read,list,year)
   for line in objs
    -var id=line.note_id
    tr.announce(id=id class=(read(id,list) ? 'gray' : '') data-filename=line.note_file)
@@ -14,7 +17,7 @@ block content
       .rs.text-danger.d-inline
     td.note_title.overflow-hidden=line.note_title
     td.note_desc.overflow-hidden=line.note_desc
-    td.note_create=moment(line.note_create).format('DD/MM/YYYY HH:mm.ss')
+    td.note_create(data-year=moment(line.note_create).format('YYYY'))=moment(line.note_create).format('DD/MM/YYYY HH:mm.ss')
  link(rel="stylesheet" href="/public/datatable/datatables.min.css")
  link(href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet")
  script(src="/public/datatable/datatables.min.js")
@@ -30,7 +33,7 @@ block content
      th รายละเอียด
      th วันที่ประกาศ
    tbody.notice
-    +table(parms.note,parms.moment,parms.newAnnounce,parms.read,parms.noteRead)
+    +table(parms.note,parms.moment,parms.newAnnounce,parms.read,parms.noteRead,parms.thisYear)
    tfoot
     tr
      th
@@ -64,3 +67,5 @@ block content
     .pl-5.pt-5
      .modal-title.pt-2.pr-5.text-break
      .modal-desc.pt-3.pr-5.text-break
+ ui#popupMenu.d-flex.flex-row.align-items-center
+  +popupmenu(parms.noteYear)

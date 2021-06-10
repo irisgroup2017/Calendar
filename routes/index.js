@@ -24,6 +24,8 @@ router.get('/',async function(req, res) {
   ls.updateLar(userName,dataid,now)
   parms.note = await con.q('SELECT * FROM notice_data ORDER BY note_create DESC')
   parms.noteRead = (await con.q('SELECT * FROM notice_read WHERE dataid = ?',[dataid])).map(line => line.note_id)
+  parms.noteYear = parms.note.reduce((acc,it) => (acc[(it.note_create).getFullYear()] = true,acc),{})
+  parms.thisYear = (date) => (moment().format('YYYY') == moment(date).format('YYYY') ? true : false)
 		res.render('index', parms)
 	} else {
 		res.redirect('login')
@@ -38,7 +40,6 @@ router.post('/read',async function(req, res) {
  } else {
   res.redirect('login')
  }
- console.log(req.body)
 })
 
 module.exports = router

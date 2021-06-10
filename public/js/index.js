@@ -14,7 +14,8 @@ $("#display-table").DataTable({
   regex: true,
   smart: true
  },
- buttons: [{
+ buttons: [
+  {
   text: 'เพิ่มประกาศ',
   action: function (e, dt, node, config) {
    $("#adderModal").animatedModal({
@@ -41,7 +42,26 @@ $("#display-table").DataTable({
     afterClose: function () {}
    })
   }
+ },{
+  text: 'ปีที่ประกาศ',
+  className: 'popupMenu',
+  action: () => {
+   if ($('#popupMenu').hasClass('show')) {
+    $('#popupMenu').removeClass('show')
+   } else {
+    $('.popupMenu').after(
+     $('#popupMenu').addClass('show')
+    )
+   }
+  }
  }]
+})
+
+$(document).on('click','.popup-item',(e) => {
+ let result = $(e.target).text()
+ let table = $("#display-table").DataTable()
+ table.column(3).search(result).draw()
+ $('#popupMenu').removeClass('show')
 })
 
 $(document).on('click','#form-submit',(e) => {
@@ -182,3 +202,5 @@ $(document).on('click','[data-gallery=photoviewer]',(e) => {
  new PhotoViewer(items, options);
 
 });
+
+$("#display-table").DataTable().column(3).search((new Date).getFullYear()).draw()
