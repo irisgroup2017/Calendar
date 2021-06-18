@@ -3,7 +3,8 @@ extends layout
 block content
  mixin handbook(list)
   for file in list
-   li.list-file(data-filepath=file.path data-ext=file.ext)=file.name
+   if (file.ext == '.mp4' || file.ext == '.pdf')
+    li.list-file(data-filepath=file.path data-ext=file.ext)=file.name
  .row.pt-5
   .col-3.list-field.pl-2
    h5.pl-4 รายการคู่มือการใช้งานระบบ

@@ -9,7 +9,17 @@ exports.uploadForm = (req, res) => {
     }
     // log applicationForm
 	log.logger('info',data.username+' Upload memo attachment: '+data.file.filename+' file')
-	res.send(data)
+	res.end(data)
+}
+
+exports.uploadAttach = (req, res) => {
+	let data = {}
+ data.url = req.headers.origin +'/public/memo/attach/'+ req.file.originalname
+ data.success = true
+ data.data = {}
+ data.data.url = req.headers.origin +'/public/memo/attach/'+ req.file.originalname
+ data = JSON.stringify(data)
+	res.end(data)
 }
 
 exports.uploadFile = (req, res) => {
