@@ -6,6 +6,7 @@ nodemailer = require('nodemailer'),
 ll = require('../bin/larlist'),
 log = require('../bin/logger'),
 fs = require('fs')
+const api = require('../bin/api')
 const dns = require('dns')
 const transporter = nodemailer.createTransport({
 	service: 'gmail',
@@ -453,6 +454,7 @@ router.post('/',async function(req, res) {
 			req.body.start = start
 			req.body.swapDate = swapDate 
 		}
+  api('GET','/lardata/assignid','')
 		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
 		res.json(req.body)
 	}
