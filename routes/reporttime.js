@@ -4,12 +4,34 @@ const con = require('../bin/mysql')
 const moment = require('moment')
 
 router.get('/', async function(req, res, next) {
- let userName = req.cookies.user_name
- let dataid = req.cookies.user_dataid
- let dataop = req.cookies.user_op
- let mail = req.cookies.user_mail
- let timeStart = req.query.start
- let timeEnd = req.query.end
+ let option = {
+  userName: req.cookies.user_name,
+  dataid: req.cookies.user_dataid,
+  dataop: req.cookies.user_op,
+  mail: req.cookies.user_mail,
+  timeStart: req.query.start,
+  timeEnd: req.query.end
+ }
+ reportTime(req,res,option)
+})
+
+router.get('/user', async function(req, res, next) {
+ let option = {
+  //userName: req.cookies.user_name,
+  dataid: req.query.dataid,
+  timeStart: req.query.start,
+  timeEnd: req.query.end
+ }
+ reportTime(req,res,option)
+})
+
+module.exports = router
+
+async function reportTime(req,res,opt) {
+ let userName = opt.userName
+ let dataid = opt.dataid
+ let timeStart = opt.timeStart
+ let timeEnd = opt.timeEnd
  if (dataid && timeStart && timeEnd) {
   let table = "em" + dataid.toString()
   let tableexist = await con.q('SHOW TABLES FROM calendar LIKE ?',[table])
@@ -32,8 +54,6 @@ router.get('/', async function(req, res, next) {
     title: 'รายงานแสดงเวลาของพนักงาน',
     username: userName,
     dataid: dataid,
-    operator: dataop,
-    mail: mail,
     emid: result.emid,
     depart: result.depart,
     job: result.jobPos,
@@ -75,6 +95,50 @@ router.get('/', async function(req, res, next) {
    })
    parms.fingerscan = timeScan
    parms.vacation = vacationlist
+   //count lar
+   parms.countLar = (larlist ? larlist.length : 0)
+   parms.sumLar = larlist.reduce((acc,it) => {
+    if (it.allDay) {
+     if (it.end) {
+      return acc + parseInt(moment(it.start*1000).diff(moment(it.end*1000)))
+     } else { 
+      return acc + 86400000 
+     }
+    }
+    if (it.end) { 
+     return acc + parseInt(moment(it.start*1000).diff(moment(it.end*1000)))
+    }
+   },0)
+
+   //select change time
+   parms.entryLate = 0
+   parms.countLate = 0
+   let change = await con.q('SELECT * FROM change_worktime WHERE dataid = ? AND changetime BETWEEN ? AND ? ORDER BY changetime ASC',[dataid,timeStart,timeEnd])
+   let count = 1
+   //check
+   if (change) {
+    for (ctime of change) {
+     while (fingerScan[count] && moment(ctime).diff(moment(fingerScan[count].date,'YYYY-MM-DD')) > 0) {
+      let timeDiff = moment(fingerScan[count].timestart,'HH:mm:ss').diff(moment(ctime.oldstime,'HH:mm:ss'))
+      if (timeDiff > 0) {
+       parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
+       parms.countLate++
+      }
+      count++
+     }
+    }
+   }
+   while (fingerScan[count] && moment(privacy[0].swtime,'YYYY-MM-DD').diff(moment(fingerScan[count].date,'YYYY-MM-DD')) > 0) {
+    let timeDiff = moment(fingerScan[count].timestart,'HH:mm:ss').diff(moment(privacy[0].swtime,'YYYY-MM-DD'))
+    if (timeDiff > 0) {
+     parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
+     parms.countLate++
+    }
+    count++
+   }
+   //save
+   parms.entryLate = moment.duration(parms.entryLate).format("HH:mm").split(':')
+   parms.sumLar = moment.duration(parms.sumLar).format("D:HH:m").split(':')
    let lartype = {}
    larlist.map((it) => {
     lartype[dateconvert.changeformatsubtract(it.start)] = {
@@ -96,9 +160,7 @@ router.get('/', async function(req, res, next) {
    res.render('reporttime', parms)
   }
  } else { res.redirect('/') }
-})
-
-module.exports = router
+} 
 
 function datetodate(datestart,dateend) {
  let result = []

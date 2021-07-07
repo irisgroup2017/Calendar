@@ -4,6 +4,11 @@ mixin scss(scss)
 mixin ssrc(scr)
  for t in scr
   script(src="js/"+t)
+mixin leave(info)
+ for day in info
+  tr
+   td(colspan="19")
+   td(colspan="5")="ประเภทการลา: "+ 4
 mixin insertline(range,list,show,lar,vacation,dateday)
  each day,i in range
   tr
@@ -73,6 +78,11 @@ html
      td.tail-title(colspan="24")
    tbody.user-desc
     +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype,parms.vacation,parms.dateday)
+   tfoot 
+    tr
+     td(colspan="1")
+     td(colspan="18")="สาย: " + parms.countLate +" วัน / เวลารวม: " + (parms.entryLate[0] > 0 ? parms.entryLate[0] +' ชั่วโมง ' : '') + (parms.entryLate[1] ? parms.entryLate[1] +' นาที' : '')
+     //td(colspan="5")="จำนวนการลา: "+ (parms.countLar ? parms.countLar +' วัน' : '') +"/เวลารวม " + (parms.sumLar[0] ? parms.sumLar[0] +' วัน' : '')
   .print-btn
    button(type="submit" onclick="window.print()") Print
   

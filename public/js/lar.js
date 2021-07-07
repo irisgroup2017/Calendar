@@ -275,6 +275,17 @@ jQuery(function ($) {
     }
    }
    let endtime = dateSend(view.type, view.end._i)
+   
+   if (view.end.format('YYYY') > moment().format('YYYY')) {
+    $('.fc-next-button').prop("disabled", true);
+   } else {
+    $('.fc-next-button').prop("disabled", false);
+   }
+   if (view.start.format('YYYY') < moment($('#larlist').data('sdate')).format('YYYY')) {
+    $('.fc-prev-button').prop("disabled", true);
+   } else {
+    $('.fc-prev-button').prop("disabled", false);
+   }
    if (sessionStorage.attach) {
     $.ajax({
      url: '/proc',
@@ -477,7 +488,17 @@ jQuery(function ($) {
    }
   },
   dayClick: function (date, jsEvent, view) {
-   
+   $.ajax({
+    url: '/',
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: {
+     'state': 'getvacation',
+     'start': view.start._i,
+     'end': view.end._i
+    }
+   })
    var modalAddDay = '\
     <div class="modal fade" id="extraModal" >\
      <div class="modal-dialog">\
@@ -652,9 +673,16 @@ jQuery(function ($) {
     alert("กรุณาทำการลาครั้งละ 1 รายการ");
     return
    }
+   
    // retrieve the dropped element's stored Event Object
    var originalEventObject = $(this).data('eventObject')
    var $extraEventClass = $(this).attr('data-class')
+   let sdate = $('#larlist').data('sdate')
+
+   if (date.diff(sdate,'y') < 1 && originalEventObject.title == 'ลาพักร้อน') {
+    alert("คุณยังไม่ได้รับสิทธิการลาพักร้อน");
+    return
+   }
 
    // we need to copy it, so that multiple events don't have a reference to the same object
    var copiedEventObject = $.extend({}, originalEventObject)
@@ -1343,6 +1371,49 @@ jQuery(function ($) {
       $('#upsiwa').ajaxForm(function () {
        alert("file upload!")
       })
+      let businessHours = ['.fc-sun','.fc-mon','.fc-tue','.fc-wed','.fc-thu','.fc-fri','.fc-sat']
+      let leaveEvent = calendar.fullCalendar('clientEvents')
+      let holiday = $('.fc-bg .vdate').parents('td')
+      businessHours = businessHours.filter((day,i) => {
+       if (fcwdow.indexOf(i) < 0) {
+        return day
+       }
+      },[])
+      businessHours = businessHours.reduce((acc,it) => (acc = $.merge(acc,$('.fc-bg '+it)),acc),[])
+      businessHours = $.map(businessHours,day => $(day).data("date"))
+      leaveEvent = leaveEvent.reduce((acc,day) => {
+       if (day.title != "ลาอื่นๆ" && day.title != "ลากิจไม่รับค่าจ้าง") {
+        if (day.end && day.allDay) {
+         let duration = moment(day.end).diff(moment(day.start),'d')
+         for (let i=0;i<duration;i++) {
+          acc.push(moment(day.start).add(i,'d').format('YYYY-MM-DD'))
+         }
+        } else {
+         acc.push(moment(day.start).format('YYYY-MM-DD'))
+        }
+       }
+       return acc
+      },[])
+      holiday = $.map(holiday,day => $(day).data("date"),[])
+      let leaveDate = [...leaveEvent,...holiday,...businessHours]
+      leaveDate.sort()
+      leaveDate = leaveDate.reduce((acc,it) => {
+       if (acc.length >= 7) return acc
+       if (acc == '') { 
+        acc.push(it)
+       } else {
+        if (moment(it).diff(moment(acc.slice(-1).pop()),'d') == 1) {
+         acc.push(it)
+        } else {
+         acc = []
+        }
+       }
+       return acc
+      },[])
+      if (leaveDate.length >= 5) {
+       alert('หยุดงานต่อเนื่อง 1 สัปดาห์ กรุณาติดต่อฝ่ายทรัพยากรบุคคล')
+       return
+      }
       if (calEvent.className == 'label-danger') {
        calEvent.title = $(this).find('#larDetail').val()
        if (calEvent.title == "") {

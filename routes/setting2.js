@@ -2,9 +2,7 @@ const express = require('express')
 const con = require('../bin/mysql')
 const router = express.Router()
 const moment = require('moment')
-const ls = require('../bin/larStock')
 const log = require('../bin/logger')
-const larstock = require('../bin/larstock')
 const fs = require("fs")
 const api = require("../bin/api")
 
@@ -161,7 +159,7 @@ router.post('/add', async function (req, res) {
   fullname: fullName,
   position: jobPos,
   nickname: nickName,
-  ext: ext,
+  extentionNumber: ext,
   privatePhone: private,
   workPhone: work,
   email: mail
@@ -184,6 +182,7 @@ router.post('/add', async function (req, res) {
   contact: wcontact,
   privacy: wprivacy
  })
+ api('GET','/lardata','')
  res.json(result)
 })
 
@@ -191,7 +190,14 @@ router.post('/edit', async function (req, res) {
  let data = req.body
  let key = classify(data)
  let block = manageKey(key,data)
+ if (block.privacy && (block.privacy.startTime || block.privacy.endTime)) {
+  let date = new Date()
+  let result = (await con.q('SELECT dataid,swtime,ewtime FROM privacy_data WHERE dataid = ?',[data.profileId]))[0]
+  let info = [result.dataid,result.swtime,result.ewtime,date]
+  con.q('INSERT INTO change_worktime (dataid,oldstime,oldetime,changetime) VALUES (?,?,?,?)',info)
+ }
  await api('PUT','/cross/editemp',block)
+ api('GET','/lardata','')
  res.json(data)
 })
 
@@ -240,8 +246,9 @@ router.post('/get/:id', async function (req, res) {
    password: result.password.substring(0, 3) + '*'.repeat(result.password.length - 3)
   }
   res.json(parms)
+ } else {
+  res.end("N/A")
  }
- res.end("N/A")
 })
 
 function Generator() {
@@ -364,7 +371,7 @@ function ckey(key,data) {
    case 'edit-nickname':
     return result.nickname = data['edit-nickname']
    case 'edit-phone':
-    return result.ext = data['edit-phone']
+    return result.extentionNumber = data['edit-phone']
    case 'edit-mobile':
     return result.privatePhone = data['edit-mobile']
    case 'edit-workphone': 

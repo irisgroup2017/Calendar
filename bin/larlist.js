@@ -7,131 +7,67 @@ const llt = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อ�
  llr = ['sickr', 'personalr', 'vacationr', 'trainingr', 'sterilyr', 'maternityr', 'religiousr', 'militaryr']
 
 async function getLar(userName, dataid, thisday) {
- a = new Date(thisday),
-  LAR = [],
-  start = new Date(a.getFullYear(), 0, 1, 7).getTime() / 1000,
-  end = (new Date(a.getFullYear(), a.getMonth(), a.getDate(), 7).getTime() / 1000),
-  result = await con.q('SELECT * FROM lar_data WHERE userName = ? AND approve > 1 AND start BETWEEN ? AND ?', [userName, start, end]),
-  resultr = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?', [dataid, a.getFullYear()])
- resultr = resultr[0]
- for (var i = 0; i < result.length; i++) {
-  var duration = []
-  if (result[i].end) {
-   duration = getDuration(result[i].start, result[i].end)
-  } else {
-   duration.d = 1
+ let a = new Date(thisday)
+ let b = []
+ result = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?', [dataid, a.getFullYear()])
+ type = (await con.q('SELECT * FROM lar_type')).reduce((acc,it) => (acc[it.type_key] = it,acc),{})
+
+ lle.map(it => {
+  let ans = {
+   a: type[it],
+   c: convertSecToDate(result[it]),
+   d: convertSecToDate(result[it]+'d'),
+   e: (result[it]+'d' < 0 ? true : false)
   }
-  j = result[i].className, k = result[i].title
-  if (j == 'label-grey') {
-   LAR.sick = (LAR.sick ? LAR.sick + 1 : 1)
-   LAR.sickd = plusDuration(LAR.sickd, duration)
-  } else if (j == 'label-success') {
-   LAR.personal = (LAR.personal ? LAR.personal + 1 : 1)
-   LAR.personald = plusDuration(LAR.personald, duration)
-  } else if (j == 'label-warning') {
-   LAR.vacation = (LAR.vacation ? LAR.vacation + 1 : 1)
-   LAR.vacationd = plusDuration(LAR.vacationd, duration)
-  } else {
-   if (k == 'ลาฝึกอบรม') {
-    LAR.training = (LAR.training ? LAR.training + 1 : 1)
-    LAR.trainingd = plusDuration(LAR.trainingd, duration)
-   } else if (k == 'ลาทำหมัน') {
-    LAR.sterily = (LAR.sterily ? LAR.sterily + 1 : 1)
-    LAR.sterilyd = plusDuration(LAR.sterilyd, duration)
-   } else if (k == 'ลาคลอด') {
-    LAR.maternity = (LAR.maternity ? LAR.maternity + 1 : 1)
-    LAR.maternityd = plusDuration(LAR.meternityd, duration)
-   } else if (k == 'ลาอุปสมบท') {
-    LAR.religious = (LAR.religious ? LAR.religious + 1 : 1)
-    LAR.religiousd = plusDuration(LAR.religiousd, duration)
-   } else if (k == 'ลารับราชการทหาร') {
-    LAR.military = (LAR.military ? LAR.military + 1 : 1)
-    LAR.militaryd = plusDuration(LAR.militaryd, duration)
-   }
-  }
- }
- LAR.sickr = minusDuration(resultr[lle[0]], LAR.sickd)
- LAR.personalr = minusDuration(resultr[lle[1]], LAR.personald)
- LAR.vacationr = minusDuration(resultr[lle[2]], LAR.vacationd)
- LAR.trainingr = minusDuration(resultr[lle[3]], LAR.trainingd)
- LAR.sterilyr = minusDuration(resultr[lle[4]], LAR.sterilyd)
- LAR.maternityr = minusDuration(resultr[lle[5]], LAR.maternityd)
- LAR.religiousr = minusDuration(resultr[lle[6]], LAR.religiousd)
- LAR.militaryr = minusDuration(resultr[lle[7]], LAR.militaryd)
- if (LAR.vacation == undefined && (resultr.vacationq != null)) {
-  LAR.vacationq = await dhmtoarray(resultr.vacationq.toString())
-  LAR.vacationr = plusDuration(LAR.vacationq, {
-   d: resultr[lle[2]],
-   h: 0,
-   m: 0
-  })
- } else {
-  if (LAR.vacation == undefined && resultr.vacationp != null) {
-   LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
-   LAR.vacationr = plusDuration(LAR.vacationp, {
-    d: resultr[lle[2]],
-    h: 0,
-    m: 0
-   })
-  } else if (LAR.vacation != undefined && (resultr.vacationp != null)) {
-   LAR.vacationp = await dhmtoarray(resultr.vacationp.toString())
-   var x = plusDuration(LAR.vacationp, {
-    d: resultr[lle[2]],
-    h: 0,
-    m: 0
-   })
-   LAR.vacationr = minusDuration(x, LAR.vacationd)
-  }
- }
- return LAR
+  b.push(ans)
+ })
+ return b
 }
-async function viewLar(userName, dataid, thisday) {
- var a = new Date(thisday)
- LAR = await getLar(userName, dataid, a)
- LARS = [], saveLAR = []
- for (i = 0; i < llt.length; i++) {
-  if (i == 4) {
-   var s1, s2
-   if (Number(LAR[lle[i]]) == 1) {
-    s1 = '1 ครั้ง'
-    s2 = '0 ครั้ง'
-    LAR[llr[i]]['o'] = false
-   } else if (Number(LAR[lle[i]]) > 1) {
-    s1 = 'ใช้ ' + LAR[lle[i]] + ' ครั้ง'
-    s2 = Number(LAR[lle[i]]) - 1 + ' ครั้ง'
-    LAR[llr[i]]['o'] = true
-   } else {
-    s1 = '0 ครั้ง'
-    s2 = '1 ครั้ง'
-    LAR[llr[i]]['o'] = false
-   }
+
+function convertSecToDate(sec) {
+ this.day = this.hour = this.minute = 0
+ this.sec = parseInt(sec) || 0
+ const day = () => {
+  if (this.sec >= 86400) {
+   this.day = Math.round(this.sec / 86400) +' วัน '
+   this.sec %= 86400;
   }
-  if (LAR[lle[i]]) {
-   saveLAR.push({
-    a: lld[i],
-    b: LAR[lld[i]],
-    c: llr[i],
-    d: LAR[llr[i]]
-   })
-   LARS.push({
-    a: llt[i],
-    b: LAR[lle[i]],
-    c: (llt[i] == 'ลาทำหมัน' ? s1 : displayDuration(LAR[lld[i]])),
-    d: (llt[i] == 'ลาทำหมัน' ? s2 : displayDuration(LAR[llr[i]])),
-    e: LAR[llr[i]]['o']
-   })
-  } else {
-   LARS.push({
-    a: llt[i],
-    b: 0,
-    c: (llt[i] == 'ลาทำหมัน' ? s1 : '0 วัน'),
-    d: (llt[i] == 'ลาทำหมัน' ? s2 : displayDuration(LAR[llr[i]])),
-    e: LAR[llr[i]]['o']
-   })
-  }
+  return this.day || ''
  }
- saveDuration(saveLAR, dataid, a)
- return LARS
+ const hour = () => {
+  if (this.sec >= 3600) {
+   this.hour = Math.round(this.sec / 3600) +' ชั่วโมง '
+   this.sec %= 3600;
+  }
+  return this.hour || ''
+ }
+ const minute = () => {
+  if (this.sec >= 60) {
+   this.minute = Math.round(this.sec / 60) +' นาที '
+   this.sec %= 60;
+  }
+  return this.minute || ''
+ }
+ let dateString = day() + hour() + minute()
+ return (dateString == '' ? '-' : dateString)
+}
+
+async function viewLar(userName, dataid, thisday) {
+ let a = new Date(thisday)
+ let b = []
+ result = (await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?', [dataid, a.getFullYear()]))[0]
+ type = (await con.q('SELECT * FROM lar_type')).reduce((acc,it) => (acc[it.type_key] = it,acc),{})
+
+ lle.map(it => {
+  let ans = {
+   a: type[it].type_title,
+   c: convertSecToDate(result[it+'d']),
+   d: convertSecToDate(result[it+'r']),
+   e: (result[it]+'r' < 0 ? true : false)
+  }
+  b.push(ans)
+ })
+ return b
 }
 
 const option = {

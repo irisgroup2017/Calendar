@@ -2,10 +2,9 @@ var express = require('express'),
 con = require('../bin/mysql'),
 router = express.Router(),
 dateFormat = require('dateformat'),
-ls = require('../bin/larStock'),
 log = require('../bin/logger'),
-larstock = require('../bin/larstock'),
 fs = require("fs")
+const api = require('./bin/api')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -121,7 +120,7 @@ router.post('/',async function(req, res) {
 	}
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])
-		ls.setLar(a.userName,a.dataid,'update',new Date().getTime())
+		api('GET','/lardata','')
 		log.logger('info','Edit Date Start Work : '+ req.cookies.user_name+' - '+a.userName)
         res.json(a)
 	}

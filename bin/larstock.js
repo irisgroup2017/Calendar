@@ -1,13 +1,13 @@
 const con = require('../bin/mysql'),
- log = require('../bin/logger'),
- larlist = require('../bin/larlist'),
- llt = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ลาฝึกอบรบ', 'ลาทำหมัน', 'ลาคลอด', 'ลาอุปสมบท', 'รารับราชการทหาร'],
- ll = ['sick', 'personal', 'vacation', 'training', 'sterily', 'maternity', 'religious', 'military'],
- llc = ['sickc', 'personalc', 'vacationc', 'trainingc', 'sterilyc', 'maternityc', 'religiousc', 'militaryc'],
- lld = ['sickd', 'personald', 'vacationd', 'trainingd', 'sterilyd', 'maternityd', 'religiousd', 'militaryd'],
- lle = ['sicke', 'personale', 'vacatione', 'traininge', 'sterilye', 'maternitye', 'religiouse', 'militarye'],
- llr = ['sickr', 'personalr', 'vacationr', 'trainingr', 'sterilyr', 'maternityr', 'religiousr', 'militaryr']
- const moment = require('moment')
+log = require('../bin/logger'),
+larlist = require('../bin/larlist'),
+llt = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ลาฝึกอบรบ', 'ลาทำหมัน', 'ลาคลอด', 'ลาอุปสมบท', 'รารับราชการทหาร'],
+ll = ['sick', 'personal', 'vacation', 'training', 'sterily', 'maternity', 'religious', 'military'],
+llc = ['sickc', 'personalc', 'vacationc', 'trainingc', 'sterilyc', 'maternityc', 'religiousc', 'militaryc'],
+lld = ['sickd', 'personald', 'vacationd', 'trainingd', 'sterilyd', 'maternityd', 'religiousd', 'militaryd'],
+lle = ['sicke', 'personale', 'vacatione', 'traininge', 'sterilye', 'maternitye', 'religiouse', 'militarye'],
+llr = ['sickr', 'personalr', 'vacationr', 'trainingr', 'sterilyr', 'maternityr', 'religiousr', 'militaryr']
+const moment = require('moment')
 
 async function setLar(userName, dataid, state, now) {
  /*
@@ -21,20 +21,23 @@ async function setLar(userName, dataid, state, now) {
  8.ลารับราชการทหาร 60 วัน 1 ครั้ง
  */
  let si = 30,
-  pe = 0,
-  va = 0,
-  tr = 30,
-  st = 1,
-  ma = 90,
-  re = 0,
-  mi = 60,
-  vap = null,
-  vaq = null
- //let depart = (await con.q('SELECT depart FROM user_data WHERE dataid = ?', dataid))[0].depart
- let swdate = await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?', dataid)
- let x = gd(new Date(swdate[0].cdate * 1000)),
+ pe = 0,
+ va = 0,
+ tr = 30,
+ st = 1,
+ ma = 90,
+ re = 0,
+ mi = 60,
+ vap = null,
+ vaq = null
+ let swdate = (await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?', dataid))[0].cdate
+ let x = gd(new Date(swdate * 1000)),
   y = gd(new Date(now)),
   w = y[2] - x[2]
+ //new
+ let ulevel = (await con.q('SELECT ulevel FROM user_data WHERE dataid = ?', dataid))[0].ulevel
+ let vacationNew = newVacation(ulevel,moment(swdate*1000),moment())
+ //
  let ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?', [dataid, y[2] - 1])
  if (!ov[0]) {
   if (w < 1) {
@@ -129,11 +132,6 @@ async function setLar(userName, dataid, state, now) {
     await con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?', [userName, ovm, dataid, y[2]])
    }
   }
-  // 2 Years reset
-  /*} else {
-   vap = "000000"
-   con.q('UPDATE lar_status SET userName = ?,vacationp = ? WHERE dataid = ? AND year = ?',[userName,vap,dataid,y[2]])
-  }*/
  }
 
  if ((w >= 2) || (w == 1)) {
@@ -293,6 +291,36 @@ function plusdhm(a, b) {
 function gd(a) {
  return [a.getDate(), a.getMonth(), a.getFullYear()]
 }
+
+function newVacation(level,join,now) {
+ let day
+ let diff = moment.duration(now.diff(join)).years()
+ let checkLv = (lv) => (lv < 4 ? true : false)
+ switch (diff) {
+  case 0:
+   day = 0
+   break
+  case 1:
+  case 2:
+   day = (checkLv(level) ? 8 : 6)
+   break
+  case 3:
+  case 4:
+   day = (checkLv(level) ? 10 : 8)
+   break
+  case 5:
+  case 6:
+  case 7:
+  case 8:
+  case 9:
+   day = (checkLv(level) ? 12 : 10)
+   break
+  default:
+   day = (checkLv(level) ? 14 : 12)
+ }
+ return day
+}
+
 exports.setLar = setLar
 exports.updateLar = updateLar
 exports.updateAll = updateAll

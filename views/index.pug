@@ -18,6 +18,9 @@ block content
     td.note_title.overflow-hidden=line.note_title
     td.note_desc.overflow-hidden=line.note_desc
     td.note_create(data-year=moment(line.note_create).format('YYYY'))=moment(line.note_create).format('DD/MM/YYYY HH:mm.ss')
+    if parms.operator > 2
+     td
+      #remove-note.fa.fa-times.red
  link(rel="stylesheet" href="/public/datatable/datatables.min.css")
  link(href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet")
  script(src="/public/datatable/datatables.min.js")
@@ -32,6 +35,8 @@ block content
      th หัวข้อข่าว
      th รายละเอียด
      th วันที่ประกาศ
+     if parms.operator > 2
+      th
    tbody.notice
     +table(parms.note,parms.moment,parms.newAnnounce,parms.read,parms.noteRead,parms.thisYear)
    tfoot
@@ -40,6 +45,8 @@ block content
      th หัวข้อข่าว
      th รายละเอียด
      th วันที่ประกาศ
+     if parms.operator > 2
+      th
  +ssrc(['index.js','animatemodal.min.js','jquery.form.min.js','photoviewer.min.js'])
  +scss(['index.css','animate.min.css','photoviewer.min.css'])
  #adderModal.animated.notice-modal-add(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")

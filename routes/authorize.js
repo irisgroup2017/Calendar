@@ -4,8 +4,8 @@ express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
 authHelper = require('../bin/auth'),
-larstock = require('../bin/larstock'),
 log = require('../bin/logger')
+const api = require('../bin/api')
 
 function relogin(status,res) {
 	parms = querystring.stringify({
@@ -31,7 +31,7 @@ router.post('/', async function(req, res) {
 					'mail': result.mail,
 					'operator': operator[0].operator
 				}
-				larstock.updateEnt(result.dataid)
+				api('GET','/lardata','')
 				authHelper.fortuneCookies(data,res)
 				log.logger('info','Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }

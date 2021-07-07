@@ -2,9 +2,9 @@ var express = require('express'),
 router = express.Router(),
 con = require('../bin/mysql'),
 ll = require('../bin/larlist'),
-ls = require('../bin/larStock'),
 mailsend = require('../bin/mailsend'),
 log = require('../bin/logger')
+const api = require('../bin/api')
 
 router.get('/', async function(req, res) {
 	var userName = req.cookies.user_name,dataid = req.cookies.user_dataid,dataop = req.cookies.user_op,mail = req.cookies.user_mail
@@ -82,7 +82,7 @@ router.post('/', async function(req, res) {
         mailsend.send('ฝ่ายทรัพยากรบุคคลปฏิเสธคำขอยกเลิกการ',approver,larid,'user')
         log.logger('info','HR Delete Rejected: '+ approver +' Request ID '+larid)
     }
-    ls.updateLar(data.userName,data.dataid)
+    api('GET','/lardata','')
     res.json(req.body)
 })
 

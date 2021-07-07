@@ -118,8 +118,12 @@ $(document).on('mouseleave','tr.announce',(ev) => {
  $('.tooltip').remove()
 })
 
-$(document).on('click','.announce',function(ev) {
- let e = $(ev.currentTarget)
+$(document).on('click','#remove-note',(e) => {
+ $(e.target).parents('tr').remove()
+})
+
+$(document).on('click','.announce td:not(:last-child)',function(ev) {
+ let e = $(ev.target).parents('tr')
  let file = e.data('filename')
  $('.tooltip:not(:last-child)').remove()
  let data = window.location.origin +''+ file

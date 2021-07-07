@@ -5,7 +5,7 @@ async function send(method,path,data) {
  var option = {
   baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' + path,
   method: method,
-  data: data
+  data: data || {}
  }
  const request = await axios(option)
  return request.data
