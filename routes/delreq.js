@@ -16,9 +16,9 @@ router.get('/', async function(req, res) {
 			'mail': mail
 		}
 		parms = { title: 'รายการขอยกเลิกการลา', head1: 'Delete Request', head2: userName }
-        parms.user = userName
-        parms.operator = dataop
-        if (dataop < 3) { res.redirect('/') }
+  parms.user = userName
+  parms.operator = dataop
+  if (dataop < 3) { res.redirect('/') }
 	} else {
 		res.redirect('/login')
     }
@@ -67,6 +67,7 @@ router.post('/', async function(req, res) {
         approve = 0
         result = await con.q('UPDATE lar_data SET approve = ?,hrapprover = ?,hrapprovedate = ?,delreq = ? WHERE id = ?',[approve,approver,approvedate,0,larid])
         mailsend.send('ฝ่ายทรัพยากรบุคคลอนุมัติคำขอยกเลิกการ',approver,larid,'user')
+        await api('GET','/lardata','')
         log.logger('info','HR Delete Approved: '+ approver +' Request ID '+larid)
     }
     if (state == 'massapprove') {
@@ -74,6 +75,8 @@ router.post('/', async function(req, res) {
         for (var i=0;i<larid.length;i++) {
             result = await con.q('UPDATE lar_data SET approve = ?,hrapprover = ?,hrapprovedate = ?,delreq = ? WHERE id = ?',[approve,approver,approvedate,0,req.body.larid[i]])
             mailsend.send('ฝ่ายทรัพยากรบุคคลอนุมัติคำขอยกเลิกการ',approver,req.body.larid[i],'user')
+            await api('GET','/lardata','')
+            await api('GET','/lardata','')
             log.logger('info','HR Delete Approved: '+ approver +' Request ID '+larid)
         }
     }

@@ -5,6 +5,7 @@ ll = require('../bin/larlist'),
 fs = require('fs'),
 mailsend = require('../bin/mailsend'),
 log = require('../bin/logger')
+const api = require('../bin/api')
 
 async function leavelist(req,res) {
  var userName = req.cookies.user_name,
@@ -176,6 +177,7 @@ router.post('/', async function (req, res) {
    }
   }
   await con.q('DELETE FROM lar_data WHERE id = ?', req.body.larid)
+  await api('GET','/lardata','')
   log.logger('info', 'Delete Leave Data : ' + req.cookies.user_name + ' ID ' + req.body.larid)
  }
  if (req.body.state == 'delkeep') {

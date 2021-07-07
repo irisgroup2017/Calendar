@@ -123,42 +123,6 @@ router.post('/',async function(req, res) {
   req.body.ip = ip
 		res.json(req.body)
 	}
-	if (req.body.state == 'load') {
-		con.q('SELECT * FROM reserve_data WHERE start BETWEEN ? AND ?',[req.body.start,req.body.end])
-		.then(result => {
-			var objs = []
-			var end = ''
-			var allDay = ''
-			for (var i = 0; i < result.length; i++) {
-				if (result[i].end) {
-					end = timestamp.toDate(result[i].end)
-				} else {
-					end = null
-				}
-				if (result[i].allDay) {
-					allDay = true
-				} else {
-					allDay = false
-				}
-				if (req.cookies.user_name == result[i].userName) {
-					editable = true
-				} else {
-					editable = false
-				}
-				objs.push({
-					id: result[i].id,
-					title: result[i].title,
-					start: timestamp.toDate(result[i].start),
-					end: end,
-					allDay: allDay,
-					className: result[i].className,
-					userName: result[i].userName,
-					editable: editable
-				})
-			}
-			res.json(objs)
-		})
-	}
 	if (req.body.state == 'loads') {
   var result = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?',[req.cookies.user_dataid,new Date().getFullYear()])
 		objs = {
@@ -235,77 +199,6 @@ router.post('/',async function(req, res) {
 			res.json(objs)
 		})
 	}
-	if (req.body.state == 'getevent') {
-		var sql = 'SELECT * FROM reserve_data WHERE ID = ?'
-		con.q(sql,req.body.id)
-		.then(result => {
-			var objs = []
-			var end = ''
-			var allDay = ''
-
-			for (var i = 0; i < result.length; i++) {
-				if (result[i].end) {
-					end = timestamp.toDate(result[i].end)
-				} else {
-					end = null
-				}
-				if (result[i].allDay) {
-					allDay = true
-				} else {
-					allDay = false
-				}
-				if (req.cookies.user_name == result[i].userName) {
-					editable = true
-				} else {
-					editable = false
-				}
-				objs.push({
-					id: result[i].id,
-					title: result[i].title,
-					start: timestamp.toDate(result[i].start),
-					end: end,
-					allDay: allDay,
-					className: result[i].className,
-					userName: result[i].userName,
-					editable: editable
-				})
-			}
-			res.send(objs)
-		})
-	}
-
-	if (req.body.state == 'move') {
-		if (req.body.title) {
-			var title = req.body.title
-		}
-		if (req.body.id) {
-			var ID = req.body.id
-		}
-		if (req.body.start) {
-			var start = timestamp.fromDate(req.body.start)
-		}
-		if (req.body.end) {
-			var end = timestamp.fromDate(req.body.end)
-		} else {
-			var end = null
-		}
-		if (req.body.allDay) {
-			var allDay = 1
-		} else {
-			var allDay = 0
-		}
-		if (req.body.className) {
-			var className = req.body.className
-		}
-		if (req.body.userName) {
-			var userName = req.body.userName
-		}
-
-		var sql = 'UPDATE reserve_data SET start = ? , end = ? , allDay = ? WHERE ID = ?'
-		con.q(sql, [ start, end, allDay, ID ])
-		log.logger('info','Move Reserve Plan : '+ userName +' ID '+ ID)
-		res.end()
-	}
 
 	if (req.body.state == 'savelar') {
 		var title,ID,start,className,cTime,dataid,end,editable,allDay,boss,larType,mailGroup,a,b,c,swapDate,attach,path,fileExt
@@ -359,10 +252,10 @@ router.post('/',async function(req, res) {
 			b = '?,?,?,?,?,?,?,?,?,?,?,?,?'
 			c = [dataid, ID, title, start, end, allDay, className, userName ,mailGroup,boss,cTime,2,attach]
 		}
-		var sql = await 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
-		con.q(sql,c)
+		var sql = 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
+		await con.q(sql,c)
 		var userdat = await con.q('SELECT userName,password FROM user_data WHERE mail = ?',mailGroup),
-		qlink = 'http://webapp.iris.co.th:3000/authorize?username='+userdat[0].userName+'&password='+userdat[0].password+'&redirect=approve',
+		qlink = 'http://hr.iris.co.th:3000/authorize?username='+userdat[0].userName+'&password='+userdat[0].password+'&redirect=approve',
 		timec = ll.getDayTime(start,end,allDay)
 		if (path) {
 			let mailOptions = {
@@ -449,83 +342,17 @@ router.post('/',async function(req, res) {
 		}
 		  //<style>.wrapper {	width: 600px;margin: 0 auto; } header { width: 600px; } footer { width: 600px; } nav, section , footer {float: left; } nav {width: 150px;margin-right: 10px; } section {width: 440px; } *, *:before, *:after {-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box; } body {background: #2980b9;color: #FFF;font-family: Helvetica;text-align: center;margin: 0; } header, nav, section,footer {border: 1px solid rgba(255,255,255,0.8);margin-bottom: 10px;border-radius: 3px; } header {padding: 10px 0; } footer {padding: 10px 0; } nav, section {padding: 10px 0; } button.blue {color: white;background: #4C8FFB;border: 1px #3079ED solid;box-shadow: inset 0 1px 0 #80B0FB;}button.blue:hover {border: 1px #2F5BB7 solid;box-shadow: 0 1px 1px #EAEAEA, inset 0 1px 0 #5A94F1;background: #3F83F1;}button.blue:active {box-shadow: inset 0 2px 5px #2370FE;} </style>
 		req.body = {}
+  await api('GET','/lardata/assignid','')
+  await api('GET','/lardata','')
 		req.body.lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
 		if (swapDate) {
 			req.body.start = start
 			req.body.swapDate = swapDate 
 		}
-  api('GET','/lardata/assignid','')
 		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
 		res.json(req.body)
 	}
 
-	if (req.body.state == 'resize') {
-		if (req.body.id) {
-			var ID = req.body.id
-		}
-		if (req.body.start) {
-			var start = timestamp.fromDate(req.body.start)
-		}
-		if (req.body.end) {
-			var end = timestamp.fromDate(req.body.end)
-		} else {
-			var end = null
-		}
-		if (req.body.allDay) {
-			var allDay = 1
-		} else {
-			var allDay = 0
-		}
-		if (req.body.userName) {
-			var userName = req.body.userName
-		}
-
-		var sql = 'UPDATE reserve_data SET start = ? , end = ? , allDay = ? WHERE ID = ?'
-		con.q(sql, [ start, end, allDay, ID ])
-		log.logger('info','Resize Reserve Plan : '+ userName +' ID '+ ID)
-		res.end()
-	}
-
-	if (req.body.state == 'edit') {
-		if (req.body.title) {
-			var title = req.body.title
-		}
-		if (req.body.id) {
-			var ID = req.body.id
-		}
-		var sql = 'UPDATE reserve_data SET title = ? WHERE ID = ?'
-		con.q(sql, [ title, ID ])
-		log.logger('info','Edit title Reserve Plan : '+ req.cookies.user_name +' ID '+ ID)
-		res.end()
-	}
-
-	if (req.body.state == 'remove') {
-		if (req.body.title) {
-			var title = req.body.title
-		}
-		if (req.body.id) {
-			var ID = req.body.id
-		}
-		if (req.body.start) {
-			var start = timestamp.fromDate(req.body.start)
-		}
-		if (req.body.allDay) {
-			var allDay = 1
-		} else {
-			var allDay = 0
-		}
-		if (req.body.className) {
-			var className = req.body.className
-		}
-		if (req.body.userName) {
-			var userName = req.body.userName
-		}
-
-		var sql = 'DELETE FROM reserve_data WHERE ID = ?'
-		con.q(sql, [ ID ])
-		log.logger('info','Remove Reserve Plan : '+ userName +' ID '+ ID)
-		res.end()
-	}
 	if (req.body.state == 'removel') {
 		if (req.body.title) {
 			var title = req.body.title
@@ -549,42 +376,9 @@ router.post('/',async function(req, res) {
 		}
 
 		var sql = 'DELETE FROM lar_data WHERE ID = ?'
-		con.q(sql, [ ID ])
+		await con.q(sql, [ ID ])
+  await api('GET','/lardata','')
 		res.end()
-	}
-	if (req.body.state == 'write') {
-		if (req.body.id) {
-			var ID = req.body.id
-		}
-		if (req.body.title) {
-			var title = req.body.title
-		}
-		if (req.body.start) {
-			var start = timestamp.fromDate(req.body.start)
-		}
-		if (req.body.end) {
-			var end = timestamp.fromDate(req.body.end)
-		} else {
-			var end = null
-		}
-		if (req.body.allDay) {
-			var allDay = 1
-		} else {
-			var allDay = 0
-		}
-		if (req.body.className) {
-			var className = req.body.className
-		}
-		if (req.body.userName) {
-			var userName = req.body.userName
-		}
-
-		var sql = 'INSERT INTO reserve_data (ID,title,start,end,allDay,className,userName) VALUES (?,?,?,?,?,?,?)'
-		con.q(sql, [ ID, title, start, end, allDay, className, userName ])
-		log.logger('info','Create Reserve Plan : '+ userName +' ID '+ ID)
-		.then(result => {
-			res.end()
-		})
 	}
 })
   

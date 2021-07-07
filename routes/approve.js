@@ -4,6 +4,7 @@ var express = require('express'),
  ll = require('../bin/larlist'),
  mailsend = require('../bin/mailsend'),
  log = require('../bin/logger')
+ const api = require('../bin/api')
 
 router.get('/', async function (req, res) {
  var userName = req.cookies.user_name,
@@ -109,6 +110,7 @@ router.post('/', async function (req, res) {
   log.logger('info', 'Boss Rejected: ' + approver + ' Request ID ' + larid)
   result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?', [approve, approver, approvedate, larid])
   mailsend.send('ผู้บังคับบัญชาไม่อนุมัติการ', approver, larid, 'user')
+  await api('GET','/lardata','')
   res.json(req.body)
  }
 })
