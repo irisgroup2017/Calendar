@@ -71,7 +71,7 @@ jQuery(function () {
         if (row.allday && row.timee != null && row.timee != '00:00:00') {
          return "08:30:00"
         } else if ((data == null || data == '00:00:00') && (row.timee != null && row.timee != '00:00:00')) {
-         return moment(row.rstart).format('HH:mm:ss')
+         return moment(row.rstart).subtract(7,'h').format('HH:mm:ss')
         } else {
          return data
         }
