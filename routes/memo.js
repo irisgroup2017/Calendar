@@ -78,13 +78,13 @@ router.get('/view/:memoId', async function (req, res) {
    head1: 'MEMO View'
   }
   parms = core.objUnion(parms, core.cookies(req.cookies))
-  let readw = await api('post', '/memolog/recordread', {
+  let readw = await api.send('post', '/memolog/recordread', {
    memoId: memoId,
    dataId: id,
    statusId: 7,
    time: time
   })
-  let timeline = await api('get', '/memolog/getlog', {
+  let timeline = await api.send('get', '/memolog/getlog', {
    memoId: memoId
   })
   let memo = await con.q('SELECT memo_id,memo_code,DATE_FORMAT(memo_date,"%d/%m/%Y") memo_date,memo_subject,memo_from,memo_to,memo_cc,m.memo_status,memo_path,memo_file,memo_content,memo_admin,memo_boss,memo_approver,ms.memo_title memo_title FROM memo m INNER JOIN memo_status ms ON m.memo_status=ms.memo_status WHERE memo_id = ?', [memoId])
@@ -152,7 +152,7 @@ router.get('/list/:year', async function (req, res) {
 router.get('/getlog', async function (req, res) {
  let memoId = req.query.memoId
  let data
- let timeline = await api('get', '/memolog/getlog', {
+ let timeline = await api.send('get', '/memolog/getlog', {
   memoId: memoId
  })
  let contact = (await con.q("SELECT dataid,name,lastName,jobPos FROM user_data")).reduce((acc, it) => (acc[it.dataid] = it, acc), {})
@@ -210,13 +210,13 @@ router.post('/action', async function (req, res) {
    statusId = 0
  }
  data.memoStatus = status
- await api('post', '/memolog', {
+ await api.send('post', '/memolog', {
   memoId: req.body.memoId,
   dataId: req.cookies.user_dataid,
   statusId: statusId,
   time: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
  })
- let result = await api('post', '/memo/update', {
+ let result = await api.send('post', '/memo/update', {
   where: {
    memoId: req.body.memoId
   },
@@ -228,7 +228,7 @@ router.post('/action', async function (req, res) {
 
 router.post('/getdetail',async function (req, res) {
  if (req.cookies.user_dataid != undefined) {
-  res.json(await api('get','/memo/getdetail',req.body))
+  res.json(await api.send('get','/memo/getdetail',req.body))
  } else {
   res.redirect('/')
  }
@@ -317,7 +317,7 @@ async function listMemo(req, res) {
 router.post('/creatememo', async function (req, res) {
  let data = req.body.data
  data.cookies = req.cookies
- let result = await api('POST',req.body.path,data)
+ let result = await api.send('POST',req.body.path,data)
  if (result && typeof result == 'object') {
   if (result.status == 'create') {
    let from = data.memoFrom

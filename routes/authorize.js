@@ -31,7 +31,7 @@ router.post('/', async function(req, res) {
 					'mail': result.mail,
 					'operator': operator[0].operator
 				}
-				api('GET','/lardata','')
+				api.send('GET','/lardata/refreshid/'+data.dataid,'')
 				authHelper.fortuneCookies(data,res)
 				log.logger('info','Login: '+ data.username)
 				if (redirect) { res.redirect(redirect) }

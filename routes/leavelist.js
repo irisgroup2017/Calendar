@@ -177,7 +177,7 @@ router.post('/', async function (req, res) {
    }
   }
   await con.q('DELETE FROM lar_data WHERE id = ?', req.body.larid)
-  await api('GET','/lardata','')
+  await api.send('GET','/lardata','')
   log.logger('info', 'Delete Leave Data : ' + req.cookies.user_name + ' ID ' + req.body.larid)
  }
  if (req.body.state == 'delkeep') {

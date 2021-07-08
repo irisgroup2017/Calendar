@@ -1485,15 +1485,18 @@ jQuery(function ($) {
           me.data('requestRunning', false)
          },
          success: function (data) {
-          for (i = 0; i < data.length; i++) {
-           $('tr[class=' + data[i].a + ']').find('td:nth-child(2)').text(data[i].c)
-           $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').text(data[i].d)
-           if (data[i].e) {
-            $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').removeClass("label-success").addClass("label-danger")
+          let lars = data.lars
+          lars.map(item => {
+           let sect = $(document).find('tr[class=' + item.a + ']')
+           $(sect).find('td:nth-child(2)').text(item.c)
+           $(sect).find('td:nth-child(3)').text(item.d)
+           if (item.e) {
+            $(sect).find('td:nth-child(3)').removeClass("label-success").addClass("label-danger")
            } else {
-            $('tr[class=' + data[i].a + ']').find('td:nth-child(3)').removeClass("label-danger").addClass("label-success")
+            $(sect).find('td:nth-child(3)').removeClass("label-danger").addClass("label-success")
            }
-          }
+          })
+          
           if (data.swapDate) {
            thisswapdate = data.swapDate * 1000
            swapfrom = data.start * 1000

@@ -16,6 +16,7 @@ const transporter = nodemailer.createTransport({
 	}
 })
 
+
 function remodule(d) {
 	var i,a,d=d.toString()
 	if (d.length < 5) {i=1} else {i=0}
@@ -254,6 +255,14 @@ router.post('/',async function(req, res) {
 		}
 		var sql = 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
 		await con.q(sql,c)
+  await api.send('GET','/lardata/assignid','')
+  console.log(await api.send('GET','/lardata/refreshid/'+ dataid,''))
+  result = {}
+		if (swapDate) {
+			result.start = start
+			result.swapDate = swapDate 
+		}
+		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
 		var userdat = await con.q('SELECT userName,password FROM user_data WHERE mail = ?',mailGroup),
 		qlink = 'http://hr.iris.co.th:3000/authorize?username='+userdat[0].userName+'&password='+userdat[0].password+'&redirect=approve',
 		timec = ll.getDayTime(start,end,allDay)
@@ -333,24 +342,16 @@ router.post('/',async function(req, res) {
 				</table><br>\
 				<a href="'+qlink+'"><button class="blue">ไปยังหน้าอนุมัติ</button></a>'
 			}
-			transporter.sendMail(mailOptions, function (err, info) {
+			/*transporter.sendMail(mailOptions, function (err, info) {
 				if(err)
 				  console.log(err)
 				else
 				  console.log(info)
-			 })
+			 })*/
 		}
-		  //<style>.wrapper {	width: 600px;margin: 0 auto; } header { width: 600px; } footer { width: 600px; } nav, section , footer {float: left; } nav {width: 150px;margin-right: 10px; } section {width: 440px; } *, *:before, *:after {-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box; } body {background: #2980b9;color: #FFF;font-family: Helvetica;text-align: center;margin: 0; } header, nav, section,footer {border: 1px solid rgba(255,255,255,0.8);margin-bottom: 10px;border-radius: 3px; } header {padding: 10px 0; } footer {padding: 10px 0; } nav, section {padding: 10px 0; } button.blue {color: white;background: #4C8FFB;border: 1px #3079ED solid;box-shadow: inset 0 1px 0 #80B0FB;}button.blue:hover {border: 1px #2F5BB7 solid;box-shadow: 0 1px 1px #EAEAEA, inset 0 1px 0 #5A94F1;background: #3F83F1;}button.blue:active {box-shadow: inset 0 2px 5px #2370FE;} </style>
-		req.body = {}
-  await api('GET','/lardata/assignid','')
-  await api('GET','/lardata','')
-		req.body.lars = await ll.viewLar(userName,dataid,parseInt(start*1000))
-		if (swapDate) {
-			req.body.start = start
-			req.body.swapDate = swapDate 
-		}
-		log.logger('info','Request Leave : '+ larType +' by '+ userName +' ID '+ ID)
-		res.json(req.body)
+  result.lars = await ll.viewLar(dataid,parseInt(start)*1000)
+  console.log(result.lars)
+		res.json(result)
 	}
 
 	if (req.body.state == 'removel') {
@@ -377,9 +378,23 @@ router.post('/',async function(req, res) {
 
 		var sql = 'DELETE FROM lar_data WHERE ID = ?'
 		await con.q(sql, [ ID ])
-  await api('GET','/lardata','')
+  await api.send('GET','/lardata/refreshid/'+ req.body.user_dataid,'')
 		res.end()
 	}
 })
+
+function to(promise) {
+ return promise.then(data => {
+    return {
+      error: null,
+      result: data
+    }
+ })
+ .catch(err => {
+   return {
+     error: err
+   }
+ })
+}
   
 module.exports = router

@@ -110,7 +110,7 @@ router.post('/', async function (req, res) {
   log.logger('info', 'Boss Rejected: ' + approver + ' Request ID ' + larid)
   result = await con.q('UPDATE lar_data SET approve = ?,approver = ?,approvedate = ? WHERE id = ?', [approve, approver, approvedate, larid])
   mailsend.send('ผู้บังคับบัญชาไม่อนุมัติการ', approver, larid, 'user')
-  await api('GET','/lardata','')
+  await api.send('GET','/lardata','')
   res.json(req.body)
  }
 })

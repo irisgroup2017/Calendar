@@ -120,7 +120,7 @@ router.post('/',async function(req, res) {
 	}
 	if (a.state == "cdate") {
 		con.q('UPDATE privacy_data SET cdate = ? WHERE emid = ?',[a.cdate,a.emid])
-		api('GET','/lardata','')
+		api.send('GET','/lardata','')
 		log.logger('info','Edit Date Start Work : '+ req.cookies.user_name+' - '+a.userName)
         res.json(a)
 	}

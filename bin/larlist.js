@@ -52,12 +52,11 @@ function convertSecToDate(sec) {
  return (dateString == '' ? '-' : dateString)
 }
 
-async function viewLar(userName, dataid, thisday) {
- let a = new Date(thisday)
+async function viewLar(dataid, thisday) {
+ let a = new Date(parseInt(thisday))
  let b = []
  result = (await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?', [dataid, a.getFullYear()]))[0]
  type = (await con.q('SELECT * FROM lar_type')).reduce((acc,it) => (acc[it.type_key] = it,acc),{})
-
  lle.map(it => {
   let ans = {
    a: type[it].type_title,

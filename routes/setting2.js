@@ -177,12 +177,12 @@ router.post('/add', async function (req, res) {
   workPlace: wplace,
   companyId: company
  }
- let result = await api("POST", "/cross/addemp", {
+ let result = await api.send("POST", "/cross/addemp", {
   user: wuser,
   contact: wcontact,
   privacy: wprivacy
  })
- api('GET','/lardata','')
+ api.send('GET','/lardata','')
  res.json(result)
 })
 
@@ -196,8 +196,8 @@ router.post('/edit', async function (req, res) {
   let info = [result.dataid,result.swtime,result.ewtime,date]
   con.q('INSERT INTO change_worktime (dataid,oldstime,oldetime,changetime) VALUES (?,?,?,?)',info)
  }
- await api('PUT','/cross/editemp',block)
- api('GET','/lardata','')
+ await api.send('PUT','/cross/editemp',block)
+ api.send('GET','/lardata','')
  res.json(data)
 })
 

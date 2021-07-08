@@ -40,7 +40,7 @@ router.get('/', async function(req, res) {
 			'mail': mail
 		}
 		parms = { title: 'ระบบลา', head1: 'ระบบลา' }
-		parms.lars = await ll.viewLar(userName,dataid,new Date().getTime())
+		parms.lars = await ll.viewLar(dataid,new Date().getTime())
 		parms.larl = parms.lars.length
   parms.sdate = moment.unix((await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',[dataid]))[0].cdate)
   parms.user = userName
@@ -53,7 +53,7 @@ router.get('/', async function(req, res) {
 })
 
 router.get('/update',async function(req,res) {
- await api('GET','/lardata','')
+ await api.send('GET','/lardata','')
  res.redirect('/lar')
 })
 
@@ -77,7 +77,7 @@ router.post('/', async function(req, res) {
 		if (req.cookies.user_name) {
    let intime = moment.unix(req.body.endtime).format('M')
    let time = (intime == 12 ? moment.unix(req.body.endtime).subtract(1,'y').endOf("year").subtract(7,'h').unix() : parseInt(req.body.endtime))
-   updatedur = await ll.viewLar(req.cookies.user_name,req.cookies.user_dataid,time)
+   updatedur = await ll.viewLar(req.cookies.user_dataid,time)
 		} else {
 			res.redirect('/login')
 		}
@@ -97,31 +97,5 @@ router.post('/', async function(req, res) {
 		res.json(req.body)
 	}
 })
-
-function convertSecToDate(sec) {
- this.sec = parseInt(sec) || 0
- const day = () => {
-  if (this.sec >= 86400) {
-   this.day = this.sec / 86400 +' วัน '
-   this.sec %= 86400;
-   return this.day
-  }
- }
- const hour = () => {
-  if (this.sec >= 3600) {
-   this.hour = this.sec / 3600 +' ชั่วโมง '
-   this.sec %= 3600;
-   return this.hour
-  }
- }
- const minute = () => {
-  if (this.sec >= 60) {
-   this.minute = Math.round(this.sec / 60) +' นาที '
-   this.sec %= 60;
-   return this.minute
-  }
- }
- return day + hour + minute
-}
 
 module.exports = router

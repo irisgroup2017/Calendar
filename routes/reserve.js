@@ -19,7 +19,7 @@ router.get('/', async function(req, res) {
   let query = "SELECT * FROM reserve_car RC LEFT JOIN licenseplate_data LD ON RC.license = LD.license LEFT JOIN easypass_data ED on LD.unixid = ED.unixid"
   let easypass = await con.q(query)
   easypass = easypass.reduce((acc,it) => (acc[it.code] = it.amount,acc),{})
-  let reserve = await api("get",'/reserve/gettoday',data)
+  let reserve = await api.send("get",'/reserve/gettoday',data)
   let car = {}
   let timenow = (moment().format('HH:mm')).split(':')
   reserve = reserve.reduce((acc,it) => {
@@ -46,7 +46,7 @@ router.get('/', async function(req, res) {
 })
 
 router.get('/getfuel',async function(req,res) {
- let car = await api('GET','/reserve/getfuel',{ now: moment().format('YYYY-MM-DD HH:mm:ss')})
+ let car = await api.send('GET','/reserve/getfuel',{ now: moment().format('YYYY-MM-DD HH:mm:ss')})
  res.json(car)
 })
 

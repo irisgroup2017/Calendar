@@ -18,7 +18,7 @@ router.get('/', async function(req, res) {
 })
 
 router.get('/table',async function(req,res) {
- let result = await api('GET','/reserve/getlist',{})
+ let result = await api.send('GET','/reserve/getlist',{})
  res.json(result)
 })
 
