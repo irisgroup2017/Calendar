@@ -64,7 +64,6 @@ $('#search').on('click',function() {
          header: true
         },
         createdRow: function ( row, data, index ) {
-         console.log(data)
          $('td', row).eq(1).text(data.swtime.substring(0, 5)+" - "+data.ewtime.substring(0, 5))
          $('td', row).eq(2).text((data.late > 0 ? data.late : "-"))
          $('td', row).eq(3).text((data.hurry > 0 ? data.hurry : "-"))
