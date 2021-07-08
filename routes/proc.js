@@ -107,7 +107,7 @@ router.post('/',async function(req, res) {
      resolve(address !== undefined ? address : 'localhost')
     })
    })
-  } 
+  }
   try {
    ip = await ipResolve()
   } catch(err) {
