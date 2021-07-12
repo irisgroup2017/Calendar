@@ -145,7 +145,8 @@ jQuery(function () {
    } else if ($(this).hasClass("radio-op") && $(this).is(':checked')) {
     data[$(this).attr('name')] = $(this).val()
    } else if (["tel", "teli", "telw"].includes(id)) {
-    data[id] = (typeof $(this).val() == 'number' && $(this).val() != '' && $(this).val() != 0 ? $(this).val() : '-')
+    let tel = $(this).val().replace(/[\-|\s]/,'')
+    data[id] = (tel != '' && tel != 0 ? tel : '-')
    } else if (!$(this).hasClass("radio-op")) {
     data[id] = $(this).val()
    }
@@ -156,6 +157,7 @@ jQuery(function () {
     $(this).removeClass("error")
    }
   })
+
   if (pass) {
    $.ajax({
     url: '/setting2/add',
