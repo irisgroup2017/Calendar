@@ -15,8 +15,8 @@ router.get('/loaddata', async function(req, res) {
 })
 
 router.get('/togglevacation', async function(req, res) {
- let vacation = (process.env.VACATION === '0' ? '7' : '0')
- if (vacation == '7') {
+ let vacation = (process.env.VACATION === '0' ? '3' : '0')
+ if (vacation == '3') {
   log.logger('warn',req.cookies.user_name +': enable condition leave vacation in advance')
  } else {
   log.logger('warn',req.cookies.user_name +': disable condition leave vacation in advance')
