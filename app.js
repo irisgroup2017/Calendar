@@ -20,9 +20,9 @@ const favicon = require('serve-favicon')
 const fingerscan = require('./bin/fingerscan')
 
 schedule.scheduleJob({ hour: [0,12],minute: 0,second: 0 },async () => {
- api('GET','/lardata','')
+ await fingerscan.fingerToJSON()
+ await api('GET','/lardata','')
  await epass.get()
- fingerscan.fingerToJSON()
 	log.logger("info","Auto Update Database")
 })
 require(__basedir+'/app/routers/application.router.js')(app, router, upload)
