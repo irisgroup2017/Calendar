@@ -3,6 +3,7 @@
 /public/doc
 /public/memo
 /public/announce
+/public/handbook
 /bin/fingerscan
 .env
 DB_FingerScan.mdb
