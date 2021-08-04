@@ -64,6 +64,15 @@ block content
      .form-group
       label.form-label(for="announceFile") แนบไฟล์ประชาสัมพันธ์
       input.form-control#announceFile(name="note_file" type="file" style="height: auto !important;")
+     fieldset.form-group
+      label.form-label(for="announceNotice") ช่องทางการแจ้งข้อมูล
+      #announceNotice
+       .form-check
+        input.form-check-input#note_mail(name="note_mail" type="checkbox" style="height: auto !important;")
+        label.form-check-label(for="note_mail") อีเมล
+       .form-check
+        input.form-check-input#note_line(name="note_line" type="checkbox" style="height: auto !important;")
+        label.form-check-label(for="note_line") ไลน์
      button#form-submit บันทึก
      button(type="cancel") ยกเลิก
  #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(255, 255, 255); overflow: hidden; z-index: -1; opacity: 0; animation-duration: 0.5s;")
