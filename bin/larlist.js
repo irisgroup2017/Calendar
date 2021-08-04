@@ -28,9 +28,9 @@ function convertSecToDate(sec) {
  this.day = this.hour = this.minute = 0
  this.sec = parseInt(sec) || 0
  const day = () => {
-  if (this.sec >= 86400) {
-   this.day = Math.round(this.sec / 86400) +' วัน '
-   this.sec %= 86400;
+  if (this.sec >= 28800) {
+   this.day = Math.round(this.sec / 28800) + ' วัน '
+   this.sec %= 28800;
   }
   return this.day || ''
  }
@@ -43,7 +43,7 @@ function convertSecToDate(sec) {
  }
  const minute = () => {
   if (this.sec >= 60) {
-   this.minute = Math.round(this.sec / 60) +' นาที '
+   this.minute = Math.round(this.sec / 60) +' นาที'
    this.sec %= 60;
   }
   return this.minute || ''
@@ -73,7 +73,7 @@ const option = {
  object: ['วัน', 'ชั่วโมง', 'นาที'],
  unit: ['d', 'h', 'm'],
  units: {
-  d: 86400,
+  d: 28800,
   h: 3600,
   m: 60
  }
@@ -210,80 +210,6 @@ function plusDuration(old, new1) {
   Ans.h = Ans.h % 8
  }
  return Ans
-}
-
-function minusDuration(remain, duration) {
- var Ans = [],
-  chk = ['d', 'h', 'm']
- if (!Array.isArray(remain)) {
-  remain = {
-   d: Number(remain),
-   h: 0,
-   m: 0
-  }
- }
- for (var i = 0; i < 3; i++) {
-  if (duration === undefined || isNaN(duration)) {
-   duration = {
-    d: 0,
-    h: 0,
-    m: 0
-   }
-  }
-  if (remain[chk[i]] == undefined || isNaN(remain[chk[i]])) {
-   remain[chk[i]] = 0
-  }
-  if (duration[chk[i]] == undefined || isNaN(duration[chk[i]])) {
-   duration[chk[i]] = 0
-  }
-  if ((remain.d == 0 && remain.h == 0 && remain.m == 0) && (duration.d > 0 || duration.h > 0 || duration.m > 0)) {
-   Ans.o = true
-   Ans.d = duration.d
-   Ans.h = duration.h
-   Ans.m = duration.m
-  } else {
-   if (duration.m > 0) {
-    if (remain.m < duration.m) {
-     if (remain.h == 0) {
-      remain.d = remain.d - 1
-      remain.h = 7
-      remain.m = 60
-     } else {
-      remain.h = remain.h - 1
-      remain.m = remain.m + 60
-     }
-    }
-    Ans.m = remain.m - duration.m
-   } else {
-    Ans.m = remain.m
-   }
-
-   if (duration.h > 0) {
-    if (remain.h < duration.h) {
-     remain.d = remain.d - 1
-     remain.h = remain.h + 8
-    }
-    Ans.h = remain.h - duration.h
-   } else {
-    Ans.h = remain.h
-   }
-
-   if (duration.d > 0) {
-    Ans.d = remain.d - duration.d
-   } else {
-    Ans.d = remain.d
-   }
-
-   if (Ans.d < 0) {
-    Ans.o = true
-    Ans.d = Math.abs(Ans.d)
-   } else {
-    Ans.o = false
-   }
-  }
-
-  return Ans
- }
 }
 /*
 gDay = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
