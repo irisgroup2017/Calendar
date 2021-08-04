@@ -77,7 +77,7 @@ app.use(express.static(path.join(__dirname, '/node_modules')))
 app.use('/memo/public', express.static('public'))
 app.use(express.static(path.join(__dirname, '/public')))
 
-app.use(router);
+app.use(router); 
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found')
