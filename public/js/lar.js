@@ -488,17 +488,6 @@ jQuery(function ($) {
    }
   },
   dayClick: function (date, jsEvent, view) {
-   $.ajax({
-    url: '/',
-    type: "POST",
-    dataType: "json",
-    async: false,
-    data: {
-     'state': 'getvacation',
-     'start': view.start._i,
-     'end': view.end._i
-    }
-   })
    var modalAddDay = '\
     <div class="modal fade" id="extraModal" >\
      <div class="modal-dialog">\
@@ -599,6 +588,33 @@ jQuery(function ($) {
     modalAddDay.find('#timepicker2').prop('disabled', true)
     modalAddDay.find('#place1').prop('disabled', true)
     modalAddDay.find('#place2').prop('disabled', true)
+    $.ajax({
+        url: '/lar',
+        type: "POST",
+        dataType: "json",
+        async: false,
+        data: {
+         'state': 'getinout',
+         'date': moment(date).format("YYYY-MM-DD")
+        },
+        success: function(data) {
+            console.log(data)
+            let stime = (data.stime == "00:00:00" ? false : data.stime)
+            let etime = (data.etime == "00:00:00" ? false : data.etime)
+            modalAddDay.find('#optradio'+data.type).prop('checked', true)
+            modalAddDay.find('#extraComment').val(data.comment)
+            if (stime) {
+                modalAddDay.find('#customCheck1').prop('checked', true)
+                modalAddDay.find('#timepicker1').prop('disabled', false).val(stime)
+                modalAddDay.find('#place1').prop('disabled', false).val(data.placein)
+            }
+            if (etime) {
+                modalAddDay.find('#customCheck2').prop('checked', true)
+                modalAddDay.find('#timepicker2').prop('disabled', false).val(etime)
+                modalAddDay.find('#place2').prop('disabled', false).val(data.placeout)
+            }
+        }
+       })
    })
    modalAddDay.on('click', '#customCheck1', function () {
     let toggle = !$(this).prop("checked")
@@ -623,7 +639,7 @@ jQuery(function ($) {
     let date = modalAddDay.find('#dateModal').val()
     let sChk = modalAddDay.find('#customCheck1').prop("checked")
     let eChk = modalAddDay.find('#customCheck2').prop("checked")
-    let type = (modalAddDay.find('name=[optradio:checked]').attr('id'))
+    let type = (modalAddDay.find('input[name=optradio]:checked').attr('id'))
     let sIn = (sChk ? modalAddDay.find("#timepicker1").val() : null)
     let sOut = (eChk ? modalAddDay.find("#timepicker2").val() : null)
     let pIn = (sChk ? modalAddDay.find('#place1').val() : null)
@@ -654,7 +670,7 @@ jQuery(function ($) {
        ioStatus: 0
       },
       success: function () {
-       modalAddDay.modal("hide")
+        $('#extraModal').modal("hide")
       }
      })
     }

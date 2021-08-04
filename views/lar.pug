@@ -1,19 +1,16 @@
 extends layout
 
 block content
- mixin ssrc(scr)
-  for t in scr
-   script(src="js/"+t)
  mixin larlist(list)
   -var i=0
-   while i < list
-    tr(class=parms.lars[i].a)
-     td=parms.lars[i].a
-     td.center=parms.lars[i].c
-     if parms.lars[i].e 
-      td.dur.center.text-white='ใช้เกิน '+parms.lars[i++].d
+   for line in list
+    tr(class=line.a)
+     td=line.a
+     td.center=line.c
+     if line.e 
+      td.dur.center.text-white='ใช้เกิน '+line.d
      else
-      td.dur.center.text-white=parms.lars[i++].d
+      td.dur.center.text-white=line.d
 
  div.row
   div.col-xs-12
@@ -60,15 +57,32 @@ block content
      div.widget-box.transparent
       div.widget-header
        h4="ประวัติการลา"
-        if parms.larl
+        if parms.lars != undefined
          table.table#larlist(data-sdate=parms.sdate style="font-size: 12px;")
           tr
            td.center='ประเภท'
            td.center='ใช้แล้ว'
            td.center='คงเหลือ'
-           +larlist(parms.larl)
+          +larlist(parms.lars)
         else
-         h4='ไม่มีประวัติ'
+         h4='• ไม่มีประวัติ'
+     div.widget-box.transparent
+      div.widget-header
+       h4="บันทึกการปฏิบัติงานประจำวัน"
+      .widget-body
+       table.table#dailywork(data-sdate=parms.sdate style="font-size: 12px;")
+        if parms.dialywork != undefined
+         tr
+          td.center='วันที่'
+          td.right
+           button.dialy-add.btn-sm.btn-info เพิ่มข้อมูล
+          //+dailywork(parms.dialywork)
+        else
+         tr
+          td
+           h4='• ไม่มีข้อมูล'
+          td.right
+           button.dialy-add.btn-sm.btn-info เพิ่มข้อมูล
  block footer
   #animatedModal.animated(style="position: fixed; width: 100%; height: 100%; top: 20px; left: 0px; background-color: rgb(255, 255, 255); overflow-y: auto; z-index: -9999; opacity: 0; animation-duration: 0.5s;")
    .close-animatedModal
@@ -82,22 +96,22 @@ block content
  +scss(['fullcalendar.min.css','ace.min.css','ace-part2.min.css','animate.min.css','clockpicker.min.css','bootstrap-datepicker.min.css','fileupload.css','daterangepicker.css'])
  style.
   .vdate {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   height: 100%;
-   background-color: #cae4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: #cae4ff;
   }
   .swapdate {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   height: 100%;
-   background-color: #ffff80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: #ffff80;
   }
   .blank-error::placeholder {
-     color: #FF0000 !important;
-   }
+    color: #FF0000 !important;
+  }
   .blank-error {
     background-color: #fce4e4 !important;
     border: 1px solid #cc0033 !important;

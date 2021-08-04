@@ -6,7 +6,6 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mysql = require('mysql')
 const app = express()
-const router = express.Router()
 const upload = require(__basedir+'/app/config/multer.config.js')
 const memoAttach = require(__basedir+'/app/config/memoattach.config.js')
 const memoUpload = require(__basedir+'/app/config/memomulter.config.js')
@@ -18,6 +17,7 @@ const schedule = require('node-schedule')
 const log = require('./bin/logger')
 const favicon = require('serve-favicon')
 const fingerscan = require('./bin/fingerscan')
+const router = require('./routes/core');
 
 schedule.scheduleJob({ hour: [0,12],minute: 0,second: 0 },async () => {
  await fingerscan.fingerToJSON()
@@ -31,7 +31,7 @@ require(__basedir+'/app/routers/memofile.router.js')(app, router, memoFileUpload
 require(__basedir+'/app/routers/memoattachfile.route.js')(app, router, memoAttach)
 require('./app/routers/announce.router')(app, router,announceUpload)
 require('dotenv').config()
-//console.log(app._router.stack)
+
 function handleDisconnect() {
 	var con = mysql.createConnection({
 		host: process.env.DB_HOST,
@@ -39,12 +39,13 @@ function handleDisconnect() {
 		password: process.env.DB_PASSWORD,
 		database: process.env.DB_NAME,
 	})
-  
-	con.connect(function(err) { 
+	con.connect(function(err,connected) { 
 	  if(err) { 
 		console.log('error when connecting to db:', err)
 		setTimeout(handleDisconnect, 10000)
-	  }                                    
+	  } else {
+		  console.log(connected)
+	  }                    
 	});                                
 	con.on('error', function(err) {
 	  if(err.code === 'PROTOCOL_CONNECTION_LOST') {
@@ -76,86 +77,7 @@ app.use(express.static(path.join(__dirname, '/node_modules')))
 app.use('/memo/public', express.static('public'))
 app.use(express.static(path.join(__dirname, '/public')))
 
-const approve = require('./routes/approve')
-const authorize = require('./routes/authorize')
-const calendar = require('./routes/calendar')
-const contact = require('./routes/contact')
-const cross = require('./routes/cross')
-const delreq = require('./routes/delreq')
-const departmentleaveview = require('./routes/departmentleaveview')
-const easypass = require('./routes/easypass')
-const editentitle = require('./routes/editentitle')
-const excelexport = require('./routes/excelexport')
-const exportmanager = require('./routes/exportmanager')
-const forms = require('./routes/forms')
-const getip = require('./routes/getip')
-const getlar = require('./routes/getlar')
-const handbook = require('./routes/handbook')
-const hr = require('./routes/hr')
-const hrexport = require('./routes/hrexport')
-const index = require('./routes/index')
-const lar = require('./routes/lar')
-const leavelist = require('./routes/leavelist')
-const leavereport = require('./routes/leavereport')
-const listtable = require('./routes/listtable')
-const login = require('./routes/login')
-const memo = require('./routes/memo')
-const managerleavelist = require('./routes/managerleavelist')
-const manualattendance = require('./routes/manualattendance')
-const privacy = require('./routes/privacy')
-const proc = require('./routes/proc')
-const profile = require('./routes/profile')
-const refreshdata = require('./routes/refreshdata')
-const reserve = require('./routes/reserve')
-const reservelist = require('./routes/reservelist')
-const reporttime = require('./routes/reporttime')
-const saleactive = require('./routes/saleactive')
-const setting = require('./routes/setting2')
-const search = require('./routes/search')
-const searchb = require('./routes/searchb')
-const sumlar = require('./routes/sumlar')
-const vacationa = require('./routes/vacationa')
-
-app.use('/', index)
-app.use('/approve', approve)
-app.use('/authorize', authorize)
-app.use('/calendar', calendar)
-app.use('/contact', contact)
-app.use('/cross', cross)
-app.use('/delreq', delreq)
-app.use('/departmentleaveview', departmentleaveview)
-app.use('/easypass', easypass)
-app.use('/editentitle', editentitle)
-app.use('/exportmanager', exportmanager)
-app.use('/excelexport', excelexport)
-app.use('/forms',forms)
-app.use('/getip', getip)
-app.use('/getlar', getlar)
-app.use('/handbook', handbook)
-app.use('/hr', hr)
-app.use('/hrexport', hrexport)
-app.use('/lar', lar)
-app.use('/leavelist', leavelist)
-app.use('/leavereport', leavereport)
-app.use('/listtable', listtable)
-app.use('/login', login)
-app.use('/memo', memo)
-app.use('/managerleavelist', managerleavelist)
-app.use('/manualattendance',manualattendance)
-app.use('/proc', proc)
-app.use('/profile', profile)
-app.use('/privacy', privacy)
-app.use('/refreshdata', refreshdata)
-app.use('/reporttime', reporttime)
-app.use('/reserve', reserve)
-app.use('/reservelist',reservelist)
-app.use('/saleactive', saleactive)
-app.use('/search', search)
-app.use('/searchb', searchb)
-app.use('/setting', setting)
-app.use('/setting2', setting)
-app.use('/sumlar', sumlar)
-app.use('/vacationa', vacationa)
+app.use(router);
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found')

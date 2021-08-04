@@ -8,30 +8,19 @@ var express = require('express'),
 
 router.get('/', async function (req, res) {
  var userName = req.cookies.user_name,
-  dataid = req.cookies.user_dataid,
-  dataop = req.cookies.user_op,
-  mail = req.cookies.user_mail
- if (userName) {
-  data = {
-   'username': userName,
-   'dataid': dataid,
-   'operator': dataop,
-   'mail': mail
-  }
-  parms = {
-   title: 'อนุมัติการลา',
-   head1: 'Approve Page',
-   head2: userName
-  }
-  parms.user = userName
-  parms.operator = dataop
-  log.logger('info', 'View Page [approve]: ' + data.username)
-  if (dataop < 2) {
-   res.redirect('/')
-  }
- } else {
-  // Redirect to home
-  res.redirect('/login')
+ dataid = req.cookies.user_dataid,
+ dataop = req.cookies.user_op,
+ mail = req.cookies.user_mail
+ parms = {
+  title: 'อนุมัติการลา',
+  head1: 'Approve Page',
+  head2: userName
+ }
+ parms.user = userName
+ parms.operator = dataop
+ log.logger('info', 'View Page [approve]: ' + userName)
+ if (dataop < 2) {
+  res.redirect('/')
  }
  result = await con.q('SELECT * FROM lar_data WHERE mailGroup = ? AND approve = ?', [mail, 2])
  parms.objs = []
