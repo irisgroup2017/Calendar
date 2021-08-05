@@ -120,6 +120,7 @@ $(document).on('mouseleave','tr.announce',(ev) => {
 
 $(document).on('click','#remove-note',(e) => {
  $(e.target).parents('tr').remove()
+ $('.tooltip').remove()
 })
 
 $(document).on('click','.announce td:not(:last-child)',function(ev) {
