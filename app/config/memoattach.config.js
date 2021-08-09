@@ -10,7 +10,6 @@ var storage = multer.diskStorage({
  },
  filename: function (req, file, cb) {
   var path = __basedir + '\\public\\memo\\attach'
-  let ext = "." + file.mimetype.split("/")[1]
   let name = file.originalname
   let filename = name
   path = path + '' + filename

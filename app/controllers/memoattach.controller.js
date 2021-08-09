@@ -8,8 +8,8 @@ exports.uploadForm = (req, res) => {
         ext: req.body.ext
     }
     // log applicationForm
-	log.logger('info',data.username+' Upload memo attachment: '+data.file.filename+' file')
-	res.end(data)
+	log.logger('info','Upload memo attachment: '+data.file.filename+' file')
+	res.json(data)
 }
 
 exports.uploadAttach = (req, res) => {

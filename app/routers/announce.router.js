@@ -1,5 +1,7 @@
 const con = require(__basedir+'/bin/mysql')
-let noticeController = require('../controllers/notice.controller')
+const pdf = require('pdf-poppler');
+const path = require('path');
+const noticeController = require('../controllers/notice.controller')
 module.exports = (app, router,upload) => {
 
  router.use((req,res,next) => {
@@ -11,8 +13,8 @@ module.exports = (app, router,upload) => {
   let file = req.file
   let body = req.body
   let path = file.path.match(/(\\public)(.*)/g)[0]
+  file.ext = file.path.split('.').pop();
   console.log(file)
-  console.log(body)
   if (body.note_mail) {
    let message = {
     from: process.env.USERMAIL,
@@ -44,6 +46,27 @@ module.exports = (app, router,upload) => {
     }
    }
    noticeController.lineSend(url,data,config)
+   if (file.ext == 'pdf') {
+    let opts = {
+     format: 'jpeg',
+     out_dir: file.destination,
+     out_prefix: file.originalname.split('.')[0],
+     page: null
+    }
+    pdf.convert(file.path, opts).then(result => {
+      pdf.info(file.path).then(pdfinfo => {
+       for (i=1;i<=pdfinfo.pages;i++) {
+        let img = file.destination + '' + file.originalname.split('.')[0] + '-' + i + '.jpg'
+        console.log(img)
+        data = `imageFile=${img}&message=test`
+        noticeController.lineSend(url,data,config)
+       }
+      });
+     })
+     .catch(error => {
+      console.error(error);
+    })
+   }
   }
   await con.q("INSERT INTO notice_data (note_title,note_desc,note_create,note_file) VALUES (?,?,?,?)",[body.note_title,body.note_desc,now,path])
   res.redirect('/')

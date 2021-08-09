@@ -521,6 +521,7 @@ $(function($) {
     contentType: false,
     //cache: false,
     success: (data) => {
+     console.log('test')
      let item = sessionStorage.getItem('attachm')
      item = (item ? JSON.parse(item) : new Array())
      let file = { 

@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const axios = require('axios')
+const axios = require('axios');
 
 exports.mailSend = (message) => {
  let transporter = nodemailer.createTransport({

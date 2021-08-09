@@ -13,7 +13,6 @@ var storage = multer.diskStorage({
  filename: function (req, file, cb) {
   let memopath = req.body.memopath
   var path = __basedir + '\\public\\memo\\' + memopath
-  let ext = "." + file.mimetype.split("/")[1]
   path = path + '' + file.originalname
   if (!fs.existsSync(path)) {
    cb(null, file.originalname)
