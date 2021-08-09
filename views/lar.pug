@@ -26,10 +26,18 @@ block content
       div.widget-body
        div.widget-main.no-padding
         div.btn.btn-sm.btn-info#load-data อัพเดทลายนิ้วมือ
-        if parms.vacation > 0
-         div.btn.btn-sm.btn-info.check#toggle-vacation 
-        else
-         div.btn.btn-sm.btn-info#toggle-vacation 
+        .custom-control.custom-switch
+         if parms.vacation > 0
+          input.custom-control-input#toggle-vacation(type="checkbox" checked)
+         else
+          input.custom-control-input#toggle-vacation(type="checkbox")
+         label.custom-control-label(for="toggle-vacation") ตรวจสอบเงื่อนไขการลาพักร้อนล่วงหน้า
+        .custom-control.custom-switch
+         if parms.maxvacation > 0
+          input.custom-control-input#toggle-maxvacation(type="checkbox" checked)
+         else
+          input.custom-control-input#toggle-maxvacation(type="checkbox")
+         label.custom-control-label(for="toggle-maxvacation") ตรวจสอบเงื่อนไขการลาพักร้อนต่อเนื่อง
      div.widget-box.transparent
       div.widget-header
        h4="ประเภทการลา (ลากไปวางในวันที่ต้องการลา)"

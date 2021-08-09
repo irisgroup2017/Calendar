@@ -38,7 +38,9 @@ module.exports = (app, router,upload) => {
   if (body.note_line) {
    let url = 'https://notify-api.line.me/api/notify'
    let itchannel = 'Ucl7cIrUw4k5x7OHeqHKAjVZA1Vt0vx5VSbSso1RE3R'
-   let data = `message=มีประกาศข่าว/ประชาสัมพันธ์ใหม่เรื่อง ${body.note_title} โปรดเข้าระบบเพื่อดูข้อมูล http://hr.iris.co.th:3000`
+   let data = { 
+    message: `มีประกาศข่าว/ประชาสัมพันธ์ใหม่เรื่อง ${body.note_title} โปรดเข้าระบบเพื่อดูข้อมูล http://hr.iris.co.th:3000`
+   }
    let config = {
     headers: {
      'Content-type': 'application/x-www-form-urlencoded',
@@ -57,8 +59,10 @@ module.exports = (app, router,upload) => {
       pdf.info(file.path).then(pdfinfo => {
        for (i=1;i<=pdfinfo.pages;i++) {
         let img = file.destination + '' + file.originalname.split('.')[0] + '-' + i + '.jpg'
-        console.log(img)
-        data = `imageFile=${img}&message=test`
+        data = {
+         message: 'test',
+         imageFile: img
+        }
         noticeController.lineSend(url,data,config)
        }
       });

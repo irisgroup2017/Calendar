@@ -18,6 +18,7 @@ router.get('/', async function(req, res) {
 		sdate: moment.unix((await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',[dataid]))[0].cdate),
 		user: req.cookies.user_name,
 		vacation: parseInt(process.env.VACATION),
+  maxvacation: parseInt(process.env.MAXVACATION),
 		operator: req.cookies.user_op
 	}
 	res.render('lar', parms)
@@ -39,9 +40,22 @@ router.get('/togglevacation', async function(req, res) {
  res.end(vacation)
 })
 
+router.get('/togglemaxvacation', async function(req, res) {
+ let maxvacation = (process.env.MAXVACATION === '0' ? '7' : '0')
+ if (maxvacation == '7') {
+  log.logger('warn',req.cookies.user_name +': enable condition leave vacation max in advance')
+ } else {
+  log.logger('warn',req.cookies.user_name +': disable condition leave vacation max in advance')
+ }
+ process.env.MAXVACATION = maxvacation
+ res.end(maxvacation)
+})
+
 router.get('/getvacation', async function(req, res) {
- let vacation = process.env.VACATION
- res.end(vacation)
+ res.json({
+  vacation: process.env.VACATION,
+  maxvacation: process.env.MAXVACATION
+ })
 })
 
 router.get('/update',async function(req,res) {

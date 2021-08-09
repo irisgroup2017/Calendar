@@ -1,10 +1,12 @@
 ﻿var leaveExcept
+var leaveMax
 $.ajax({
  url: '/lar/getvacation',
  type: 'GET',
  async: false,
  success: function (data) {
-  leaveExcept = parseInt(data)
+  leaveExcept = parseInt(data.vacation)
+  leaveMax = parseInt(data.maxvacation)
  }
 })
 var vacation = moment().add(leaveExcept, 'days').subtract(7, 'hours').valueOf()
@@ -56,11 +58,17 @@ $(document).on("click", "#toggle-vacation", function () {
    leaveExcept = parseInt(data)
   }
  })
- if (leaveExcept > 0) {
-  $(this).addClass('check')
- } else {
-  $(this).removeClass('check')
- }
+ vacation = moment().add(leaveExcept, 'days').subtract(7, 'hours').valueOf()
+})
+$(document).on("click", "#toggle-maxvacation", function () {
+ $.ajax({
+  url: '/lar/togglemaxvacation',
+  type: 'GET',
+  async: false,
+  success: function (data) {
+   leaveMax = parseInt(data)
+  }
+ })
  vacation = moment().add(leaveExcept, 'days').subtract(7, 'hours').valueOf()
 })
 
@@ -1426,7 +1434,7 @@ jQuery(function ($) {
        }
        return acc
       },[])
-      if (leaveDate.length >= 5) {
+      if (leaveDate.length >= 5 && leaveMax > 0) {
        alert('หยุดงานต่อเนื่อง 1 สัปดาห์ กรุณาติดต่อฝ่ายทรัพยากรบุคคล')
        return
       }
