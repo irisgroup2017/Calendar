@@ -12,7 +12,9 @@ module.exports = (app, router,upload) => {
   let now = new Date()
   let file = req.file
   let body = req.body
+  let desc = body.note_desc || ""
   file.ext = file.path.split('.').pop();
+  await con.q("INSERT INTO notice_data (note_title,note_desc,note_create,note_file) VALUES (?,?,?,?)",[body.note_title,desc,now,path])
   if (body.note_mail) {
    let message = {
     from: process.env.USERMAIL,
@@ -28,11 +30,6 @@ module.exports = (app, router,upload) => {
    }
    noticeController.mailSend(message)
   }
-  /*
-  axios.defaults.baseURL = 'https://api.example.com';
-  axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-  axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-  */
   if (body.note_line) {
    let url = 'https://notify-api.line.me/api/notify'
    let channel = 'DdTAgy4JXyFNQw1eNn0jIRDS2pmzEyFBZhuoJ0Snu7p' // IRIS GROUP announce
@@ -48,7 +45,12 @@ module.exports = (app, router,upload) => {
     }
    }
    noticeController.lineSend(url,data,config)
-   /*
+  }
+  res.redirect('/')
+ })
+}
+
+/*
    if (file.ext == 'pdf') {
     let opts = {
      format: 'jpeg',
@@ -79,8 +81,3 @@ module.exports = (app, router,upload) => {
     })
    }
    */
-  }
-  await con.q("INSERT INTO notice_data (note_title,note_desc,note_create,note_file) VALUES (?,?,?,?)",[body.note_title,body.note_desc,now,path])
-  res.redirect('/')
- })
-}

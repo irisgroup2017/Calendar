@@ -19,7 +19,7 @@ var bossname = ""
 parms.user = userName
 parms.operator = dataop
 result = (await con.q('SELECT * FROM privacy_data,contact_data,user_data WHERE user_data.dataid = ? AND privacy_data.dataid = ? AND contact_data.dataid = ?',[dataid,dataid,dataid]))[0]
-if (result.mailGroup) {
+if (result && result.mailGroup) {
 bossname = await con.q('SELECT name,lastName FROM user_data WHERE mail = ?',[result.mailGroup])
 bossname = bossname[0].name +" "+bossname[0].lastName
 }

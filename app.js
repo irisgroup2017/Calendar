@@ -22,7 +22,7 @@ const router = require('./routes/core');
 
 schedule.scheduleJob({ hour: [0,12],minute: 0,second: 0 },async () => {
  await fingerscan.fingerToJSON()
- await api('GET','/lardata','')
+ await api.send('GET','/lardata','')
  await epass.get()
 	log.logger("info","Auto Update Database")
 })

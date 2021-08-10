@@ -4,21 +4,15 @@ mixin ddl(year)
   option(value=t selected=(parms.thisyear == t ? true : false))=t
 mixin tbl(namel)
  for block in namel
-  tr(id=block.dataid class=block.status ? "" : "user-disable")
-   td=block.emid
-   td=block.name
-   td=block.lastName
-   td=block.jobPos
-   td=block.depart
-   td=block.mail
-   td=block.mailGroup
+  tr(id=block.ioRow)
+   td=block.ioName
+   td=block.ioType
+   td=block.ioDate
+   td=block.ioStime
+   td=block.ioSplace
+   td=block.ioEtime
+   td=block.ioEplace
    td=block.status
-mixin deplist(list)
- for dep in list
-  option(value=dep.depid)=dep.deptitle
-mixin bosslist(list)
- for boss in list
-  option(value=boss.bossmail)=boss.bossname
 block script
  +scss(['setting2.css','bootstrap-datepicker.min.css','datatable/datatables.min.css','datatable/buttons.dataTables.min.css','clockpicker.min.css','jquery-confirm.min.css','animate.min.css'])
  link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
@@ -28,16 +22,49 @@ block content
  table.display.cell-border.nowrap#display-table(style="width:100%")
   thead
    tr
-    th รหัสพนักงาน
     th ชื่อ
-    th นามสกุล
-    th ตำแหน่ง
-    th สังกัดฝ่าย
-    th อีเมลล์
-    th อีเมลล์ผู้บังคับบัญชา
+    th ประเภทการทำงาน
+    th วันที่
+    th เวลาเข้างาน
+    th สถานที่เข้างาน
+    th เวลาออกงาน
+    th สถานที่ออกงาน
     th คำสั่ง
   tbody#manage
    +tbl(parms.objs)
 
 block footer
  +ssrc(['moment.min.js','transition.js','collapse.js','bootstrap-datepicker.min.js','clockpicker.min.js','datatables.min.js','dataTables.buttons.min.js','animatemodal.min.js'])
+ script.
+  $("#display-table").DataTable({
+   scrollX: true,
+   paging: false,
+   searching: true,
+   ordering: true,
+   orderMulti: true,
+   order: [2, 'asc'],
+   fixedHeader: {
+    header: true,
+    footer: false
+   },
+   "search": {
+    "regex": true,
+    "smart": true
+   },
+   columnDefs: [{
+   render: function (data,type,row) {
+    return '<div class="row center">\
+     <div class="col-sm-4 datatable-option"><i class="fa fa-check-circle text-success approve-time"></i><span>อนุมัติ</span></div>\
+     <div class="col-sm-3 datatable-option"><i class="fa fa-times-circle text-danger reject-time"></i><span data-status="0">ไม่อนุมัติ</span></div>\
+    </div>'
+   },
+   targets: -1
+   }]
+  })
+  $(document).on('click','.approve-time',function(e) {
+   console.log($(this))
+   console.log($(e))
+  })
+  $(document).on('click','.reject-time',(e) => {
+
+  })
