@@ -1,5 +1,5 @@
 const con = require(__basedir+'/bin/mysql')
-const pdf = require('pdf-poppler');
+//const pdf = require('pdf-poppler');
 const path = require('path');
 const noticeController = require('../controllers/notice.controller')
 module.exports = (app, router,upload) => {
@@ -12,9 +12,7 @@ module.exports = (app, router,upload) => {
   let now = new Date()
   let file = req.file
   let body = req.body
-  let path = file.path.match(/(\\public)(.*)/g)[0]
   file.ext = file.path.split('.').pop();
-  console.log(file)
   if (body.note_mail) {
    let message = {
     from: process.env.USERMAIL,
@@ -37,17 +35,20 @@ module.exports = (app, router,upload) => {
   */
   if (body.note_line) {
    let url = 'https://notify-api.line.me/api/notify'
-   let itchannel = 'Ucl7cIrUw4k5x7OHeqHKAjVZA1Vt0vx5VSbSso1RE3R'
+   let channel = 'DdTAgy4JXyFNQw1eNn0jIRDS2pmzEyFBZhuoJ0Snu7p' // IRIS GROUP announce
+   //let channel = 'PUlSsHV1lRlYHAvz5Db2GOwBQEMiA552iaTTCoNSXm5' //TEST GROUP
+   //let itchannel = 'Ucl7cIrUw4k5x7OHeqHKAjVZA1Vt0vx5VSbSso1RE3R' //IT
    let data = { 
-    message: `มีประกาศข่าว/ประชาสัมพันธ์ใหม่เรื่อง ${body.note_title} โปรดเข้าระบบเพื่อดูข้อมูล http://hr.iris.co.th:3000`
+    message: `\nเรื่อง ${body.note_title} \nโปรดเข้าระบบเพื่อดูข้อมูล http://hr.iris.co.th:3000`
    }
    let config = {
     headers: {
      'Content-type': 'application/x-www-form-urlencoded',
-     Authorization: `Bearer ${itchannel}`
+     Authorization: `Bearer ${channel}`
     }
    }
    noticeController.lineSend(url,data,config)
+   /*
    if (file.ext == 'pdf') {
     let opts = {
      format: 'jpeg',
@@ -55,12 +56,18 @@ module.exports = (app, router,upload) => {
      out_prefix: file.originalname.split('.')[0],
      page: null
     }
+    config = {
+     headers: {
+      'Content-type': 'multipart/form-data',
+      Authorization: `Bearer ${channel}`
+     }
+    }    
     pdf.convert(file.path, opts).then(result => {
       pdf.info(file.path).then(pdfinfo => {
        for (i=1;i<=pdfinfo.pages;i++) {
-        let img = file.destination + '' + file.originalname.split('.')[0] + '-' + i + '.jpg'
+        let img = path.join(file.destination,file.originalname.split('.')[0]+'-'+i +'.jpg')
         data = {
-         message: 'test',
+         message: file.originalname+ "page" +i+'/'+pdfinfo.pages,
          imageFile: img
         }
         noticeController.lineSend(url,data,config)
@@ -71,6 +78,7 @@ module.exports = (app, router,upload) => {
       console.error(error);
     })
    }
+   */
   }
   await con.q("INSERT INTO notice_data (note_title,note_desc,note_create,note_file) VALUES (?,?,?,?)",[body.note_title,body.note_desc,now,path])
   res.redirect('/')
