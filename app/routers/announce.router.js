@@ -12,9 +12,9 @@ module.exports = (app, router,upload) => {
   let now = new Date()
   let file = req.file
   let body = req.body
-  let desc = body.note_desc || ""
+  let pathFile = file.path.match(/(\\public)(.*)/g)[0]
   file.ext = file.path.split('.').pop();
-  await con.q("INSERT INTO notice_data (note_title,note_desc,note_create,note_file) VALUES (?,?,?,?)",[body.note_title,desc,now,path])
+  await con.q("INSERT INTO notice_data (note_title,note_desc,note_create,note_file) VALUES (?,?,?,?)",[body.note_title,body.note_desc,now,pathFile])
   if (body.note_mail) {
    let message = {
     from: process.env.USERMAIL,
@@ -34,7 +34,7 @@ module.exports = (app, router,upload) => {
    let url = 'https://notify-api.line.me/api/notify'
    let channel = 'DdTAgy4JXyFNQw1eNn0jIRDS2pmzEyFBZhuoJ0Snu7p' // IRIS GROUP announce
    //let channel = 'PUlSsHV1lRlYHAvz5Db2GOwBQEMiA552iaTTCoNSXm5' //TEST GROUP
-   //let itchannel = 'Ucl7cIrUw4k5x7OHeqHKAjVZA1Vt0vx5VSbSso1RE3R' //IT
+   //let channel = 'Ucl7cIrUw4k5x7OHeqHKAjVZA1Vt0vx5VSbSso1RE3R' //IT
    let data = { 
     message: `\nเรื่อง ${body.note_title} \nโปรดเข้าระบบเพื่อดูข้อมูล http://hr.iris.co.th:3000`
    }
