@@ -14,7 +14,6 @@ router.get('/',async function(req, res) {
 	parms.moment = moment
 	parms.newAnnounce = (date) => (moment().diff(moment(date),'days') < 2 ? true : false)
 	parms.read = (id,list) => (list.indexOf(id) > -1 ? true : false)
-	//api('GET','/lardata','')
 	parms.note = await con.q('SELECT * FROM notice_data ORDER BY note_create DESC')
 	parms.noteRead = (await con.q('SELECT * FROM notice_read WHERE dataid = ?',[dataid])).map(line => line.note_id)
 	parms.noteYear = parms.note.reduce((acc,it) => (acc[(it.note_create).getFullYear()] = true,acc),{})

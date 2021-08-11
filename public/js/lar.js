@@ -606,7 +606,6 @@ jQuery(function ($) {
          'date': moment(date).format("YYYY-MM-DD")
         },
         success: function(data) {
-            console.log(data)
             let stime = (data.stime == "00:00:00" ? false : data.stime)
             let etime = (data.etime == "00:00:00" ? false : data.etime)
             modalAddDay.find('#optradio'+data.type).prop('checked', true)

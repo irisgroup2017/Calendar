@@ -46,7 +46,7 @@ function handleDisconnect() {
 	  } else {
 		  console.log(connected)
 	  }                    
-	});                                
+	});                   
 	con.on('error', function(err) {
 	  if(err.code === 'PROTOCOL_CONNECTION_LOST') {
 		console.log('database reconnected')

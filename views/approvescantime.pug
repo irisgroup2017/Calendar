@@ -54,17 +54,38 @@ block footer
    columnDefs: [{
    render: function (data,type,row) {
     return '<div class="row center">\
-     <div class="col-sm-4 datatable-option"><i class="fa fa-check-circle text-success approve-time"></i><span>อนุมัติ</span></div>\
-     <div class="col-sm-3 datatable-option"><i class="fa fa-times-circle text-danger reject-time"></i><span data-status="0">ไม่อนุมัติ</span></div>\
+     <div class="col-sm-4 datatable-option approve-time"><i class="fa fa-check-circle text-success"></i><span>อนุมัติ</span></div>\
+     <div class="col-sm-3 datatable-option reject-time"><i class="fa fa-times-circle text-danger"></i><span data-status="0">ไม่อนุมัติ</span></div>\
     </div>'
    },
    targets: -1
    }]
   })
   $(document).on('click','.approve-time',function(e) {
-   console.log($(this))
-   console.log($(e))
+   let id = $(this).parents('tr').attr('id')
+   $.ajax({
+    url: '/approvescantime',
+    method: 'post',
+    data: {
+     ioRow: id,
+     ioStatus: 1
+    },
+    success: function (result) {
+     $(document).find('tr[id='+result.ioRow+']').remove()
+    }
+   })
   })
-  $(document).on('click','.reject-time',(e) => {
-
+  $(document).on('click','.reject-time',function(e) {
+   let id = $(this).parents('tr').attr('id')
+   $.ajax({
+    url: '/approvescantime',
+    method: 'post',
+    data: {
+     ioRow: id,
+     ioStatus: 2
+    },
+    success: function (result) {
+     $(document).find('tr[id='+result.ioRow+']').remove()
+    }
+   })
   })
