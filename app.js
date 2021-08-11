@@ -1,4 +1,4 @@
-global.__basedir = __dirname
+global.__basedir = __dirname;
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')

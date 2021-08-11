@@ -1,6 +1,6 @@
 const moment = require('moment')
-const api = require(__basedir+'/bin/api')
-const log = require(__basedir+'/bin/logger')
+const api = require('../../bin/api')
+const log = require('../../bin/logger')
 
 exports.uploadForm = (req, res) => {
 	let data = {
@@ -37,7 +37,7 @@ exports.uploadFile = (req, res) => {
   time: time
  }
 
- api("POST","/memolog",memo)
+ api.send("POST","/memolog",memo)
  if (body.approve) {
   memo = {
    memoId: parseInt(body.memoid),
@@ -45,7 +45,7 @@ exports.uploadFile = (req, res) => {
    statusId: 5,
    time: time
   }
-  api("POST","/memolog",memo)
+  api.send("POST","/memolog",memo)
   
   let bodies = {
    data: {
@@ -55,7 +55,7 @@ exports.uploadFile = (req, res) => {
     memoId: parseInt(body.memoid)
    }
   }
-  api("POST","/memo/update",bodies)
+  api.send("POST","/memo/update",bodies)
  }
 	let data = {
         upload: 1,
