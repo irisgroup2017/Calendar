@@ -1,5 +1,5 @@
 module.exports = (app, router, upload) => {
- const memoFileControllers = require(__basedir+'/app/controllers/memoattach.controller.js')
+ const memoFileControllers = require('../controllers/memoattach.controller')
 	
 	router.use((req,res,next) => {
 		next()
