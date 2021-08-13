@@ -81,3 +81,50 @@
  color: black;
  opacity: 1;
 }
+
+.file-button > input {
+ display: none;
+}
+
+.file-button > input + label {
+ display: block;
+ margin: 0 auto;
+ width: 80px;
+ height: 35px;
+ transition: 0.3s ease width;
+ cursor: pointer;
+}
+
+#button-icon {
+ position: absolute;
+ top: 11px;
+ right: 10px;
+}
+
+#button-app
+{
+ position: absolute;
+ top: 0;
+ right: 0;
+ bottom: 0;
+ left: 0;
+ background-color: #fff;
+ border: 2px solid #99c9df;
+ overflow: hidden;
+ z-index: 2;
+}
+
+#button-app:before
+{
+    content: "แนบรูป";
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 12px;
+    left: 0;
+    color: #143240;
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: bold;
+    z-index: 1;
+}
