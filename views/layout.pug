@@ -18,7 +18,7 @@ mixin menu(menu)
    li.menu-item
     a(href="#")=item[0]
     if navmenu[n].length > 0
-     ol.sub-menu
+     ul.sub-menu
       each item in navmenu[n]
        -var subitem = menui[item]
        li.menu-item
@@ -33,28 +33,30 @@ html
  meta(name="viewport" , content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
  link(href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet")
  +scss(['bootstrap.min.css','jquery-ui.custom.min.css','jquery-confirm.min.css','shine.css','ace-ie.min.css','font-awesome.min.css','layoutmenu.css','color.css'])
- +ssrc(['jquery.min.js','jquery-confirm.min.js','bootstrap.min.js','ace-extra.min.js','classie.js'])
+ +ssrc(['jquery.min.js','jquery-confirm.min.js','bootstrap.min.js','ace-extra.min.js','classie.js','layoutmenu.js'])
  block script
 
  body(class="no-skin")
   .main-content
    nav.gn-menu-main
-    .menu
-     ol
-      if parms.user
-       li.menu-item
-        a(href="/")
-         i.fa.fa-home.fa-2
-         span#username(style="padding-left:2px;")=parms.user
-       +menu(parms.operator)
-       li.menu-item
-        a(href="/authorize/signout") ออกจากระบบ
-      else
-       li.menu-item
-        a(href='/login')
-         span='ลงชื่อเข้าใช้'
-      li.menu-item 
+    if parms.user
+     .logo
+      a(href="/")
+       i.fa.fa-home.fa-2
+       span#username(style="padding-left:2px;")=parms.user
+     #head-mobile
+     .expand-button
+     ul
+      +menu(parms.operator)
+      li.menu-item
        a(href="/handbook") คู่มือ
+      li.menu-item
+       a(href="/authorize/signout") ออกจากระบบ
+    else
+     ul
+      li.menu-item
+       a(href='/login')
+        span='ลงชื่อเข้าใช้'
   .page-content(style="padding-bottom: 15px;")
    block content
    //-a(href="#" , id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse")
