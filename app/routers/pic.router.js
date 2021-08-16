@@ -4,5 +4,5 @@ module.exports = (app, router, upload) => {
 	router.use((req,res,next) => {
 		next()
 	})
-	app.post('/upload/pic', upload.single("file"), controllers.uploadPic)
+	app.post('/upload/pic', upload.single("file"), controllers.uploadDailyPic)
 }

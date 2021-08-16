@@ -73,13 +73,13 @@ router.post('/swaptime',async function(req,res) {
  }
 })
 
-router.post('/', async function(req, res) {
-	if (req.body.state == 'viewfile') {
+router.post('/viewfile', async function(req, res) {
 		//let fileExt = req.body.thisfile.substring(req.body.thisfile.lastIndexOf('.')).toLowerCase()
 		let filename = '/doc/' +req.body.thisname+ '/' +req.body.thisfile
 		res.send(filename)
-	}
-	if (req.body.state == 'viewrender') {
+})
+
+router.post('/viewrender',async function (req,res) {
 		let updatedur
 		if (req.cookies.user_name) {
 			let intime = moment.unix(req.body.endtime).format('M')
@@ -89,9 +89,9 @@ router.post('/', async function(req, res) {
 			res.redirect('/login')
 		}
 		res.json(updatedur)
-	}
+	})
 	//
-	if (req.body.state == 'getvacation') {
+	router.post('/getvacation',async function (req,res) {
 		let result = await con.q('SELECT wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
 		let mydata = await con.q('SELECT * FROM vacation_list WHERE '+(result[0].wplace == 1? 'doffice' : 'dsite')+' BETWEEN ? AND ?',[req.body.start,req.body.end])
 		let myswap = await con.q('SELECT title,swapDate,start FROM lar_data WHERE className = ? AND dataid = ? AND swapDate BETWEEN ? AND ? AND approve > 0',['label-danger',req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
@@ -102,16 +102,23 @@ router.post('/', async function(req, res) {
 		req.body.myattach = myattach
 		req.body.thisname = req.cookies.user_name
 		res.json(req.body)
-	}
+})
 
-	if (req.body.state == 'getinout') {
+router.post('/getinout',async function (req,res) {
 		let result = await con.q('SELECT * FROM inoutchange_data WHERE dataid = ? AND date = ?',[req.cookies.user_dataid,req.body.date])
 		if (result.length) {
 			res.json(result[0])
 		} else {
 			res.end('none')
 		}
-	}
+})
+
+router.post('/getdailypic',async function (req,res) {
+	let start = req.body.start
+	let end = req.body.end
+	console.log(start,end)
+	let data = await con.q('SELECT date,filename FROM dailycheckin WHERE dataid = ? AND start BETWEEN ? AND ?',req.cookies.user_dataid,start,end)
+	res.json(data)
 })
 
 module.exports = router

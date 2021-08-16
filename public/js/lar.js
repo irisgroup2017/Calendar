@@ -76,11 +76,10 @@ $(document).on("click", ".viewattach", function () {
  var thisfile = $(this).attr('id'),
   thisname = $(this).attr('name')
  $.ajax({
-  url: '/lar',
+  url: '/lar/viewfile',
   type: "POST",
   async: false,
   data: {
-   'state': 'viewfile',
    'thisfile': thisfile,
    'thisname': thisname
   },
@@ -314,12 +313,11 @@ jQuery(function ($) {
     })
    }
    $.ajax({
-    url: '/lar',
+    url: '/lar/viewrender',
     type: "POST",
     dataType: "json",
     async: false,
     data: {
-     'state': 'viewrender',
      'endtime': endtime
     },
     success: function (data) {
@@ -434,13 +432,27 @@ jQuery(function ($) {
      }
     })
 
+    //daily pic upload
     $.ajax({
-     url: '/lar',
+        url: '/lar/getdailypic',
+        type: "POST",
+        dataType: "json",
+        async: false,
+        data: {
+         start: view.start,
+         end: view.end
+        },
+        success: async function (data) {
+            //fc-content-skeleton row > table td col
+        }
+    })
+
+    $.ajax({
+     url: '/lar/getvacation',
      type: "POST",
      dataType: "json",
      async: false,
      data: {
-      'state': 'getvacation',
       'start': view.start._i,
       'end': view.end._i
      },
@@ -597,12 +609,11 @@ jQuery(function ($) {
     modalAddDay.find('#place1').prop('disabled', true)
     modalAddDay.find('#place2').prop('disabled', true)
     $.ajax({
-        url: '/lar',
+        url: '/lar/getinout',
         type: "POST",
         dataType: "json",
         async: false,
         data: {
-         'state': 'getinout',
          'date': moment(date).format("YYYY-MM-DD")
         },
         success: function(data) {
