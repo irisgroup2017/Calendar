@@ -6,6 +6,7 @@ const log = require('../bin/logger')
 const fingerscan = require('../bin/fingerscan')
 const moment = require('moment')
 const api = require('../bin/api')
+const path = require('path')
 require("dotenv").config()
 
 /* GET /lar. */
@@ -116,8 +117,13 @@ router.post('/getinout',async function (req,res) {
 router.post('/getdailypic',async function (req,res) {
 	let start = req.body.start
 	let end = req.body.end
-	console.log(start,end)
-	let data = await con.q('SELECT date,filename FROM dailycheckin WHERE dataid = ? AND start BETWEEN ? AND ?',req.cookies.user_dataid,start,end)
+	let data = await con.q("SELECT * FROM dailycheckin WHERE dataid = ? AND date BETWEEN ? AND ?",[req.cookies.user_dataid,start,end]).then(
+  result => result.map(it => {
+   it.date = moment(it.date).add(7,'h').format('YYYY-MM-DD')
+   it.path = path.join('\\public\\image',it.date,it.filename)
+   return it
+   })
+ )
 	res.json(data)
 })
 

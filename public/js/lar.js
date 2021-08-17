@@ -439,10 +439,19 @@ jQuery(function ($) {
         dataType: "json",
         async: false,
         data: {
-         start: view.start,
-         end: view.end
+         start: moment(view.start).format('YYYY-MM-DD'),
+         end: moment(view.end).format('YYYY-MM-DD')
         },
         success: async function (data) {
+         if (data) {
+          console.log(data)
+          data.map(it => {
+           let date = dayrender[it.date]
+           let row = date.r
+           let col = date.c
+           $('.fc-row:nth-child(' + row + ') .fc-content-skeleton thead tr td:nth-child(' + col + ')').prepend('<i class="dailyimage maroon fa fa-file-image-o fa-2 fc-left" data-path="'+it.path+'"></i>')
+          })
+         }
             //fc-content-skeleton row > table td col
         }
     })
@@ -508,7 +517,8 @@ jQuery(function ($) {
    }
   },
   dayClick: function (date, jsEvent, view) {
-   var modalAddDay = '\
+   if (jsEvent.target.classList.value.split(' ').indexOf('dailyimage')) {
+    var modalAddDay = '\
     <div class="modal fade" id="extraModal" >\
      <div class="modal-dialog">\
       <div class="modal-content">\
@@ -701,6 +711,7 @@ jQuery(function ($) {
    $('#extraModal').modal('show').on('hidden.bs.modal', function () {
     this.remove()
    })
+   }
   },
   drop: function (date, jsEvent, ui, resourceId) { // this function is called when something is dropped
    if (sessionStorage.attach) {

@@ -1,3 +1,8 @@
+.dailyimage {
+ cursor: pointer;
+ padding: 2px 0 0 2px
+}
+
 .location-scan {
  display: inline-block;
  border: 1px solid #2590eb;
