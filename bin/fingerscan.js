@@ -28,7 +28,7 @@ async function fingerToJSON() {
   let machineList = await mdb.query("SELECT MachID,MachCode,MachName FROM FCM_Machine WHERE MachID > "+machineSearch+" ORDER BY MachID ASC")
   if (machineList.length) {
    for (const [index,item] of machineList.entries()) {
-    con.q('INSERT INTO machine_data VALUES (?,?,?)',[item.MachID,item.MachCode,item.MachName])
+    con.q('INSERT INTO machine_data VALUES (?,?,?,?)',[item.MachID,item.MachCode,item.MachName,''])
    }
   }
 
