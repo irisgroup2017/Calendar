@@ -444,12 +444,11 @@ jQuery(function ($) {
         },
         success: async function (data) {
          if (data) {
-          console.log(data)
           data.map(it => {
            let date = dayrender[it.date]
            let row = date.r
            let col = date.c
-           $('.fc-row:nth-child(' + row + ') .fc-content-skeleton thead tr td:nth-child(' + col + ')').prepend('<i class="dailyimage maroon fa fa-file-image-o fa-2 fc-left" data-path="'+it.path+'"></i>')
+           $('.fc-row:nth-child(' + row + ') .fc-content-skeleton thead tr td:nth-child(' + col + ')').prepend('<i class="dailyimage '+(it.docname ? 'green' : 'maroon')+' fa fa-file-image-o fa-2 fc-left" data-id="'+it.id+'" data-path="'+it.path+'"></i>')
           })
          }
             //fc-content-skeleton row > table td col

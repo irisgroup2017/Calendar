@@ -5,8 +5,8 @@ exports.uploadDailyPic = async (req, res) => {
  //let log = require(__basedir+'/bin/logger')
  let page = req.get('referer')
  let data = {
-    file: req.file,
-    cookies: qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u'))
+  file: req.file,
+  cookies: qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u'))
  }
 
  // log applicationForm
