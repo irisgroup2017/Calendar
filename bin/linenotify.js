@@ -26,7 +26,7 @@ module.exports.image = (image,message) => {
  }
  let config = {
   headers: {
-   'Content-type': 'application/x-www-form-urlencoded',
+   'Content-type': 'multipart/form-data',
    Authorization: `Bearer ${testGroup}`
   }
  }
