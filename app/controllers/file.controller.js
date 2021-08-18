@@ -4,13 +4,8 @@ const linenotify = require('../../bin/linenotify')
 const path = require('path')
 exports.uploadFile = async (req, res) => {
  let data = {
-  file: req.file,
-  cookies: qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u'))
+  file: req.file
  }
- let host = req.headers.origin
- let message = `\n${data.cookies.user_name} รายงานตัวเข้างานวันที่ ${moment().fotmat("DD/MM/YYYY")}`
- let filepath = path.join(host,data.file.path.match(/(\\public)(.*)/g)[0])
- linenotify.image(filepath,message)
  res.send(data)
 }
 
