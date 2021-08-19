@@ -1,4 +1,5 @@
 jQuery(function ($) {
+ // ICON CLICK
  $(document).on('click','.dailyimage',function(e) {
   var dailyModal = '\
    <div class="modal fade" id="dailyModal" data-id="'+$(this).data('id')+'">\
@@ -64,5 +65,36 @@ jQuery(function ($) {
     }
    })
   })
+ })
+ // END
+
+ $('#imageUpload').on('change',function() {
+  let value = $(this).val().split('\\').pop()
+  if (value) {
+   let element = $('.file-button')[0]
+   let data = new FormData(element)
+   $.ajax({
+    method: "POST",
+    enctype: 'multipart/form-data',
+    url: "/upload/pic",
+    processData: false, //prevent jQuery from automatically transforming the data into a query string
+    contentType: false,
+    cache: false,
+    data: data,
+    success: function(result) {
+     console.log(result)
+     let date = moment().format('YYYY-MM-DD')
+     if (result.status) {
+      $('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+']').prepend('<i class="dailyimage maroon fa fa-file-image-o fa-2 fc-left" data-path="'+result.file.path+'"></i>')
+     } else {
+      $('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+'] .dailyimage').data('path',result.file.urlpath)
+      console.log($('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+'] .dailyimage').data().path)
+     }
+    },
+    error: function(err) {
+     console.log(err)
+    }
+   })
+  }
  })
 })

@@ -13,7 +13,7 @@ jQuery(function ($) {
   paging: true,
   pageLength: 15,
   searching: true,
-  order: [1, 'ASC'],
+  order: [0, 'DESC'],
   ordering: true,
   orderMulti: true,
   fixedHeader: {

@@ -1,4 +1,5 @@
 var multer = require('multer')
+const qs = require('qs');
 var fs = require('fs')
 const paths = require('path')
 const moment = require('moment')
@@ -13,9 +14,9 @@ var storage = multer.diskStorage({
  filename: function (req, file, cb) {
   var path = __basedir + '\\public\\image'
   let ext = paths.extname(file.originalname)
-  let name = moment()
+  let name = qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u')).user_name
   let filename = name +''+ext
-  path = paths.join(path,moment().format('YYYY-MM-DD'),filename)
+  path = paths.join(path,name,filename)
   if (!fs.existsSync(path)) {
    cb(null, filename)
   } else {

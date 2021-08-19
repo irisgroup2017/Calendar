@@ -42,8 +42,8 @@ block content
       div.widget-header
        h4.widget-title="บันทึกการปฏิบัติงานประจำวัน"
        span.widget-toolbar(style="padding-bottom: 5px;")
-        form.file-button(action="/upload/pic" method="POST" enctype="multipart/form-data")
-         input#imageUpload(type='file' name="file" accept=".png, .jpg, .jpeg" onchange="this.form.submit();")
+        form.file-button
+         input#imageUpload(type='file' name="file" accept=".png,.jpg,.jpeg" )
          label#upload-app(for="imageUpload") 
           #button-app
            i.fa.fa-camera#button-icon

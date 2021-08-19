@@ -1,5 +1,5 @@
 module.exports = (app, router, upload) => {
-	const controllers = require(__basedir+'/app/controllers/pic.controller.js')
+	const controllers = require('../../app/controllers/pic.controller.js')
 	
 	router.use((req,res,next) => {
 		next()

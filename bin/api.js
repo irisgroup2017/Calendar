@@ -11,3 +11,23 @@ module.exports.send = async(method,path,data) => {
  return await request.data
 }
 
+module.exports.get = async(path,data) => {
+ var option = {
+  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' + path,
+  method: 'GET',
+  data: data || {}
+ }
+ const request = await axios(option).then(result => result)
+ return await request.data
+}
+
+module.exports.post = async(path,data) => {
+ var option = {
+  baseURL: process.env.PROTOCAL+ '://' + process.env.WEB_API +':'+ process.env.PORT_API + '' + path,
+  method: 'POST',
+  data: data || {}
+ }
+ const request = await axios(option).then(result => result)
+ return await request.data
+}
+
