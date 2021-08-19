@@ -15,8 +15,8 @@ jQuery(function ($) {
           <input type="file" class="custom-file-input" name="file" id="attachFile" accept=".xls,.xlsx,.doc,.docx">\
           <label class="custom-file-label" for="attachFile">เลือกไฟล์</label>\
          </div>\
-         <div class="input-group-append">\
-          <button class="input-group-text btn btn-sm btn-success" id="attachFileSubmit" disabled>อัพโหลด</span>\
+         <div>\
+          <button type="button" class="btn btn-sm btn-success" id="attachFileSubmit" disabled>อัพโหลด</span>\
          </div>\
         </div>\
        </form>\
@@ -52,10 +52,10 @@ jQuery(function ($) {
     type: "POST",
     enctype: 'multipart/form-data',
     url: "/upload/dailyfile",
-    data: data,
     processData: false, //prevent jQuery from automatically transforming the data into a query string
     contentType: false,
     cache: false,
+    data: data,
     success: function(result) {
      let thisIcon = $('.dailyimage[data-id="'+result.id+'"]')
      $(thisIcon).removeClass('maroon')

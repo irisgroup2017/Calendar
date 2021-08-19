@@ -1,6 +1,7 @@
 const moment = require('moment')
 const con = require('../../bin/mysql')
 const linenotify = require('../../bin/linenotify')
+const qs = require('qs');
 const path = require('path')
 exports.uploadFile = async (req, res) => {
  let data = {
@@ -12,9 +13,10 @@ exports.uploadFile = async (req, res) => {
 exports.uploadDaily = async (req, res) => {
  let data = {
   file: req.file,
-  id: req.body.id
+  id: req.body.id,
+  cookies: qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u'))
  }
- let message = `\n${data.cookies.user_name} รายงานตัวเลิกงานวันที่ ${moment().fotmat("DD/MM/YYYY")}`
+ let message = `\n${data.cookies.user_name} รายงานตัวเลิกงานวันที่ ${moment().format("DD/MM/YYYY")}`
  await con.q('UPDATE dailycheckin SET docname = ? WHERE id = ?',[data.file.filename,data.id])
  linenotify.message(message)
  res.send(data)

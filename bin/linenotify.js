@@ -1,6 +1,7 @@
 const axios = require('axios');
 const qs = require('qs');
 let irisAnnounce = 'DdTAgy4JXyFNQw1eNn0jIRDS2pmzEyFBZhuoJ0Snu7p' // IRIS GROUP announce
+let irisNotify = '2xyFO5bWn4jLujNcuhv2XAG0ZRlDLxWtFKDhyjadBM5' // IRIS GROUP Notice
 let testGroup = 'PUlSsHV1lRlYHAvz5Db2GOwBQEMiA552iaTTCoNSXm5' //TEST GROUP
 let testIt = 'Ucl7cIrUw4k5x7OHeqHKAjVZA1Vt0vx5VSbSso1RE3R' //IT
 
