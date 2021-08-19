@@ -4,6 +4,7 @@
 /public/memo
 /public/announce
 /public/handbook
+/public/files/
 /bin/fingerscan
 .env
 DB_FingerScan.mdb
