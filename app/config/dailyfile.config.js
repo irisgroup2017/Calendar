@@ -5,15 +5,14 @@ const path = require('path')
 const moment = require('moment')
 const storage = multer.diskStorage({
  destination: function (req, file, cb) {
-  let cookies = qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u'))
-  let paths = path.join(__basedir,'\\public\\dailywork\\',cookies.user_name)
+  let paths = path.join(__basedir,'\\public\\dailywork\\')
   if (!fs.existsSync(paths)) {
    fs.mkdirSync(paths)
   }
   cb(null, paths)
  },
  filename: function (req, file, cb) {
-  let ext = paths.extname(file.originalname)
+  let ext = path.extname(file.originalname)
   let cookies = qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u'))
   let fileName = moment().format('YYYY-MM-DD ') +''+ ext
   let paths = path.join(__basedir,'\\public\\dailywork\\',cookies.user_name)

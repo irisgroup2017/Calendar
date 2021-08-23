@@ -14,9 +14,14 @@ exports.uploadDailyPic = async (req, res) => {
  //let host = req.headers.origin
  //let filepath = path.join(host,data.file.path.match(/(\\public)(.*)/g)[0])
  //linenotify.image(filepath,message)
- let result = await con.q('INSERT INTO dailycheckin (dataid,date,filename) VALUES (?,?,?) ON DUPLICATE KEY UPDATE filename = ? ',[data.cookies.user_dataid,moment().format('YYYY-MM-DD'),data.file.filename,data.file.filename])
- data.status = (result.affectedRows == 1 ? 1 : 0)
- if (data.status) {
+ let status = 1
+ let result = await con.q('INSERT INTO dailycheckin (dataid,date,filename,time) VALUES (?,?,?,?)',[data.cookies.user_dataid,moment().format('YYYY-MM-DD'),data.file.filename,moment().format('HH:mm:ss')])
+ if (result == undefined) {
+  await con.q('UPDATE dailycheckin SET filename = ?,time = ? WHERE dataid = ? AND date = ?',[data.file.filename,moment().format('HH:mm:ss'),data.cookies.user_dataid,moment().format('YYYY-MM-DD')])
+  status = 0
+ }
+ data.status = status
+ if (status) {
   linenotify.message(message)
  }
  res.json(data)

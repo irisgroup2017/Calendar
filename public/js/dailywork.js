@@ -2,7 +2,7 @@ jQuery(function ($) {
  // ICON CLICK
  $(document).on('click','.dailyimage',function(e) {
   var dailyModal = '\
-   <div class="modal fade" id="dailyModal" data-id="'+$(this).data('id')+'">\
+   <div class="modal fade" id="dailyModal" data-date="'+$(this).parents('td').data('date')+'">\
     <div class="modal-dialog">\
      <div class="modal-content">\
       <div class="modal-header">\
@@ -48,7 +48,7 @@ jQuery(function ($) {
   $('#attachFileSubmit').on('click',function() {
    let file = $('.attach-file-button')[0]
    let data = new FormData(file)
-   data.append('id',$('#dailyModal').data('id'))
+   data.append('id',$('#dailyModal').data('date'))
    $.ajax({
     type: "POST",
     enctype: 'multipart/form-data',
@@ -58,7 +58,7 @@ jQuery(function ($) {
     cache: false,
     data: data,
     success: function(result) {
-     let thisIcon = $('.dailyimage[data-id="'+result.id+'"]')
+     let thisIcon = $('.dailyimage[data-date="'+result.id+'"]')
      $(thisIcon).removeClass('maroon')
      $(thisIcon).addClass('green')
      $('#dailyModal').modal("hide")
@@ -85,10 +85,9 @@ jQuery(function ($) {
      console.log(result)
      let date = moment().format('YYYY-MM-DD')
      if (result.status) {
-      $('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+']').prepend('<i class="dailyimage maroon fa fa-file-image-o fa-2 fc-left" data-path="'+result.file.path+'"></i>')
+      $('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+']').prepend('<i class="dailyimage maroon fa fa-file-image-o fa-2 fc-left" data-date='+date+' data-path='+result.file.path+'></i>')
      } else {
       $('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+'] .dailyimage').data('path',result.file.urlpath)
-      console.log($('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+'] .dailyimage').data().path)
      }
     },
     error: function(err) {
