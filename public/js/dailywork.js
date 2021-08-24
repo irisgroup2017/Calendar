@@ -1,10 +1,33 @@
 jQuery(function ($) {
  // ICON CLICK
  $(document).on('click','.dailyimage',function(e) {
+  let date = $(this).parents('td').data('date')
   var dailyModal = '\
-   <div class="modal fade" id="dailyModal" data-date="'+$(this).parents('td').data('date')+'">\
-    <div class="modal-dialog">\
+   <div class="modal fade" id="dailyModal" data-status='+($(this).hasClass('green') ? "update" : "insert")+' data-date="'+date+'">\
+    <div class="modal-dialog modal-lg">\
      <div class="modal-content">\
+     <div class="modal-header">\
+      <h5 class="modal-title">กรอกรายละเอียดการทำงาน</h5>\
+      <button type="button" class="justify-content-end" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+     </div>\
+     <div class="modal-body table-responsive">\
+      <table class="table table-bordered">\
+       <thead>\
+        <tr>\
+         <td>วันที่</td>\
+         <td>รายละเอียดการทำงาน</td>\
+         <td>สถานะ</td>\
+         <td>หมายเหตุ</td>\
+        </tr>\
+       </thead>\
+       <tbody id="dailyInputLine"></tbody>\
+      </table>\
+     </div>\
+     </div>\
+    </div>\
+   </div>'
+
+     /* FILE UPLOAD
       <div class="modal-header">\
         <h5 class="modal-title">แนบไฟล์บันทึกรายละเอียดการทำงาน</h5>\
         <button type="button" class="justify-content-end" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
@@ -25,14 +48,16 @@ jQuery(function ($) {
      </div>\
     </div>\
    </div>'
+   */
    dailyModal = $(dailyModal).appendTo('body')
 
    dailyModal.on('show.bs.modal', function (e) {
-
+    $('#dailyInputLine').append(dailyAddLine())
    })
 
-  $('#dailyModal').modal('show').on('hidden.bs.modal', function () {
-   this.remove()
+   dailyModal.modal('show').on('hidden.bs.modal', function () {
+    this.remove()
+   })
   })
 
   $('#attachFile').on('change',function() {
@@ -45,27 +70,83 @@ jQuery(function ($) {
    }
   })
 
+ function dailyAddLine() {
+  let $element = $('<tr/>',{
+   id: "thisid",
+  })
+  let dailyColType = ["date","text","select","text"]
+  let dailyColClass = ["daily-date","daily-detail overflow-hidden","daily-status","daily-remark"]
+  for (var i=0;i<4;i++) {
+   let $td = $('<td/>',{
+    class: dailyColClass[i],
+    contenteditable: true
+   })
+   if (dailyColClass[i] == "daily-status") {
+    let selectBox = '\
+    <div class="select-box">\
+     <div class="select-box__current" tabindex="1">\
+      <div class=".select-box__value">\
+       <input class="select-box__input" type="radio" id="status-inprogress" value="1" checked>\
+       <p>อยู่ระหว่างดำเนินการ</p>\
+      </div>\
+      <div class=".select-box__value">\
+       <input class="select-box__input" type="radio" id="status-waitapprove" value="2">\
+       <p>รออนุมัติ</p>\
+      </div>\
+      <div class=".select-box__value">\
+       <input class="select-box__input" type="radio" id="status-complete" value="3">\
+       <p>ดำเนินการเสร็จสิ้น</p>\
+      </div>\
+      <i cless="fa fa-arrow-down select-box__icon" aria-hidden="true"></i>\
+     </div>\
+     <ul class="select-box__list">\
+      <li>\
+       <label class="select-box__option" for="status-inprogress" aria-hidden="aria-hidden">อยู่ระหว่างดำเนินการ</label>\
+      </li>\
+      <li>\
+       <label class="select-box__option" for="status-waitapprove" aria-hidden="aria-hidden">รออนุมัติ</label>\
+      </li>\
+      <li>\
+       <label class="select-box__option" for="status-complete" aria-hidden="aria-hidden">ดำเนินการเสร็จสิ้น</label>\
+      </li>\
+     </ul>\
+    </div>'
+    $td.append(selectBox)
+   }
+   /*
+   let input = $('<input/>',{
+    type: dailyColType[i],
+   })
+   $(td).append(input)*/
+   $element.append($td)
+  }
+  return $element
+ }
+  /* FILE UPLOAD
   $('#attachFileSubmit').on('click',function() {
-   let file = $('.attach-file-button')[0]
-   let data = new FormData(file)
-   data.append('id',$('#dailyModal').data('date'))
+   let file = $('#attachFile')[0].files[0]
+   let data = new FormData()
+   data.append('date',$('#dailyModal').data('date'))
+   data.append('status',$('#dailyModal').data('status'))
+   data.append('file',file)
    $.ajax({
     type: "POST",
     enctype: 'multipart/form-data',
     url: "/upload/dailyfile",
     processData: false, //prevent jQuery from automatically transforming the data into a query string
     contentType: false,
-    cache: false,
     data: data,
     success: function(result) {
-     let thisIcon = $('.dailyimage[data-date="'+result.id+'"]')
-     $(thisIcon).removeClass('maroon')
-     $(thisIcon).addClass('green')
+     if (result.status == "insert") {
+      let thisIcon = $('.dailyimage[data-date="'+result.date+'"]')
+      $(thisIcon).removeClass('maroon')
+      $(thisIcon).addClass('green')
+     }
      $('#dailyModal').modal("hide")
     }
    })
   })
- })
+ */
  // END
 
  $('#imageUpload').on('change',function() {

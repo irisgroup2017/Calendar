@@ -12,12 +12,16 @@ exports.uploadFile = async (req, res) => {
 
 exports.uploadDaily = async (req, res) => {
  let data = {
+  status: req.body.status,
   file: req.file,
-  id: req.body.id,
+  date: req.body.date,
   cookies: qs.parse(req.headers.cookie.split(';').join('&').replace(/\su/ig,'u'))
  }
+ let now = moment().format('YYYY-MM-DD')
  let message = `\n${data.cookies.user_name} รายงานตัวเลิกงานวันที่ ${moment().format("DD/MM/YYYY")}`
- await con.q('UPDATE dailycheckin SET docname = ? WHERE id = ?',[data.file.filename,data.id])
- linenotify.message(message)
+ await con.q('UPDATE dailycheckin SET docname = ? WHERE dataid = ? AND date = ?',[data.file.filename,data.cookies.user_dataid,data.date])
+ if (data.date == now && data.status == "insert") {
+  linenotify.message(message)
+ }
  res.send(data)
 }
