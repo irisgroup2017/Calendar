@@ -23,6 +23,9 @@ jQuery(function ($) {
        <tbody id="dailyInputLine"></tbody>\
       </table>\
      </div>\
+     <div class="modal-footer">\
+      <button type="button" id="submit-daily" class="btn btn-sm btn-primary">บันทึก</button>\
+     </div>\
      </div>\
     </div>\
    </div>'
@@ -70,54 +73,32 @@ jQuery(function ($) {
    }
   })
 
- function dailyAddLine() {
+ function dailyAddLine(lineid) {
+  let id = $("#dailyInputLine tr").length+1
   let $element = $('<tr/>',{
-   id: "thisid",
+   id: lineid
   })
-  let dailyColType = ["date","text","select","text"]
-  let dailyColClass = ["daily-date","daily-detail overflow-hidden","daily-status","daily-remark"]
+  let dailyColClass = ["daily-date","daily-detail overflow-hidden limit-255","daily-status","daily-remark limit-255"]
+  let dailyColName = ["date","detail","status","remark"]
+  let dailyColContenEdit = [false,true,false,true]
   for (var i=0;i<4;i++) {
    let $td = $('<td/>',{
     class: dailyColClass[i],
-    contenteditable: true
+    name: dailyColName[i],
+    contenteditable: dailyColContenEdit[i],
+    text: (dailyColClass[i].indexOf("daily-date") > -1 ? moment($('#dailyModal').data('date'),'YYYY-MM-DD').format("DD/MM/YYYY") : "")
    })
-   if (dailyColClass[i] == "daily-status") {
+
+   if (dailyColClass[i].indexOf("daily-status") > -1) {
     let selectBox = '\
-    <div class="select-box">\
-     <div class="select-box__current" tabindex="1">\
-      <div class=".select-box__value">\
-       <input class="select-box__input" type="radio" id="status-inprogress" value="1" checked>\
-       <p>อยู่ระหว่างดำเนินการ</p>\
-      </div>\
-      <div class=".select-box__value">\
-       <input class="select-box__input" type="radio" id="status-waitapprove" value="2">\
-       <p>รออนุมัติ</p>\
-      </div>\
-      <div class=".select-box__value">\
-       <input class="select-box__input" type="radio" id="status-complete" value="3">\
-       <p>ดำเนินการเสร็จสิ้น</p>\
-      </div>\
-      <i cless="fa fa-arrow-down select-box__icon" aria-hidden="true"></i>\
-     </div>\
-     <ul class="select-box__list">\
-      <li>\
-       <label class="select-box__option" for="status-inprogress" aria-hidden="aria-hidden">อยู่ระหว่างดำเนินการ</label>\
-      </li>\
-      <li>\
-       <label class="select-box__option" for="status-waitapprove" aria-hidden="aria-hidden">รออนุมัติ</label>\
-      </li>\
-      <li>\
-       <label class="select-box__option" for="status-complete" aria-hidden="aria-hidden">ดำเนินการเสร็จสิ้น</label>\
-      </li>\
-     </ul>\
-    </div>'
+     <select id="select-box-'+id+'" class="select">\
+      <option value="0" selected disabled hidden>เลือกสถานะ</option>\
+      <option value="1">อยู่ระหว่างดำเนินการ</option>\
+      <option value="2">รออนุมัติ</option>\
+      <option value="3">ดำเนินการเสร็จสิ้น</option>\
+     </select>'
     $td.append(selectBox)
    }
-   /*
-   let input = $('<input/>',{
-    type: dailyColType[i],
-   })
-   $(td).append(input)*/
    $element.append($td)
   }
   return $element
@@ -163,7 +144,6 @@ jQuery(function ($) {
     cache: false,
     data: data,
     success: function(result) {
-     console.log(result)
      let date = moment().format('YYYY-MM-DD')
      if (result.status) {
       $('.fc-content-skeleton thead tr td.fc-day-top[data-date='+date+']').prepend('<i class="dailyimage maroon fa fa-file-image-o fa-2 fc-left" data-date='+date+' data-path='+result.file.path+'></i>')
@@ -177,4 +157,83 @@ jQuery(function ($) {
    })
   }
  })
+
+ $(document).on('keydown','.limit-255',function(e) {
+  let key = e.key
+  let textLength = $(this).text().length;
+  if (key === "Backspace" || key === "Delete") { textLength-- }
+  if (textLength > 254) {
+   e.preventDefault();
+   $(this).addClass("error")
+  } else {
+   $(this).removeClass("error")
+  }
+ })
+
+ $(document).on('change','[id^=select-box-]',function() {
+  let thisEvent = $(this).attr("id")
+  let lastEvent = $("#dailyInputLine tr:last-child select.select").attr("id")
+  if (thisEvent == lastEvent) {
+   $('#dailyInputLine').append(dailyAddLine())
+  }
+ })
+
+ $(document).on("click","#submit-daily",async function() {
+  let dataInput = $("#dailyInputLine tr")
+  let data = []
+  $.each(dataInput,function(i,row) {
+   let id = $(row).attr("id")
+   let result = getDataInput(id,$(row).find("td"))
+   if (result) {
+    data.push(result)
+   }
+  })
+  if (data.length) {
+   console.log(data)
+   $.ajax({
+    url: "/lar/dailyreport/add",
+    method: "POST",
+    contentType: 'application/json',
+    dataType: "json",
+    async: false,
+    data: JSON.stringify(data),
+    success: function() {
+     $('#dailyInputLine').hide()
+    }
+   })
+  } else {
+   $.alert('ไม่มีข้อมูลบันทึก')
+  }
+ })
+
+ function getDataInput(id,row) {
+  let result = {}
+  if (id) {
+   result.id = id
+  }
+  $.each(row,function(index,value) {
+   let name = $(value).attr("name")
+   let val
+   switch (name) {
+    case "date": 
+     val = moment($(value).text(),"DD/MM/YYYY").format("YYYY-MM-DD")
+     break
+    case "detail":
+     val = $(value).text()
+     break
+    case "status":
+     val = $(value).find(":selected").val()
+     break
+    case "remark":
+     val = $(value).text()
+     break
+   }
+   //result.dateedit = new Date()
+   if (val != "") {
+    result[name] = val
+   }
+  })
+  return (result.detail != "" && result.status != 0 ? result : "")
+ }
+ // END OF JQUERY
 })

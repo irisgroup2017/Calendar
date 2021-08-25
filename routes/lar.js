@@ -114,6 +114,22 @@ router.post('/getinout',async function (req,res) {
 		}
 })
 
+router.post('/dailyreport/add',async function (req,res) {
+ let data = req.body
+ let query
+ data.map(row => {
+  row.dataid = req.cookies.user_dataid
+  if (row.id) {
+   query = updateQuery(row)
+  } else {
+   query = insertQuery(row)
+  }
+  console.log(query)
+  con.q(query)
+ })
+ res.send('ok')
+})
+
 router.post('/getdailypic',async function (req,res) {
 	let start = req.body.start
 	let end = req.body.end
@@ -126,5 +142,31 @@ router.post('/getdailypic',async function (req,res) {
  )
 	res.json(data)
 })
+
+function insertQuery(data) {
+ let keys = []
+ let values = []
+ Object.keys(data).map(key => {
+  let value = data[key]
+  keys.push(key)
+  values.push(value)
+ })
+ keys = keys.join(",")
+ values = values.join(",")
+ return `INSERT INTO dailywork (${keys}) VALUES (${values})`
+}
+
+function updateQuery(data) {
+ let sets = []
+ Object.keys(data).map(key => {
+  let value = data[key]
+  if (key != "id") {
+   sets.push(`${key} = ${value}`)
+  }
+ })
+ sets = sets.join(",")
+ return `UPDATE dailywork ${sets} WHERE id = ${data.id}`
+}
+
 
 module.exports = router
