@@ -73,7 +73,7 @@ jQuery(function ($) {
 
     if (oldReport && oldReport.length > 0) {
      oldReport.map((line,i) => {
-      element.push(dailyAddLine(line))
+      element.push(dailyAddLine(line,i))
      })
     }
     element.push(dailyAddLine())
@@ -103,7 +103,7 @@ jQuery(function ($) {
   this.remark = data.remark || "";
  }
 
- function dailyAddLine(data = {}) {
+ function dailyAddLine(data = {},index = $("#dailyInputLine tr").length+1) {
   if (data && Object.keys(data).length < 1) {
    data.id = ""
    data.date = moment($('#dailyModal').data('date'),'YYYY-MM-DD')
@@ -112,7 +112,6 @@ jQuery(function ($) {
    data.remark = ""
   }
   let row = new dailyDetail(data)
-  let line = $("#dailyInputLine tr").length+1
   let $element = $('<tr/>',{
    id: row.id
   })
@@ -131,7 +130,7 @@ jQuery(function ($) {
 
    if (name == "status") {
     let selectBox = '\
-     <select id="select-box-'+line+'" class="select">\
+     <select id="select-box-'+index+'" class="select">\
       <option value="0" '+(value == 0 ? "selected" : "")+' disabled hidden>เลือกสถานะ</option>\
       <option value="1" '+(value == 1 ? "selected" : "")+'>อยู่ระหว่างดำเนินการ</option>\
       <option value="2" '+(value == 2 ? "selected" : "")+'>รออนุมัติ</option>\
