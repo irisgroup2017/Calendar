@@ -55,7 +55,29 @@ jQuery(function ($) {
    dailyModal = $(dailyModal).appendTo('body')
 
    dailyModal.on('show.bs.modal', function (e) {
-    $('#dailyInputLine').append(dailyAddLine())
+    let oldReport
+    let data = {date:date}
+    let element = []
+    $.ajax({
+     method: "post",
+     url: "/lar/dailyreport/get",
+     contentType: 'application/json',
+     dataType: "json",
+     processData: false,
+     async: false,
+     data: JSON.stringify(data),
+     success: function(result) {
+      oldReport = result
+     }
+    })
+
+    if (oldReport && oldReport.length > 0) {
+     oldReport.map((line,i) => {
+      element.push(dailyAddLine(line))
+     })
+    }
+    element.push(dailyAddLine())
+    $('#dailyInputLine').append(element)
    })
 
    dailyModal.modal('show').on('hidden.bs.modal', function () {
@@ -73,35 +95,68 @@ jQuery(function ($) {
    }
   })
 
- function dailyAddLine(lineid) {
-  let id = $("#dailyInputLine tr").length+1
+ function dailyDetail(data) {
+  this.id = data.id || "";
+  this.date = moment(data.date).format("DD/MM/YYYY");
+  this.detail = data.detail || "";
+  this.status = data.status || 0;
+  this.remark = data.remark || "";
+ }
+
+ function dailyAddLine(data = {}) {
+  if (data && Object.keys(data).length < 1) {
+   data.id = ""
+   data.date = moment($('#dailyModal').data('date'),'YYYY-MM-DD')
+   data.detail = ""
+   data.status = ""
+   data.remark = ""
+  }
+  let row = new dailyDetail(data)
+  let line = $("#dailyInputLine tr").length+1
   let $element = $('<tr/>',{
-   id: lineid
+   id: row.id
   })
   let dailyColClass = ["daily-date","daily-detail overflow-hidden limit-255","daily-status","daily-remark limit-255"]
   let dailyColName = ["date","detail","status","remark"]
   let dailyColContenEdit = [false,true,false,true]
   for (var i=0;i<4;i++) {
+   let name = dailyColName[i]
+   let value = row[name]
    let $td = $('<td/>',{
     class: dailyColClass[i],
-    name: dailyColName[i],
+    name: name,
     contenteditable: dailyColContenEdit[i],
-    text: (dailyColClass[i].indexOf("daily-date") > -1 ? moment($('#dailyModal').data('date'),'YYYY-MM-DD').format("DD/MM/YYYY") : "")
+    text: getValue[name](value)
    })
 
-   if (dailyColClass[i].indexOf("daily-status") > -1) {
+   if (name == "status") {
     let selectBox = '\
-     <select id="select-box-'+id+'" class="select">\
-      <option value="0" selected disabled hidden>เลือกสถานะ</option>\
-      <option value="1">อยู่ระหว่างดำเนินการ</option>\
-      <option value="2">รออนุมัติ</option>\
-      <option value="3">ดำเนินการเสร็จสิ้น</option>\
+     <select id="select-box-'+line+'" class="select">\
+      <option value="0" '+(value == 0 ? "selected" : "")+' disabled hidden>เลือกสถานะ</option>\
+      <option value="1" '+(value == 1 ? "selected" : "")+'>อยู่ระหว่างดำเนินการ</option>\
+      <option value="2" '+(value == 2 ? "selected" : "")+'>รออนุมัติ</option>\
+      <option value="3" '+(value == 3 ? "selected" : "")+'>ดำเนินการเสร็จสิ้น</option>\
      </select>'
     $td.append(selectBox)
    }
    $element.append($td)
   }
   return $element
+ }
+
+ const getValue = {
+  date: (val) => {
+   return val
+  },
+  detail: (val) => {
+   return val
+  },
+  status: (val) => {
+   return ""
+  },
+  remark: (val) => {
+   return val
+  },
  }
   /* FILE UPLOAD
   $('#attachFileSubmit').on('click',function() {
@@ -180,6 +235,7 @@ jQuery(function ($) {
 
  $(document).on("click","#submit-daily",async function() {
   let dataInput = $("#dailyInputLine tr")
+  let status = $("#dailyModal").data('status')
   let data = []
   $.each(dataInput,function(i,row) {
    let id = $(row).attr("id")
@@ -189,16 +245,21 @@ jQuery(function ($) {
    }
   })
   if (data.length) {
-   console.log(data)
    $.ajax({
     url: "/lar/dailyreport/add",
     method: "POST",
     contentType: 'application/json',
     dataType: "json",
     async: false,
-    data: JSON.stringify(data),
-    success: function() {
-     $('#dailyInputLine').hide()
+    data: JSON.stringify({
+     status: status,
+     data: data
+    }),
+    success: function(result) {
+     let thisIcon = $('.dailyimage[data-date="'+result[0].date+'"]')
+     $(thisIcon).removeClass('maroon')
+     $(thisIcon).addClass('green')
+     $('#dailyModal').modal("hide")
     }
    })
   } else {
@@ -228,12 +289,11 @@ jQuery(function ($) {
      val = $(value).text()
      break
    }
-   //result.dateedit = new Date()
+   result.dateedit = new Date()
    if (val != "") {
     result[name] = val
    }
   })
   return (result.detail != "" && result.status != 0 ? result : "")
  }
- // END OF JQUERY
-})
+}) // END OF JQUERY

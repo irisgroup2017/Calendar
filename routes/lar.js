@@ -6,6 +6,7 @@ const log = require('../bin/logger')
 const fingerscan = require('../bin/fingerscan')
 const moment = require('moment')
 const api = require('../bin/api')
+const linenotify = require('../bin/linenotify')
 const path = require('path')
 require("dotenv").config()
 
@@ -114,58 +115,77 @@ router.post('/getinout',async function (req,res) {
 		}
 })
 
+router.post('/dailyreport/get',async function (req,res) {
+ let date = req.body.date
+ let query = 'SELECT * FROM dailywork WHERE date = ? AND dataid = ?'
+ let result = await con.q(query,[date,req.cookies.user_dataid])
+ res.json(result)
+})
+
 router.post('/dailyreport/add',async function (req,res) {
- let data = req.body
- let query
- data.map(row => {
-  row.dataid = req.cookies.user_dataid
-  if (row.id) {
-   query = updateQuery(row)
-  } else {
-   query = insertQuery(row)
-  }
-  console.log(query)
-  con.q(query)
- })
- res.send('ok')
+ let data = req.body.data
+ let query,values
+ let ans = await Promise.all(
+  data.map(async (row) => {
+   row.dataid = req.cookies.user_dataid
+   if (row.id) {
+    [query,values] = updateQuery(row)
+   } else {
+    [query,values] = insertQuery(row)
+   }
+   let result = await con.q(query,values)
+   //row.id = result.insertId
+   return row
+  })
+ ).then(result => result)
+ if (req.body.status == "insert") {
+  let message = `\n${req.cookies.user_name} รายงานตัวเลิกงานวันที่ ${moment().format("DD/MM/YYYY")}`
+  linenotify.message(message)
+ }
+ res.json(ans)
 })
 
 router.post('/getdailypic',async function (req,res) {
 	let start = req.body.start
 	let end = req.body.end
-	let data = await con.q("SELECT * FROM dailycheckin WHERE dataid = ? AND date BETWEEN ? AND ?",[req.cookies.user_dataid,start,end]).then(
-  result => result.map(it => {
-   it.date = moment(it.date).add(7,'h').format('YYYY-MM-DD')
-   it.path = path.join('\\public\\image',it.date,it.filename)
-   return it
-   })
- )
-	res.json(data)
+	let data = await con.q("SELECT * FROM dailycheckin WHERE dataid = ? AND date BETWEEN ? AND ?",[req.cookies.user_dataid,start,end]).then(result => result.map(it => moment(it.date).format('YYYY-MM-DD')))
+ let recorded = await con.q('SELECT date FROM dailywork WHERE dataid = ? AND date BETWEEN ? AND ? GROUP BY date',[req.cookies.user_dataid,start,end]).then(result => result.map(it => moment(it.date).format('YYYY-MM-DD')))
+ let result = data.reduce((acc,it,i) => {
+  acc.push({
+   date: it,
+   record: (recorded.indexOf(it) > -1 ? 1 : 0)
+  })
+  return acc
+ },[])
+	res.json(result)
 })
 
 function insertQuery(data) {
  let keys = []
  let values = []
+ let qm = []
  Object.keys(data).map(key => {
   let value = data[key]
   keys.push(key)
   values.push(value)
+  qm.push("?")
  })
  keys = keys.join(",")
- values = values.join(",")
- return `INSERT INTO dailywork (${keys}) VALUES (${values})`
+ return [`INSERT INTO dailywork (${keys}) VALUES (${qm.join(",")})`,values]
 }
 
 function updateQuery(data) {
  let sets = []
+ let values = []
  Object.keys(data).map(key => {
   let value = data[key]
   if (key != "id") {
-   sets.push(`${key} = ${value}`)
+   sets.push(`${key} = ?`)
+   values.push(value)
   }
  })
  sets = sets.join(",")
- return `UPDATE dailywork ${sets} WHERE id = ${data.id}`
+ return [`UPDATE dailywork  SET ${sets} WHERE id = ${data.id}`,values]
 }
 
 

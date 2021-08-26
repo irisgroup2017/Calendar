@@ -434,24 +434,24 @@ jQuery(function ($) {
 
     //daily pic upload
     $.ajax({
-        url: '/lar/getdailypic',
-        type: "POST",
-        dataType: "json",
-        async: false,
-        data: {
-         start: moment(view.start).format('YYYY-MM-DD'),
-         end: moment(view.end).format('YYYY-MM-DD')
-        },
-        success: async function (data) {
-         if (data) {
-          data.map(it => {
-           let date = dayrender[it.date]
-           let row = date.r
-           let col = date.c
-           $('.fc-row:nth-child(' + row + ') .fc-content-skeleton thead tr td:nth-child(' + col + ')').prepend('<i class="dailyimage '+(it.docname ? 'green' : 'maroon')+' fa fa-file-image-o fa-2 fc-left" data-date='+it.date+' data-path="'+it.path+'"></i>')
-          })
-         }
-        }
+     url: '/lar/getdailypic',
+     type: "POST",
+     dataType: "json",
+     async: false,
+     data: {
+      start: moment(view.start).format('YYYY-MM-DD'),
+      end: moment(view.end).format('YYYY-MM-DD')
+     },
+     success: async function (data) {
+      if (data) {
+       data.map(it => {
+        let date = dayrender[it.date]
+        let row = date.r
+        let col = date.c
+        $('.fc-row:nth-child(' + row + ') .fc-content-skeleton thead tr td:nth-child(' + col + ')').prepend('<i class="dailyimage '+(it.record ? 'green' : 'maroon')+' fa fa-file-image-o fa-2 fc-left" data-date='+it.date+'></i>')
+       })
+      }
+     }
     })
 
     $.ajax({

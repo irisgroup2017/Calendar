@@ -135,6 +135,7 @@
 }
 
 .daily-date {
+ vertical-align: inherit !important;
  max-width:100px;
 }
 
