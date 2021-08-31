@@ -127,10 +127,9 @@ jQuery(function ($) {
     contenteditable: dailyColContenEdit[i],
     text: getValue[name](value)
    })
-
    if (name == "status") {
     let selectBox = '\
-     <select id="select-box-'+index+'" class="select">\
+     <select id="select-box-'+row.id+'" class="select">\
       <option value="0" '+(value == 0 ? "selected" : "")+' disabled hidden>เลือกสถานะ</option>\
       <option value="1" '+(value == 1 ? "selected" : "")+'>อยู่ระหว่างดำเนินการ</option>\
       <option value="2" '+(value == 2 ? "selected" : "")+'>รออนุมัติ</option>\
@@ -225,9 +224,7 @@ jQuery(function ($) {
  })
 
  $(document).on('change','[id^=select-box-]',function() {
-  let thisEvent = $(this).attr("id")
-  let lastEvent = $("#dailyInputLine tr:last-child select.select").attr("id")
-  if (thisEvent == lastEvent) {
+  if ($(this).parents('tr').is(':last-child')) {
    $('#dailyInputLine').append(dailyAddLine())
   }
  })
@@ -293,6 +290,6 @@ jQuery(function ($) {
     result[name] = val
    }
   })
-  return (result.detail != "" && result.status != 0 ? result : "")
+  return (result.detail != undefined && result.status != 0 ? result : "")
  }
 }) // END OF JQUERY
