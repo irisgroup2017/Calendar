@@ -20,7 +20,7 @@ router.get('/', async function(req, res) {
 		sdate: moment.unix((await con.q('SELECT cdate FROM privacy_data WHERE dataid = ?',[dataid]))[0].cdate),
 		user: req.cookies.user_name,
 		vacation: parseInt(process.env.VACATION),
-  maxvacation: parseInt(process.env.MAXVACATION),
+  		maxvacation: parseInt(process.env.MAXVACATION),
 		operator: req.cookies.user_op
 	}
 	res.render('lar', parms)

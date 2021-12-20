@@ -25,7 +25,7 @@ async function setLar(userName, dataid, state, now) {
  va = 0,
  tr = 30,
  st = 1,
- ma = 90,
+ ma = 98,
  re = 0,
  mi = 60,
  vap = null,

@@ -282,8 +282,7 @@ jQuery(function ($) {
     }
    }
    let endtime = dateSend(view.type, view.end._i)
-   
-   if (view.end.format('YYYY') > moment().format('YYYY')) {
+   if (parseInt(view.end.format('YYYY')) > parseInt(moment().add(1,'y').format('YYYY'))) {
     $('.fc-next-button').prop("disabled", true);
    } else {
     $('.fc-next-button').prop("disabled", false);

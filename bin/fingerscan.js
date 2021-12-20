@@ -38,7 +38,7 @@ async function fingerToJSON() {
    await con.q('CREATE TABLE '+table+' (date date PRIMARY KEY,timestart time,timeend time,MachCodeStart tinyint(3),MachCodeEnd tinyint(3))',[])
    datesearch = "#2000/01/01#"
   } else {
-   dateend = ((await con.q('SELECT DATE_FORMAT(MAX(date), "#%Y/%m/%d#") AS date FROM '+table))[0]).date
+   dateend = moment(((await con.q('SELECT DATE_FORMAT(MAX(date), "#%Y/%m/%d#") AS date FROM '+table))[0]).date,"#%Y/%m/%d#").subtract(1,'m').format("#YYYY/MM/DD#")
    datesearch = moment().subtract(1,"months").format("#YYYY/MM/20#")
    datediff = moment.duration(moment(datesearch,"#YYYY/MM/DD#").diff(moment(dateend,"#YYYY/MM/DD#")))
    datesearch = (datediff.asMinutes() > 0 ? dateend : datesearch)
