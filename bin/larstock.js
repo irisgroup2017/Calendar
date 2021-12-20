@@ -38,7 +38,7 @@ async function setLar(userName, dataid, state, now) {
  let ulevel = (await con.q('SELECT ulevel FROM user_data WHERE dataid = ?', dataid))[0].ulevel
  let vacationNew = newVacation(ulevel,moment(swdate*1000),moment())
  //
- let ov = await con.q('SELECT vacation,vacationp,vacationq,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?', [dataid, y[2] - 1])
+ let ov = await con.q('SELECT vacation,vacationr,sterily,sterilyd,religiousd,religious,militaryd,military FROM lar_status WHERE dataid = ? AND year = ?', [dataid, y[2] - 1])
  if (!ov[0]) {
   if (w < 1) {
    vap = '000000'
@@ -169,7 +169,7 @@ async function setLar(userName, dataid, state, now) {
   re = 30
  }
  if (state == 'insert') {
-  await con.q('INSERT INTO lar_status (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military,vacationp) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', [dataid, userName, y[2], si, pe, va, tr, st, ma, re, mi, vap])
+  await con.q('INSERT INTO lar_status (dataid,userName,year,sick,personal,vacation,training,sterily,maternity,religious,military) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', [dataid, userName, y[2], si, pe, va, tr, st, ma, re, mi, vap])
  }
  if (state == 'update') {
   var daisuki = await con.q('SELECT * FROM lar_status WHERE dataid = ? AND year = ?', [dataid, y[2]])
