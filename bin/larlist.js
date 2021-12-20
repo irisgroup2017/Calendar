@@ -60,7 +60,7 @@ async function viewLar(dataid, thisday) {
  lle.map(it => {
   let ans = {
    a: type[it].type_title,
-   c: convertSecToDate(result[it+'d']),
+   c: convertSecToDate(result[it+'d'] || 0),
    d: convertSecToDate(result[it+'r']),
    e: (result[it]+'r' < 0 ? true : false)
   }
