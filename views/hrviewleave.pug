@@ -1,0 +1,126 @@
+extends layout
+
+block content
+ .row
+  .container
+   .space
+   #calendar
+
+block footer
+ +ssrc(['jquery-ui.custom.min.js', 'clockpicker.min.js', 'jquery.ui.touch-punch.min.js', 'global.js', 'moment.min.js', 'bootbox.min.js', 'fullcalendar5.5.1.min.js', 'bootstrap-datepicker.min.js', '/fullcalendar5.5.1/th.js']) 
+ +scss(['balloon.css', 'animate.min.css', 'clockpicker.min.css', 'bootstrap-datepicker.min.css', 'calendartooltip.css', "fullcalendar5.5.1.min.css"])
+ link(rel = 'stylesheet', href = 'https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.css')
+ link(rel = 'stylesheet', href = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css')
+
+ script.
+  document.addEventListener('DOMContentLoaded', function () {
+    let date = new Date()
+    var calendarEl = document.getElementById('calendar')
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        timeZone: 'Asia/Thai',
+        headerToolbar: {
+            left: 'prevYear,prev,next,nextYear today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+        },
+        initialView: 'listMonth',
+        themeSystem: "bootstrap",
+        locale: 'th',
+        longPressDelay: 1000,
+        nowIndicator: true, // place timeline in day mode
+        //now: moment("2021-02-15 14:00","YYYY-MM-DD HH:mm"), // assign time to calendar
+        navLinks: true, // allows navigate to day mode when click number of day
+        displayEventEnd: true,
+        selectable: true,
+        dayMaxEvents: true,
+        datesSet: function (view, element) {
+            calendar.removeAllEvents()
+            let start = view.start
+            let end = view.end
+            $.ajax({
+                url: '/cross',
+                type: "GET",
+                async: false,
+                data: {
+                    path: "/lardata/getlist",
+                    method: "GET",
+                    option: {
+                        start: start,
+                        end: end
+                    }
+                },
+                success: function (data) {
+                    console.log(data)
+                    $.each(data, function (i, item) {
+                        item.start = (item.allDay == 1 ? moment(item.start * 1000).format('YYYY-MM-DD') : moment(item.start * 1000).toISOString())
+                        if (item.end) {
+                            item.end = (item.allDay == 1 ? moment(item.end * 1000).format('YYYY-MM-DD') : moment(item.end * 1000).toISOString())
+                        }
+                        item.title = item.userName + ' (' + item.lar_type.typeTitle + ') ' + ' : ' + item.title
+                        item.classNames = item.className
+                        delete item.className
+                        calendar.addEvent(item)
+                    })
+                },
+                error: function (e) {
+                    console.log(e)
+                }
+            })
+        },
+        eventMouseEnter: function (info) {
+            let el = info.el
+            let ev = info.event
+            let ext = info.event.extendedProps
+            let title = ev.title.split(':')[1]
+            var tooltip = '<p>' + ext.userName + '</p>\
+                <p><em>' + ext.lar_type.typeTitle + ' : ' + moment(ev.start).format('DD/MM/YYYY') +'</em></p>\
+                <p>สถานะ: ' + ext.leave_desc.leave_title + '</p>\
+                <p>' + title + '</p>'
+            $(el).tooltip({
+                title: tooltip,
+                html: true,
+                placement: 'auto',
+                trigger: 'hover',
+                container: 'body'
+            })
+            //$(el).addClass("tooltipextra").prepend(tooltip)
+        },
+        eventDidMount: function (argu) {
+            const chooseColor = (type) => {
+                switch (type) {
+                    case 1:
+                        return '#82af6f'
+                    case 2:
+                        return '#160f0f'
+                    case 3:
+                        return '#f89406'
+                    case 4:
+                        return '#d15b47'
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        return '#3a87ad'
+                    case 10:
+                        return '#a0a0a0'
+                }
+            }
+            let type = argu.event.extendedProps.typeId
+            let color = chooseColor(type)
+            let el = argu.el
+            if ($(el).is(".fc-daygrid-block-event")) {
+                $(el).css('background-color', color)
+            } else if ($(el).is(".fc-v-event")) {
+                $(el).css('background-color', color)
+            }
+
+            if ($(el).is(".fc-daygrid-dot-event")) {
+                $(el).find(".fc-daygrid-event-dot").css('border', '4px solid ' + color)
+            } else if ($(el).is(".fc-list-event")) {
+                $(el).find(".fc-list-event-dot").css('border', '4px solid ' + color)
+            }
+        },
+    })
+    calendar.render();
+  });
