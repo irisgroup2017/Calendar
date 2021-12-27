@@ -50,7 +50,6 @@ block footer
                     }
                 },
                 success: function (data) {
-                    console.log(data)
                     $.each(data, function (i, item) {
                         item.start = (item.allDay == 1 ? moment(item.start * 1000).format('YYYY-MM-DD') : moment(item.start * 1000).toISOString())
                         if (item.end) {
