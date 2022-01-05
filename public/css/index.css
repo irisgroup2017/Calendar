@@ -73,25 +73,20 @@ table th,table td {
 }
 
 #popupMenu {
- display: none !important;
-}
-
-.popupMenu #popupMenu.show {
- display: inline;
- width: auto;
+ display: none;
 }
 
 #popupMenu.show {
- display: inline-block !important;
+ display: inline-flex !important;
  position: absolute;
+ height: 11vh;
+ overflow-y: auto;
+ overflow-x: hidden;
 }
 
 #popupMenu.show .popup-item {
- top: 5px;
- display: inline;
  box-sizing: border-box;
  list-style: none;
- line-height: 1.6em;
  user-select: none;
  text-decoration: none;
  outline: none;
@@ -99,8 +94,7 @@ table th,table td {
  background-color: rgba(0, 0, 0, 0.1);
  cursor: pointer;
  position: relative;
- white-space: nowrap;
- overflow: hidden;
+ flex-wrap: wrap;
  padding: .5em 1em;
  margin-right: .333em;
  margin-bottom: .333em;

@@ -56,8 +56,19 @@ jQuery(function ($) {
      table.columns().search('').draw()
      table.column(3).search($('.data-search').data('find'), true, false).draw()
     }
-   }
-  ],
+   },{
+    text: 'ปีที่ออกเอกสาร',
+    className: 'popupMenu',
+    action: () => {
+     if ($('#popupMenu').hasClass('show')) {
+      $('#popupMenu').removeClass('show')
+     } else {
+      $('.popupMenu').after(
+       $('#popupMenu').addClass('show')
+      )
+     }
+    }
+  }],
   rowCallback: function (row, data) {
 
   },
@@ -80,6 +91,15 @@ jQuery(function ($) {
   }]
   //
   //
+ })
+
+ $("#display-table").DataTable().column(1).search((new Date).getFullYear()).draw()
+
+ $(document).on('click','.popup-item',(e) => {
+  let result = $(e.target).text()
+  let table = $("#display-table").DataTable()
+  table.column(1).search(result).draw()
+  $('#popupMenu').removeClass('show')
  })
 
  $(document).on('click', '.memo-view', function () {

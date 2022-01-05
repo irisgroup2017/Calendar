@@ -93,17 +93,17 @@ router.post('/viewrender',async function (req,res) {
 		res.json(updatedur)
 	})
 	//
-	router.post('/getvacation',async function (req,res) {
-		let result = await con.q('SELECT wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
-		let mydata = await con.q('SELECT * FROM vacation_list WHERE '+(result[0].wplace == 1? 'doffice' : 'dsite')+' BETWEEN ? AND ?',[req.body.start,req.body.end])
-		let myswap = await con.q('SELECT title,swapDate,start FROM lar_data WHERE className = ? AND dataid = ? AND swapDate BETWEEN ? AND ? AND approve > 0',['label-danger',req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
-		let myattach = await con.q('SELECT start,fname FROM lar_data WHERE dataid = ? AND start BETWEEN ? AND ?',[req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
-		req.body.wplace = (result[0].wplace == 1 ? 'doffice' : 'dsite')
-		req.body.mydata = mydata
-		req.body.myswap = myswap
-		req.body.myattach = myattach
-		req.body.thisname = req.cookies.user_name
-		res.json(req.body)
+router.post('/getvacation',async function (req,res) {
+	let result = await con.q('SELECT wplace FROM privacy_data WHERE dataid = ?',[req.cookies.user_dataid])
+	let mydata = await con.q('SELECT * FROM vacation_list WHERE '+(result[0].wplace == 1? 'doffice' : 'dsite')+' BETWEEN ? AND ?',[req.body.start,req.body.end])
+	let myswap = await con.q('SELECT title,swapDate,start FROM lar_data WHERE className = ? AND dataid = ? AND swapDate BETWEEN ? AND ? AND approve > 0',['label-danger',req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
+	let myattach = await con.q('SELECT start,fname FROM lar_data WHERE dataid = ? AND start BETWEEN ? AND ?',[req.cookies.user_dataid,req.body.start/1000,req.body.end/1000])
+	req.body.wplace = (result[0].wplace == 1 ? 'doffice' : 'dsite')
+	req.body.mydata = mydata
+	req.body.myswap = myswap
+	req.body.myattach = myattach
+	req.body.thisname = req.cookies.user_name
+	res.json(req.body)
 })
 
 router.post('/getinout',async function (req,res) {

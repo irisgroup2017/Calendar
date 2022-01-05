@@ -92,12 +92,11 @@ jQuery(function ($) {
     sessionStorage.removeItem('fingerscan')
    }
     $.ajax({
-     url: '/lar',
+     url: '/lar/getvacation',
      type: "POST",
      dataType: "json",
      async: false,
      data: {
-      'state': 'getvacation',
       'start': view.start._i,
       'end': view.end._i
      },

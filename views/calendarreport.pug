@@ -1,0 +1,233 @@
+extends layout
+
+block content
+ .row
+  .container
+   .space
+   #calendar
+
+block footer
+ +ssrc(['jquery-ui.custom.min.js', 'clockpicker.min.js', 'jquery.ui.touch-punch.min.js', 'global.js','popper.min.js', 'moment.min.js', 'bootbox.min.js', 'fullcalendar5.5.1.min.js', 'bootstrap-datepicker.min.js', '/fullcalendar5.5.1/th.js']) 
+ +scss(['balloon.css', 'animate.min.css', 'clockpicker.min.css', 'bootstrap-datepicker.min.css', 'calendartooltip.css', "fullcalendar5.5.1.min.css"])
+ link(rel = 'stylesheet', href = 'https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.css')
+ link(rel = 'stylesheet', href = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css')
+
+ style.
+  .fc .fc-daygrid-day-top {
+      justify-content: space-between !important;
+  }
+  .fingerscan {
+      align-self: center;
+  }
+  .vacation {
+      display: flex;
+      justify-content: center !important;
+      align-items: center;
+  }
+ script.
+  var userList = JSON.parse('!{userList}')
+  var userId = JSON.parse('!{id}')
+  var calendar
+  var fcStart
+  var fcEnd
+  function renderObject(start,end) {
+      calendar.removeAllEvents()
+      $('.fingerscan').remove()
+      $.ajax({
+        url: '/cross',
+        type: "GET",
+        async: false,
+        data: {
+            path: "/lardata/getlistuser",
+            method: "GET",
+            option: {
+                userId: userId,
+                start: start,
+                end: end
+            }
+        },
+        success: function (data) {
+            $.each(data.data, function (i, item) {
+                item.start = (item.allDay == 1 ? moment(item.start * 1000).format('YYYY-MM-DD') : moment(item.start * 1000).toISOString())
+                if (item.end) {
+                    item.end = (item.allDay == 1 ? moment(item.end * 1000).format('YYYY-MM-DD') : moment(item.end * 1000).toISOString())
+                }
+                item.title = item.userName + ' (' + item.lar_type.typeTitle + ') ' + ' : ' + item.title
+                item.classNames = item.className
+                delete item.className
+                calendar.addEvent(item)
+            })
+            calendar.setOption('businessHours',data.businessHours)
+            $.each(data.fingerscan, function (i, item) {
+                let content = '<div class="fingerscan badge badge-info"><span title="เข้า: '+item.mstart+'">'+(item.timestart == "00:00:00" ? "ไม่แสกน" : item.timestart.substring(0,5))+'</span><span> - </span><span title="ออก: '+item.mend+'">'+(item.timeend == "00:00:00" ? "ไม่แสกน" : item.timeend.substring(0,5))+'</span></div>'
+                $(document).find('.fc-daygrid-day[data-date='+item.date+'] .fc-daygrid-day-top').append(content)
+            })
+            let events = []
+            $.each(data.vacation, function (i, item) {
+                if (item[data.wplace] != 0) {
+                    events.push({
+                        title: item.dtitle,
+                        className: 'vacation bg-info bg-gradient',
+                        start: moment(item[data.wplace]).format(),
+                        allDay: true,
+                        display: 'background'
+                    })
+                }
+            })
+            $.each(data.myswap, function (i, item) {
+                events.push({
+                    title: item.title,
+                    className: 'vacation bg-warning bg-gradient',
+                    start: moment(item.swapDate*1000).format(),
+                    allDay: true,
+                    display: 'background'
+                })
+            })
+            calendar.setOption('events',events)
+            /*
+            var len = data.mydata.length
+            for (var i = 0; i < len; i++) {
+                if (data.mydata[i]) {
+                    thisvacation = data.mydata[i][data.wplace]
+                    if (listday.indexOf(thisvacation)) {
+                        datewrite = new Date(thisvacation).getFullYear() + '-' + ("0" + (new Date(thisvacation).getMonth() + 1)).slice(-2) + '-' + ("0" + new Date(thisvacation).getDate()).slice(-2)
+                        $('.fc-bg td[data-date="' + datewrite + '"').append('<div class="vdate">' + data.mydata[i].dtitle + '</div>')
+                        }
+                    }
+                }
+            }
+            */
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    })
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    let date = new Date()
+    var calendarEl = document.getElementById('calendar')
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        timeZone: 'Asia/Thai',
+        customButtons: {
+            userList: {
+                text: 'รายชื่อพนักงาน'
+            }
+        },
+        headerToolbar: {
+            left: 'prevYear,prev,next,nextYear today userList',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+        },
+        initialView: 'dayGridMonth',
+        themeSystem: "Sandstone",
+        locale: 'th',
+        longPressDelay: 1000,
+        nowIndicator: true, // place timeline in day mode
+        navLinks: true, // allows navigate to day mode when click number of day
+        displayEventEnd: true,
+        selectable: true,
+        dayMaxEvents: true,
+        datesSet: function (view, element) {
+            fcStart = view.startStr;
+            fcEnd = view.endStr;
+            renderObject(fcStart,fcEnd);          
+        },
+        eventMouseEnter: function (info) {
+            let el = info.el
+            let ev = info.event
+            let ext = info.event.extendedProps
+            let title = ev.title.split(':')[1]
+            var tooltip = '<p>' + ext.userName + '</p>\
+                <p><em>' + ext.lar_type.typeTitle + ' : ' + moment(ev.start).format('DD/MM/YYYY') +'</em></p>\
+                <p>สถานะ: ' + ext.leave_desc.leave_title + '</p>\
+                <p>' + title + '</p>'
+            $(el).tooltip({
+                title: tooltip,
+                html: true,
+                placement: 'auto',
+                trigger: 'hover',
+                container: 'body'
+            })
+            //$(el).addClass("tooltipextra").prepend(tooltip)
+        },
+        eventDidMount: function (argu) {
+            const chooseColor = (type) => {
+                switch (type) {
+                    case 1:
+                        return '#82af6f'
+                    case 2:
+                        return '#160f0f'
+                    case 3:
+                        return '#f89406'
+                    case 4:
+                        return '#d15b47'
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        return '#3a87ad'
+                    case 10:
+                        return '#a0a0a0'
+                }
+            }
+            let type = argu.event.extendedProps.typeId
+            let color = chooseColor(type)
+            let el = argu.el
+            if ($(el).is(".fc-daygrid-block-event")) {
+                $(el).css('background-color', color)
+            } else if ($(el).is(".fc-v-event")) {
+                $(el).css('background-color', color)
+            }
+
+            if ($(el).is(".fc-daygrid-dot-event")) {
+                $(el).find(".fc-daygrid-event-dot").css('border', '4px solid ' + color)
+            } else if ($(el).is(".fc-list-event")) {
+                $(el).find(".fc-list-event-dot").css('border', '4px solid ' + color)
+            }
+        },
+    })
+
+    const toggleDropdown = {
+        objectButton() { return $('button.dropdown-toggle') },
+        objectList() { return $('ul.dropdown-menu') },
+        hide() {
+            this.objectButton().attr('aria-expanded',false)
+            this.objectButton().removeClass('show')
+            this.objectList().removeClass('show')
+        },
+        show() {
+            this.objectButton().attr('aria-expanded',true)
+            this.objectButton().addClass('show')
+            this.objectList().addClass('show')
+        }
+    }
+
+    $(document).on('click','button.dropdown-toggle',function(){
+        if ($(this).attr('aria-expanded') == 'true') {
+            toggleDropdown.hide()
+        } else {
+            toggleDropdown.show()
+        }
+    })
+
+    $(document).on('click','li .dropdown-item',function(){
+        userId = $(this).data('id')
+        renderObject(fcStart,fcEnd)
+        calendar.render();
+        toggleDropdown.hide()
+    })
+
+    let userListButton = '<ul class="dropdown-menu dropdown-menu-end vh-100 overflow-auto">'
+    userList.forEach(user => {
+        userListButton += '<li><button class="dropdown-item" data-id="'+user.dataId+'" type="button">'+user.userName +' '+user.userLastName+'</button></li>'
+    })
+    userListButton += '</ul></div>'
+    calendar.render();
+    $('.fc-userList-button').wrap('<div class="btn-group">');
+    $('.fc-userList-button').addClass('btn dropdown-toggle').attr({
+        "id": "userlist",
+        "data-bs-toggle": "dropdown",
+        "aria-expanded": false
+    }).after(userListButton).removeClass('fc-userList-button');
+  });

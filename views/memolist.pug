@@ -1,11 +1,13 @@
 extends layout
-
+mixin popupmenu(list)
+ for line,index in list 
+  li.popup-item.align-self-center=index
 mixin tbl(memo)
  for issue in memo
   tr(id=issue.memo_id data-id=issue.memo_id data-status=issue.memo_status data-admin=issue.memo_admin data-boss=issue.memo_boss data-approver=issue.memo_approver class=issue.setClass)
    td.details-control(data-order=issue.memo_id)
     i.fa.fa-arrow-right
-   td.doc-no.dt-nowrap=issue.memo_code
+   td.doc-no.dt-nowrap(data-filter=issue.memo_create.getFullYear())=issue.memo_code
    td.m-subject=issue.memo_subject
    td.m-from=issue.memo_from
    if issue.memo_cc
@@ -41,3 +43,5 @@ block content
      .container
       .col-12
        .showfile
+ ui#popupMenu.dt-button.flex-column.align-items-center
+  +popupmenu(parms.memoYear)
