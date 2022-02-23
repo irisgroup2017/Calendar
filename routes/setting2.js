@@ -188,7 +188,9 @@ router.post('/add', async function (req, res) {
 
 router.post('/edit', async function (req, res) {
  let data = req.body
+ console.log(data)
  let key = classify(data)
+ console.log(key)
  let block = manageKey(key,data)
  if (block.privacy && (block.privacy.startTime || block.privacy.endTime)) {
   let date = new Date()
@@ -271,7 +273,7 @@ function operlist(level) {
 }
 
 function classify(data) {
- let user = ('profileId,edit-emid,edit-name,edit-lastname,edit-email,edit-job,edit-depart,edit-boss,edit-username,edit-retire').split(',')
+ let user = ('profileId,edit-emid,edit-name,edit-lastname,edit-email,edit-job,edit-depart,edit-boss,edit-username,edit-password,edit-retire').split(',')
  let privacy = ('profileId,edit-sdate,edit-emid,edit-name,edit-lastname,edit-boss,edit-bossstatus,edit-operator,edit-stime,edit-etime,edit-wplace').split(',')
  let contact = ('profileId,edit-emid,edit-name,edit-lastname,edit-job,edit-nickname,edit-phone,edit-mobile,edit-workphone,edit-email').split(',')
  return {
@@ -319,7 +321,9 @@ function ukey(key,data) {
    case 'edit-boss':
     return result.userBossMail = data['edit-boss']
    case 'edit-username':
-    return result.userPassword = data['edit-username']
+    return result.userName = data['edit-username']
+   case 'edit-password':
+    return result.userPassword = data['edit-password']
    case 'edit-retire':
     return result.retire = data['edit-retire']
   }

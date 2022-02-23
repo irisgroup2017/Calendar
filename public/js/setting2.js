@@ -385,7 +385,7 @@ jQuery(function () {
        btnClass: 'btn-success',
        keys: ['enter'],
        action: function () {
-        $('#edit-password').data('reset','true')
+        $('#edit-password').attr('data-reset','true')
         $.alert("กดบันทึกข้อมูลเพื่อดำเนินการรีเซ็ต")
        }
       },
@@ -428,7 +428,7 @@ jQuery(function () {
      } else if (id == 'edit-retire') {
       def = dat = ($('#choose-edit-retire').val() ? $('#choose-edit-retire').val() : "ไม่กำหนด")
      } else if (id == 'edit-password') {
-      if ($('#edit-password').data('reset') == 'true') {
+      if ($('#edit-password').data('reset')) {
        let newp = defv['edit-username'] +'1234'
        def = newp.substring(0, 3) + '*'.repeat(newp.length - 3)
        dat = newp
@@ -444,7 +444,7 @@ jQuery(function () {
       data[id] = dat
      }
      if (id == 'edit-password') {
-      if ($('#edit-password').data('reset') == 'false')
+      if (!$('#edit-password').data('reset'))
       delete data[id]
      } else if (id == 'edit-boss') {
       if (defv[id] == edit[id].split(" ").splice(0, 2).join(" ")) {
@@ -477,6 +477,7 @@ jQuery(function () {
     $('.edit-user').one('click', function (e) {
      editClick(e.target)
     })
+
     $.ajax({
      url: '/setting2/edit',
      type: 'POST',

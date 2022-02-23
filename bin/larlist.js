@@ -1,3 +1,4 @@
+const moment = require('moment')
 var con = require('../bin/mysql')
 const e = require('express')
 log = require('../bin/logger')
@@ -24,32 +25,13 @@ async function getLar(userName, dataid, thisday) {
  return b
 }
 
-function convertSecToDate(sec) {
- this.day = this.hour = this.minute = 0
- this.sec = parseInt(sec) || 0
- const day = () => {
-  if (this.sec >= 28800) {
-   this.day = Math.round(this.sec / 28800) + ' วัน '
-   this.sec %= 28800;
-  }
-  return this.day || ''
- }
- const hour = () => {
-  if (this.sec >= 3600) {
-   this.hour = Math.round(this.sec / 3600) +' ชั่วโมง '
-   this.sec %= 3600;
-  }
-  return this.hour || ''
- }
- const minute = () => {
-  if (this.sec >= 60) {
-   this.minute = Math.round(this.sec / 60) +' นาที'
-   this.sec %= 60;
-  }
-  return this.minute || ''
- }
- let dateString = day() + hour() + minute()
- return (dateString == '' ? '-' : dateString)
+function convertSecToDate(secs) {
+    let d = secs / 28800 | 0;
+    let H = (secs % 28800) / 3600 | 0;
+    let m = (secs % 3600)  / 60 | 0;
+    let t = 'วัน ,ชั่วโมง ,นาที'.split(',')
+    let z = n => n.map((N,i) => (N > 0 ? `${N} ${t[i]}` : "")).join("")
+    return z([d,H,m])
 }
 
 async function viewLar(dataid, thisday) {

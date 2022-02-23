@@ -1452,7 +1452,9 @@ jQuery(function ($) {
        }
        return acc
       },[])
-      if (leaveDate.length >= 5 && leaveMax > 0) {
+      let thisdate = $(ev.target).find('#start').val().split(',')
+      thisdate = `${thisdate[3]}-${thisdate[4]}-${thisdate[2]}`
+      if (leaveDate.length >= 5 && leaveDate.includes(thisdate) && leaveMax > 0) {
        alert('หยุดงานต่อเนื่อง 1 สัปดาห์ กรุณาติดต่อฝ่ายทรัพยากรบุคคล')
        return
       }

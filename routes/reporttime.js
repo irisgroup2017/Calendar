@@ -104,9 +104,10 @@ async function reportTime(req,res,opt) {
      } else { 
       return acc + 86400000 
      }
-    }
-    if (it.end) { 
-     return acc + parseInt(moment(it.start*1000).diff(moment(it.end*1000)))
+    } else {
+        if (it.end) { 
+            return acc + parseInt(moment(it.start*1000).diff(moment(it.end*1000)))
+        }
     }
    },0)
 
@@ -114,31 +115,32 @@ async function reportTime(req,res,opt) {
    parms.entryLate = 0
    parms.countLate = 0
    let change = await con.q('SELECT * FROM change_worktime WHERE dataid = ? AND changetime BETWEEN ? AND ? ORDER BY changetime ASC',[dataid,timeStart,timeEnd])
-   let count = 1
+
    //check
-   if (change) {
-    for (ctime of change) {
-     while (fingerScan[count] && moment(ctime).diff(moment(fingerScan[count].date,'YYYY-MM-DD')) > 0) {
-      let timeDiff = moment(fingerScan[count].timestart,'HH:mm:ss').diff(moment(ctime.oldstime,'HH:mm:ss'))
-      if (timeDiff > 0) {
-       parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
-       parms.countLate++
-      }
-      count++
-     }
+   Object.keys(timeScan).map(dateScan => {
+    if (change) {
+        for (const ctime of change) {
+            let scanCheck = ((moment(ctime.changetime).diff(moment(dateScan,'YYYY-MM-DD')) > 0) ? ctime.oldstime : false)
+            if (scanCheck) {
+                let timeDiff = moment(scanCheck,'HH:mm:ss').diff(moment(timeScan[dateScan].timestart,'HH:mm:ss'))
+                if (timeDiff > 0) {
+                    parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
+                    parms.countLate++
+                    return
+                }
+            }
+        }
     }
-   }
-   while (fingerScan[count] && moment(privacy[0].swtime,'YYYY-MM-DD').diff(moment(fingerScan[count].date,'YYYY-MM-DD')) > 0) {
-    let timeDiff = moment(fingerScan[count].timestart,'HH:mm:ss').diff(moment(privacy[0].swtime,'YYYY-MM-DD'))
+    let timeDiff = moment(timeScan[dateScan].timestart,'HH:mm:ss').diff(moment(privacy[0].swtime,'HH:mm:ss'))
     if (timeDiff > 0) {
      parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
      parms.countLate++
     }
-    count++
-   }
+   })
+
    //save
-   parms.entryLate = moment.duration(parms.entryLate).format("HH:mm").split(':')
-   parms.sumLar = moment.duration(parms.sumLar).format("D:HH:m").split(':')
+   parms.entryLate = moment.utc(parms.entryLate).format("HH:mm").split(':')
+   parms.sumLar = moment.utc(parms.sumLar).format("D:HH:m").split(':')
    let lartype = {}
    larlist.map((it) => {
     lartype[dateconvert.changeformatsubtract(it.start)] = {
