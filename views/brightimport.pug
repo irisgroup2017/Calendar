@@ -1,0 +1,28 @@
+extends layout
+
+block content
+ input#excel(type="file" name='excel' accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+ button#upload-button(onclick="uploadFile()") Upload
+
+block footer
+ script.
+  async function uploadFile() {
+    let formData = new FormData(); 
+    let excel = document.getElementById('excel')
+    formData.append("file", excel.files[0]);
+    $.ajax({
+      type: "POST",
+      enctype: 'multipart/form-data',
+      url: "/brightimport",
+      data: formData,
+      processData: false, //prevent jQuery from automatically transforming the data into a query string
+      contentType: false,
+      cache: false,
+      success: (response) => {
+        console.log(response)
+      },
+      error: (err) => {
+        console.error(err.responseText)
+      }
+    })
+  }

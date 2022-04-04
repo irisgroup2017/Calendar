@@ -32,7 +32,7 @@ async function leavelist(req,res) {
   res.redirect('/login')
  }
  result = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND start BETWEEN ? AND ?', [dataid, sTime, eTime])
- result2 = await con.q('SELECT * FROM privacy_data WHERE userName = ?', userName)
+ result2 = await con.q('SELECT * FROM privacy_data WHERE dataid = ?', dataid)
  parms.objs = []
  var end = '',
   allDay = '',

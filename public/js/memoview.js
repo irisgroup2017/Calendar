@@ -5,7 +5,7 @@ $(function($) {
  $('.modal-memo').each(function() {
   snipMe.call(this)
  })
-
+ 
  var max_pages = 30;
  var page_count = 0;
  function snipMe() {
