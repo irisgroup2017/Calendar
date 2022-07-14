@@ -55,8 +55,9 @@ router.get('/togglemaxvacation', async function(req, res) {
 
 router.get('/getvacation', async function(req, res) {
  res.json({
-  vacation: process.env.VACATION,
-  maxvacation: process.env.MAXVACATION
+	personal: process.env.PERSONAL,
+	vacation: process.env.VACATION,
+	maxvacation: process.env.MAXVACATION
  })
 })
 

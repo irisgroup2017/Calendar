@@ -244,77 +244,16 @@ function getMonthFromString(mo) {
 }
 
 function getDayTime(inTime, outTime, allDay) {
- ds = getDateValue(inTime)
- if (allDay) {
-  if (outTime) { // more days
-   de = getDateValue(outTime)
-   gDay = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์']
-   de.dy = gDay[(gDay.indexOf(de.dy) - 1 < 0 ? 6 : gDay.indexOf(de.dy) - 1)]
-   dStart = returnDate(ds.y, ds.mo, ds.dy, ds.da, 'ทั้งวัน')
-   dEnd = returnDate(de.y, de.mo, de.dy, de.da - 1)
-   if (ds.mo == de.mo) {
-    dlength = (de.da - ds.da) + " วัน"
-   } else {
-    j = getMonthFromString(ds.mo)
-    k = getMonthFromString(de.mo)
-    for (i = j; i <= k; i++) {
-     if (i == j) {
-      dlength = getDaysInMonth(i, ds.y) - ds.da
-     } else if (i == k) {
-      dlength += de.da
-     } else {
-      dlength += getDaysInMonth(i, ds.y)
-     }
+    let times = moment(inTime*1000).subtract(7,'h')
+    let timee = (outTime ? moment(outTime*1000).subtract(7,'h') : false)
+    let onlyStart = !timee
+    return {
+        dateStart: times.locale('th').format('dddd, DD MMM YYYY'),
+        dateEnd: (onlyStart ? times.locale('th').format('dddd, DD MMM YYYY') : (allDay ? timee.clone().subtract(1,'m').locale('th').format('dddd, DD MMM YYYY') : timee.locale('th').format('dddd, DD MMM YYYY') ) ),
+        timeStart: (allDay ? 'ทั้งวัน' : times.format('HH:mm')),
+        timeEnd: (allDay || onlyStart ? '' : times.format('HH:mm')),
+        daylength: (onlyStart ? `1 วัน` : `${timee.diff(times,'days')} วัน`)
     }
-    dlength = dlength + ' วัน'
-   }
-  } else { // all 1 day
-   dStart = returnDate(ds.y, ds.mo, ds.dy, ds.da, 'ทั้งวัน')
-   dEnd = returnDate(ds.y, ds.mo, ds.dy, ds.da)
-   dlength = 1 + " วัน"
-  }
- } else {
-  if (outTime) { // 1 day fix
-   de = getDateValue(outTime)
-   var miTime = 0,
-    sTime = 0,
-    eTime = 0,
-    dStart = returnDate(ds.y, ds.mo, ds.dy, ds.da, ds.h + ':' + ds.mi),
-    dEnd = returnDate(de.y, de.mo, de.dy, de.da, de.h + ':' + de.mi)
-   if (de.da - ds.da == 0) {
-    sTime = parseInt(ds.h + '.' + ds.mi)
-    eTime = parseInt(de.h + '.' + de.mi)
-    if ((((de.h - ds.h) > 6) && (de.h - ds.h) % 4) >= 1) {
-     minush = 1
-    } else {
-     minush = 0
-    }
-    if (de.mi - ds.mi != 0) {
-     miTime = 30
-    }
-    if (miTime && (de.mi - ds.mi) < 30) {
-     minush = 1
-    }
-    dlength = eTime - sTime - minush + ' ชั่วโมง ' + (miTime == 0 ? "" : miTime + ' นาที')
-   } else {
-    sTime = ds.h + '.' + ds.mi
-    eTime = de.h + '.' + de.mi
-    if ((((de.h - ds.h) > 6) && (de.h - ds.h) % 4) >= 1) {
-     minush = 1
-    } else {
-     minush = 0
-    }
-    dlength = de.da - ds.da + ' วัน ' + eTime - sTime - minush + ' ชั่วโมง'
-   }
-  }
- }
- return {
-  dateStart: dStart.date,
-  dateEnd: dEnd.date,
-  timeStart: dStart.time,
-  timeEnd: dEnd.time,
-  daylength: dlength
- }
 }
 
 exports.getLar = getLar

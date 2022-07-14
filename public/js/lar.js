@@ -5,11 +5,13 @@ $.ajax({
  type: 'GET',
  async: false,
  success: function (data) {
+  personalExcept = parseInt(data.personal)
   leaveExcept = parseInt(data.vacation)
   leaveMax = parseInt(data.maxvacation)
  }
 })
 var vacation = moment().add(leaveExcept, 'days').subtract(7, 'hours').valueOf()
+var personal = moment().add(personalExcept, 'days').subtract(7, 'hours').valueOf()
 
 function checkfile(sender) {
  var validExts = new Array(".pdf", ".jpg")
@@ -788,10 +790,15 @@ jQuery(function ($) {
     }
    })
    tddate = new Date(y, m, d, 0).getTime()
-   if (leaveExcept > 0 && vacation > 0 && copiedEventObject.start < vacation && copiedEventObject.className == 'label-warning') {
+   if (leaveExcept > 0 && vacation > 0 && copiedEventObject.start.valueOf() < vacation && copiedEventObject.className == 'label-warning') {
     createEvent = false
-    alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
+    alert("กรุณาลาพักร้อนล่วงหน้า " + leaveExcept + " วัน");
    }
+   if (personalExcept > 0 && personal > 0 && copiedEventObject.start.valueOf() < personal && copiedEventObject.className == 'label-success') {
+    createEvent = false
+    alert("กรุณาลากิจล่วงหน้า " + personalExcept + " วัน");
+   }
+   
    /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
    if (resourceId.type == 'agendaDay') { 
        sdTime = Number(bh.start.split(':')[0]) + Number(bh.start.split(':')[1]/60)
@@ -901,9 +908,13 @@ jQuery(function ($) {
     }
    })
    tddate = new Date(y, m, d, 0).getTime()
-   if (event.start < vacation && event.className == 'label-warning') {
+   if (event.start.valueOf() < vacation && event.className == 'label-warning') {
     createEvent = false
     alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
+   }
+   if (event.start.valueOf() < personal && event.className == 'label-success') {
+    createEvent = false
+    alert("กรุณาลากิจล่วงหน้า " + personalExcept + " วัน");
    }
    /*var bh = $('#calendar').fullCalendar('option', 'businessHours')
    if (event.source.calendar.view.type == 'agendaDay') { 
@@ -995,9 +1006,13 @@ jQuery(function ($) {
     }
    })
    tddate = new Date(y, m, d, 0).getTime()
-   if (event.start < vacation && event.className == 'label-warning') {
+   if (event.start.valueOf() < vacation && event.className == 'label-warning') {
     createEvent = false
     alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
+   }
+   if (event.start.valueOf() < personal && event.className == 'label-success') {
+    createEvent = false
+    alert("กรุณาลากิจล่วงหน้า " + personalExcept + " วัน");
    }
    /*var bh = $('#calendar').fullCalendar('option', 'businessHours'),
    if (event.source.calendar.view.type == 'agendaDay') { 
