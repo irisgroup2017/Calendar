@@ -1,3 +1,4 @@
+const moment = require('moment')
 var express = require('express'),
  router = express.Router(),
  con = require('../bin/mysql'),
@@ -50,9 +51,8 @@ router.get('/', async function (req, res) {
   } else {
    larType = result[i].title
   }
-  timeKeep = ll.getDayTime(result[i].start, end, allDay)
-  t = ll.getDateValue(result[i].cTime)
-  cTime = t.dy + ', ' + t.da + ' ' + t.mo + ' ' + t.y + ' (' + t.h + ':' + t.mi + ')'
+  let timeKeep = ll.getDayTime(result[i].start, end, allDay)
+  let cTime = moment(result[i].cTime).locale('th').format('dddd, DD MMM YYYY (HH:mm)')
   parms.objs.push({
    larid: result[i].id,
    userName: result[i].userName,
