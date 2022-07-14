@@ -538,6 +538,7 @@ table tbody .modal-memo-cell {
  text-align: left;
 }
 .memo-comment-approve {
+ padding-top: 2em;
  display: block;
  text-align: left;
  width: auto;
