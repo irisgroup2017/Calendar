@@ -9,7 +9,7 @@
 		"dateformat": "^3.0.3",
 		"docxtemplater": "^3.22.8",
 		"dotenv": "^5.0.1",
-		"excel4node": "^1.7.2",
+		"excel4node": "^1.8.0",
 		"exceljs": "^3.10.0",
 		"express": "^4.17.1",
 		"form-data": "^4.0.0",
