@@ -388,11 +388,11 @@ document.addEventListener('DOMContentLoaded', function () {
            <label class="col-sm-2 col-form-label">รถยนต์</label>\
            <div class="col-sm-10">\
             <div class="custom-control custom-radio">\
-             <input type="radio" id="optradio1" name="optradio" class="custom-control-input" value="475" checked>\
+             <input type="radio" id="optradio1" name="optradio" class="custom-control-input" value="475">\
              <label class="custom-control-label" for="optradio1">March 475</label>\
             </div>\
             <div class="custom-control custom-radio">\
-             <input type="radio" id="optradio2" name="optradio" class="custom-control-input" value="745">\
+             <input type="radio" id="optradio2" name="optradio" class="custom-control-input" value="745" checked>\
              <label class="custom-control-label" for="optradio2">March 745</label>\
             </div>\
             <div class="custom-control custom-radio">\

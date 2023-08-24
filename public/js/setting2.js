@@ -444,8 +444,7 @@ jQuery(function () {
       data[id] = dat
      }
      if (id == 'edit-password') {
-      if (!$('#edit-password').data('reset'))
-      delete data[id]
+      if (!$('#edit-password').data('reset')) delete data[id]
      } else if (id == 'edit-boss') {
       if (defv[id] == edit[id].split(" ").splice(0, 2).join(" ")) {
        delete data[id]

@@ -2,97 +2,119 @@ var express = require("express");
 var app = express();
 var router = express.Router();
 var path = require("path");
-const { refreshCookies } = require('../bin/auth')
 
-const approve = require('./approve')
-const approvescantime = require('./approvescantime')
-const authorize = require('./authorize')
-const calendar = require('./calendar')
-const calendarreport = require('./calendarreport')
-const contact = require('./contact')
-const cross = require('./cross')
-const dailyworklist = require('./dailyworklist')
-const delreq = require('./delreq')
-const departmentleaveview = require('./departmentleaveview')
-const easypass = require('./easypass')
-const editentitle = require('./editentitle')
-const excelexport = require('./excelexport')
-const exportmanager = require('./exportmanager')
-const forms = require('./forms')
-const getip = require('./getip')
-const getlar = require('./getlar')
-const handbook = require('./handbook')
-const hr = require('./hr')
-const hrexport = require('./hrexport')
-const index = require('./index')
-const lar = require('./lar')
-const leavelist = require('./leavelist')
-const leavelistall = require('./leavelistall')
-const leavereport = require('./leavereport')
-const listtable = require('./listtable')
-const login = require('./login')
-const memo = require('./memo')
-const managerleavelist = require('./managerleavelist')
-const manualattendance = require('./manualattendance')
-const privacy = require('./privacy')
-const proc = require('./proc')
-const profile = require('./profile')
-const refreshdata = require('./refreshdata')
-const reserve = require('./reserve')
-const reservelist = require('./reservelist')
-const reporttime = require('./reporttime')
-const saleactive = require('./saleactive')
-const setting = require('./setting2')
-const search = require('./search')
-const searchb = require('./searchb')
-const sumlar = require('./sumlar')
-const vacationa = require('./vacationa')
-const brightimport = require('./brightimport')
+const loadpage = (req, res, next) => {
+    const { user_name,user_dataid,user_op,user_mail } = req.cookies;
+    if (!user_name) res.redirect("/login");
+    req.body.data = {
+        username: user_name,
+        dataid: user_dataid,
+        operator: user_op,
+        mail: user_mail
+    }
+    req.body.parms = {
+        title: "MEMO",
+        head1: "MEMO",
+        user: user_name,
+        operator: user_op
+    };
+    next();
+};
 
-router.use('/brightimport',brightimport)
-router.use('/login', login)
-router.use('/authorize', authorize)
-router.use('/',refreshCookies, index)
-router.use('/approvescantime',refreshCookies, approvescantime)
-router.use('/approve',refreshCookies, approve)
-router.use('/calendar',refreshCookies, calendar)
-router.use('/calendarreport',refreshCookies, calendarreport)
-router.use('/contact',refreshCookies, contact)
-router.use('/cross',refreshCookies, cross)
-router.use('/dailyworklist',refreshCookies, dailyworklist)
-router.use('/delreq',refreshCookies, delreq)
-router.use('/departmentleaveview',refreshCookies, departmentleaveview)
-router.use('/easypass',refreshCookies, easypass)
-router.use('/editentitle',refreshCookies, editentitle)
-router.use('/exportmanager',refreshCookies, exportmanager)
-router.use('/excelexport',refreshCookies, excelexport)
-router.use('/forms',refreshCookies,forms)
-router.use('/getip',refreshCookies, getip)
-router.use('/getlar',refreshCookies, getlar)
-router.use('/handbook',refreshCookies, handbook)
-router.use('/hr',refreshCookies, hr)
-router.use('/hrexport',refreshCookies, hrexport)
-router.use('/lar',refreshCookies, lar)
-router.use('/leavelist',refreshCookies, leavelist)
-router.use('/leavelistall',refreshCookies, leavelistall)
-router.use('/leavereport',refreshCookies, leavereport)
-router.use('/listtable',refreshCookies, listtable)
-router.use('/memo',refreshCookies, memo)
-router.use('/managerleavelist',refreshCookies, managerleavelist)
-router.use('/manualattendance',refreshCookies,manualattendance)
-router.use('/proc',refreshCookies, proc)
-router.use('/profile',refreshCookies, profile)
-router.use('/privacy',refreshCookies, privacy)
-router.use('/refreshdata',refreshCookies, refreshdata)
-router.use('/reporttime',refreshCookies, reporttime)
-router.use('/reserve',refreshCookies, reserve)
-router.use('/reservelist',refreshCookies,reservelist)
-router.use('/saleactive',refreshCookies, saleactive)
-router.use('/search',refreshCookies, search)
-router.use('/searchb',refreshCookies, searchb)
-router.use('/setting',refreshCookies, setting)
-router.use('/setting2',refreshCookies, setting)
-router.use('/sumlar',refreshCookies, sumlar)
-router.use('/vacationa',refreshCookies, vacationa)
+const { refreshCookies } = require("../bin/auth");
+const approve = require("./approve");
+const approvescantime = require("./approvescantime");
+const authorize = require("./authorize");
+const calendar = require("./calendar");
+const calendarreport = require("./calendarreport");
+const contact = require("./contact");
+const cross = require("./cross");
+const dailyworklist = require("./dailyworklist");
+const delreq = require("./delreq");
+const departmentleaveview = require("./departmentleaveview");
+const easypass = require("./easypass");
+const editentitle = require("./editentitle");
+const excelexport = require("./excelexport");
+const exportmanager = require("./exportmanager");
+const forms = require("./forms");
+const getip = require("./getip");
+const getlar = require("./getlar");
+const handbook = require("./handbook");
+const hr = require("./hr");
+const hrexport = require("./hrexport");
+const index = require("./index");
+const lar = require("./lar");
+const leavelist = require("./leavelist");
+const leavelistall = require("./leavelistall");
+const leavereport = require("./leavereport");
+const listtable = require("./listtable");
+const login = require("./login");
+const memo = require("./memo");
+const managerleavelist = require("./managerleavelist");
+const manualattendance = require("./manualattendance");
+const outsource = require("./outsource");
+const privacy = require("./privacy");
+const proc = require("./proc");
+const profile = require("./profile");
+const refreshdata = require("./refreshdata");
+const reserve = require("./reserve");
+const reservelist = require("./reservelist");
+const reporttime = require("./reporttime");
+const saleactive = require("./saleactive");
+const setting = require("./setting2");
+const search = require("./search");
+const searchb = require("./searchb");
+const sumlar = require("./sumlar");
+const vacationa = require("./vacationa");
+const brightimport = require("./brightimport");
+const opendoor = require('../controller/opendoor');
+
+router.use("/brightimport", brightimport);
+router.use("/login", login);
+router.use("/authorize", authorize);
+router.use("/", refreshCookies, index);
+router.use("/approvescantime", refreshCookies, approvescantime);
+router.use("/approve", refreshCookies, approve);
+router.use("/calendar", refreshCookies, calendar);
+router.use("/calendarreport", refreshCookies, calendarreport);
+router.use("/contact", refreshCookies, contact);
+router.use("/cross", refreshCookies, cross);
+router.use("/dailyworklist", refreshCookies, dailyworklist);
+router.use("/delreq", refreshCookies, delreq);
+router.use("/departmentleaveview", refreshCookies, departmentleaveview);
+router.use("/easypass", refreshCookies, easypass);
+router.use("/editentitle", refreshCookies, editentitle);
+router.use("/exportmanager", refreshCookies, exportmanager);
+router.use("/excelexport", refreshCookies, excelexport);
+router.use("/forms", refreshCookies, forms);
+router.use("/getip", refreshCookies, getip);
+router.use("/getlar", refreshCookies, getlar);
+router.use("/handbook", refreshCookies, handbook);
+router.use("/hr", refreshCookies, hr);
+router.use("/hrexport", refreshCookies, hrexport);
+router.use("/lar", refreshCookies, lar);
+router.use("/leavelist", refreshCookies, leavelist);
+router.use("/leavelistall", refreshCookies, leavelistall);
+router.use("/leavereport", refreshCookies, leavereport);
+router.use("/listtable", refreshCookies, listtable);
+router.use("/memo", refreshCookies, memo);
+router.use("/managerleavelist", refreshCookies, managerleavelist);
+router.use("/manualattendance", refreshCookies, manualattendance);
+router.use("/outsource", loadpage, refreshCookies, outsource);
+router.use("/proc", refreshCookies, proc);
+router.use("/profile", refreshCookies, profile);
+router.use("/privacy", refreshCookies, privacy);
+router.use("/refreshdata", refreshCookies, refreshdata);
+router.use("/reporttime", refreshCookies, reporttime);
+router.use("/reserve", refreshCookies, reserve);
+router.use("/reservelist", refreshCookies, reservelist);
+router.use("/saleactive", refreshCookies, saleactive);
+router.use("/search", refreshCookies, search);
+router.use("/searchb", refreshCookies, searchb);
+router.use("/setting", refreshCookies, setting);
+router.use("/setting2", refreshCookies, setting);
+router.use("/sumlar", refreshCookies, sumlar);
+router.use("/vacationa", refreshCookies, vacationa);
+router.use("/opendoor", refreshCookies, opendoor.process);
 
 module.exports = router;

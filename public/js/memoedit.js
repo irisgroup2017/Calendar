@@ -585,7 +585,7 @@ $(function ($) {
  }
 
  function printDiv() {
-  printElement = $('.modal-memo')
+  let printElement = $('.modal-memo');
   var mywindow = window.open('', 'PRINT');
   var cssList = ['../public/css/ace.min.css', '../public/css/memo.css', '../public/css/bootstrap.min.css', 'https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
   var loadCount = cssList.length
@@ -597,6 +597,7 @@ $(function ($) {
    if (cssList[css].split('.').pop() == 'css') {
     link.setAttribute("type", "text/css");
    }
+   
    link.onload = function () {
     if (--loadCount == 0) {
      mywindow.print();
@@ -609,7 +610,7 @@ $(function ($) {
 
   mywindow.document.write('</head><body>');
   for (item of printElement) {
-   mywindow.document.write(item.innerHTML);
+    mywindow.document.write(item.innerHTML);
   }
   mywindow.document.write('</body></html>');
  }

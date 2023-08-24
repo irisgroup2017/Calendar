@@ -7,6 +7,7 @@
 		"body-parser": "^1.19.0",
 		"cookie-parser": "^1.4.5",
 		"dateformat": "^3.0.3",
+		"dayjs": "^1.11.7",
 		"docxtemplater": "^3.22.8",
 		"dotenv": "^5.0.1",
 		"excel4node": "^1.7.2",

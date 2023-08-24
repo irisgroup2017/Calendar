@@ -507,11 +507,12 @@ $(function($) {
    let file = $(sender)[0].files[0]
    let memopath = $('#memo-no').text().split('-')
    let pathdate = $('#memo-date').val().split('/').join('')
+   let replaceFilename = sender.value.replace(',','-')
    memopath = memopath.slice(0,memopath.length-1).join('') +''+ pathdate
    let data = new FormData(form)
    data.append('ext',fileExt)
    data.append('memopath',memopath)
-   data.append('file',file)
+   data.append('file',file,replaceFilename)
    $.ajax({
     url: "/attachment",
     type: 'POST',
@@ -634,7 +635,7 @@ $(function($) {
   var cssList = ['../public/css/ace.min.css','../public/css/memo.css','../public/css/bootstrap.min.css','https://fonts.googleapis.com/css2?family=Sarabun&display=swap']
   var loadCount = cssList.length
  
-  mywindow.document.write('<meta http-equiv="Cache-Control" content="no-store"/><meta http-equiv="Pragma" content="no-cache"/>\
+  mywindow.document.write('<meta http-equiv="Cache-Control" content="no-store"/>\
   \<html><head><title>' + document.title  + ' test</title>');
   for (css in cssList) {
    var link = mywindow.document.createElement('link');

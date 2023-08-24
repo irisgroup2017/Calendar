@@ -1,0 +1,64 @@
+.report-field:has(td) {
+    width: 210mm;
+    margin: 3mm 2mm;
+    padding: 1mm 0;
+}
+
+.report-field td {
+    min-width: 14mm;
+    max-width: 15mm;
+}
+
+.col-page {
+    display: table;
+    width: 100%;
+}
+
+.title-head {
+    margin: 0.5vh 0;
+    border-top: black solid 2px;
+    border-bottom: black solid 2px;
+}
+
+.dotted-underline {
+    border-bottom: black dotted 1px;
+}
+
+.title-top {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.center-lar {
+    text-align: center;
+    justify-content: center;
+}
+
+.date-top {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+.date-line {
+    border-bottom: black 1px dotted;;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+@media print {
+    body {
+        visibility: hidden; 
+    }
+    .report-field {
+        position: absolute;
+        margin: 0mm 2mm; 
+        visibility: visible;
+    }
+    a[href]:after { content: none !important; }
+}

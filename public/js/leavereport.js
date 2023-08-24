@@ -1,15 +1,13 @@
 // Setup page
 
-$(window).on("load",function() {
- $('.datepicker').datepicker({
+ $('.datepicker input').datepicker({
   ignoreReadonly: true,
-  format: 'dd MM YYYY',
+  format: 'dd/mm/yyyy',
   todayHighlight: true
  })
 
  $('.datepickera').datepicker('setDate',moment().startOf('isoweek').format())
  $('.datepickerb').datepicker('setDate',moment().endOf('isoweek').format())
-})
 
 // Search Click
 

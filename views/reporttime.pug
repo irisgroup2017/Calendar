@@ -9,7 +9,8 @@ mixin leave(info)
   tr
    td(colspan="19")
    td(colspan="5")="ประเภทการลา: "+ 4
-mixin insertline(range,list,show,lar,vacation,dateday)
+mixin insertline(range,list,show,lar,vacation,dateday,late,out)
+ - var multiply = 1
  each day,i in range
   tr
    if list[day]
@@ -21,23 +22,28 @@ mixin insertline(range,list,show,lar,vacation,dateday)
     td.dotted-underline(colspan="2")=list[day].timeend.substring(0,5)
     td.dotted-underline(colspan="2")=list[day].mend
     if lar[day]
-     td.dotted-underline=lar[day].lartype
-    else
-     td.dotted-underline
+     td.dotted-underline(colspan="4")=lar[day].lartype
+    else 
+     if late[day]
+      td.dotted-underline(colspan="2")=late[day]
+     else
+      td.dotted-underline(colspan="2")
+     if out[day]
+      td.dotted-underline=out[day]
+     else
+      td.dotted-underline(colspan="2")
    else
     td.dotted-underline(colspan="1")
     td.dotted-underline(colspan="1")=show[i]
     td.dotted-underline(colspan="10")
     if lar[day]
      td.dotted-underline(colspan="12")=lar[day].lartype
+    else if vacation[day]
+     td.dotted-underline(colspan="12")=vacation[day].dtitle
+    else if dateday[day]
+     td.dotted-underline(colspan="12")=dateday[day]
     else
-     if vacation[day]
-      td.dotted-underline(colspan="12")=vacation[day].dtitle
-     else
-      if dateday[day]
-       td.dotted-underline(colspan="12")=dateday[day]
-      else
-       td.dotted-underline(colspan="12")
+     td.dotted-underline(colspan="12")
 html
  head
   title=parms.title
@@ -74,10 +80,12 @@ html
      td(colspan="2") สถานที่
      td(colspan="2") เวลาออก
      td(colspan="2") สถานที่
+     td(colspan="2") สาย
+     td(colspan="2") ออกก่อน
     tr
      td.tail-title(colspan="24")
    tbody.user-desc
-    +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype,parms.vacation,parms.dateday)
+    +insertline(parms.datelist,parms.fingerscan,parms.dateshow,parms.lartype,parms.vacation,parms.dateday,parms.dateLate,parms.dateOut)
    tfoot 
     tr
      td(colspan="1")

@@ -244,15 +244,17 @@ function getMonthFromString(mo) {
 }
 
 function getDayTime(inTime, outTime, allDay) {
-    let times = moment(inTime*1000).subtract(7,'h')
-    let timee = (outTime ? moment(outTime*1000).subtract(7,'h') : false)
+    let times = moment.unix(inTime).subtract(7,'h')
+    let timee = (outTime ? moment(outTime) : false)
     let onlyStart = !timee
+    let dateS = times.locale('th').format('dddd, DD MMM YYYY')
+    let dateE = (onlyStart ? times.locale('th').format('dddd, DD MMM YYYY') : (allDay ? timee.clone().subtract(1,'m').locale('th').format('dddd, DD MMM YYYY') : timee.clone().locale('th').format('dddd, DD MMM YYYY') ) )
     return {
-        dateStart: times.locale('th').format('dddd, DD MMM YYYY'),
-        dateEnd: (onlyStart ? times.locale('th').format('dddd, DD MMM YYYY') : (allDay ? timee.clone().subtract(1,'m').locale('th').format('dddd, DD MMM YYYY') : timee.locale('th').format('dddd, DD MMM YYYY') ) ),
+        dateStart: dateS,
+        dateEnd: dateE,
         timeStart: (allDay ? 'ทั้งวัน' : times.format('HH:mm')),
-        timeEnd: (allDay || onlyStart ? '' : times.format('HH:mm')),
-        daylength: (onlyStart ? `1 วัน` : `${timee.diff(times,'days')} วัน`)
+        timeEnd: (allDay || onlyStart ? '' : (dateS == dateE ? timee.format('HH:mm') : times.format('HH:mm'))),
+        daylength: (onlyStart ? `1 วัน` : (dateS == dateE ? `${timee.diff(times,'h')} ชั่วโมง` : `${timee.diff(times,'d')} วัน`))
     }
 }
 

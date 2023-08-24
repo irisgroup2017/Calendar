@@ -7,6 +7,7 @@ module.exports.send = async(method,path,data) => {
   method: method,
   data: data || {}
  }
+ console.log(option)
  const request = await axios(option).then(result => result)
  return await request.data
 }
@@ -17,6 +18,7 @@ module.exports.get = async(path,data) => {
   method: 'GET',
   data: data || {}
  }
+ console.log(option)
  const request = await axios(option).then(result => result)
  return await request.data
 }

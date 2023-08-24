@@ -3,11 +3,13 @@ const nodemailer = require('nodemailer'),
  con = require('../bin/mysql'),
  log = require('../bin/logger')
 transporter = nodemailer.createTransport({
- service: 'gmail',
- auth: {
-  user: process.env.USERMAIL,
-  pass: process.env.USERPASS
- }
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+            user: process.env.USERMAIL,
+            pass: process.env.USERPASS
+      }
 })
 
 async function send(status, user, larid, mail) {

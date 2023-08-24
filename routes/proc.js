@@ -16,7 +16,6 @@ const transporter = nodemailer.createTransport({
 	}
 })
 
-
 function remodule(d) {
 	var i,a,d=d.toString()
 	if (d.length < 5) {i=1} else {i=0}
@@ -150,8 +149,8 @@ router.post('/',async function(req, res) {
 		res.json(objs)
 	}
 	if (req.body.state == 'loadl') {
-		var sql = 'SELECT * FROM lar_data WHERE mailGroup = ? OR userName = ? AND start BETWEEN ? AND ?'
-		con.q(sql,[req.cookies.user_mail,req.cookies.user_name,req.body.start,req.body.end])
+		var sql = 'SELECT * FROM lar_data WHERE userName = ? AND start BETWEEN ? AND ?'
+		con.q(sql,[req.cookies.user_name,req.body.start,req.body.end])
 		.then(result => {
 			var objs = [],
 			end,allDay,classn,title
@@ -235,6 +234,7 @@ router.post('/',async function(req, res) {
 			path = __basedir + '/public/doc/' + userName+ '/' + attach
 			fileExt = attach.substring(attach.lastIndexOf('.')).toLowerCase()
 		}
+
 		else { attach = '' }
 		if (className == 'label-grey') { larType = 'ลาป่วย' }
 		else if (className == 'label-success') { larType = 'ลากิจ' }
@@ -256,7 +256,7 @@ router.post('/',async function(req, res) {
 		var sql = 'INSERT INTO lar_data ('+ a +') VALUES ('+ b +')'
 		await con.q(sql,c)
   await api.send('GET','/lardata/assignid','')
-  console.log(await api.send('GET','/lardata/refreshid/'+ dataid,''))
+  await api.send('GET','/lardata/refreshid/'+ dataid,'')
   result = {}
 		if (swapDate) {
 			result.start = start

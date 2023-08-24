@@ -1,68 +1,75 @@
-const moment = require('moment')
-const api = require('../../bin/api')
-const log = require('../../bin/logger')
+const moment = require("moment");
+const api = require("../../bin/api");
+const log = require("../../bin/logger");
 
 exports.uploadForm = (req, res) => {
-	let data = {
-        file: req.file,
-        ext: req.body.ext
-    }
-    // log applicationForm
-	log.logger('info','Upload memo attachment: '+data.file.filename+' file')
-	res.json(data)
-}
+  let data = {
+    file: req.file,
+    ext: req.body.ext,
+  };
+  // log applicationForm
+  log.logger("info", "Upload memo attachment: " + data.file.filename + " file");
+  res.json(data);
+};
 
 exports.uploadAttach = (req, res) => {
-	let data = {}
- data.url = req.headers.origin +'/public/memo/attach/'+ req.file.originalname
- data.success = true
- data.data = {}
- data.data.url = req.headers.origin +'/public/memo/attach/'+ req.file.originalname
- data = JSON.stringify(data)
-	res.end(data)
-}
+  let data = {};
+  data.url =
+    req.headers.origin + "/public/memo/attach/" + req.file.originalname;
+  data.success = true;
+  data.data = {};
+  data.data.url =
+    req.headers.origin + "/public/memo/attach/" + req.file.originalname;
+  data = JSON.stringify(data);
+  res.end(data);
+};
 
 exports.uploadFile = (req, res) => {
- let file = req.file
- let body = req.body
- let dataId = req.headers.cookie.match(/(user_dataid)(=).+?(?=;)/g)[0].split("=")[1]
- let path = file.path.match(/(\\public)(.*)/g)[0]
- let time = moment().format("YYYY-MM-DD HH:mm:ss")
- let memo = {
-  memoId: parseInt(body.memoid),
-  dataId: parseInt(dataId),
-  statusId: 10,
-  path: path.toString(),
-  originalName: file.originalname,
-  time: time
- }
+  let file = req.file;
+  let body = req.body;
+  let dataId = req.headers.cookie
+    .match(/(user_dataid)(=).+?(?=;)/g)[0]
+    .split("=")[1];
+  let path = file.path.match(/(\\public)(.*)/g)[0];
+  let time = moment().format("YYYY-MM-DD HH:mm:ss");
+  let memo = {
+    memoId: parseInt(body.memoid),
+    dataId: parseInt(dataId),
+    statusId: 10,
+    path: path.toString(),
+    originalName: file.originalname,
+    time: time,
+  };
 
- api.send("POST","/memolog",memo)
- if (body.approve) {
-  memo = {
-   memoId: parseInt(body.memoid),
-   dataId: parseInt(dataId),
-   statusId: 5,
-   time: time
+  api.send("POST", "/memolog", memo);
+  if (body.approve) {
+    memo = {
+      memoId: parseInt(body.memoid),
+      dataId: parseInt(dataId),
+      statusId: 5,
+      time: time,
+    };
+    api.send("POST", "/memolog", memo);
+
+    let bodies = {
+      data: {
+        memoStatus: 5,
+      },
+      where: {
+        memoId: parseInt(body.memoid),
+      },
+    };
+    api.send("POST", "/memo/update", bodies);
   }
-  api.send("POST","/memolog",memo)
-  
-  let bodies = {
-   data: {
-    memoStatus: 5
-   },
-   where: {
-    memoId: parseInt(body.memoid)
-   }
-  }
-  api.send("POST","/memo/update",bodies)
- }
-	let data = {
-        upload: 1,
-        file: req.file,
-        files: req.body.list
-    }
-    // log applicationForm
-	log.logger('info',data.username+' Upload memo attachment: '+data.file.filename+' file')
-	res.json(data)
-}
+  let data = {
+    upload: 1,
+    file: req.file,
+    files: req.body.list,
+  };
+  // log applicationForm
+  log.logger(
+    "info",
+    data.username + " Upload memo attachment: " + data.file.filename + " file"
+  );
+  res.json(data);
+};

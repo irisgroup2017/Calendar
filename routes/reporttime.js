@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const con = require('../bin/mysql')
 const moment = require('moment')
+const logger = require('../bin/logger')
 
 router.get('/', async function(req, res, next) {
  let option = {
@@ -112,29 +113,43 @@ async function reportTime(req,res,opt) {
    },0)
 
    //select change time
+   parms.dateLate = {}
    parms.entryLate = 0
    parms.countLate = 0
+   parms.dateOut = {}
+   parms.entryOut = 0
+   parms.countOut = 0
    let change = await con.q('SELECT * FROM change_worktime WHERE dataid = ? AND changetime BETWEEN ? AND ? ORDER BY changetime ASC',[dataid,timeStart,timeEnd])
 
    //check
    Object.keys(timeScan).map(dateScan => {
-    if (change) {
+    //console.log(change.length)
+    if (change.length) {
+        //console.log('change')
         for (const ctime of change) {
             let scanCheck = ((moment(ctime.changetime).diff(moment(dateScan,'YYYY-MM-DD')) > 0) ? ctime.oldstime : false)
             if (scanCheck) {
                 let timeDiff = moment(scanCheck,'HH:mm:ss').diff(moment(timeScan[dateScan].timestart,'HH:mm:ss'))
                 if (timeDiff > 0) {
+                    parms.dateLate[dateScan] = moment.duration(timeDiff).format("mm")
                     parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
                     parms.countLate++
-                    return
                 }
             }
         }
-    }
-    let timeDiff = moment(timeScan[dateScan].timestart,'HH:mm:ss').diff(moment(privacy[0].swtime,'HH:mm:ss'))
-    if (timeDiff > 0) {
-     parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
-     parms.countLate++
+    } else {
+        let timeDiff = moment(timeScan[dateScan].timestart,'HH:mm:ss').diff(moment(privacy[0].swtime,'HH:mm:ss'))
+        let endDiff = moment(privacy[0].ewtime,'HH:mm:ss').diff(moment(timeScan[dateScan].timeend,'HH:mm:ss'))
+        if (timeDiff > 0) {
+            parms.dateLate[dateScan] = moment.duration(timeDiff).format("m นาที")
+            parms.entryLate = (typeof parms.entryLate == 'number' ? parms.entryLate : 0) + timeDiff
+            parms.countLate++
+        }
+        if (endDiff > 0) {
+            parms.dateOut[dateScan] = moment.duration(endDiff).format("m นาที")
+            parms.entryOut = (typeof parms.entryOut == 'number' ? parms.entryOut : 0) + endDiff
+            parms.countOut++
+        }
     }
    })
 

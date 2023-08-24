@@ -58,6 +58,7 @@ $(document).on("click", "#toggle-vacation", function () {
   async: false,
   success: function (data) {
    leaveExcept = parseInt(data)
+   personalExcept = parseInt(data)
   }
  })
  vacation = moment().add(leaveExcept, 'days').subtract(7, 'hours').valueOf()
@@ -1008,7 +1009,7 @@ jQuery(function ($) {
    tddate = new Date(y, m, d, 0).getTime()
    if (event.start.valueOf() < vacation && event.className == 'label-warning') {
     createEvent = false
-    alert("การลาพักร้อน กรุณาลาล่วงหน้า " + leaveExcept + " วัน");
+    alert("กรุณาลาพักร้อนล่วงหน้า " + leaveExcept + " วัน");
    }
    if (event.start.valueOf() < personal && event.className == 'label-success') {
     createEvent = false

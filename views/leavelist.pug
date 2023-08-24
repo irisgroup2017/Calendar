@@ -29,7 +29,7 @@ block content
  link(rel='application/x-font-ttf' , href='fonts/glyphicons-halflings-regular.ttf')
  link(rel='application/font-woff' , href='fonts/glyphicons-halflings-regular.woff')
  +scss(['datatable/datatables.min.css','setting.css','hover.css','jquery-confirm.min.css'])
- +ssrc(['datatables.min.js','dataTables.buttons.min.js','popper.min.js','moment.min.js','transition.js','collapse.js','jquery-confirm.min.js'])
+ +ssrc(['datatables.min.js','dataTables.buttons.min.js','popper.min.js','moment.min.js','transition.js','collapse.js','jquery-confirm.min.js','printlarform.js'])
 
  table.table.display.cell-border.nowrap#display-table(style="width:100%")
   thead.thead-info
@@ -50,6 +50,7 @@ block content
    else
     h4.center='ไม่มีข้อมูล'
  script.
+  var printClass
   jQuery(function($) {
    $("#display-table").DataTable({
     scrollX: true,
@@ -71,6 +72,7 @@ block content
        "defaultContent": '<div class="row center">\
        <a class="delete fa fa-trash hvr-pulse" title="หากหัวหน้ายังไม่ได้อนุมัติจะลบการลานี้ออกจากรายการ\nหากหัวหน้าอนุมัติแล้วจะทำเครื่องหมายยกเลิกการลาแต่ยังคงเก็บข้อมูลไว้ในระบบต่อไป" data-toggle="confirmation" data-placement="left" style="padding-left: 10px">\
        <a class="resend-mail fa fa-repeat hvr-pulse" title="ส่งอีเมลให้หัวหน้าอีกครั้ง\nใช้ในกรณีที่เปลี่ยนแปลงผู้บังคับบัญชาหรือผู้บังคับบัญชาค้นหาอีเมลไม่พบ">\
+       <a class="form-print fa fa-print hvr-pulse" title="พิมพ์เอกสารใบลา">\
        </div>',
        "targets": -1
      }
@@ -91,6 +93,24 @@ block content
       }
      })
     })
+
+    $(document).on("click",".form-print",function() {
+        larid = $(this).parents('tr').attr('id')
+        $.ajax({
+            url: '/leavelist/formpost',
+            type: "POST",
+            async: false,
+            data: { 
+                'larid': larid
+            },
+            success: function(data) {
+                console.log(data)
+                printClass = new PrintForm(data)
+                printClass.preparing()
+            }
+        })
+    })
+
     $(document).on("click", ".delete", function(){
         larid = $(this).parents('tr').attr('id')
         status = ($(this).parents('tr').find('td:nth-child(8)').text().indexOf(':') > 0 ? $(this).parents('tr').find('td:nth-child(8)').text().split(':') : $(this).parents('tr').find('td:nth-child(8)').text())

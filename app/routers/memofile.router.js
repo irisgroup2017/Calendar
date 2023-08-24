@@ -3,6 +3,6 @@ module.exports = (app, router, upload) => {
 	
 	router.use((req,res,next) => {
 		next()
- })
+ 	})
  app.post('/fileuploadmemo', upload.single("file"), memoFileControllers.uploadFile)
 }

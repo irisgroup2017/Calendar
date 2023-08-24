@@ -6,6 +6,13 @@ fs = require('fs'),
 mailsend = require('../bin/mailsend'),
 log = require('../bin/logger')
 const api = require('../bin/api')
+const moment = require('moment')
+const dayjs = require('dayjs')
+require('dayjs/locale/th')
+var buddhistEra = require('dayjs/plugin/buddhistEra')
+var dayduration = require('dayjs/plugin/duration')
+dayjs.extend(dayduration)
+dayjs.extend(buddhistEra)
 
 async function leavelist(req,res) {
  var userName = req.cookies.user_name,
@@ -118,7 +125,7 @@ async function leavelist(req,res) {
   } else {
    larType = result[i].title
   }
-  timeKeep = ll.getDayTime(result[i].start, end, allDay, result2[0].swtime.substring(0, 5), result2[0].ewtime.substring(0, 5))
+  timeKeep = ll.getDayTime(result[i].start, end, allDay)//, result2[0].swtime.substring(0, 5), result2[0].ewtime.substring(0, 5)
   t = ll.getDateValue(result[i].cTime)
   cTime = t.dy + ', ' + t.da + ' ' + t.mo + ' ' + t.y + ' (' + t.h + ':' + t.mi + ')'
   parms.objs.push({
@@ -200,5 +207,113 @@ router.post('/resend', async function (req, res, next) {
  mailsend.send('Resend: ขออนุญาติ', req.cookies.user_name, req.body.larid, 'boss')
  res.end('ok')
 })
+
+router.post('/formpost',async function(req,res) {
+    let userName = req.cookies.user_name
+    let dataid = req.cookies.user_dataid
+    let mail = req.cookies.user_mail
+    let larid = req.body.larid
+    let thisYear = moment().format('YYYY')
+    let data
+
+    let larData = await con.q('SELECT * FROM lar_data WHERE dataid = ? AND id = ?',[dataid,larid])
+    let userData = await con.q('SELECT * FROM user_data WHERE dataid = ?',[dataid])
+    let larStatus = await con.q('SELECT  * FROM lar_status WHERE dataid = ? AND year = ?',[dataid,thisYear])
+
+    data = {
+        detail: formatText(userData[0],larData[0]),
+        larStatus: getLarstatus(larStatus[0])
+    }
+    res.json(data);
+})
+
+
+function getLarstatus(data) {
+    let typeThai = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ลาฝึกอบรบ', 'ลาทำหมัน', 'ลาคลอด', 'ลาอุปสมบท', 'ลารับราชการทหาร']
+    let typeEng = ['sick', 'personal', 'vacation', 'training', 'sterily', 'maternity', 'religious', 'military','sickd', 'personald', 'vacationd', 'trainingd', 'sterilyd', 'maternityd', 'religiousd', 'militaryd','sickr', 'personalr', 'vacationr', 'trainingr', 'sterilyr', 'maternityr', 'religiousr', 'militaryr','sickt', 'personalt', 'vacationt', 'trainingt', 'sterilyt', 'maternityt', 'religioust', 'militaryt']
+    let typeIndex = ['all','used','remain','time']
+    let ans = {}
+    for (const key in data) {
+        let match = typeEng.indexOf(key)
+        let val = data[key]
+        if (match === -1) continue
+
+        let total = typeThai.length
+        let indicate = Math.floor(match / total)
+        let balance = (match % total)
+        let index = typeIndex[indicate]
+        let title = typeThai[balance]
+        let type = typeEng[balance]
+        let value = convertTime(val)
+        let negative = (val < 0 ? true : false)
+
+        if (!ans[type]) ans[type] = { title: title }
+        if (index === 'time') value = val
+        ans[type][index] = { 
+            value: value,
+            negative: negative
+        }
+    }
+    return ans
+}
+
+function formatText(user,detail) {
+    let lar = adjustInfo(detail)
+    return {
+        fullname: detail.userName,
+        job: user.jobPos,
+        depart: user.depart,
+        detail: detail.title,
+        ctime: lar.ctime,
+        sdate: lar.sdate,
+        edate: lar.edate,
+        duration: lar.duration,
+        stime: lar.stime,
+        etime: lar.etime,
+        lartype: lar.type
+    }
+}
+
+function adjustInfo(lar) {
+    let typeList = ['grey','success','dark','warning','danger','info']
+    let typeResult = ['ลาป่วย','ลากิจ','ลากิจไม่รับค่าจ้าง','ลาพักร้อน','ลาสลับวันหยุด',lar.title]
+    let type = lar.className.split('-')[1]
+    let allDay = lar.allDay
+    let ctime = dayjs(lar.cTime).locale('th').format('วันdddที่ D MMMM BBBB')
+    let start = dayjs.unix(lar.start).subtract(7,'h')
+    let end = lar.end == null ? '-' : dayjs.unix(lar.end).subtract(7,'h')
+    let sdate = start.format('DD/MM/BBBB')
+    let edate = end !== '-' ? end.format('DD/MM/BBBB') : start.format('DD/MM/BBBB')
+    let stime = allDay ? '-' : start.format('HH:mm')
+    let etime = allDay ? '-' : end.format('HH:mm')
+    let diffe = end !== '-' ? end : start.add(8,'h')
+    let duration = ( edate === '-' ? '1 วัน' : convertTime(diffe.diff(start,'s')) )
+    type = typeResult[typeList.indexOf(type)]
+    return {
+        ctime: ctime,
+        sdate: sdate,
+        edate: edate,
+        duration: duration,
+        stime: stime,
+        etime: etime,
+        type: type
+    }
+}
+
+function convertTime(num) {
+    let ans = ""
+    num = Math.abs(num)
+    if (num >= 28800) [ans,num] = calDuration(ans,num,28800,'วัน')
+    if (num >= 3600) [ans,num] = calDuration(ans,num,3600,'ชั่วโมง')
+    if (num >= 60) [ans,num] = calDuration(ans,num,60,'นาที')
+    return ans
+}
+
+const calDuration = (ans,num,base,unit) => { 
+    let val = num / base
+    ans += `${val} ${unit}`
+    num = num % base
+    return [ans,num]
+}
 
 module.exports = router

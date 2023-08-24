@@ -1,0 +1,28 @@
+extends layout
+
+block content
+ mixin ssrc(scr)
+  for t in scr
+   script(src="../public/js/"+t)
+ mixin scss(scss)
+  for t in scss
+   link(rel='stylesheet' , href='/public/css/'+t)
+ .container.mt-3
+  .row.justify-content-center
+   .col
+    .input-group
+     span.input-group-text #
+     input#userid.form-control(type="number" placeholder="รหัสพนักงาน")
+   .col
+    .input-group.input-daterange.datepicker
+     input.form-control.datepickera(type='text')
+     .input-group-text ถึง
+     input.form-control.datepickerb(type='text')
+   .col
+    button#submit.btn.btn-outline-success ดึงรายงาน
+  .report-field
+   table#report.col-page
+  +scss(['bootstrap-datepicker.min.css','outsourcetime.css'])
+  +ssrc(['moment.min.js','bootstrap-datepicker.min.js','outsource.js'])
+  
+   

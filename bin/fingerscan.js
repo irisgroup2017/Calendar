@@ -154,4 +154,4 @@ function dateSolve(dateSplit) {
  return { y:years,mo:months,d:days,h:hours,mi:mins }
 }
 
-exports.fingerToJSON = fingerToJSON
+exports.fingerToJSON = fingerToJSON;

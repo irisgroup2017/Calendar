@@ -619,7 +619,10 @@ table tbody .modal-memo-cell {
 }
 
 /* Print */
-
+@page {
+  size: A4;
+  margin: 0;
+}
 @media print {
  body { 
   visibility: hidden; 
